@@ -1,5 +1,5 @@
 struct Edge {
-  int to, cost;
+  ll to, cost;
   bool operator<(const struct Edge& other) const
   {
     return cost < other.cost;
@@ -8,29 +8,6 @@ struct Edge {
 
 vector<vector<Edge>> G;
 
-vector<int> dijkstra(int start) {
-  priority_queue<P> PQ;
-  vector<ll> costs(G.size(), INF);
-
-  PQ.push(make_pair(0, start));
-
-  while(!PQ.empty()) {
-    pair<int, int> p = PQ.top(); PQ.pop();
-    int prev_cost = -p.first;
-    int v = p.second;
-    if(costs[v] <= prev_cost) continue;
-    costs[v] = prev_cost;
-
-    rep(i, G[v].size()) {
-      Edge e = G[v][i];
-      ll next_cost = costs[v] + e.cost;
-      if (costs[e.to] > next_cost) {
-        PQ.push(make_pair(-next_cost, e.to));
-      }
-    }
-  }
-  return costs;
-}
 
 vector<ll> dijkstra(ll start) {
   priority_queue<LP> PQ;
