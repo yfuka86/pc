@@ -52,9 +52,21 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N;
-  cin >> N;
-  cout << N << "\n";
+  ll H, W;
+  cin >> H >> W;
+  vector<vl> a(H, vl(W, 0));
+  rep(i, H) rep(j, W) cin >> a[i][j];
+
+  vl hsum(H);
+  vl wsum(W);
+
+  rep(i, H) rep(j, W) { hsum[i] += a[i][j]; wsum[j] += a[i][j]; }
+
+  rep(i, H) {
+    rep(j, W) {
+      cout << hsum[i] + wsum[j] - a[i][j] << (j == W - 1 ? "\n" : " ");
+    }
+  }
 }
 
 

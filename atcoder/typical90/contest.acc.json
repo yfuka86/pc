@@ -119,79 +119,144 @@
       "id": "typical90_k",
       "label": "011",
       "title": "Gravy Jobs（★6）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_k"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_k",
+      "directory": {
+        "path": "011",
+        "testdir": "test",
+        "submit": "typical90_k.cpp"
+      }
     },
     {
       "id": "typical90_l",
       "label": "012",
       "title": "Red Painting（★4）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_l"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_l",
+      "directory": {
+        "path": "012",
+        "testdir": "test",
+        "submit": "typical90_l.cpp"
+      }
     },
     {
       "id": "typical90_m",
       "label": "013",
       "title": "Passing（★5）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_m"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_m",
+      "directory": {
+        "path": "013",
+        "testdir": "test",
+        "submit": "typical90_m.cpp"
+      }
     },
     {
       "id": "typical90_n",
       "label": "014",
       "title": "We Used to Sing a Song Together（★3）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_n"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_n",
+      "directory": {
+        "path": "014",
+        "testdir": "test",
+        "submit": "typical90_n.cpp"
+      }
     },
     {
       "id": "typical90_o",
       "label": "015",
       "title": "Don't be too close（★6）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_o"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_o",
+      "directory": {
+        "path": "015",
+        "testdir": "test",
+        "submit": "typical90_o.cpp"
+      }
     },
     {
       "id": "typical90_p",
       "label": "016",
       "title": "Minimum Coins（★3）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_p"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_p",
+      "directory": {
+        "path": "016",
+        "testdir": "test",
+        "submit": "typical90_p.cpp"
+      }
     },
     {
       "id": "typical90_q",
       "label": "017",
       "title": "Crossing Segments（★7）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_q"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_q",
+      "directory": {
+        "path": "017",
+        "testdir": "test",
+        "submit": "typical90_q.cpp"
+      }
     },
     {
       "id": "typical90_r",
       "label": "018",
       "title": "Statue of Chokudai（★3）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_r"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_r",
+      "directory": {
+        "path": "018",
+        "testdir": "test",
+        "submit": "typical90_r.cpp"
+      }
     },
     {
       "id": "typical90_s",
       "label": "019",
       "title": "Pick Two（★6）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_s"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_s",
+      "directory": {
+        "path": "019",
+        "testdir": "test",
+        "submit": "typical90_s.cpp"
+      }
     },
     {
       "id": "typical90_t",
       "label": "020",
       "title": "Log Inequality（★3）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_t"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_t",
+      "directory": {
+        "path": "020",
+        "testdir": "test",
+        "submit": "typical90_t.cpp"
+      }
     },
     {
       "id": "typical90_u",
       "label": "021",
       "title": "Come Back in One Piece（★5）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_u"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_u",
+      "directory": {
+        "path": "021",
+        "testdir": "test",
+        "submit": "typical90_u.cpp"
+      }
     },
     {
       "id": "typical90_v",
       "label": "022",
       "title": "Cubic Cake（★2）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_v"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_v",
+      "directory": {
+        "path": "022",
+        "testdir": "test",
+        "submit": "typical90_v.cpp"
+      }
     },
     {
       "id": "typical90_w",
       "label": "023",
       "title": "Avoid War（★7）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_w"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_w",
+      "directory": {
+        "path": "023",
+        "testdir": "test",
+        "submit": "typical90_w.cpp"
+      }
     },
     {
       "id": "typical90_x",

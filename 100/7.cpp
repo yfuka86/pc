@@ -28,7 +28,7 @@ int main()
   int n;
   cin >> n;
   vector<P> S(n);
-  vector<vector<bool>> exists(5001, vector<bool>(5001, false));
+  vector<vector<bool> > exists(5001, vector<bool>(5001, false));
   rep(i, n) {
     int x, y;
     cin >> x >> y;

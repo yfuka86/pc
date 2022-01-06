@@ -52,9 +52,31 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N;
-  cin >> N;
-  cout << N << "\n";
+  ll N, L, K;
+  cin >> N >> L >> K;
+  vl a(N); rep(i, N) cin >> a[i];
+
+  ll ng = L + 1; ll ok = 0;
+
+  while (ng > ok + 1) {
+    ll mid = (ok + ng) / 2;
+
+    ll count = 0;
+    ll current = 0;
+    rep(i, N) {
+      if (a[i] - current >= mid && L - a[i] >= mid) {
+        count++;
+        current = a[i];
+      }
+    }
+
+    if (count < K) {
+      ng = mid;
+    } else {
+      ok = mid;
+    }
+  }
+  cout << ok << "\n";
 }
 
 

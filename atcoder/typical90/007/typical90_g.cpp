@@ -52,9 +52,22 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N;
+  ll N, Q;
   cin >> N;
-  cout << N << "\n";
+  vl a(N); rep(i, N) cin >> a[i];
+  cin >> Q;
+  vl b(Q); rep(i, Q) cin >> b[i];
+
+  sort(all(a));
+
+  rep(i, Q) {
+    auto itr = upper_bound(all(a), b[i]);
+
+    ll r = itr != a.end() ? abs(*itr - b[i]) : LINF;
+    ll l = LINF;
+    if (itr != a.begin()) { itr--; l = abs(*itr - b[i]); }
+    cout << min(l, r) << "\n";
+  }
 }
 
 

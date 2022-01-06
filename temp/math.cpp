@@ -15,15 +15,15 @@ vector<int> primes_below(const int N) {
   return ret;
 }
 
-vector<pair<long long, long long> > prime_factorize(long long N) {
-  vector<pair<long long, long long> > res;
+map<long long, long long> prime_factorize(long long N) {
+  map<long long, long long> res;
   for (long long a = 2; a * a <= N; ++a) {
     if (N % a != 0) continue;
     long long ex = 0;
     while (N % a == 0) { ++ex; N /= a; }
-    res.push_back({a, ex});
+    res[a]= ex;
   }
-  if (N != 1) res.push_back({N, 1});
+  if (N != 1) res[N] = 1;
   return res;
 }
 
@@ -39,11 +39,27 @@ vector<long long> divisor(long long n) {
   return ret;
 }
 
-ll gcd(ll a, ll b) {
-	a = abs(a); b = abs(b);
-	if (a < b) swap(a, b);
-	while (b) {
-		ll r = a % b; a = b; b = r;
-	}
-	return a;
+// ap + bq = gcd(a, b)
+LP extGCD(ll a, ll b) {
+  ll p11 = 1, p12 = 0, p21 = 0, p22 = 1;
+  while (b) {
+    ll s = a / b;
+    // matrix{{0, 1}, {1, -s}}
+    a -= s * b; swap(a, b);
+
+    p11 -= s * p21; p12 -= s * p22;
+    swap(p11, p21); swap(p12, p22);
+  }
+  return {p11, p12};
 }
+
+template<typename T> vector<T> m_map(vector<vector<T>>& l, vector<T>& r) {
+  assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size()); vector<T> ans(l.size(), 0);
+  for(int i = 0; i < l.size(); i++) for (int j = 0; j < r.size(); j++) ans[i] += l[i][j] * r[j]; return ans; }
+template<typename T> vector<vector<T>> m_product(vector<vector<T>>& l, vector<vector<T>>& r) {
+  assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size());
+  vector<vector<T>> ans(l.size(), vector<T>(r[0].size(), 0));
+  for(int i = 0; i < l.size(); i++) { assert(l[i].size() == l[0].size());
+    for(int j = 0; j < r[0].size(); j++) for(int k = 0; k < l[0].size(); k++) { assert(r[k].size() == r[0].size()); ans[i][j] += l[i][k] * r[k][j]; }
+  }
+  return ans; }

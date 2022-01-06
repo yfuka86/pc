@@ -47,6 +47,11 @@ bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T>
 bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+double adiff(double a1, double a2) {
+  double diff = a1 >= a2 ? a1 - a2 : a2 - a1;
+  return diff > 180 ? 360 - diff : diff;
+}
+
 int main()
 {
   ios::sync_with_stdio(false);
@@ -54,7 +59,36 @@ int main()
 
   ll N;
   cin >> N;
-  cout << N << "\n";
+  vector<LP> V(N);
+  rep(i, N) {
+    ll x, y; cin >> x >> y;
+    V[i] = make_pair(x, y);
+  }
+
+  double maangle = 0;
+  rep(i, N) {
+    vector<double> angles;
+    rep(j, N) {
+      if (i == j) continue;
+      ll y = V[j].second - V[i].second;
+      ll x = V[j].first - V[i].first;
+      angles.pb(atan2(y, x) * (double)180 / M_PI);
+    }
+    sort(all(angles));
+    rep(j, angles.size()) {
+      double a = angles[j] >= 180 ? angles[j] - 180 : angles[j] + 180;
+      ll idx = upper_bound(all(angles), a) - angles.begin();
+      if (idx == angles.size()) idx = 0;
+      double l = idx == 0 ? angles[angles.size() - 1] : angles[idx - 1];
+      double r = angles[idx];
+
+      // cout << idx << ":" << j << endl;
+      // cout << adiff(l, angles[j]) << ":" << adiff(r, angles[j]) << endl;
+
+      chmax(maangle, max(adiff(l, angles[j]), adiff(r, angles[j])));
+    }
+  }
+  cout << fixed << setprecision(7) << maangle << "\n";
 }
 
 

@@ -52,9 +52,35 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N;
-  cin >> N;
-  cout << N << "\n";
+  ll N, K; string S;
+  cin >> N >> K >> S;
+
+  vl a(N); rep(i, N) a[i] = S[i] - 'a';
+  vector<queue<ll>> dict(26);
+
+  rep(i, N) {
+    dict[a[i]].push(i);
+  }
+
+  vl ans(K);
+  ll current = 0;
+  rep(i, K) {
+    rep(j, 26) {
+      while(dict[j].size() > 0 && dict[j].front() < current) {
+        dict[j].pop();
+      }
+      if (dict[j].size() == 0) continue;
+
+      if (K - i <= N - dict[j].front()) {
+        current = dict[j].front(); dict[j].pop();
+        ans[i] = j;
+        break;
+      }
+    }
+  }
+
+  rep(i, K) cout << string(1, ans[i] + 'a');
+  cout << "\n";
 }
 
 

@@ -2,6 +2,7 @@
 const ll mod = 1000000007;
 const ll mod = 998244353;
 struct modint { int n; modint() :n(0) { ; } modint(ll m) { if (m < 0 || mod <= m) { m %= mod; if (m < 0)m += mod; } n = m; } operator int() { return n; } };
+typedef vector<modint> vmi;
 bool operator==(modint a, modint b) { return a.n == b.n; }
 modint operator+=(modint& a, modint b) { a.n += b.n; if (a.n >= mod)a.n -= mod; return a; }
 modint operator-=(modint& a, modint b) { a.n -= b.n; if (a.n < 0)a.n += mod; return a; }
@@ -25,8 +26,7 @@ modint combP(int a, int b) { if (a < 0 || b < 0 || a < b) return 0; return fact[
 ll mod_pow(ll x, ll n, ll m = mod) {
   if (n < 0) { ll res = mod_pow(x, -n, m); return mod_pow(res, m - 2, m); }
   if (abs(x) >= m) x %= m; if (x < 0) x += m; if (x == 0) return 0;
-  ll res = 1; while (n) { if (n & 1) res = res * x % m; x = x * x % m; n >>= 1; } return res;
-}
+  ll res = 1; while (n) { if (n & 1) res = res * x % m; x = x * x % m; n >>= 1; } return res; }
 //------------------------------------------------------------------------------
 
 

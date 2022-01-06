@@ -1,15 +1,10 @@
 struct Edge {
   ll to, cost;
-  bool operator<(const struct Edge& other) const
-  {
-    return cost < other.cost;
-  }
+  bool operator<(const struct Edge& other) const {
+    return cost < other.cost; }
 };
 
-vector<vector<Edge>> G;
-
-
-vector<ll> dijkstra(ll start) {
+vector<ll> dijkstra(vector<vector<Edge>>& G, ll start) {
   priority_queue<LP> PQ;
   vector<ll> costs(G.size(), LINF);
 
@@ -33,14 +28,11 @@ vector<ll> dijkstra(ll start) {
   return costs;
 }
 
-vector<vector<Edge>> graph_input(int n, int m) {
-  vector<vector<Edge>> G(n);
-  rep(i, m) {
-    int a, b, e;
-    cin >> a >> b >> e;
-    a--; b--;
-    G[a].push_back(Edge{b, e});
-    G[b].push_back(Edge{a, e});
-  }
-  return G;
-}
+  // ll N, M;
+  // cin >> N >> M;
+  // vector<vector<Edge>> G(N);
+  // rep(i, M) {
+  //   ll a, b, c; cin >> a >> b >> c; a--; b--;
+  //   G[a].pb({b, c});
+  //   G[b].pb({a, c});
+  // }

@@ -54,7 +54,38 @@ int main()
 
   ll N;
   cin >> N;
-  cout << N << "\n";
+
+  vector<vl> G(N);
+  rep(i, N - 1) {
+    int a, b; cin >> a >> b; a--; b--;
+    G[a].pb(b); G[b].pb(a);
+  }
+
+  vl depth(N, -1);
+  function<void(ll, ll)> dfs = [&](ll v, ll d) -> void {
+    if (depth[v] != -1) return;
+    depth[v] = d;
+    for(ll next: G[v]) {
+      dfs(next, d + 1);
+    }
+  };
+
+  dfs(0, 0);
+  ll ma = -1;
+  ll idx = -1;
+  rep(i, N) {
+    if (depth[i] > ma) {
+      ma = depth[i];
+      idx = i;
+    }
+  }
+  depth.assign(N, -1);
+  dfs(idx, 0);
+
+  ll ans = 0;
+  rep(i, N) chmax(ans, depth[i]);
+
+  cout << ans + 1 << "\n";
 }
 
 

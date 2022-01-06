@@ -54,7 +54,28 @@ int main()
 
   ll N;
   cin >> N;
-  cout << N << "\n";
+
+  if (N % 2 == 1) return 0;
+
+  vector<vs> ans(N);
+
+  ans[0].pb("(");
+  rep2(i, 1, N) {
+    for (string s: ans[i - 1]) {
+      ll open = count(all(s), '(');
+      ll close = count(all(s), ')');
+      if (open < N / 2) {
+        ans[i].pb(s + "(");
+      }
+      if (close < N / 2 && open > close) {
+        ans[i].pb(s + ")");
+      }
+    }
+  }
+  sort(all(ans[N - 1]));
+  rep(i, ans[N - 1].size()) {
+    cout << ans[N - 1][i] << "\n";
+  }
 }
 
 

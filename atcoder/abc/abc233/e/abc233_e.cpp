@@ -48,7 +48,8 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  string X; cin >> X;
+  // string X; cin >> X;
+  string X = "1000001292933";
   vl x; rep(i, X.size()) x.pb(X[i] - '0');
   reverse(all(x));
   ll sum = 0; rep(i, x.size()) sum += x[i];

@@ -52,9 +52,22 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N;
-  cin >> N;
-  cout << N << "\n";
+  ll N; cin >> N;
+  vector<vl> cumsum(2, vl(N + 1, 0));
+  rep(i, N) {
+    ll c, p; cin >> c >> p; c--;
+    rep(j, 2) {
+      cumsum[j][i + 1] = cumsum[j][i] + (c == j ? p : 0);
+    }
+  }
+
+  ll Q; cin >> Q;
+  rep(i, Q) {
+    ll l, r; cin >> l >> r;
+    rep(j, 2) {
+      cout << cumsum[j][r] - cumsum[j][l - 1] << (j == 1 ? "\n" : " ");
+    }
+  }
 }
 
 
