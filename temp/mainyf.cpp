@@ -1,1 +1,1 @@
-/Users/yuta/Library/Preferences/atcoder-cli-nodejs/yf/main.cpp
+/Users/yutafukazawa/Library/Preferences/atcoder-cli-nodejs/yf/main.cpp
