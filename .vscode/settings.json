@@ -65,5 +65,14 @@
     "ranges": "cpp",
     "span": "cpp"
   },
-  "code-runner.saveAllFilesBeforeRun": true
+  "code-runner.saveAllFilesBeforeRun": true,
+  "lldb.launch.expressions": "native",
+  "clang.executable": "clang++",
+  "code-runner.runInTerminal": true,
+  "clang.cxxflags": [ "-std=c++17"],
+  "code-runner.executorMap": {
+    "javascript": "node",
+    "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+    "cpp": "cd $dir && clang++ -std=c++17 $fileName && oj test -D",
+  }
 }
