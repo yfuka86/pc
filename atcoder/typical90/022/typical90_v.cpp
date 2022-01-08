@@ -44,8 +44,10 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll A, B, C; cin >> A >> B >> C;
+  ll g = gcd(gcd(A, B), C);
+  ll ans = A / g - 1 + B / g - 1 + C / g - 1;
+  cout << ans << "\n";
 }
 
 

@@ -44,8 +44,12 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll a, b, c; cin >> a >> b >> c;
+
+  ll bc = 1;
+  rep(i, b) bc *= c;
+
+  if (a < bc) cout << "Yes" <<"\n"; else cout << "No" << "\n";
 }
 
 

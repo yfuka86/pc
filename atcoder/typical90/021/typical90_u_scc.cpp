@@ -44,8 +44,59 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N, M; cin >> N >> M;
+
+  vector<vl> G(N), rG(N);
+  rep(i, M) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G[a].pb(b);
+    rG[b].pb(a);
+  }
+
+  vb found(N, false);
+  vl depth(N, -1);
+  ll d = 0;
+  function<void(ll)> dfs = [&](ll v) -> void {
+    if (found[v]) return;
+    found[v] = true;
+    for (ll next: G[v]) {
+      dfs(next);
+    }
+    d++; depth[v] = d;
+  };
+
+  rep(i, N) {
+    if (found[i]) continue;
+    dfs(i);
+  }
+  //----------------------------------------------------------------
+  priority_queue<LP> que;
+  rep(i, N) {
+    que.push(make_pair(depth[i], i));
+  }
+  vb rfound(N, false);
+  function<ll(ll, ll)> rdfs = [&](ll v, ll count) -> ll {
+    if (rfound[v]) return count;
+    rfound[v] = true;
+
+    count++;
+    for (ll next: rG[v]) {
+      count += rdfs(next, 0);
+    }
+    return count;
+  };
+
+  ll sum = 0;
+  while(!que.empty()) {
+    auto [_, v] = que.top(); que.pop();
+    if (rfound[v]) continue;
+    ll count = rdfs(v, 0);
+    if (count > 1) {
+      sum += count * (count - 1) / 2;
+    }
+  }
+
+  cout << sum << "\n";
 }
 
 

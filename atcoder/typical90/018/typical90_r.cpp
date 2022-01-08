@@ -44,8 +44,21 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ld T, L, X, Y; cin >> T >> L >> X >> Y;
+  ll Q; cin >> Q;
+
+  rep(i, Q) {
+    ld e; cin >> e;
+    ld rad = e / T * 2 * M_PI;
+    ld y = -sin(rad) * L / 2;
+    ld z = -(cos(rad) - 1) * L / 2;
+
+    // cout << "rad" << rad << "y:z" << y << ":" << z << endl;
+    ld dist = sqrt(X * X + (Y - y) * (Y - y));
+    ld ans = atan(z / dist) * 180 / M_PI;
+    if (ans < 0.0) ans = -ans;
+    cout << fixed << setprecision(8) << ans << "\n";
+  }
 }
 
 

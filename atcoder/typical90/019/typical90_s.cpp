@@ -45,7 +45,35 @@ int main()
   cin.tie(nullptr);
 
   ll N; cin >> N;
-  cout << N << "\n";
+  vl a(2 * N);
+  rep(i, 2 * N) cin >> a[i];
+
+  vector<vl> dp(2 * N + 1, vl(2 * N + 1, -1));
+
+  function<ll(ll, ll)> calc = [&](ll start, ll end) -> ll {
+    if (dp[start][end] != -1) return dp[start][end];
+    if (end == start) return dp[start][end] = 0;
+    if (end - start == 2) return dp[start][end] = abs(a[start] - a[end - 1]);
+
+    ll mi = LINF;
+
+    // Slow part once I came up with
+    // for(int i = start; i < end; i += 2) {
+    //   for(int j = i + 2; j <= end; j += 2) {
+    //     if ((i - start) % 2 == 1 || (end - j) % 2 == 1) continue;
+    //     chmin(mi, calc(start, i) + calc(j, end) + calc(i + 1, j - 1) + abs(a[i] - a[j - 1]));
+    //   }
+    // }
+
+    chmin(mi, calc(start + 1, end - 1) + abs(a[start] - a[end - 1]));
+    for(int i = start + 2; i < end; i += 2) {
+      chmin(mi, calc(start, i) + calc(i, end));
+    }
+
+    return dp[start][end] = mi;
+  };
+
+  cout << calc(0, 2 * N) << "\n";
 }
 
 

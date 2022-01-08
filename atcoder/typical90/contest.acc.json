@@ -262,73 +262,133 @@
       "id": "typical90_x",
       "label": "024",
       "title": "Select +／- One（★2）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_x"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_x",
+      "directory": {
+        "path": "024",
+        "testdir": "test",
+        "submit": "typical90_x.cpp"
+      }
     },
     {
       "id": "typical90_y",
       "label": "025",
       "title": "Digit Product Equation（★7）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_y"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_y",
+      "directory": {
+        "path": "025",
+        "testdir": "test",
+        "submit": "typical90_y.cpp"
+      }
     },
     {
       "id": "typical90_z",
       "label": "026",
       "title": "Independent Set on a Tree（★4）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_z"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_z",
+      "directory": {
+        "path": "026",
+        "testdir": "test",
+        "submit": "typical90_z.cpp"
+      }
     },
     {
       "id": "typical90_aa",
       "label": "027",
       "title": "Sign Up Requests （★2）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_aa"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_aa",
+      "directory": {
+        "path": "027",
+        "testdir": "test",
+        "submit": "typical90_aa.cpp"
+      }
     },
     {
       "id": "typical90_ab",
       "label": "028",
       "title": "Cluttered Paper（★4）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ab"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ab",
+      "directory": {
+        "path": "028",
+        "testdir": "test",
+        "submit": "typical90_ab.cpp"
+      }
     },
     {
       "id": "typical90_ac",
       "label": "029",
       "title": "Long Bricks（★5）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ac"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ac",
+      "directory": {
+        "path": "029",
+        "testdir": "test",
+        "submit": "typical90_ac.cpp"
+      }
     },
     {
       "id": "typical90_ad",
       "label": "030",
       "title": "K Factors（★5）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ad"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ad",
+      "directory": {
+        "path": "030",
+        "testdir": "test",
+        "submit": "typical90_ad.cpp"
+      }
     },
     {
       "id": "typical90_ae",
       "label": "031",
       "title": "VS AtCoder（★6）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ae"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ae",
+      "directory": {
+        "path": "031",
+        "testdir": "test",
+        "submit": "typical90_ae.cpp"
+      }
     },
     {
       "id": "typical90_af",
       "label": "032",
       "title": "AtCoder Ekiden（★3）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_af"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_af",
+      "directory": {
+        "path": "032",
+        "testdir": "test",
+        "submit": "typical90_af.cpp"
+      }
     },
     {
       "id": "typical90_ag",
       "label": "033",
       "title": "Not Too Bright（★2）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ag"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ag",
+      "directory": {
+        "path": "033",
+        "testdir": "test",
+        "submit": "typical90_ag.cpp"
+      }
     },
     {
       "id": "typical90_ah",
       "label": "034",
       "title": "There are few types of elements（★4）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ah"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ah",
+      "directory": {
+        "path": "034",
+        "testdir": "test",
+        "submit": "typical90_ah.cpp"
+      }
     },
     {
       "id": "typical90_ai",
       "label": "035",
       "title": "Preserve Connectivity（★7）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ai"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ai",
+      "directory": {
+        "path": "035",
+        "testdir": "test",
+        "submit": "typical90_ai.cpp"
+      }
     },
     {
       "id": "typical90_aj",

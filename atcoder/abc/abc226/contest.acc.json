@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc226",
+    "title": "AtCoder Beginner Contest 226",
+    "url": "https://atcoder.jp/contests/abc226"
+  },
+  "tasks": [
+    {
+      "id": "abc226_a",
+      "label": "A",
+      "title": "Round decimals",
+      "url": "https://atcoder.jp/contests/abc226/tasks/abc226_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc226_a.cpp"
+      }
+    },
+    {
+      "id": "abc226_b",
+      "label": "B",
+      "title": "Counting Arrays",
+      "url": "https://atcoder.jp/contests/abc226/tasks/abc226_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc226_b.cpp"
+      }
+    },
+    {
+      "id": "abc226_c",
+      "label": "C",
+      "title": "Martial artist",
+      "url": "https://atcoder.jp/contests/abc226/tasks/abc226_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc226_c.cpp"
+      }
+    },
+    {
+      "id": "abc226_d",
+      "label": "D",
+      "title": "Teleportation",
+      "url": "https://atcoder.jp/contests/abc226/tasks/abc226_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc226_d.cpp"
+      }
+    },
+    {
+      "id": "abc226_e",
+      "label": "E",
+      "title": "Just one",
+      "url": "https://atcoder.jp/contests/abc226/tasks/abc226_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc226_e.cpp"
+      }
+    },
+    {
+      "id": "abc226_f",
+      "label": "F",
+      "title": "Score of Permutations",
+      "url": "https://atcoder.jp/contests/abc226/tasks/abc226_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc226_f.cpp"
+      }
+    },
+    {
+      "id": "abc226_g",
+      "label": "G",
+      "title": "The baggage",
+      "url": "https://atcoder.jp/contests/abc226/tasks/abc226_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc226_g.cpp"
+      }
+    },
+    {
+      "id": "abc226_h",
+      "label": "H",
+      "title": "Random Kth Max",
+      "url": "https://atcoder.jp/contests/abc226/tasks/abc226_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "abc226_h.cpp"
+      }
+    }
+  ]
+}

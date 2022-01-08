@@ -32,7 +32,6 @@ const ll LINF = LLONG_MAX;
 const double DINF = numeric_limits<double>::infinity();
 const ll mod = 1000000007;
 
-int bitcount(int n) { int c = 0; for ( ; n != 0 ; n &= n - 1 ) c++; return c;}
 void comp(vector<int>&a){ vector<int> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
 template<typename T>
 void coutarray(vector<T>& v) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i];} cout << "\n"; }
@@ -50,8 +49,24 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  int N;
-  cin >> N;
-  cout << N << "\n";
+  ll N, X, Y;
+  cin >> N >> X >> Y;
+  vl a(N), b(N); rep(i, N) cin >> a[i]; rep(i, N) cin >> b[i];
+
+  vector<ll> dp(1 << N, LINF);
+  dp[0] = 0;
+
+  rep(S, 1 << N) {
+    rep(i, N) {
+      if (S & 1 << i) continue;
+      ll next = __builtin_popcount(S);
+      ll inv = i - next;
+      rep2(j, i, N) {
+        if (S >> j & 1) inv++;
+      }
+      chmin(dp[S | 1 << i], dp[S] + abs(a[i] - b[next]) * X + inv * Y);
+    }
+  }
+  cout << dp[(1 << N) - 1] << "\n";
 }
 
