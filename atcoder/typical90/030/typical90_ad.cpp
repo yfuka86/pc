@@ -30,8 +30,20 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N, K; cin >> N >> K;
+
+  vl types(N + 1, 0);
+
+  for(ll i = 2; i <= N; i++) {
+    if (types[i] > 0) continue;
+    for (ll j = i; j <= N; j += i) {
+      types[j]++;
+    }
+  }
+//  if (types.size() < 100) coutarray(types);
+
+  sort(all(types));
+  cout << types.end() - lower_bound(all(types), K) << "\n";
 }
 
 

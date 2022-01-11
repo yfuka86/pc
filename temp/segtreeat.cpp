@@ -27,6 +27,23 @@ struct lazy_segtree {
   void all_apply(int k, F f) { d[k] = mapping(f, d[k]); if (k < size) lz[k] = composition(f, lz[k]); }
   void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
+
+struct S { ll a; };
+struct F {};
+
+S op(S l, S r) { return S{max(l.a, r.a)}; }
+S e() { return S{-1}; }
+S mapping(F l, S r) { return S{r.a}; }
+F composition(F l, F r) { { return F{}; } }
+F id() { return F{}; }
+
+// lazy_segtree<S, op, e, F, mapping, composition, id> seg(a);
+// ll ans = seg.max_right<function<bool(S)>>(a,
+//   [&b](S x) {
+//     if (x.a == -1) return true;
+//     return x.a < b;
+//   }
+// );
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 template <class S, S (*op)(S, S), S (*e)()> struct segtree {

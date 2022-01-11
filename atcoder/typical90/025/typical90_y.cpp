@@ -25,12 +25,10 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-ll msfm(ll i) {
+ll f(string s) {
   ll pro = 1;
-  for(int j = 10; j < N * 10; j *= 10) {
-    pro *= (i % j) / (j / 10);
-  }
-  return i - pro;
+  for (auto c: s) pro *= (c - '0');
+  return pro;
 }
 
 int main()
@@ -41,13 +39,29 @@ int main()
   ll N, B; cin >> N >> B;
 
   ll ans = 0;
-  if (B == msfm(B)) ans++;
+  if (f(to_string(B)) == 0 && B <= N) ans++;
 
-  vl targets(11);
+  function<void(string)> dfs = [&](string i) -> void {
+    if (i.size() > 12) return;
 
+    ll candidate = f(i) + B;
+    string cans = to_string(candidate);
+    sort(all(cans));
 
+    if (candidate <= N && cans == i) {
+      ans++;
+    }
 
-  coutmap(count);
+    rep2(j, 1, 10) {
+      if (i.back() <= j + '0') dfs(i + to_string(j));
+    }
+  };
+
+  rep2(i, 1, 10) {
+    dfs(to_string(i));
+  }
+
+  cout << ans << "\n";
 }
 
 

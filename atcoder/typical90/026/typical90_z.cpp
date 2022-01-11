@@ -31,7 +31,33 @@ int main()
   cin.tie(nullptr);
 
   ll N; cin >> N;
-  cout << N << "\n";
+  vector<vl> G(N);
+  rep(i, N - 1) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G[a].pb(b);
+    G[b].pb(a);
+  }
+
+  vl color(N, -1);
+  function<void(ll, ll)> dfs = [&](ll v, ll c) -> void {
+    if (color[v] != -1) return;
+    color[v] = c;
+    for(ll next: G[v]) {
+      dfs(next, c == 0 ? 1 : 0);
+    }
+  };
+
+  dfs(0, 0);
+
+  map<ll, vl> mp;
+  rep(i, N) {
+    mp[color[i]].pb(i + 1);
+  }
+  if (mp[0].size() < mp[1].size()) swap(mp[0], mp[1]);
+
+  rep(i, N / 2) {
+    cout << mp[0][i] << (i == N / 2 - 1 ? "\n" : " ");
+  }
 }
 
 

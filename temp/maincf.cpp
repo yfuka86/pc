@@ -6,17 +6,14 @@
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
 #define pb push_back
+#define mp make_pair
 
 using namespace std;
-typedef long long ll;
-typedef long double ld;
-typedef pair<int, int> P;
-typedef pair<ll, ll> LP;
-typedef vector<int> vi;
-typedef vector<ll> vl;
-typedef vector<string> vs;
-const int INF = numeric_limits<int>::max();
-const ll LINF = LLONG_MAX;
+typedef long long ll; typedef long double ld;
+typedef pair<int, int> P; typedef pair<ll, ll> LP;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<bool> vb; typedef vector<string> vs;
+const int INF = numeric_limits<int>::max() / 3;
+const ll LINF = LLONG_MAX / 3;
 const double DINF = numeric_limits<double>::infinity();
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
@@ -30,7 +27,7 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
 void solve() {
-
+  ll n; cin >> n;
 }
 
 signed main() {
@@ -43,3 +40,13 @@ signed main() {
     solve();
   }
 }
+
+template<typename Q, typename A> A iquery(Q& q) {
+  cout << "? " << q << "\n"; cout.flush();
+  A a; cin >> a; return a;
+}
+
+template<typename A> void ianswer(A& a) {
+  cout << "! " << a << "\n"; cout.flush();
+}
+

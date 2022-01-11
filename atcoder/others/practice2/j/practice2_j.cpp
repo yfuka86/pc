@@ -74,12 +74,8 @@ struct lazy_segtree {
 };
 //------------------------------------------------------------------------------
 
-struct S {
-  ll a;
-};
-
-struct F {
-};
+struct S { ll a; };
+struct F {};
 
 S op(S l, S r) { return S{max(l.a, r.a)}; }
 S e() { return S{-1}; }

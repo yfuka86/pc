@@ -132,7 +132,10 @@ int main()
       cin >> l >> r;
       cout << seg.prod(l, r).a << "\n";
     }
+    // rep(i, N) cout << seg.get(i).a << " ";
+    // cout << endl;
   }
+
 }
 
 

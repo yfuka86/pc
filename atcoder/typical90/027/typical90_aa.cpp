@@ -31,7 +31,15 @@ int main()
   cin.tie(nullptr);
 
   ll N; cin >> N;
-  cout << N << "\n";
+  set<string> users;
+
+  rep(i, N) {
+    string s; cin >> s;
+    if (!users.count(s)) {
+      cout << i + 1 << "\n";
+      users.insert(s);
+    }
+  }
 }
 
 

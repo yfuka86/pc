@@ -4,14 +4,14 @@ bool is_prime(long long N) {
   return true;
 }
 
-vector<int> primes_below(const int N) {
+vector<ll> primes_below(const ll N) {
   vector<bool> is_prime(N + 1, true);
-  for(int i = 2; i * i <= N; i++) {
+  for(ll i = 2; i * i <= N; i++) {
     if ((i > 2 && i % 2 == 0) || !is_prime[i])  continue;
-    for(int j = i * i; j <= N; j += i) is_prime[j] = false;
+    for(ll j = i * i; j <= N; j += i) is_prime[j] = false;
   }
-  vector<int> ret;
-  for(int i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i);
+  vector<ll> ret;
+  for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i);
   return ret;
 }
 

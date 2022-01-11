@@ -31,7 +31,38 @@ int main()
   cin.tie(nullptr);
 
   ll N; cin >> N;
-  cout << N << "\n";
+
+  ll pl = 1002;
+  vector<vl> paper(pl, vl(pl, 0));
+  vector<vl> cumsum(pl + 1, vl(pl + 1, 0));
+
+  rep(i, N) {
+    ll lx, ly, rx, ry; cin >> lx >> ly >> rx >> ry;
+    paper[lx][ly]++;
+    paper[rx][ly]--;
+    paper[lx][ry]--;
+    paper[rx][ry]++;
+  }
+  // coutmatrix(paper);
+
+  rep(i, pl) {
+    rep(j, pl) cumsum[i][j + 1] = cumsum[i][j] + paper[i][j];
+  }
+  rep(i, pl) {
+    rep(j, pl + 1) cumsum[i + 1][j] += cumsum[i][j];
+  }
+  // cout << "------------------" << endl;
+  // coutmatrix(cumsum);
+
+  map<ll, ll> area;
+  rep(i, pl + 1) {
+    rep(j, pl + 1) {
+      area[cumsum[i][j]]++;
+    }
+  }
+  rep(i, N) {
+    cout << area[i + 1] << "\n";
+  }
 }
 
 
