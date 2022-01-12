@@ -6,6 +6,7 @@
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
 #define pb push_back
+#define mp make_pair
 
 using namespace std;
 typedef long long ll; typedef long double ld;
@@ -25,13 +26,64 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+//------------------------------------------------------------------------------
+vector<vl> G, par; vl fs, ls, depth; ll cur = 0;
+void dfs(ll v, ll p, ll d) {
+  if (depth[v] != -1) return; // Already found
+  if (p != -1) { par[v].pb(p); while (true) { vl &grand_par = par[par[v].back()]; ll parsize = par[v].size() - 1; if ((ll)grand_par.size() > parsize) { par[v].pb(grand_par[parsize]); } else break; } } // LCA doubling
+
+  depth[v] = d; fs[v] = cur++;
+  for(ll next: G[v]) {
+    dfs(next, v, d + 1);
+    cur++;
+  }
+  ls[v] = cur - 1;
+};
+void dfs_init(ll n) {
+  par.resize(n); fs.resize(n); ls.resize(n); depth.resize(n); depth.assign(n, -1); cur = 0;
+  dfs(0, -1, 0); cur = 0;
+}
+
+ll lca(ll n1, ll n2) {
+  if (depth[n1] < depth[n2]) swap(n1, n2); while (depth[n1] != depth[n2]) n1 = par[n1][floor_pow2(depth[n1] - depth[n2])]; assert(depth[n1] == depth[n2]);
+  if (n1 == n2) return n1; if (par[n1][0] == par[n2][0]) return par[n1][0]; rep(c, par[n1].size()) if (par[n1][c] == par[n2][c]) return lca(par[n1][c - 1], par[n2][c - 1]); return lca(par[n1].back(), par[n2].back()); // trace back to the different parents
+}
+
+ll dist(ll n1, ll n2) { return depth[n1] + depth[n2] - 2 * depth[lca(n1, n2)]; }
+//------------------------------------------------------------------------------
+
+
 int main()
 {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N; cin >> N; G.resize(N);
+  rep(i, N - 1) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G[a].pb(b); G[b].pb(a);
+  }
+  dfs_init(N);
+
+  ll Q; cin >> Q;
+  rep(i, Q) {
+    ll K; cin >> K; vl V(K);
+    rep(j, K) { cin >> V[j]; V[j]--; }
+
+    vector<LP> vp(K);
+    rep(i, K) {
+      vp[i] = make_pair(fs[V[i]], V[i]);
+    }
+    sort(all(vp));
+
+    ll ans = 0;
+    rep(i, K - 1) {
+      ans += dist(vp[i].second, vp[i + 1].second);
+    }
+    ans += dist(vp.back().second, vp[0].second);
+
+    cout << ans / 2 << "\n";
+  }
 }
 
 

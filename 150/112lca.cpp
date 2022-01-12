@@ -43,60 +43,52 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+//------------------------------------------------------------------------------
+vector<vl> G;
+vector<vl> par;
+vl depths;
+
+void dfs(ll v, ll prev, ll depth) {
+  if (depths[v] != -1) return; // Already found
+  if (prev != -1) {
+    par[v].pb(prev);
+    while (true) {
+      vl grand_par = par[par[v].back()]; ll parsize = par[v].size() - 1;
+      if ((ll)grand_par.size() > parsize) { par[v].pb(grand_par[parsize]); } else break; }
+  }
+  depths[v] = depth; for(ll next: G[v]) dfs(next, v, depth + 1);
+};
+void dfs_init() { dfs(0, -1, 0); }
+
+ll lca(ll n1, ll n2) {
+  if (depths[n1] < depths[n2]) swap(n1, n2); while (depths[n1] != depths[n2]) n1 = par[n1][floor_pow2(depths[n1] - depths[n2])];
+  assert(depths[n1] == depths[n2]);
+  if (n1 == n2) return n1; if (par[n1][0] == par[n2][0]) return par[n1][0];
+  rep(c, par[n1].size()) if (par[n1][c] == par[n2][c]) return lca(par[n1][c - 1], par[n2][c - 1]);
+  return lca(par[n1].back(), par[n2].back()); // trace back to the different parents
+}
+//------------------------------------------------------------------------------
+
 int main()
 {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
   ll N; cin >> N;
-  vector<vl> G(N);
+  G.resize(N); par.resize(N); depths.resize(N); depths.assign(N, -1);
   rep(i, N - 1) {
     ll a, b; cin >> a >> b; a--; b--;
-    G[a].pb(b);
-    G[b].pb(a);
+    G[a].pb(b); G[b].pb(a);
   }
-  vector<vl> par(N);
-  vl depths(N, -1);
-
-  function<void(ll, ll, ll)> dfs = [&](ll v, ll prev, ll depth) -> void {
-    if (depths[v] != -1) return; // Already found
-    if (prev != -1) {
-      par[v].pb(prev);
-      while (true) {
-        vl grand_par = par[par[v].back()];
-        ll parsize = par[v].size() - 1;
-        if (grand_par.size() > parsize) { par[v].pb(grand_par[parsize]); } else break;
-      }
-    }
-    depths[v] = depth;
-    for(ll next: G[v]) {
-      dfs(next, v, depth + 1);
-    }
-  };
-  dfs(0, -1, 0);
+  dfs_init();
 
   // Doubling dfs completed
 
   ll Q; cin >> Q;
   rep(i, Q) {
     ll a, b; cin >> a >> b; a--; b--;
-    ll n1 = a, n2 = b;
-    if (depths[n1] < depths[n2]) swap(n1, n2);
-    // To make depths be the same
-    while (depths[n1] != depths[n2]) {
-      n1 = par[n1][floor_pow2(depths[n1] - depths[n2])];
-    }
-
-    ll lca = n1;
-    while (n1 != n2) {
-      if (par[n1][0] == par[n2][0]) { lca = par[n1][0]; break; }
-      // trace back to the different parents;
-      ll next1, next2;
-      rep(c, par[n1].size()) if (par[n1][c] != par[n2][c]) { next1 = par[n1][c]; next2 = par[n2][c]; }
-      n1 = next1; n2 = next2;
-    }
-
-    ll ans = depths[a] - depths[lca] + depths[b] - depths[lca] + 1;
+    ll l = lca(a, b);
+    ll ans = depths[a] - depths[l] + depths[b] - depths[l] + 1;
     cout << ans << "\n";
   }
 }

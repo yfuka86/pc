@@ -25,6 +25,18 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+struct Point {
+  ll x, y;
+  // 終点ソート用
+  bool operator<(const struct Point& other) const {
+    return y * (other.x - 1) < (x - 1) * other.y;
+  }
+  // 終点と始点の比較
+  bool operator<=(const struct Point& other) const {
+    return y * other.x <= (other.y - 1) * (x - 1);
+  }
+};
+
 int main()
 {
   ios::sync_with_stdio(false);
@@ -32,18 +44,19 @@ int main()
 
   ll N; cin >> N;
 
-  map<ld, ld> angle;
+  vector<Point> angle(N);
   rep(i, N) {
-    ld x, y; cin >> x >> y;
-    angle[y / (x - 1)] = (y - 1)/ x;
+    ll x, y; cin >> x >> y;
+    angle[i] = {x, y};
   }
+  sort(all(angle));
 
-  ll ans = 0;
-  ld now = 0;
-  for(auto kv: angle) {
-    if (now <= kv.second) {
+  ll ans = 1;
+  Point now = angle[0];
+  for(auto a: angle) {
+    if (now <= a) {
       ans++;
-      now = kv.first;
+      now = a;
     }
   }
 

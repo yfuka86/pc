@@ -92,28 +92,32 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  string s = "missisippi";
+  // string s = "missisippi";
 
-  vector<int> sa = suffix_array(s);
+  // vector<int> sa = suffix_array(s);
 
-  vector<string> answer = {
-      "i",
-      "ippi",
-      "isippi",
-      "issisippi",
-      "missisippi",
-      "pi",
-      "ppi",
-      "sippi",
-      "sisippi",
-      "ssisippi",
-  };
+  // vector<string> answer = {
+  //     "i",
+  //     "ippi",
+  //     "isippi",
+  //     "issisippi",
+  //     "missisippi",
+  //     "pi",
+  //     "ppi",
+  //     "sippi",
+  //     "sisippi",
+  //     "ssisippi",
+  // };
 
-  assert(sa.size() == answer.size());
-  for (int i = 0; i < int(sa.size()); i++) {
-      assert(s.substr(sa[i]) == answer[i]);
-  }
-  coutarray(sa);
+  // assert(sa.size() == answer.size());
+  // for (int i = 0; i < int(sa.size()); i++) {
+  //     assert(s.substr(sa[i]) == answer[i]);
+  // }
+  // coutarray(sa);
+
+  ll a = 0;
+  ll c = a++;
+  cout << c << endl;
 }
 
 

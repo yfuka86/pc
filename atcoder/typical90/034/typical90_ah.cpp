@@ -30,8 +30,29 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N, K; cin >> N >> K;
+  vl a(N); rep(i, N) cin >> a[i];
+
+  queue<ll> selected;
+  map<ll, ll> lastIndex;
+
+  ll ans = 0;
+  rep(i, N) {
+    if (lastIndex.size() == K && lastIndex.count(a[i]) == 0) {
+      while(lastIndex.size() == K) {
+        ll t = selected.front();
+        if (lastIndex[t] == i - selected.size()) lastIndex.erase(t);
+        selected.pop();
+      }
+    }
+
+    lastIndex[a[i]] = i;
+    selected.push(a[i]);
+    chmax(ans, (ll)selected.size());
+    // cout << i << ":" << ans << endl;
+  }
+
+  cout << ans << "\n";
 }
 
 

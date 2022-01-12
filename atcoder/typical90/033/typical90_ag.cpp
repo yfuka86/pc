@@ -30,8 +30,9 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll H, W; cin >> H >> W;
+  if (H == 1 || W == 1) { cout << max(H, W) << "\n"; return 0; }
+  cout << ((H + 1) / 2) * ((W + 1) / 2) << "\n";
 }
 
 

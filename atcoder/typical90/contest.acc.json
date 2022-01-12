@@ -394,61 +394,111 @@
       "id": "typical90_aj",
       "label": "036",
       "title": "Max Manhattan Distance（★5）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_aj"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_aj",
+      "directory": {
+        "path": "036",
+        "testdir": "test",
+        "submit": "typical90_aj.cpp"
+      }
     },
     {
       "id": "typical90_ak",
       "label": "037",
       "title": "Don't Leave the Spice（★5）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ak"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ak",
+      "directory": {
+        "path": "037",
+        "testdir": "test",
+        "submit": "typical90_ak.cpp"
+      }
     },
     {
       "id": "typical90_al",
       "label": "038",
       "title": "Large LCM（★3）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_al"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_al",
+      "directory": {
+        "path": "038",
+        "testdir": "test",
+        "submit": "typical90_al.cpp"
+      }
     },
     {
       "id": "typical90_am",
       "label": "039",
       "title": "Tree Distance（★5）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_am"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_am",
+      "directory": {
+        "path": "039",
+        "testdir": "test",
+        "submit": "typical90_am.cpp"
+      }
     },
     {
       "id": "typical90_an",
       "label": "040",
       "title": "Get More Money（★7）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_an"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_an",
+      "directory": {
+        "path": "040",
+        "testdir": "test",
+        "submit": "typical90_an.cpp"
+      }
     },
     {
       "id": "typical90_ao",
       "label": "041",
       "title": "Piles in AtCoder Farm（★7）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ao"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ao",
+      "directory": {
+        "path": "041",
+        "testdir": "test",
+        "submit": "typical90_ao.cpp"
+      }
     },
     {
       "id": "typical90_ap",
       "label": "042",
       "title": "Multiple of 9（★4）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ap"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ap",
+      "directory": {
+        "path": "042",
+        "testdir": "test",
+        "submit": "typical90_ap.cpp"
+      }
     },
     {
       "id": "typical90_aq",
       "label": "043",
       "title": "Maze Challenge with Lack of Sleep（★4）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_aq"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_aq",
+      "directory": {
+        "path": "043",
+        "testdir": "test",
+        "submit": "typical90_aq.cpp"
+      }
     },
     {
       "id": "typical90_ar",
       "label": "044",
       "title": "Shift and Swapping（★3）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ar"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_ar",
+      "directory": {
+        "path": "044",
+        "testdir": "test",
+        "submit": "typical90_ar.cpp"
+      }
     },
     {
       "id": "typical90_as",
       "label": "045",
       "title": "Simple Grouping（★6）",
-      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_as"
+      "url": "https://atcoder.jp/contests/typical90/tasks/typical90_as",
+      "directory": {
+        "path": "045",
+        "testdir": "test",
+        "submit": "typical90_as.cpp"
+      }
     },
     {
       "id": "typical90_at",
