@@ -12,8 +12,8 @@ using namespace std;
 typedef long long ll; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP;
 typedef vector<int> vi; typedef vector<ll> vl; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max() / 3;
-const ll LINF = LLONG_MAX / 3;
+const int INF = numeric_limits<int>::max();
+const ll LINF = LLONG_MAX;
 const double DINF = numeric_limits<double>::infinity();
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }

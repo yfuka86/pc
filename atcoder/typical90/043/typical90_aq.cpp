@@ -31,8 +31,48 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll H, W; cin >> H >> W;
+  LP S, T; cin >> S.first >> S.second >> T.first >> T.second;
+  S.first--; S.second--; T.first--; T.second--;
+  vector<vb> maze(H, vb(W, false));
+  rep(i, H) {
+    string s; cin >> s;
+    rep(j, W) if (s[j] == '.') maze[i][j] = true;
+  }
+
+  // (costsofar, direction) (x, y)
+  priority_queue<pair<LP, LP>, vector<pair<LP, LP>>, greater<pair<LP, LP>>> que;
+  vector<vl> cost(H, vl(W, LINF));
+
+  que.push(mp(mp(0, -1), S));
+
+  vector<vl> dxdy = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+  while(!que.empty()) {
+    auto data = que.top(); que.pop();
+    auto [c, dir] = data.first;
+    auto [x, y] = data.second;
+    // cout << c << " " << dir << " " << x << ":" << y << endl;
+    if (x < 0 || x >= H || y < 0 || y >= W || !maze[x][y] || cost[x][y] < c) continue;
+
+    cost[x][y] = c;
+    // cout << c << endl;
+    rep(i, 4) {
+      if (i == 0 && dir == 1) continue;
+      if (i == 1 && dir == 0) continue;
+      if (i == 2 && dir == 3) continue;
+      if (i == 3 && dir == 2) continue;
+
+      LP next = mp(x + dxdy[i][0], y + dxdy[i][1]);
+      if (i == dir) {
+        que.push(mp(mp(c, i), next));
+      } else {
+        que.push(mp(mp(c + 1, i), next));
+      }
+    }
+  }
+
+  cout << cost[T.first][T.second] - 1 << "\n";
 }
 
 

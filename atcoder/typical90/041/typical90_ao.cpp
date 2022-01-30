@@ -32,6 +32,13 @@ int main()
   cin.tie(nullptr);
 
   ll N; cin >> N;
+  vector<LP> points(N);
+
+  rep(i, N) {
+    ll x, y; cin >> x; cin >> y;
+
+  }
+
   cout << N << "\n";
 }
 

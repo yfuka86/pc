@@ -26,13 +26,51 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+//for tree only----------------------------------------------------------------
+vector<vl> G, par; vl fs, ls, depth;
+void dfs(ll v, ll p, ll d, ll &cur) {
+  if (depth[v] != -1) return; // Already found
+  if (p != -1) { par[v].pb(p); while (true) { vl &grand_par = par[par[v].back()]; ll parsize = par[v].size() - 1; if ((ll)grand_par.size() > parsize) { par[v].pb(grand_par[parsize]); } else break; } } // LCA doubling
+
+  depth[v] = d; fs[v] = cur++;
+  for(ll next: G[v]) {
+    if (next == p) continue;
+    dfs(next, v, d + 1, cur);
+    cur++;
+  }
+  ls[v] = cur - 1;
+};
+void dfs_init(ll n) { par.resize(n); fs.resize(n); ls.resize(n); depth.resize(n); depth.assign(n, -1); ll cur = 0; dfs(0, -1, 0, cur); }
+ll lca(ll n1, ll n2) {
+  if (depth[n1] < depth[n2]) swap(n1, n2); while (depth[n1] != depth[n2]) n1 = par[n1][floor_pow2(depth[n1] - depth[n2])]; assert(depth[n1] == depth[n2]);
+  if (n1 == n2) return n1; if (par[n1][0] == par[n2][0]) return par[n1][0]; rep(c, par[n1].size()) if (par[n1][c] == par[n2][c]) return lca(par[n1][c - 1], par[n2][c - 1]); return lca(par[n1].back(), par[n2].back()); // trace back to the different parents
+}
+ll dist(ll n1, ll n2) { return depth[n1] + depth[n2] - 2 * depth[lca(n1, n2)]; }
+ll edges_of_part(ll v) { return (ls[v] - fs[v]) / 2; }
+//------------------------------------------------------------------------------
+
 int main()
 {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
   ll N; cin >> N;
-  cout << N << "\n";
+  G.resize(N);
+  rep(i, N - 1) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G[a].pb(b); G[b].pb(a);
+  }
+  dfs_init(N);
+
+  ll ans = 0;
+  rep2(i, 1, N) {
+    // その点を含む部分木の頂点数
+    ll part = (ls[i] - fs[i]) / 2 + 1;
+    // その点から頂点0へ遡る辺の寄与計算
+    ans += (N - part) * part;
+  }
+
+  cout << ans << "\n";
 }
 
 

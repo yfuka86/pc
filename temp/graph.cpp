@@ -32,28 +32,25 @@ vector<ll> dijkstra(vector<vector<Edge>>& G, ll start) {
 
 // 重みなしグラフにおけるオイラーツアーとLCA doublingの合わせ↓
 // TODO sparse table(RMQ)
-//------------------------------------------------------------------------------
-vector<vl> G, par; vl fs, ls, depth; ll cur = 0;
-void dfs(ll v, ll p, ll d) {
+//for tree only----------------------------------------------------------------
+vector<vl> G, par; vl fs, ls, depth;
+void dfs(ll v, ll p, ll d, ll &cur) {
   if (depth[v] != -1) return; // Already found
   if (p != -1) { par[v].pb(p); while (true) { vl &grand_par = par[par[v].back()]; ll parsize = par[v].size() - 1; if ((ll)grand_par.size() > parsize) { par[v].pb(grand_par[parsize]); } else break; } } // LCA doubling
 
   depth[v] = d; fs[v] = cur++;
   for(ll next: G[v]) {
-    dfs(next, v, d + 1);
+    if (next == p) continue;
+    dfs(next, v, d + 1, cur);
     cur++;
   }
   ls[v] = cur - 1;
 };
-void dfs_init(ll n) {
-  par.resize(n); fs.resize(n); ls.resize(n); depth.resize(n); depth.assign(n, -1); cur = 0;
-  dfs(0, -1, 0); cur = 0;
+void dfs_init(ll n) { par.resize(n); fs.resize(n); ls.resize(n); depth.resize(n); depth.assign(n, -1); ll cur = 0; dfs(0, -1, 0, cur); }
+ll lca(ll v1, ll v2) {
+  if (depth[v1] < depth[v2]) swap(v1, v2); while (depth[v1] != depth[v2]) v1 = par[v1][floor_pow2(depth[v1] - depth[v2])]; assert(depth[v1] == depth[v2]);
+  if (v1 == v2) return v1; if (par[v1][0] == par[v2][0]) return par[v1][0]; rep(c, par[v1].size()) if (par[v1][c] == par[v2][c]) return lca(par[v1][c - 1], par[v2][c - 1]); return lca(par[v1].back(), par[v2].back()); // trace back to the different parents
 }
-
-ll lca(ll n1, ll n2) {
-  if (depth[n1] < depth[n2]) swap(n1, n2); while (depth[n1] != depth[n2]) n1 = par[n1][floor_pow2(depth[n1] - depth[n2])]; assert(depth[n1] == depth[n2]);
-  if (n1 == n2) return n1; if (par[n1][0] == par[n2][0]) return par[n1][0]; rep(c, par[n1].size()) if (par[n1][c] == par[n2][c]) return lca(par[n1][c - 1], par[n2][c - 1]); return lca(par[n1].back(), par[n2].back()); // trace back to the different parents
-}
-
-ll dist(ll n1, ll n2) return depth[n1] + depth[n2] - 2 * depth[lca(n1, n2)];
+ll dist(ll v1, ll v2) { return depth[v1] + depth[v2] - 2 * depth[lca(v1, v2)]; }
+ll edges_of_part(ll v) { return (ls[v] - fs[v]) / 2; }
 //------------------------------------------------------------------------------

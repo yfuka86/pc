@@ -1,5 +1,6 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
+#include <atcoder/maxflow>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
@@ -26,13 +27,33 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+using namespace atcoder;
+
 int main()
 {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N, W; cin >> N >> W;
+
+  mf_graph<ll> mf(N + 2);
+
+  ll maxcost = 1e7, s = N, g = N + 1;
+  rep(i, N) {
+    ll a; cin >> a;
+    mf.add_edge(s, i, maxcost + W - a);
+    mf.add_edge(i, g, maxcost);
+  }
+
+  rep(i, N) {
+    ll k; cin >> k;
+    rep(j, k) {
+      ll c; cin >> c; c--;
+      mf.add_edge(i, c, LINF);
+    }
+  }
+
+  cout << N * maxcost - mf.flow(s, g) << "\n";
 }
 
 

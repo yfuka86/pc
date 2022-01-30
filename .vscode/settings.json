@@ -63,7 +63,11 @@
     "__functional_03": "cpp",
     "climits": "cpp",
     "ranges": "cpp",
-    "span": "cpp"
+    "span": "cpp",
+    "__bit_reference": "cpp",
+    "filesystem": "cpp",
+    "ios": "cpp",
+    "__nullptr": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",

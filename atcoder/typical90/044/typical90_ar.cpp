@@ -31,8 +31,24 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N, Q; cin >> N >> Q;
+  vl a(N);
+  rep(i, N) cin >> a[i];
+
+  ll offset = 0;
+
+  rep(i, Q) {
+    ll t, x, y; cin >> t >> x >> y; x--; y--;
+    ll xt = ((x - offset % N) < 0 ? N + (x - offset % N) : (x - offset % N));
+    ll yt = ((y - offset % N) < 0 ? N + (y - offset % N) : (y - offset % N));
+    if (t == 1) {
+      swap(a[xt], a[yt]);
+    } else if (t == 2) {
+      offset += 1;
+    } else {
+      cout << a[xt] << "\n";
+    }
+  }
 }
 
 

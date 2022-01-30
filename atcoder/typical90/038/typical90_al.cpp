@@ -31,8 +31,14 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll A, B; cin >> A >> B;
+
+  ll g = gcd(A, B);
+  // cout << g << endl;
+  ll pow18 = 1000000000000000000ll;
+  if (B > pow18 / (A / g)) { cout << "Large" << "\n"; return 0; }
+  ll ans = (A / g) * B;
+  cout << ans << "\n";
 }
 
 

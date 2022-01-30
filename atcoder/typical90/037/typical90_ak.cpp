@@ -1,5 +1,6 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
+#include <atcoder/lazysegtree>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
@@ -26,6 +27,16 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+using namespace atcoder;
+using S = ll;
+using F = ll;
+
+S op(S l, S r) { return max(l, r); }
+S e() { return -1ll; }
+S mapping(F l, S r) { if (l == -1) return r; else return max(l, r); }
+F composition(F l, F r) { return max(l, r); }
+F id() { return -1; }
+
 int main()
 {
   ios::sync_with_stdio(false);
@@ -33,23 +44,43 @@ int main()
 
   ll W, N; cin >> W >> N;
   vl L(N), R(N), V(N); rep(i, N) { cin >> L[i] >> R[i] >> V[i]; }
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(W + 1);
+  seg.apply(0, 0);
 
-  vl dp(W + 1, -1); dp[0] = 0;
   rep(i, N) {
-    vector<LP> dptemp;
-    rep2(j, L[i], R[i] + 1) {
-      rep(k, W + 1) {
-        if (k + j > W) break;
-        if (dp[k] == -1) continue;
-        dptemp.pb(mp(k + j, dp[k] + V[i]));
+    vl dptemp(W + 1, -1);
+
+    rep(k, W + 1) {
+      if (k - L[i] < 0) continue;
+      ll possiblemax = seg.prod(max(0ll, k - R[i]), k - L[i] + 1);
+      if (possiblemax == -1) continue;
+      dptemp[k] = possiblemax + V[i];
+    }
+
+    for(ll i = 0; i <= W; i++) {
+      if (dptemp[i] == -1) continue;
+      ll temp = i;
+      while(i <= W && dptemp[i] == dptemp[i + 1]) {
+        i++;
       }
+      i++;
+      // cout << temp << ":" << i << endl;
+      seg.apply(temp, i, dptemp[temp]);
+      i--;
     }
-    rep(j, dptemp.size()) {
-      chmax(dp[dptemp[j].first], dptemp[j].second);
-    }
+
+    // for (auto [i, value]: dptemp) {
+    //   if (seg.get(i) < value) seg.apply(i, value);
+    // }
+    // if (W == 100) {
+    //   rep(i, W + 1) {
+    //     cout << seg.get(i) << " ";
+    //   }
+    //   cout << endl;
+    // }
   }
 
-  cout << dp[W] << "\n";
+  cout << seg.get(W) << "\n";
 }
 
 

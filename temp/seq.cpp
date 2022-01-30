@@ -1,6 +1,6 @@
-int get_lis(vector<int> &a) {
-	int N = a.size(); vector<int> dp(N, INF);
-	for (int i = 0; i < N; ++i) *upper_bound(dp.begin(), dp.begin() + N, a[i]) = a[i];
+ll get_lis(vector<ll> &a) {
+	ll N = a.size(); vector<ll> dp(N, INF);
+	for (ll i = 0; i < N; ++i) *upper_bound(dp.begin(), dp.begin() + N, a[i]) = a[i];
 	return lower_bound(dp.begin(), dp.begin() + N, INF) - dp.begin();
 }
 
@@ -22,27 +22,23 @@ int lcs(string &s1, string &s2){
   return rec(s1.size(), s2.size());
 }
 
-// Reference:
-// D. E. Knuth, J. H. Morris, V. R. Pratt
-// Fast pattern matching in strings
-template <class T> std::vector<int> kmp(const std::vector<T>& s) {
-  int n = int(s.size());
-  if (n == 0) return {};
-  std::vector<int> pi(n);
-  pi[0] = -1;
-  for (int i = 1, j = -1; i < n; i++) {
-    while (j >= 0 && s[i] != s[j+1]) j = pi[j];
-    if (s[i] == s[j+1]) ++j;
-    pi[i] = j;
-  }
-  return pi;
+// Rolling hash
+const ll P_B = 17, P_M = 1e9 + 7;
+vl bf(1e6 + 10, -1);
+ll b_fact(ll p) {
+  if (bf[p] == -1) { bf[0] = 1; rep(i, 1e6 + 9) bf[i + 1] = bf[i] * P_B % P_M; }
+  return bf[p];
 }
 
-std::vector<int> kmp(const std::string& s) {
-  int n = int(s.size());
-  std::vector<int> s2(n);
-  for (int i = 0; i < n; i++) {
-    s2[i] = s[i];
-  }
-  return kmp(s2);
+vl s_hash(vl& s) {
+  vl h(s.size() + 1, 0);
+  rep(i, s.size()) { h[i + 1] = (P_B * h[i] + s[i]) % P_M; }
+  return h;
 }
+
+ll substr_hash(vl& h, ll l, ll r) {
+  assert(0 <= l && l < r && r <= h.size());
+  ll ret = h[r] - (b_fact(r - l) * h[l] % P_M); if (ret < 0) ret += P_M;
+  return ret;
+}
+//
