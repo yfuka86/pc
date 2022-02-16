@@ -31,8 +31,43 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N, K; cin >> N >> K;
+
+  vl result;
+  vl used(100000, 0);
+  result.pb(N);
+  used[N] = 1;
+
+  ll cur = N;
+  ll point = LINF;
+  while (true) {
+    ll temp = cur, sum = 0;
+    rep(i, 5) {
+      sum += temp % 10;
+      temp /= 10;
+    }
+    ll next = (cur + sum) % 100000;
+
+    if (used[next]) {
+      result.pb(next);
+      point = next;
+      break;
+    } else {
+      used[next] = 1;
+      result.pb(next);
+    }
+    cur = next;
+  }
+
+  ll loopstart = find(all(result), point) - result.begin();
+  ll loopsize = result.size() - loopstart - 1;
+
+  if (K < result.size()) {
+    cout << result[K] << "\n";
+  } else {
+    ll rem = K - (result.size() - 1);
+    cout << result[rem % loopsize + loopstart] << "\n";
+  }
 }
 
 

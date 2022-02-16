@@ -31,8 +31,23 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N, P, Q; cin >> N >> P >> Q;
+  vl a(N); rep(i, N) cin >> a[i];
+
+  ll ans = 0;
+  rep(i, N) {
+    rep2(j, i + 1, N) {
+      rep2(k, j + 1, N) {
+        rep2(l, k + 1, N) {
+          rep2(m, l + 1, N) {
+            if (a[i] * a[j] % P * a[k] % P * a[l] % P * a[m] % P == Q) ans++;
+          }
+        }
+      }
+    }
+  }
+
+  cout << ans << "\n";
 }
 
 

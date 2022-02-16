@@ -36,7 +36,7 @@ vl s_hash(vl& s) {
   return h;
 }
 
-ll substr_hash(vl& h, ll l, ll r) {
+ll sub_hash(vl& h, ll l, ll r) {
   assert(0 <= l && l < r && r <= h.size());
   ll ret = h[r] - (b_fact(r - l) * h[l] % P_M); if (ret < 0) ret += P_M;
   return ret;

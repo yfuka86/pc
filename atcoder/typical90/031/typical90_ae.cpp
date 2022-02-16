@@ -26,13 +26,39 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+vector<vl> grundy(51, vl(1500, -1));
+ll calcg(ll w, ll b) {
+  if (grundy[w][b] != -1) return grundy[w][b];
+  if (w == 0 && b == 1) return grundy[w][b] = 0;
+
+  vb mex(1500, 0);
+  if (w >= 1) mex[calcg(w - 1, b + w)] = 1;
+  rep2(i, 1, b / 2 + 1) {
+    mex[calcg(w, b - i)] = 1;
+  }
+  rep(i, 1500) if (mex[i] == 0) return grundy[w][b] = i;
+}
+
 int main()
 {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  rep(w, 51) rep(b, 51) calcg(w, b);
+
+  ll n; cin >> n;
+  vl w(n), b(n); rep(i, n) cin >> w[i]; rep(i, n) cin >> b[i];
+
+  ll gans = 0;
+  rep(i, n) {
+    gans ^= grundy[w[i]][b[i]];
+  }
+
+  if (gans == 0) {
+    cout << "Second" << "\n";
+  } else {
+    cout << "First" << "\n";
+  }
 }
 
 

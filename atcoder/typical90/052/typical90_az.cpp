@@ -25,14 +25,35 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cout << (a >> d) & 1; cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-
+//------------------------------------------------------------------------------
+const ll mod = 1000000007;
+struct modint { int n; modint() :n(0) { ; } modint(ll m) { if (m < 0 || mod <= m) { m %= mod; if (m < 0)m += mod; } n = m; } operator int() { return n; } };
+typedef vector<modint> vmi;
+bool operator==(modint a, modint b) { return a.n == b.n; }
+modint operator+=(modint& a, modint b) { a.n += b.n; if (a.n >= mod)a.n -= mod; return a; }
+modint operator-=(modint& a, modint b) { a.n -= b.n; if (a.n < 0)a.n += mod; return a; }
+modint operator*=(modint& a, modint b) { a.n = ((ll)a.n * b.n) % mod; return a; }
+modint operator+(modint a, modint b) { return a += b; }
+modint operator-(modint a, modint b) { return a -= b; }
+modint operator*(modint a, modint b) { return a *= b; }
+modint operator^(modint a, ll n) { if (n == 0) return modint(1); modint res = (a * a) ^ (n / 2); if (n % 2) res = res * a; return res; }
+ll inv(ll a, ll p) { return (a == 1 ? 1 : (1 - p * inv(p % a, a)) / a + p); }
+modint operator/(modint a, modint b) { return a * modint(inv(b, mod)); }
+modint operator/=(modint& a, modint b) { a = a / b; return a; }
+//------------------------------------------------------------------------------
 int main()
 {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
   ll N; cin >> N;
-  cout << N << "\n";
+  vector<vl> a(N, vl(6, 0));
+  rep(i, N) rep(j, 6) cin >> a[i][j];
+
+  modint ans = modint(1);
+  rep(i, N) ans *= modint(accumulate(all(a[i]), 0LL));
+
+  cout << ans << "\n";
 }
 
 

@@ -63,3 +63,9 @@ template<typename T> vector<vector<T>> m_product(vector<vector<T>>& l, vector<ve
     for(int j = 0; j < r[0].size(); j++) for(int k = 0; k < l[0].size(); k++) { assert(r[k].size() == r[0].size()); ans[i][j] += l[i][k] * r[k][j]; }
   }
   return ans; }
+
+ll mex(vl& v) {
+  set<ll> S; for(ll n: v) S.insert(n);
+  ll ret = 0; while (S.find(ret) != S.end()) ret++;
+  return ret;
+}

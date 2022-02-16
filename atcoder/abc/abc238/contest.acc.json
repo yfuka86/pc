@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc238",
+    "title": "Monoxer Programming Contest 2022（AtCoder Beginner Contest 238）",
+    "url": "https://atcoder.jp/contests/abc238"
+  },
+  "tasks": [
+    {
+      "id": "abc238_a",
+      "label": "A",
+      "title": "Exponential or Quadratic",
+      "url": "https://atcoder.jp/contests/abc238/tasks/abc238_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc238_a.cpp"
+      }
+    },
+    {
+      "id": "abc238_b",
+      "label": "B",
+      "title": "Pizza",
+      "url": "https://atcoder.jp/contests/abc238/tasks/abc238_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc238_b.cpp"
+      }
+    },
+    {
+      "id": "abc238_c",
+      "label": "C",
+      "title": "digitnum",
+      "url": "https://atcoder.jp/contests/abc238/tasks/abc238_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc238_c.cpp"
+      }
+    },
+    {
+      "id": "abc238_d",
+      "label": "D",
+      "title": "AND and SUM",
+      "url": "https://atcoder.jp/contests/abc238/tasks/abc238_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc238_d.cpp"
+      }
+    },
+    {
+      "id": "abc238_e",
+      "label": "E",
+      "title": "Range Sums",
+      "url": "https://atcoder.jp/contests/abc238/tasks/abc238_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc238_e.cpp"
+      }
+    },
+    {
+      "id": "abc238_f",
+      "label": "F",
+      "title": "Two Exams",
+      "url": "https://atcoder.jp/contests/abc238/tasks/abc238_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc238_f.cpp"
+      }
+    },
+    {
+      "id": "abc238_g",
+      "label": "G",
+      "title": "Cubic?",
+      "url": "https://atcoder.jp/contests/abc238/tasks/abc238_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc238_g.cpp"
+      }
+    },
+    {
+      "id": "abc238_h",
+      "label": "Ex",
+      "title": "Removing People",
+      "url": "https://atcoder.jp/contests/abc238/tasks/abc238_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc238_h.cpp"
+      }
+    }
+  ]
+}

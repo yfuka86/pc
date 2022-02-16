@@ -26,13 +26,71 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-
-  ll N; cin >> N;
-  cout << N << "\n";
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "?") {
+  cout << str <<  " " << q << "\n"; cout.flush();
+  A a; cin >> a; return a;
 }
 
+template<typename A> void ianswer(A a) {
+  cout << "! " << a << "\n"; cout.flush();
+}
+
+void solve() {
+  ll n; cin >> n;
+
+  // if (n <= 15) {
+  //   ll ans = 0;
+  //   rep(i, n) {
+  //     chmax(ans, iquery(i + 1));
+  //   }
+  //   ianswer(ans);
+  //   return;
+  // }
+
+  //-------------------------------------------------------------------------------
+  vl fib = { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597 };
+  ll mi = 0, ma = -1;
+  for(ll f: fib) if (f >= n) { ma = f; break; }
+
+  vl memo(n + 1, -1);
+  auto query = [&](ll a) -> ll {
+    if (a > n || a == 0) return -1;
+    if (memo[a] != -1) return memo[a]; else return memo[a] = iquery(a);
+  };
+  while (ma - 2 > mi) {
+    ll idx = -1;
+    rep(i, fib.size()) {
+      if (fib[i] == ma - mi) { idx = i; break; }
+    }
+    assert(idx >= 2);
+
+    ll d = (ma - mi), smid = mi + fib[idx - 2], bmid = mi + fib[idx - 1];
+    ll sm = query(smid);
+    ll bi = query(bmid);
+    if (sm == bi) {
+      mi = smid; ma = bmid;
+    } else if (sm > bi) {
+      ma = bmid;
+    } else {
+      mi = smid;
+    }
+  }
+
+  ll ans = 0;
+
+  rep2(i, mi, ma + 1) chmax(ans, query(i));
+  ianswer(ans);
+}
+
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t;
+  cin >> t;
+  while (t--) {
+    solve();
+  }
+}
 

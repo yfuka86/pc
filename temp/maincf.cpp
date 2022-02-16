@@ -41,12 +41,12 @@ signed main() {
   }
 }
 
-template<typename Q, typename A> A iquery(Q& q) {
-  cout << "? " << q << "\n"; cout.flush();
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "?") {
+  cout << str <<  " " << q << "\n"; cout.flush();
   A a; cin >> a; return a;
 }
 
-template<typename A> void ianswer(A& a) {
+template<typename A> void ianswer(A a) {
   cout << "! " << a << "\n"; cout.flush();
 }
-
