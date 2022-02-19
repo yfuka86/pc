@@ -1,3 +1,4 @@
+// <= ならupper_bound、< ならlower_boundにする必要がある
 ll get_lis(vector<ll> &a) {
 	ll N = a.size(); vector<ll> dp(N, INF);
 	for (ll i = 0; i < N; ++i) *upper_bound(dp.begin(), dp.begin() + N, a[i]) = a[i];

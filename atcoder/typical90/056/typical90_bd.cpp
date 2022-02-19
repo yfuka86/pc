@@ -31,8 +31,46 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N, S; cin >> N >> S;
+
+  vl a(N), b(N);
+  rep(i, N) {
+    cin >> a[i] >> b[i];
+  }
+
+  vector<vector<vl>> dp(N + 1, vector<vl>(S + 1, vl(2, 0)));
+  dp[0][0][0] = 1;
+  dp[0][0][1] = 1;
+  rep(i, N) {
+    rep_r(j, S) {
+      if (dp[i][j][0] || dp[i][j][1]) {
+        if (j + a[i] <= S) dp[i + 1][j + a[i]][0] = 1;
+        if (j + b[i] <= S) dp[i + 1][j + b[i]][1] = 1;
+      }
+    }
+  }
+
+  // coutmatrix(dp);
+
+  if (dp[N][S][0] || dp[N][S][1]) {
+    string ans = "";
+
+    ll cur = S;
+    rep_r(i, N) {
+      // cout << cur << endl;
+      rep(j, 2) {
+        if (dp[i + 1][cur][j]) {
+          ans.pb(j == 0 ? 'A' : 'B');
+          cur -= (j == 0 ? a[i] : b[i]);
+          break;
+        }
+      }
+    }
+    reverse(all(ans));
+    cout << ans << "\n";
+  } else {
+    cout << "Impossible" << "\n";
+  }
 }
 
 

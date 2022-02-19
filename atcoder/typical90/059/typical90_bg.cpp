@@ -9,7 +9,7 @@
 #define mp make_pair
 
 using namespace std;
-typedef long long ll; typedef long double ld;
+typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP;
 typedef vector<int> vi; typedef vector<ll> vl; typedef vector<bool> vb; typedef vector<string> vs;
 const int INF = numeric_limits<int>::max();
@@ -31,8 +31,52 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll N, M, Q; cin >> N >> M >> Q;
+
+  vector<vl> G(N);
+  // x < y の性質ゆえトポロジカルソート不必要
+  rep(i, M) {
+    ll x, y; cin >> x >> y; x--; y--;
+    G[y].pb(x);
+  }
+
+  vector<LP> q(Q);
+  rep(i, Q) {
+    ll a, b; cin >> a >> b; a--; b--;
+    q[i] = mp(a, b);
+  }
+
+  auto calc = [&](vector<ull>& dp) -> void{
+    rep(i, N) {
+      for (ll from: G[i]) {
+        dp[i] |= dp[from];
+      }
+    }
+  };
+
+  // rep(i, Q) {
+  //   vl dp(N, 0);
+  //   dp[q[i].first] = 1;
+  //   calc(dp);
+  //   if (dp[q[i].second] == 1) cout << "Yes" << "\n"; else cout << "No" << "\n";
+  // }
+
+  ll cur = 0;
+  while(cur * 64 < Q) {
+    vector<ull> dp(N, 0);
+    rep(i, 64) {
+      if (cur * 64 + i >= Q) break;
+      LP p = q[cur * 64 + i];
+      dp[p.first] |= (1ULL << i);
+    }
+    calc(dp);
+    rep(i, 64) {
+      if (cur * 64 + i >= Q) break;
+      LP p = q[cur * 64 + i];
+      if ((dp[p.second] >> i) & 1) cout << "Yes" << "\n"; else cout << "No" << "\n";
+    }
+    cur++;
+  }
 }
 
 

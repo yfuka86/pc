@@ -21,14 +21,22 @@ vector<ll> dijkstra(vector<vector<Edge>>& G, ll start) {
   return costs;
 }
 
-  // ll N, M;
-  // cin >> N >> M;
-  // vector<vector<Edge>> G(N);
-  // rep(i, M) {
-  //   ll a, b, c; cin >> a >> b >> c; a--; b--;
-  //   G[a].pb({b, c});
-  //   G[b].pb({a, c});
-  // }
+vl topo_sort(vector<vl> G, vl &indegrees) {
+  // Gは無くなるのでコピー
+  ll n = G.size(); vl ret; queue<ll> que;
+  rep(i, n) if (indegrees[i] == 0) que.push(i);
+
+  while (!que.empty()) {
+    ll v = que.front(); que.pop();
+    ret.pb(v);
+    for(ll next: G[v]) {
+      indegrees[next]--;
+      if (indegrees[next] == 0) que.push(next);
+    }
+    G[v].clear();
+  }
+  if (accumulate(all(indegrees), 0LL) != 0) return {}; else return ret;
+}
 
 // 重みなしグラフにおけるオイラーツアーとLCA doublingの合わせ↓
 // TODO sparse table(RMQ)

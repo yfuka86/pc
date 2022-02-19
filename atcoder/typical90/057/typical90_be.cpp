@@ -31,7 +31,19 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
+  ll N, M; cin >> N >> M;
+
+  vector<vl> ope(M);
+
+  rep(i, N) {
+    ll t; cin >> t;
+    rep(j, t) {
+      ll a; cin >> a; a--; ope[a].pb(i);
+    }
+  }
+
+
+
   cout << N << "\n";
 }
 
