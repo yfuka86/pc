@@ -26,41 +26,43 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-vl dx = { -1, 1, 0, 0 };
-vl dy = { 0, 0, -1, 1 };
+vector<vl> G, par; vl fs, ls, depth;
+void dfs(ll v, ll p, ll d, ll &cur) {
+  if (depth[v] != -1) return; // Already found
+  if (p != -1) { par[v].pb(p); while (true) { vl &grand_par = par[par[v].back()]; ll parsize = par[v].size() - 1; if ((ll)grand_par.size() > parsize) { par[v].pb(grand_par[parsize]); } else break; } } // LCA doubling
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
+  depth[v] = d; fs[v] = cur;
 
-  ll H, W; cin >> H >> W;
-  vector<vl> maze(H, vl(W, 0));
-  rep(i, H) {
-    string s; cin >> s;
-    rep(j, W) {
-      if (s[j] == '#') maze[i][j] = 1;
-    }
+  ll count = 0;
+  for(ll next: G[v]) {
+    if (next == p) continue;
+    count++;
+    if (count > 1) cur++;
+    dfs(next, v, d + 1, cur);
   }
 
-  ll curx = 0, cury = 0;
-  ll ans = 0;
+  ls[v] = cur;
+};
+void dfs_init(ll n) { par.resize(n); fs.resize(n); ls.resize(n); depth.resize(n); depth.assign(n, -1); ll cur = 0; dfs(0, -1, 0, cur); }
 
-  function<vl(&vl, ll)> dfs = [&](vl &route, ll depth)-> {
-    rep(i, 4) {
-      curx +=
-    }
+void solve() {
+  ll n; cin >> n;
+  G.resize(n);
+  rep(i, n - 1) {
+    ll u, v; cin >> u >> v; u--; v--;
+    G[u].pb(v);
+    G[v].pb(u);
   }
-
-  rep(i, H) {
-    rep(j, W) {
-      curx = 0; cury = 0;
-      vl route = {};
-      dfs(route, 0);
-    }
+  dfs_init(n);
+  rep(i, n) {
+    cout << fs[i] + 1 << " " << ls[i] + 1 << "\n";
   }
-
-  cout << ans << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; // cin >> t;
+  while (t--) solve();
+}

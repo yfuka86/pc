@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc239",
+    "title": "Denso Create Programming Contest 2022(AtCoder Beginner Contest 239)",
+    "url": "https://atcoder.jp/contests/abc239"
+  },
+  "tasks": [
+    {
+      "id": "abc239_a",
+      "label": "A",
+      "title": "Horizon",
+      "url": "https://atcoder.jp/contests/abc239/tasks/abc239_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc239_a.cpp"
+      }
+    },
+    {
+      "id": "abc239_b",
+      "label": "B",
+      "title": "Integer Division",
+      "url": "https://atcoder.jp/contests/abc239/tasks/abc239_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc239_b.cpp"
+      }
+    },
+    {
+      "id": "abc239_c",
+      "label": "C",
+      "title": "Knight Fork",
+      "url": "https://atcoder.jp/contests/abc239/tasks/abc239_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc239_c.cpp"
+      }
+    },
+    {
+      "id": "abc239_d",
+      "label": "D",
+      "title": "Prime Sum Game",
+      "url": "https://atcoder.jp/contests/abc239/tasks/abc239_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc239_d.cpp"
+      }
+    },
+    {
+      "id": "abc239_e",
+      "label": "E",
+      "title": "Subtree K-th Max",
+      "url": "https://atcoder.jp/contests/abc239/tasks/abc239_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc239_e.cpp"
+      }
+    },
+    {
+      "id": "abc239_f",
+      "label": "F",
+      "title": "Construct Highway",
+      "url": "https://atcoder.jp/contests/abc239/tasks/abc239_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc239_f.cpp"
+      }
+    },
+    {
+      "id": "abc239_g",
+      "label": "G",
+      "title": "Builder Takahashi",
+      "url": "https://atcoder.jp/contests/abc239/tasks/abc239_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc239_g.cpp"
+      }
+    },
+    {
+      "id": "abc239_h",
+      "label": "Ex",
+      "title": "Dice Product 2",
+      "url": "https://atcoder.jp/contests/abc239/tasks/abc239_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc239_h.cpp"
+      }
+    }
+  ]
+}

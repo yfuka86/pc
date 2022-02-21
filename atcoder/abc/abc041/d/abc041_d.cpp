@@ -26,6 +26,8 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+// https://tutuz.hateblo.jp/entry/2018/07/19/234447
+
 void solve() {
   ll N, M; cin >> N >> M;
   vector<vl> G(N);

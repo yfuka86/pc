@@ -26,41 +26,37 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-vl dx = { -1, 1, 0, 0 };
-vl dy = { 0, 0, -1, 1 };
-
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-
-  ll H, W; cin >> H >> W;
-  vector<vl> maze(H, vl(W, 0));
-  rep(i, H) {
-    string s; cin >> s;
-    rep(j, W) {
-      if (s[j] == '#') maze[i][j] = 1;
-    }
+vector<ll> primes_below(const ll N) {
+  vector<bool> is_prime(N + 1, true);
+  for(ll i = 2; i * i <= N; i++) {
+    if ((i > 2 && i % 2 == 0) || !is_prime[i])  continue;
+    for(ll j = i * i; j <= N; j += i) is_prime[j] = false;
   }
-
-  ll curx = 0, cury = 0;
-  ll ans = 0;
-
-  function<vl(&vl, ll)> dfs = [&](vl &route, ll depth)-> {
-    rep(i, 4) {
-      curx +=
-    }
-  }
-
-  rep(i, H) {
-    rep(j, W) {
-      curx = 0; cury = 0;
-      vl route = {};
-      dfs(route, 0);
-    }
-  }
-
-  cout << ans << "\n";
+  vector<ll> ret;
+  for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i);
+  return ret;
 }
 
+void solve() {
+  ll A, B, C, D; cin >> A >> B >> C >> D;
 
+  vl primes = primes_below(200);
+
+  bool aoki = true;
+  rep2(i, A, B + 1) {
+    bool ok = false;
+    rep2(j, C, D + 1) {
+      if (find(all(primes), i + j) != primes.end()) { ok = true; break; }
+    }
+    if (!ok) { aoki = false; break; }
+  }
+  cout << (aoki ? "Aoki" : "Takahashi") << "\n";
+}
+
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; // cin >> t;
+  while (t--) solve();
+}

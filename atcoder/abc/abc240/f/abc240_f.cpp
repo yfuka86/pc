@@ -26,41 +26,50 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-vl dx = { -1, 1, 0, 0 };
-vl dy = { 0, 0, -1, 1 };
-
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-
-  ll H, W; cin >> H >> W;
-  vector<vl> maze(H, vl(W, 0));
-  rep(i, H) {
-    string s; cin >> s;
-    rep(j, W) {
-      if (s[j] == '#') maze[i][j] = 1;
-    }
+void solve() {
+  ll n, m; cin >> n >> m;
+  vector<LP> c(n);
+  rep(i, n) {
+    ll x, y; cin >> x >> y;
+    c[i] = mp(x, y);
   }
 
-  ll curx = 0, cury = 0;
-  ll ans = 0;
-
-  function<vl(&vl, ll)> dfs = [&](vl &route, ll depth)-> {
-    rep(i, 4) {
-      curx +=
+  ll bcur = 0;
+  vl bfirst(n);
+  // 区間のx個目が必要という情報
+  vl need(n, -1);
+  rep(i, n) {
+    bfirst[i] = bcur;
+    auto [x, y] = c[i];
+    if (bcur > 0) {
+      if (bcur + y * x < 0) {
+        need[i] = bcur / abs(x);
+        // cout << "need" << i  << " " << need[i] << "\n";
+      }
     }
+    bcur += y * x;
   }
 
-  rep(i, H) {
-    rep(j, W) {
-      curx = 0; cury = 0;
-      vl route = {};
-      dfs(route, 0);
+  ll ans = c[0].first;
+  ll cur = 0;
+  rep(i, n) {
+    auto [x, y] = c[i];
+    if (need[i] > 0) {
+      ll dy = need[i];
+      chmax(ans, cur + bfirst[i] * dy + (dy * (dy + 1) / 2) * x);
     }
-  }
 
+    cur += bfirst[i] * y + (y * (y + 1) / 2) * x;
+    // cout << cur << endl;
+    chmax(ans, cur);
+  }
   cout << ans << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t; cin >> t;
+  while (t--) solve();
+}

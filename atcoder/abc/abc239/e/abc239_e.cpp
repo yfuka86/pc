@@ -26,41 +26,57 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-vl dx = { -1, 1, 0, 0 };
-vl dy = { 0, 0, -1, 1 };
+void solve() {
+  ll N, Q; cin >> N >> Q;
+  vl x(N); rep(i, N) cin >> x[i];
+  vector<vl> G(N);
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-
-  ll H, W; cin >> H >> W;
-  vector<vl> maze(H, vl(W, 0));
-  rep(i, H) {
-    string s; cin >> s;
-    rep(j, W) {
-      if (s[j] == '#') maze[i][j] = 1;
-    }
+  rep(i, N - 1) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G[a].pb(b);
+    G[b].pb(a);
   }
 
-  ll curx = 0, cury = 0;
-  ll ans = 0;
+  vb used(N, false);
+  vector<multiset<ll>> ans(N);
+  function<multiset<ll>(ll)> dfs = [&](ll v) -> multiset<ll> {
+    multiset<ll> s;
+    if (used[v]) return s;
+    used[v] = true;
 
-  function<vl(&vl, ll)> dfs = [&](vl &route, ll depth)-> {
-    rep(i, 4) {
-      curx +=
+    for (ll next: G[v]) {
+      s.merge(dfs(next));
     }
-  }
+    s.insert(x[v]);
 
-  rep(i, H) {
-    rep(j, W) {
-      curx = 0; cury = 0;
-      vl route = {};
-      dfs(route, 0);
+    multiset<ll> news;
+    for(auto itr = s.rbegin(); itr != s.rend(); ++itr) {
+      news.insert(*itr);
+      if (news.size() == 20) break;
     }
-  }
+    return ans[v] = news;
+  };
+  dfs(0);
 
-  cout << ans << "\n";
+  // rep(i, N) {
+  //   for(auto itr = ans[i].begin(); itr != ans[i].end() ; itr++) {
+  //     cout << *itr << " ";
+  //   }
+  //   cout << endl;
+  // }
+
+  rep(i, Q) {
+    ll v, k; cin >> v >> k; v--;
+    auto itr = ans[v].end();
+    rep(_, k) itr--;
+    cout << *itr << "\n";
+  }
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; // cin >> t;
+  while (t--) solve();
+}
