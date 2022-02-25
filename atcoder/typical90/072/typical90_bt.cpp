@@ -43,24 +43,29 @@ int main()
     }
   }
 
-  ll curx = 0, cury = 0;
   ll ans = 0;
-
-  function<vl(&vl, ll)> dfs = [&](vl &route, ll depth)-> {
+  function<void(vector<LP>&)> dfs = [&](vector<LP> &route) -> void{
+    auto [x, y] = route.back();
     rep(i, 4) {
-      curx +=
+      ll nx = x + dx[i], ny = y + dy[i]; LP next = mp(nx, ny);
+      if (nx < 0 || nx >= H || ny < 0 || ny >= W) continue;
+      if (route.size() >= 3 && route.front() == next) {
+        chmax(ans, (ll)route.size());
+      } else if (find(all(route), next) == route.end() && maze[nx][ny] == 0) {
+        route.pb(next);
+        dfs(route);
+        route.pop_back();
+      }
     }
-  }
-
+  };
   rep(i, H) {
     rep(j, W) {
-      curx = 0; cury = 0;
-      vl route = {};
-      dfs(route, 0);
+      if (maze[i][j]) continue;
+      vector<LP> route = {mp(i, j)};
+      dfs(route);
     }
   }
-
-  cout << ans << "\n";
+  cout << (ans ? ans : -1) << "\n";
 }
 
 

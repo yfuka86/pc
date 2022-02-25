@@ -32,7 +32,34 @@ int main()
   cin.tie(nullptr);
 
   ll N; cin >> N;
-  cout << N << "\n";
+  vl a(N * 2, 0);
+  vl s(N * 2 + 1, 0);
+  rep(i, N) {
+    cin >> a[i];
+    a[i + N] = a[i];
+  }
+
+  if (accumulate(a.begin(), a.begin() + N, 0LL) % 10 != 0) {cout << "No" << "\n"; return 0;}
+
+  ll target = accumulate(a.begin(), a.begin() + N, 0LL) / 10, start = 0, end = 1;
+
+  rep(i, N * 2) {
+    s[i + 1] = s[i] + a[i];
+  }
+
+  while (start <= N - 1) {
+    ll now = s[end] - s[start];
+    if (now == target) {
+      cout << "Yes" << "\n";
+      return 0;
+    } else if (now < target) {
+      end++;
+    } else {
+      start++;
+    }
+  }
+  cout << "No" << "\n";
+  return 0;
 }
 
 

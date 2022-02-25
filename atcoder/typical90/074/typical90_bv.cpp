@@ -32,7 +32,28 @@ int main()
   cin.tie(nullptr);
 
   ll N; cin >> N;
-  cout << N << "\n";
+  string s; cin >> s;
+
+  vl sucb(61, 0), succ(61, 0);
+  sucb[1] = 1; succ[1] = 1;
+
+  rep(i, 60) {
+    sucb[i + 1] = sucb[i] * 2 + 1;
+    succ[i + 1] = succ[i] * 2 + 2;
+  }
+
+  ll ans = 0;
+  rep(i, N) {
+    if (s[i] == 'a') {
+      continue;
+    } else if (s[i] == 'b') {
+      ans += 1 + sucb[i];
+    } else {
+      ans += 2 + succ[i];
+    }
+  }
+
+  cout << ans << "\n";
 }
 
 

@@ -1,9 +1,6 @@
 const ll mod = 1000000007;
 const ll mod = 998244353;
 //------------------------------------------------------------------------------
-template< typename T >
-T mod_pow(T x, ll n, const T &p = mod) { T ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret % p; }
-//------------------------------------------------------------------------------
 template< int mod >
 struct ModInt {
   int x; ModInt() : x(0) {}
@@ -35,4 +32,7 @@ void init_f() {
   factinv[max_n - 1] = modint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
 modint comb(int a, int b) { if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
 modint combP(int a, int b) { if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+template< typename T >
+T mod_pow(T x, ll n, const T &p = mod) { T ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret % p; }
 //------------------------------------------------------------------------------

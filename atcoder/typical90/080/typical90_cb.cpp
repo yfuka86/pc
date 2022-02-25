@@ -26,13 +26,34 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
+void solve() {
+  ll N, D; cin >> N >> D;
+  vl a(N); rep(i, N) cin >> a[i];
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  vl dp(1 << N, 0);
+  vl dptemp(1 << N, 0);
+  dp[0] = 1;
+
+  rep(i, D) {
+    ll add = 0;
+    rep(j, N) {
+      if (1ULL << i & a[j]) add |= (1ULL << j);
+    }
+    rep(S, 1 << N) {
+      dptemp[S | add] += dp[S];
+    }
+    rep(S, 1 << N) {
+      dp[S] += dptemp[S];
+      dptemp[S] = 0;
+    }
+  }
+  cout << dp[(1 << N) - 1] << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; // cin >> t;
+  while (t--) solve();
+}

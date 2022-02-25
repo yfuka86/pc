@@ -13,11 +13,15 @@ vector<ll> dijkstra(vector<vector<Edge>>& G, ll start) {
     if (costs[v] <= prev_cost) continue;
     costs[v] = prev_cost;
 
-    rep(i, G[v].size()) {
-      Edge e = G[v][i]; ll next_cost = costs[v] + e.cost;
-      if (costs[e.to] > next_cost) PQ.push(make_pair(next_cost, e.to));
-    }
+    for(Edge e: G[v]) { ll next_cost = costs[v] + e.cost; if (costs[e.to] > next_cost) PQ.push(make_pair(next_cost, e.to)); }
   }
+  return costs;
+}
+
+vector<vl> floyd_warshall(vector<vector<Edge>> & G) {
+  ll n = G.size(); vector<vl> costs(n, vl(n ,LINF));
+  rep(i, n) { costs[i][i] = 0; for(Edge e: G[i]) costs[i][e.to] = e.cost; }
+  rep(k, n) rep(i, n) rep(j, n) { if (costs[i][k] == LINF || costs[k][j] == LINF) continue; costs[i][j] = min(costs[i][j], costs[i][k] + costs[k][j]); }
   return costs;
 }
 

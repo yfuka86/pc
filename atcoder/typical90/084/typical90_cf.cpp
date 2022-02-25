@@ -26,13 +26,28 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-
+void solve() {
   ll N; cin >> N;
-  cout << N << "\n";
+  string S; cin >> S;
+
+  ll ans = N * (N + 1) / 2;
+
+  char current = S[0]; ll cur = 0;
+  rep(i, N) {
+    if (current == S[i]) continue;
+    ll range = i - cur;
+    ans -= (range + 1) * range / 2;
+    current = S[i];
+    cur = i;
+  }
+  ans -= (N - cur) * (N - cur + 1) / 2;
+  cout << ans << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; // cin >> t;
+  while (t--) solve();
+}

@@ -26,13 +26,38 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
+vl dx = {0,1,0,1};
+vl dy = {0,0,1,1};
 
-  ll N; cin >> N;
-  cout << N << "\n";
+void solve() {
+  ll H, W; cin >> H >> W;
+  vector<vl> a(H, vl(W, 0)), b(H, vl(W, 0));
+  rep(i, H) rep(j, W) cin >> a[i][j];
+  rep(i, H) rep(j, W) cin >> b[i][j];
+  ll ans = 0;
+  rep(i, H - 1) {
+    rep(j, W - 1) {
+      ll diff = a[i][j] - b[i][j];
+      ans += abs(diff);
+      rep(d, 4) {
+        a[i + dx[d]][j+ dy[d]] -= diff;
+      }
+    }
+  }
+
+  rep(i, H) {
+    rep(j, W) {
+      if (a[i][j] != b[i][j]) { cout << "No" << "\n"; return; }
+    }
+  }
+  cout << "Yes" << "\n";
+  cout << ans << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; // cin >> t;
+  while (t--) solve();
+}

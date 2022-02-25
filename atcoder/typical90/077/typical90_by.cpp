@@ -1,5 +1,6 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
+#include <atcoder/maxflow>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
@@ -26,13 +27,64 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
+using namespace atcoder;
+vl dx = {1, 1, 0, -1, -1, -1, 0, 1};
+vl dy = {0, 1, 1, 1, 0, -1, -1, -1};
 
-  ll N; cin >> N;
-  cout << N << "\n";
+void solve() {
+  ll N, T; cin >> N >> T;
+  vector<LP> a(N), b(N);
+  rep(i, N) {
+    ll x, y; cin >> x >> y;
+    a[i] = mp(x, y);
+  }
+  map<ll, map<ll, ll>> bmap;
+  rep(i, N) {
+    ll x, y; cin >> x >> y;
+    b[i] = mp(x, y);
+    bmap[x][y] = i;
+  }
+
+  mf_graph<ll> mf(N * 2 + 2);
+  ll s = N * 2, g = N * 2 + 1;
+
+  rep(i, N) {
+    mf.add_edge(s, i, 1);
+    mf.add_edge(N + i, g, 1);
+  }
+
+  rep(i, N) {
+    rep(j, 8) {
+      ll x = a[i].first + dx[j] * T;
+      ll y = a[i].second + dy[j] * T;
+      if (bmap[x].count(y)) {
+        mf.add_edge(i, bmap[x][y] + N, 1);
+      }
+    }
+  }
+
+  if (mf.flow(s, g) == N) {
+    cout << "Yes" << "\n";
+    vector<LP> dv(8); rep(i, 8) dv[i] = mp(dx[i],dy[i]);
+    vl dir(N);
+    auto edges = mf.edges();
+
+    for (auto e : edges) {
+      if (e.from == s || e.to == g || e.flow == 0) continue;
+      LP ai = a[e.from], bi = b[e.to - N];
+      LP v = mp((bi.first - ai.first) / T, (bi.second - ai.second) / T);
+      rep(i, 8) {
+        if (dv[i] == v) { dir[e.from] = i + 1; break; }
+      }
+    }
+    coutarray(dir);
+  } else cout << "No" << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; // cin >> t;
+  while (t--) solve();
+}

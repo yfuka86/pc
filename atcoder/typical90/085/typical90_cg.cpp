@@ -26,13 +26,35 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
+vector<long long> divisor(long long n) {
+  vector<long long> ret;
+  for (long long i = 1; i * i <= n; i++) { if (n % i == 0) { ret.push_back(i); if (i * i != n) ret.push_back(n / i); } }
+  // sort(ret.begin(), ret.end());
+  return ret; }
 
-  ll N; cin >> N;
-  cout << N << "\n";
+void solve() {
+  ll K; cin >> K;
+
+  ll ans = 0;
+  vl diva = divisor(K);
+  for(ll a: diva) {
+    if (K / a / a < a) continue;
+    ll bc = K / a;
+    vl divb = divisor(bc);
+    for (ll b: divb) {
+      if (b < a) continue;
+      if (bc / b >= b) {
+        ans++;
+      }
+    }
+  }
+  cout << ans << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; // cin >> t;
+  while (t--) solve();
+}
