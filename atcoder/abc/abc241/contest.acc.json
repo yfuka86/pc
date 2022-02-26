@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc241",
+    "title": "AtCoder Beginner Contest 241（Sponsored by Panasonic）",
+    "url": "https://atcoder.jp/contests/abc241"
+  },
+  "tasks": [
+    {
+      "id": "abc241_a",
+      "label": "A",
+      "title": "Digit Machine",
+      "url": "https://atcoder.jp/contests/abc241/tasks/abc241_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc241_a.cpp"
+      }
+    },
+    {
+      "id": "abc241_b",
+      "label": "B",
+      "title": "Pasta",
+      "url": "https://atcoder.jp/contests/abc241/tasks/abc241_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc241_b.cpp"
+      }
+    },
+    {
+      "id": "abc241_c",
+      "label": "C",
+      "title": "Connect 6",
+      "url": "https://atcoder.jp/contests/abc241/tasks/abc241_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc241_c.cpp"
+      }
+    },
+    {
+      "id": "abc241_d",
+      "label": "D",
+      "title": "Sequence Query",
+      "url": "https://atcoder.jp/contests/abc241/tasks/abc241_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc241_d.cpp"
+      }
+    },
+    {
+      "id": "abc241_e",
+      "label": "E",
+      "title": "Putting Candies",
+      "url": "https://atcoder.jp/contests/abc241/tasks/abc241_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc241_e.cpp"
+      }
+    },
+    {
+      "id": "abc241_f",
+      "label": "F",
+      "title": "Skate",
+      "url": "https://atcoder.jp/contests/abc241/tasks/abc241_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc241_f.cpp"
+      }
+    },
+    {
+      "id": "abc241_g",
+      "label": "G",
+      "title": "Round Robin",
+      "url": "https://atcoder.jp/contests/abc241/tasks/abc241_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc241_g.cpp"
+      }
+    },
+    {
+      "id": "abc241_h",
+      "label": "Ex",
+      "title": "Card Deck Score",
+      "url": "https://atcoder.jp/contests/abc241/tasks/abc241_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc241_h.cpp"
+      }
+    }
+  ]
+}
