@@ -26,6 +26,34 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod >
+struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }
+  ModInt &operator/=(const ModInt &p) { *this *= p.inverse(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }
+  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }
+  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }
+  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using modint = ModInt<mod>;
+typedef vector<modint> vmi;
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+
 int main()
 {
   ios::sync_with_stdio(false);
@@ -33,18 +61,48 @@ int main()
 
   ll N, M; cin >> N >> M;
 
-  vector<vl> ope(M);
-
+  vector<vl> op(N, vl(M, 0));
   rep(i, N) {
     ll t; cin >> t;
     rep(j, t) {
-      ll a; cin >> a; a--; ope[a].pb(i);
+      ll a; cin >> a; a--; op[i][a] = 1;
     }
   }
+  vl target(M); rep(i, M) cin >> target[i];
 
+  vector<vl> sorted;
 
+  ll cur = 0;
+  rep(j, M) {
+    ll pivot = -1;
+    rep2(i, cur, N) if (op[i][j] == 1) { pivot = i; break; }
+    if (pivot == -1) continue;
+    swap(op[cur], op[pivot]);
 
-  cout << N << "\n";
+    rep2(i, cur + 1, N) {
+      if (op[i][j] != 1) continue;
+      rep(k, M) {
+        op[i][k] ^= op[cur][k];
+      }
+    }
+    cur++;
+  }
+
+  // coutmatrix(op);
+
+  ll tcur = 0;
+  vl origin(M, 0);
+  rep(j, M) {
+    if (target[j] != origin[j]) {
+      if (tcur >= N || op[tcur][j] != 1) { cout << 0 << "\n"; return 0;}
+      rep(i, M) {
+        origin[i] ^= op[tcur][i];
+      }
+    }
+    // coutarray(origin);
+    if (tcur < N && op[tcur][j] == 1) tcur++;
+  }
+  cout << mod_pow(2LL, N - tcur) << "\n";
 }
 
 
