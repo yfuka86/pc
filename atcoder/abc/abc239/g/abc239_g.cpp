@@ -1,5 +1,6 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
+#include <atcoder/maxflow>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
@@ -26,8 +27,38 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+using namespace atcoder;
+
 void solve() {
-  ll n; cin >> n;
+  ll N, M; cin >> N >> M;
+
+  mf_graph<ll> mf(N * 2);
+  ll s = N, g = N - 1;
+
+  rep(i, M) {
+    ll a, b; cin >> a >> b; a--; b--;
+    mf.add_edge(a + N, b, LINF);
+    mf.add_edge(b + N, a, LINF);
+  }
+
+  vl cost(N, 0);
+  rep(i, N) {
+    cin >> cost[i];
+    mf.add_edge(i, i + N, cost[i]);
+  }
+
+  mf.flow(s, g);
+  vb mc = mf.min_cut(s);
+  // coutarray(mc);
+
+  ll ans = 0; vl ansn;
+  rep(i, N) {
+    if (i == 0 || i == N - 1) continue;
+    if (mc[i] && !mc[i + N]) { ansn.pb(i + 1); ans += cost[i]; }
+  }
+  cout << ans << "\n";
+  cout << ansn.size() << "\n";
+  coutarray(ansn);
 }
 
 signed main() {
