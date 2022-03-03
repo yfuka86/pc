@@ -1,5 +1,7 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
+#include <atcoder/convolution>
+#include <atcoder/modint>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
@@ -26,13 +28,44 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+const ll mod = 998244353;
+using namespace atcoder;
+using mint = modint998244353;
+typedef vector<mint> vmi;
+
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() {
+  fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); }
+  factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+//------------------------------------------------------------------------------
+
 int main()
 {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  ll R, G, B, K; cin >> R >> G >> B >> K;
+  ll X, Y, Z; cin >> X >> Y >> Z;
+  init_f();
+
+  vmi rconv(R + G + B + 1, 0);
+  vmi gconv(R + G + B + 1, 0);
+  rep2(r, K - Y, R + 1) rconv[r] = comb(R, r);
+  rep2(g, K - Z, G + 1) gconv[g] = comb(G, g);
+  vmi rg = convolution(rconv, gconv);
+
+  mint ans = 0;
+  rep2(b, K - X, B + 1) {
+    if (b > K) break;
+    ans += rg[K - b] * comb(B, b);
+  }
+  cout << ans.val() << "\n";
 }
 
 

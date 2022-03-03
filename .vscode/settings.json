@@ -67,7 +67,9 @@
     "__bit_reference": "cpp",
     "filesystem": "cpp",
     "ios": "cpp",
-    "__nullptr": "cpp"
+    "__nullptr": "cpp",
+    "chrono": "cpp",
+    "convolution": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",

@@ -28,7 +28,15 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 
 void solve() {
   ll a, s; cin >> a >> s;
+  ll xo = s - (2 * a);
+  if (xo < 0) { cout << "No" << "\n"; return; }
 
+  rep(i, 60) {
+    if (a >> i & 1) {
+      if (xo >> i & 1) { cout << "No" << "\n"; return; }
+    }
+  }
+  cout << "Yes" << "\n";
 }
 
 signed main() {

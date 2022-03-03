@@ -29,9 +29,45 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 void solve() {
   ll N, M; cin >> N >> M;
   vector<vl> G(N);
+  ll rn = floor(sqrt(N));
+
+  vl deg(N, 0);
   rep(i, M) {
     ll a, b; cin >> a >> b; a--; b--;
+    G[a].pb(b);
+    G[b].pb(a);
+    deg[a]++; deg[b]++;
+  }
 
+  vb star(N, 0);
+  rep(i, N) if (deg[i] > rn) star[i] = 1;
+  // √Nを超えるdegの隣接頂点に向かう辺のみを張ったグラフ
+  vector<vl> starG(N);
+  rep(i, N) {
+    for(ll e: G[i]) {
+      if (star[e]) starG[i].pb(e);
+    }
+  }
+
+  //---------------------------------------------
+  vector<LP> color(N, mp(0, 1)), colorindirect(N, mp(0, 1));
+  ll Q; cin >> Q;
+  rep(i, Q) {
+    ll x, y; cin >> x >> y; x--;
+
+    // output
+    vector<LP> t;
+    t.pb(color[x]);
+    t.pb(colorindirect[x]);
+    for(ll nextstar: starG[x]) t.pb(color[nextstar]);
+
+    LP ans = mp(0, 1);
+    for(LP p: t) chmax(ans, p);
+    cout << ans.second << "\n";
+
+    // coloring
+    color[x] = mp(i + 1, y);
+    if (!star[x]) for(ll next: G[x]) colorindirect[next] = mp(i + 1, y);
   }
 }
 

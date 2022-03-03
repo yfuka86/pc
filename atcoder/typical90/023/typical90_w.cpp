@@ -22,7 +22,7 @@ template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.er
 template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
+template<typename T, typename K> void coutbin(T a, K d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & 1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
@@ -63,7 +63,7 @@ modint combP(int a, int b) { if (a < 0 || b < 0 || a < b) return 0; return fact[
 ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 //------------------------------------------------------------------------------
 
-bool check(ll &j, ll &W, ll &S) {
+bool check(ll j, ll &W, ll &S) {
   if (S >> (W - 1) & 1) return false;
   if (j != 0 && (S >> W & 1 || S & 1)) return false;
   if (j != W - 1 && S >> (W - 2) & 1) return false;
@@ -77,52 +77,62 @@ void solve() {
     string s; cin >> s;
     rep(j, W) if (s[j] == '#') c[i][j] = 0;
   }
+  ll filter = (1 << (W + 1)) - 1;
 
   ll pos = 0;
-  map<ll, ll> state, stateinv;
-  function<void(ll, ll)> dfs = [&](ll S, ll suc) -> void {
-    if (S >= 1 << (W + 1)) return;
-    if (state.count(S)) return;
-
-    state[S] = pos;
-    stateinv[pos] = S;
-    pos++;
-
-    if (S & 1) {
-      if (!suc) dfs(S << 1 | 1, 1);
-      dfs(S << 1, suc);
-    } else {
-      dfs(S << 1 | 1, suc);
-      dfs(S << 1, suc);
-    }
+  vl state; map<ll, ll> stateinv;
+  function<void(ll)> dfs = [&](ll S) -> void {
+    S &= filter;
+    if (__builtin_popcount((S << 1) & S) > 1) return;
+    if (stateinv.count(S)) return;
+    state.pb(S); stateinv[S] = pos; pos++;
+    dfs(S << 1 | 1); dfs(S << 1);
   };
-  dfs(0, 0);
-  ll sc = state.size();
+  dfs(0);
 
-  vector<vmi> dp(H * W, vmi(sc, 0));
-  ll filter = (1 << (W + 1)) - 1;
+  ll sc = state.size();
+  vl ltr, tr, rtr, tr0;
+  rep(i, sc) {
+    ll S = state[i];
+    tr0.pb(stateinv[S << 1 & filter]);
+    ll n = stateinv[(S << 1 | 1) & filter];
+    if (check(0, W, S)) ltr.pb(n); else ltr.pb(-1);
+    if (check(1, W, S)) tr.pb(n); else tr.pb(-1);
+    if (check(W - 1, W, S)) rtr.pb(n); else rtr.pb(-1);
+  }
+
+  // vector<vmi> dp(H * W, vmi(sc, 0));
+  vmi dp(sc, 0);
+  vmi dptemp(sc, 0);
 
   rep(i, H) {
     rep(j, W) {
       if (i == 0 && j == 0) {
-        dp[0][0] = 1;
-        dp[0][1] = c[0][0] ? 1 : 0;
+        dp[0] = 1;
+        dp[1] = c[0][0] ? 1 : 0;
         continue;
       }
-
-      ll next = i * W + j, now = next - 1;
+      // ll next = i * W + j, now = next - 1;
       rep(sn, sc) {
-        if (dp[now][sn] == 0) continue;
-        ll S = stateinv[sn];
-        ll sn1 = state[(S << 1 | 1) & filter];
-        ll sn0 = state[(S << 1) & filter];
+        if (dp[sn] == 0) continue;
+        ll S = state[sn];
 
-        if (c[i][j] && check(j, W, S)) dp[next][sn1] += dp[now][sn];
-        dp[next][sn0] += dp[now][sn];
+        if (c[i][j]) {
+          if (j == 0) {
+            if (ltr[sn] != -1) dptemp[ltr[sn]] += dp[sn];
+          } else if (j == W - 1) {
+            if (rtr[sn] != -1) dptemp[rtr[sn]] += dp[sn];
+          } else {
+            if (tr[sn] != -1) dptemp[tr[sn]] += dp[sn];
+          }
+        }
+        dptemp[tr0[sn]] += dp[sn];
       }
+
+      dp = dptemp; dptemp.clear(); dptemp.resize(sc, 0);
     }
   }
-  cout << accumulate(all(dp[H * W - 1]), (modint)0) << "\n";
+  cout << accumulate(all(dp), (modint)0) << "\n";
 }
 
 signed main() {

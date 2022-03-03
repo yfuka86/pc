@@ -40,6 +40,7 @@ template<typename T> vector<vector<T>> m_product(vector<vector<T>>& l, vector<ve
     for(int j = 0; j < r[0].size(); j++) for(int k = 0; k < l[0].size(); k++) { assert(r[k].size() == r[0].size()); ans[i][j] += l[i][k] * r[k][j]; }
   }
   return ans; }
+template <typename T> T m_pow(T m, ll n) { T res = m; n--; for(; n; n >>= 1, m = m_product(m, m)) if(n & 1) res = m_product(res, m); return res; }
 
 ll mex(vl& v) {
   set<ll> S; for(ll n: v) S.insert(n);

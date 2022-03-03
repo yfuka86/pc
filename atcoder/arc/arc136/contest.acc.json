@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc136",
+    "title": "AtCoder Regular Contest 136",
+    "url": "https://atcoder.jp/contests/arc136"
+  },
+  "tasks": [
+    {
+      "id": "arc136_a",
+      "label": "A",
+      "title": "A ↔ BB",
+      "url": "https://atcoder.jp/contests/arc136/tasks/arc136_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc136_a.cpp"
+      }
+    },
+    {
+      "id": "arc136_b",
+      "label": "B",
+      "title": "Triple Shift",
+      "url": "https://atcoder.jp/contests/arc136/tasks/arc136_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc136_b.cpp"
+      }
+    },
+    {
+      "id": "arc136_c",
+      "label": "C",
+      "title": "Circular Addition",
+      "url": "https://atcoder.jp/contests/arc136/tasks/arc136_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc136_c.cpp"
+      }
+    },
+    {
+      "id": "arc136_d",
+      "label": "D",
+      "title": "Without Carry",
+      "url": "https://atcoder.jp/contests/arc136/tasks/arc136_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc136_d.cpp"
+      }
+    },
+    {
+      "id": "arc136_e",
+      "label": "E",
+      "title": "Non-coprime DAG",
+      "url": "https://atcoder.jp/contests/arc136/tasks/arc136_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc136_e.cpp"
+      }
+    },
+    {
+      "id": "arc136_f",
+      "label": "F",
+      "title": "Flip Cells",
+      "url": "https://atcoder.jp/contests/arc136/tasks/arc136_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc136_f.cpp"
+      }
+    }
+  ]
+}
