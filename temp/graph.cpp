@@ -27,15 +27,16 @@ vector<vl> floyd_warshall(vector<vector<Edge>> & G) {
 
 vl topo_sort(vector<vl> G, vl &deg) {
   // Gは無くなるのでコピー
-  ll n = G.size(); vl ret; queue<ll> que;
-  rep(i, n) if (deg[i] == 0) que.push(i);
+  ll n = G.size(); vl ret; priority_queue<ll> que;
+  rep(i, n) if (deg[i] == 0) que.push(-i);
   while (!que.empty()) {
-    ll v = que.front(); que.pop(); ret.pb(v);
-    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); }
+    ll v = -que.top(); que.pop(); ret.pb(v);
+    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(-next); }
     G[v].clear();
   }
-  if (accumulate(all(indegrees), 0LL) != 0) return {}; else return ret;
+  if (accumulate(all(deg), 0LL) != 0) return {}; else return ret;
 }
+
 
 // 重みなしグラフにおけるオイラーツアーとLCA doublingの合わせ↓
 // TODO sparse table(RMQ)

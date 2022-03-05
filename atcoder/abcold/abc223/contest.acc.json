@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc223",
+    "title": "AtCoder Beginner Contest 223",
+    "url": "https://atcoder.jp/contests/abc223"
+  },
+  "tasks": [
+    {
+      "id": "abc223_a",
+      "label": "A",
+      "title": "Exact Price",
+      "url": "https://atcoder.jp/contests/abc223/tasks/abc223_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc223_a.cpp"
+      }
+    },
+    {
+      "id": "abc223_b",
+      "label": "B",
+      "title": "String Shifting",
+      "url": "https://atcoder.jp/contests/abc223/tasks/abc223_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc223_b.cpp"
+      }
+    },
+    {
+      "id": "abc223_c",
+      "label": "C",
+      "title": "Doukasen",
+      "url": "https://atcoder.jp/contests/abc223/tasks/abc223_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc223_c.cpp"
+      }
+    },
+    {
+      "id": "abc223_d",
+      "label": "D",
+      "title": "Restricted Permutation",
+      "url": "https://atcoder.jp/contests/abc223/tasks/abc223_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc223_d.cpp"
+      }
+    },
+    {
+      "id": "abc223_e",
+      "label": "E",
+      "title": "Placing Rectangles",
+      "url": "https://atcoder.jp/contests/abc223/tasks/abc223_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc223_e.cpp"
+      }
+    },
+    {
+      "id": "abc223_f",
+      "label": "F",
+      "title": "Parenthesis Checking",
+      "url": "https://atcoder.jp/contests/abc223/tasks/abc223_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc223_f.cpp"
+      }
+    },
+    {
+      "id": "abc223_g",
+      "label": "G",
+      "title": "Vertex Deletion",
+      "url": "https://atcoder.jp/contests/abc223/tasks/abc223_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc223_g.cpp"
+      }
+    },
+    {
+      "id": "abc223_h",
+      "label": "H",
+      "title": "Xor Query",
+      "url": "https://atcoder.jp/contests/abc223/tasks/abc223_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "abc223_h.cpp"
+      }
+    }
+  ]
+}
