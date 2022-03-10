@@ -30,14 +30,59 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
 void solve() {
-  ll N, M, B, W; cin >> N >> M >> B >> W;
+  ll n, d; cin >> n >> d;
+  vl a(n); rep(i, n) cin >> a[i];
 
+  vl diff(n, 0);
+  ll cur = 0;
+  rep(i, n) { diff[i] = a[i] - 1 - cur; cur = a[i]; }
+  ll lastdiff = d - a[n - 1];
+
+  vector<LP> sorteddiff(n);
+  rep(i, n) { sorteddiff[i] = mp(diff[i], i); }
+  sort(all(sorteddiff));
+
+  ll ok = 0, ng = d;
+  while(ng - 1 > ok) {
+    ll mid = (ok + ng) / 2;
+    if (sorteddiff.size() > 2 && sorteddiff[2].first < mid) { ng = mid; continue; }
+
+    auto [d0, d0i] = sorteddiff[0];
+    auto [d1, d1i] = sorteddiff[1];
+    if (d0 < mid && d1 < mid) {
+      if (abs(d0i - d1i) != 1 || d0 + d1 + 1 < mid) { ng = mid; continue; }
+      if (find_if(sorteddiff.begin() + 2, sorteddiff.end(), [&](LP diff){ return diff.first > mid * 2; }) != sorteddiff.end() || lastdiff > mid) { ok = mid; continue; }
+      ng = mid; continue;
+    }
+
+    if (d0 < mid) {
+      if (find_if(sorteddiff.begin() + 1, sorteddiff.end(), [&](LP diff){ return diff.first > mid * 2; }) != sorteddiff.end() || lastdiff > mid) { ok = mid; continue; }
+      if (d0i > 0 && diff[d0i - 1] + d0 + 1 > mid * 2) { ok = mid; continue; }
+      if (d0i < n - 1 && diff[d0i + 1] + d0 + 1 > mid * 2) { ok = mid; continue; }
+      if (d0i == n - 1 && lastdiff + d0 + 1 > mid) { ok = mid; continue; }
+      ng = mid; continue;
+    }
+
+    ok = mid;
+  }
+
+  cout << ok << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
+}
+
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "?") {
+  cout << str <<  " " << q << "\n"; cout.flush();
+  A a; cin >> a; return a;
+}
+
+template<typename A> void ianswer(A a) {
+  cout << "! " << a << "\n"; cout.flush();
 }

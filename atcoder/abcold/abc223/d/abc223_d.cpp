@@ -28,29 +28,36 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-vl topo_sort(vector<vl> &G, vl &deg) {
-  // Gは無くなるのでコピー
-  ll n = G.size(); vl ret; priority_queue<ll> que;
+vl topo_sort(Graph<ll> G) {
+  ll n = G.size(); vl deg(n), ret; priority_queue<ll> que;
+  rep(i, n) for (Edge e: G[i]) deg[e.to]++;
   rep(i, n) if (deg[i] == 0) que.push(-i);
   while (!que.empty()) {
     ll v = -que.top(); que.pop(); ret.pb(v);
-    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(-next); }
-    G[v].clear();
+    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(-next); } G[v].clear();
   }
   if (accumulate(all(deg), 0LL) != 0) return {}; else return ret;
 }
 
+
 void solve() {
   ll N, M; cin >> N >> M;
-  vector<vl> G(N);
-  vl deg(N);
+  Graph G(N);
   rep(i, M) {
     ll a, b; cin >> a >> b; a--; b--;
-    G[a].pb(b);
-    deg[b]++;
+    G.add_directed_edge(a, b);
   }
-  vl sorted = topo_sort(G, deg);
+  vl sorted = topo_sort(G);
   if (sorted.size() == 0) cout << -1 << "\n"; else coutarray(sorted, 1);
 }
 

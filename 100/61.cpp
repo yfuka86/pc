@@ -26,31 +26,27 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-struct Edge {
-ll to, cost;
-  bool operator<(const struct Edge& other) const {
-    return cost < other.cost; }
-};
-
-vector<vl> floyd_warshall(vector<vector<Edge>> & G) {
-  ll n = G.size(); vector<vl> costs(n, vl(n ,LINF));
-  rep(i, n) { costs[i][i] = 0; for(Edge e: G[i]) costs[i][e.to] = e.cost; }
-
-  rep(k, n) rep(i, n) rep(j, n) {
-    if (costs[i][k] == LINF || costs[k][j] == LINF) continue;
-    costs[i][j] = min(costs[i][j], costs[i][k] + costs[k][j]);
-  }
-  return costs;
-}
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+vector<vl> floyd_warshall(Graph<ll> &G) {
+  ll n = G.size(); vector<vl> costs(n, vl(n ,LINF)); rep(i, n) { costs[i][i] = 0; for(Edge e: G[i]) costs[i][e.to] = e.cost; }
+  rep(k, n) rep(i, n) rep(j, n) { if (costs[i][k] == LINF || costs[k][j] == LINF) continue; costs[i][j] = min(costs[i][j], costs[i][k] + costs[k][j]); }
+  return costs; }
 
 int main()
 {
   int N, M; cin >> N >> M;
-  vector<vector<Edge>> G(N);
+  Graph G(N);
   rep(i, M) {
     int a, b, t; cin >> a >> b >> t; a--; b--;
-    G[a].pb({b, t});
-    G[b].pb({a, t});
+    G.add_edge(a, b, t);
   }
 
   vector<vl> c = floyd_warshall(G);

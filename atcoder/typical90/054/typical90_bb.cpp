@@ -26,28 +26,23 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-struct Edge {
-  ll to, cost;
-  bool operator<(const struct Edge& other) const {
-    return cost < other.cost; }
-};
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); } void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-vector<ll> dijkstra(vector<vector<Edge>>& G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> PQ; vector<ll> costs(G.size(), LINF);
-
-  PQ.push(make_pair(0, start));
+vector<ll> dijkstra(Graph<ll> &G, ll start) {
+  priority_queue<LP, vector<LP>, greater<LP>> PQ; vector<ll> costs(G.size(), LINF); PQ.push(make_pair(0, start));
   while(!PQ.empty()) {
-    LP p = PQ.top(); PQ.pop(); ll prev_cost = p.first; ll v = p.second;
-    if (costs[v] <= prev_cost) continue;
-    costs[v] = prev_cost;
-
-    rep(i, G[v].size()) {
-      Edge e = G[v][i]; ll next_cost = costs[v] + e.cost;
-      if (costs[e.to] > next_cost) PQ.push(make_pair(next_cost, e.to));
-    }
-  }
+    auto [c, v] = PQ.top(); PQ.pop(); if (costs[v] <= c) continue; else costs[v] = c;
+    for(Edge e: G[v]) { ll nc = costs[v] + e.cost; if (costs[e.to] > nc) PQ.push(make_pair(nc, e.to)); } }
   return costs;
 }
+
 
 int main()
 {
@@ -55,14 +50,14 @@ int main()
   cin.tie(nullptr);
 
   ll N, M; cin >> N >> M;
-  vector<vector<Edge>> G(N + M);
+  Graph G(N + M);
 
   rep(i, M) {
     ll k; cin >> k;
     rep(j, k) {
       ll a; cin >> a; a--;
-      G[N + i].pb(Edge{a, 1});
-      G[a].pb(Edge{N + i, 1});
+      G.add_directed_edge(N + i, a, 1);
+      G.add_directed_edge(a, N + i, 1);
     }
   }
 

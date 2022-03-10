@@ -30,14 +30,35 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
 void solve() {
-  ll N, M, B, W; cin >> N >> M >> B >> W;
+  ll l, r, a; cin >> l >> r >> a;
+  ll offsetl = floor(l, a), offsetr = floor(r, a);
 
+  ll ans = 0;
+  rep2_r(i, offsetl, offsetr + 1) {
+    ll tl = max(l, i * a), tr = min(r, (i + 1) * a - 1);
+
+    if (tr / a - tl / a > 0) chmax(ans, i + a - 1);
+    else chmax(ans, i + tr % a);
+
+    if (ans >= i + a - 1) break;
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
+}
+
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "?") {
+  cout << str <<  " " << q << "\n"; cout.flush();
+  A a; cin >> a; return a;
+}
+
+template<typename A> void ianswer(A a) {
+  cout << "! " << a << "\n"; cout.flush();
 }

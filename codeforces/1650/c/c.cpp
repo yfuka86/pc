@@ -30,14 +30,47 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
 void solve() {
-  ll N, M, B, W; cin >> N >> M >> B >> W;
+  ll n, m; cin >> n >> m;
 
+  vector<pair<ll, LP>> point(m);
+  rep(i, m) {
+    ll x, w; cin >> x >> w;
+    point[i] = mp(w, mp(x, i));
+  }
+  sort(all(point));
+
+  ll answ = 0;
+  vector<LP> ans;
+
+  rep(i, m) {
+    auto [w, p] = point[i];
+    auto [x, idx] = p;
+    answ += w;
+    ans.pb(mp(x, idx));
+    if (ans.size() == n * 2) break;
+  }
+
+  sort(all(ans));
+  cout << answ << "\n";
+  rep(i, n) {
+    cout << ans[i].second + 1 << " " << ans[n * 2 - 1 - i].second + 1 << "\n";
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
+}
+
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "?") {
+  cout << str <<  " " << q << "\n"; cout.flush();
+  A a; cin >> a; return a;
+}
+
+template<typename A> void ianswer(A a) {
+  cout << "! " << a << "\n"; cout.flush();
 }
