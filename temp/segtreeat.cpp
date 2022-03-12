@@ -28,14 +28,19 @@ struct lazy_segtree {
   void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
 
-struct S { ll a; };
-struct F {};
-
+struct S { ll a; }; struct F {};
 S op(S l, S r) { return S{max(l.a, r.a)}; }
 S e() { return S{-1}; }
 S mapping(F l, S r) { return S{r.a}; }
 F composition(F l, F r) { { return F{}; } }
 F id() { return F{}; }
+
+using S = ll; using F = ll;
+S op(S l, S r) { return l + r; }
+S e() { return 0; }
+S mapping(F l, S r) { return l + r; }
+F composition(F l, F r) { { return l + r; } }
+F id() { return 0; }
 
 // lazy_segtree<S, op, e, F, mapping, composition, id> seg(a);
 // ll ans = seg.max_right<function<bool(S)>>(a,
