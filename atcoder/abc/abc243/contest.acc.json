@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc243",
+    "title": "AtCoder Beginner Contest 243",
+    "url": "https://atcoder.jp/contests/abc243"
+  },
+  "tasks": [
+    {
+      "id": "abc243_a",
+      "label": "A",
+      "title": "Shampoo",
+      "url": "https://atcoder.jp/contests/abc243/tasks/abc243_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc243_a.cpp"
+      }
+    },
+    {
+      "id": "abc243_b",
+      "label": "B",
+      "title": "Hit and Blow",
+      "url": "https://atcoder.jp/contests/abc243/tasks/abc243_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc243_b.cpp"
+      }
+    },
+    {
+      "id": "abc243_c",
+      "label": "C",
+      "title": "Collision 2",
+      "url": "https://atcoder.jp/contests/abc243/tasks/abc243_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc243_c.cpp"
+      }
+    },
+    {
+      "id": "abc243_d",
+      "label": "D",
+      "title": "Moves on Binary Tree",
+      "url": "https://atcoder.jp/contests/abc243/tasks/abc243_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc243_d.cpp"
+      }
+    },
+    {
+      "id": "abc243_e",
+      "label": "E",
+      "title": "Edge Deletion",
+      "url": "https://atcoder.jp/contests/abc243/tasks/abc243_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc243_e.cpp"
+      }
+    },
+    {
+      "id": "abc243_f",
+      "label": "F",
+      "title": "Lottery",
+      "url": "https://atcoder.jp/contests/abc243/tasks/abc243_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc243_f.cpp"
+      }
+    },
+    {
+      "id": "abc243_g",
+      "label": "G",
+      "title": "Sqrt",
+      "url": "https://atcoder.jp/contests/abc243/tasks/abc243_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc243_g.cpp"
+      }
+    },
+    {
+      "id": "abc243_h",
+      "label": "Ex",
+      "title": "Builder Takahashi (Enhanced version)",
+      "url": "https://atcoder.jp/contests/abc243/tasks/abc243_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc243_h.cpp"
+      }
+    }
+  ]
+}
