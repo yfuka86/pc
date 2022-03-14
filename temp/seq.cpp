@@ -43,10 +43,9 @@ ll sub_hash(vl& h, ll l, ll r) {
   return ret;
 }
 // ビット列を反転のインデックスのみで保持したいもの
-struct BitSeq {
+struct Bitseq {
   vector<ll> ranges;
-  BitSeq() : ranges(0) {}
-
+  Bitseq() : ranges(0) {}
 
   void invert(ll l, ll r) {
     assert(l < r);

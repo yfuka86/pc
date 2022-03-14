@@ -29,34 +29,69 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+struct Mo {
+  int n;
+  vector< pair< int, int > > lr;
+
+  explicit Mo(int n) : n(n) {}
+
+  void add(int l, int r) { /* [l, r) */
+    lr.emplace_back(l, r);
+  }
+
+  template< typename AL, typename AR, typename EL, typename ER, typename O >
+  void build(const AL &add_left, const AR &add_right, const EL &erase_left, const ER &erase_right, const O &out) {
+    int q = (int) lr.size();
+    int bs = n / min< int >(n, sqrt(q));
+    vector< int > ord(q);
+    iota(begin(ord), end(ord), 0);
+    sort(begin(ord), end(ord), [&](int a, int b) {
+      int ablock = lr[a].first / bs, bblock = lr[b].first / bs;
+      if(ablock != bblock) return ablock < bblock;
+      return (ablock & 1) ? lr[a].second > lr[b].second : lr[a].second < lr[b].second;
+    });
+    int l = 0, r = 0;
+    for(auto idx : ord) {
+      while(l > lr[idx].first) add_left(--l);
+      while(r < lr[idx].second) add_right(r++);
+      while(l < lr[idx].first) erase_left(l++);
+      while(r > lr[idx].second) erase_right(--r);
+      out(idx);
+    }
+  }
+
+  template< typename A, typename E, typename O >
+  void build(const A &add, const E &erase, const O &out) {
+    build(add, add, erase, erase, out);
+  }
+};
+
 void solve() {
   ll N; cin >> N;
   vl a(N); rep(i, N) cin >> a[i];
-
-  map<ll, ll> temp;
-  vl fr(N), ba(N), oddfr(N), oddba(N), sumfr(N + 1, 0), sumba(N + 1, 0), sumofr(N + 1, 0), sumoba(N + 1, 0);
-
-  rep(i, N) {
-    temp[a[i]]++;
-    if (temp[a[i]] % 2 == 0) fr[i] = 1; else oddfr[i] = 1;
-  }
-  rep(i, N) {
-    temp[a[i]]--;
-    if (temp[a[i]] % 2 == 1) ba[i] = 1; else oddba[i] = 1;
-  }
-
-  rep(i, N) {
-    sumfr[i + 1] = sumfr[i] + fr[i];
-    sumba[i + 1] = sumba[i] + ba[i];
-    sumofr[i + 1] = sumofr[i] + oddfr[i];
-    sumoba[i + 1] = sumoba[i] + oddba[i];
-  }
+  Mo mo(N);
 
   ll Q; cin >> Q;
   rep(i, Q) {
-    ll l, r; cin >> l >> r; l--; r--;
-    cout << min(sumfr[r + 1], sumofr[r + 1]) - min(sumoba[l], sumba[l]) << "\n";
+    ll l, r; cin >> l >> r; l--; mo.add(l, r);
   }
+
+  vl counts(N + 1, 0);
+  ll sum = 0;
+  vl ans(Q);
+  auto add = [&](ll i) {
+    counts[a[i]]++;
+    if (counts[a[i]] % 2 == 0) sum++;
+  };
+  auto erase = [&](ll i) {
+    counts[a[i]]--;
+    if (counts[a[i]] % 2 == 1) sum--;
+  };
+  auto out = [&](ll q) {
+    ans[q] = sum;
+  };
+  mo.build(add, erase, out);
+  for (auto &p: ans) cout << p << "\n";
 }
 
 signed main() {

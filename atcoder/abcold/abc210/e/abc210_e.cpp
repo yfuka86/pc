@@ -1,6 +1,5 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
-#include <atcoder/twosat>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
@@ -10,7 +9,6 @@
 #define mp make_pair
 
 using namespace std;
-using namespace atcoder;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP;
 typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
@@ -32,28 +30,27 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
 void solve() {
-  ll N, D; cin >> N >> D;
-  vl X(N), Y(N); rep(i, N) { cin >> X[i]; cin >> Y[i]; }
-
-  two_sat ts(N);
-
-  rep(i, N) {
-    rep2(j, i + 1, N) {
-      if (abs(X[i] - X[j]) < D) ts.add_clause(i, true, j, true);
-      if (abs(X[i] - Y[j]) < D) ts.add_clause(i, true, j, false);
-      if (abs(Y[i] - X[j]) < D) ts.add_clause(i, false, j, true);
-      if (abs(Y[i] - Y[j]) < D) ts.add_clause(i, false, j, false);
-    }
+  ll N, M; cin >> N >> M;
+  vector<LP> op(M);
+  rep(i, M) {
+    ll a, c; cin >> a >> c;
+    op[i] = mp(c, a);
   }
+  sort(all(op));
 
-  if (ts.satisfiable()) {
-    cout << "Yes" << "\n";
-    vb ans = ts.answer();
-    rep(i, N) {
-      if (ans[i]) cout << Y[i] << "\n"; else cout << X[i] << "\n";
-    }
+  ll ans = 0;
+  ll rem = N - 1;
+  ll gc = N;
+  rep(i, M) {
+    auto [c, a] = op[i];
+    gc = gcd(gc, a);
+    ans += c * (rem - (gc - 1));
+    rem = gc - 1;
+  }
+  if (rem == 0) {
+    cout << ans << "\n";
   } else {
-    cout << "No" << "\n";
+    cout << "-1" << "\n";
   }
 }
 
