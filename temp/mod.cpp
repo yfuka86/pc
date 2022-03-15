@@ -34,4 +34,24 @@ mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) ret
 mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
 //------------------------------------------------------------------------------
 ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
+
+// a^x ≡ b (mod. m) となる最小の正の整数 x を求める
+ll mod_log(ll a, ll b, ll m) {
+  a %= m; b %= m; ll sqrtm = sqrt_ceil(m);
+  map<ll, ll> apow; ll rem = a;
+  for(ll r = 1; r < sqrtm; ++r) {
+    if (!apow.count(rem)) apow[rem] = r;
+    (rem *= a) %= m;
+  }
+
+  ll A = mod_pow(mod_inv(a, m), sqrtm, m);
+  rem = b;
+  for(ll q = 0; q < sqrtm; ++q) {
+    if (rem == 1 && q > 0) return q * sqrtm;
+    else if (apow.count(rem)) return q * sqrtm + apow[rem];
+    (rem *= A) %= m;
+  }
+  return -1;
+}

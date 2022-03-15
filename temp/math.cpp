@@ -30,6 +30,11 @@ LP extGCD(ll a, ll b) {
   return {p11, p12};
 }
 
+ull euler_phi(ull n) {
+  ull ret = n;
+  for(ll i = 2; i * i <= n; i++) if(n % i == 0) { ret -= ret / i; while(n % i == 0) n /= i; }
+  if(n > 1) ret -= ret / n; return ret; }
+
 template<typename T> vector<T> m_map(vector<vector<T>>& l, vector<T>& r) {
   assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size()); vector<T> ans(l.size(), 0);
   for(int i = 0; i < l.size(); i++) for (int j = 0; j < r.size(); j++) ans[i] += l[i][j] * r[j]; return ans; }
