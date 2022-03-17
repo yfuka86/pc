@@ -28,3 +28,24 @@ pair<ll, LP> diameter(Graph<ll> &G) {
   LP deepest = mp(0, 0); function<void(ll, ll, ll)> dfs = [&](ll v, ll p, ll d) { chmax(deepest, mp(d, v)); for (auto to: G[v]) if (to != p) dfs(to, v, d + to.cost); };
   dfs(0, -1, 0); ll s = deepest.second; deepest = mp(0, 0); dfs(s, -1, 0);
   return mp(deepest.first, mp(s, deepest.second)); }
+
+template< typename T = ll >
+pair<vi, vector<Edge<T>>> bridges(Graph<T> &G) {
+  int n = G.size(); vector<int> used(n), ord(n), low(n), articulation; vector<Edge<T>> bridge;
+  function<int(int, int, int)> dfs = [&](int idx, int k, int par) {
+    used[idx] = true; ord[idx] = k++; low[idx] = ord[idx];
+    bool is_articulation = false, beet = false; int cnt = 0;
+    for(auto &to : G[idx]) {
+      if(to == par && !exchange(beet, true)) continue;
+      if(!used[to]) {
+        ++cnt; k = dfs(to, k, idx); low[idx] = min(low[idx], low[to]);
+        is_articulation |= par >= 0 && low[to] >= ord[idx];
+        if(ord[idx] < low[to]) bridge.emplace_back(to);
+      } else low[idx] = min(low[idx], ord[to]);
+    }
+    is_articulation |= par == -1 && cnt > 1; if (is_articulation) articulation.push_back(idx);
+    return k;
+  };
+  int k = 0; for(int i = 0; i < n; i++) if(!used[i]) k = dfs(i, k, -1);
+  return mp(articulation, bridge);
+}

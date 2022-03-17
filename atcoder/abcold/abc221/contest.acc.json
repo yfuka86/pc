@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc221",
+    "title": "AtCoder Beginner Contest 221",
+    "url": "https://atcoder.jp/contests/abc221"
+  },
+  "tasks": [
+    {
+      "id": "abc221_a",
+      "label": "A",
+      "title": "Seismic magnitude scales",
+      "url": "https://atcoder.jp/contests/abc221/tasks/abc221_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc221_a.cpp"
+      }
+    },
+    {
+      "id": "abc221_b",
+      "label": "B",
+      "title": "typo",
+      "url": "https://atcoder.jp/contests/abc221/tasks/abc221_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc221_b.cpp"
+      }
+    },
+    {
+      "id": "abc221_c",
+      "label": "C",
+      "title": "Select Mul",
+      "url": "https://atcoder.jp/contests/abc221/tasks/abc221_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc221_c.cpp"
+      }
+    },
+    {
+      "id": "abc221_d",
+      "label": "D",
+      "title": "Online games",
+      "url": "https://atcoder.jp/contests/abc221/tasks/abc221_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc221_d.cpp"
+      }
+    },
+    {
+      "id": "abc221_e",
+      "label": "E",
+      "title": "LEQ",
+      "url": "https://atcoder.jp/contests/abc221/tasks/abc221_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc221_e.cpp"
+      }
+    },
+    {
+      "id": "abc221_f",
+      "label": "F",
+      "title": "Diameter set",
+      "url": "https://atcoder.jp/contests/abc221/tasks/abc221_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc221_f.cpp"
+      }
+    },
+    {
+      "id": "abc221_g",
+      "label": "G",
+      "title": "Jumping sequence",
+      "url": "https://atcoder.jp/contests/abc221/tasks/abc221_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc221_g.cpp"
+      }
+    },
+    {
+      "id": "abc221_h",
+      "label": "H",
+      "title": "Count Multiset",
+      "url": "https://atcoder.jp/contests/abc221/tasks/abc221_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "abc221_h.cpp"
+      }
+    }
+  ]
+}
