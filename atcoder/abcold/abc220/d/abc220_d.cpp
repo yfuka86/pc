@@ -30,38 +30,48 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-bool check(ll a){
-	while(a){
-		if (a % 10 >= 5) return false;
-    a /= 10;
-	}
-	return true;
-}
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod >
+struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }
+  ModInt &operator/=(const ModInt &p) { *this *= p.inverse(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }
+  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }
+  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }
+  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >;
+typedef vector<mint> vmi;
 
 void solve() {
   ll N; cin >> N;
   vl a(N); rep(i, N) cin >> a[i];
-
-  vector<vl> dp(7, vl(1000000, 0));
-  rep(i, N) dp[0][a[i]]++;
-
-  rep(i, 6) {
-    ll pow10 = POW(10, i);
-    rep(j, 1000000) {
-      ll current = j / pow10 % 10;
-      rep(k, 10 - current) {
-        // if (dp[i][tmp + pow10[i] * k]) cout << i + 1 << ":" << j << "    " << i << ":" << tmp + pow10[i] * k << "<<" << dp[i][tmp + pow10[i] * k] << "\n";
-        dp[i + 1][j + pow10 * k] += dp[i][j];
-      }
+  vector<vmi> dp(N, vmi(10, 0));
+  dp[0][a[0]] = 1;
+  rep(i, N - 1) {
+    rep(j, 10) {
+      ll mul = a[i + 1] * j % 10;
+      ll add = (a[i + 1] + j) % 10;
+      dp[i + 1][add] += dp[i][j];
+      dp[i + 1][mul] += dp[i][j];
     }
   }
-
-  ll ans = 0;
-  rep(i, N) {
-    ans += dp[6][999999 - a[i]];
-    if (check(a[i])) ans--;
+  rep(i, 10) {
+    cout << dp[N - 1][i] << "\n";
   }
-  cout << ans / 2 << endl;
 }
 
 signed main() {

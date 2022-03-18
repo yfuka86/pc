@@ -30,38 +30,18 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-bool check(ll a){
-	while(a){
-		if (a % 10 >= 5) return false;
-    a /= 10;
-	}
-	return true;
-}
-
 void solve() {
   ll N; cin >> N;
   vl a(N); rep(i, N) cin >> a[i];
+  ll X; cin >> X;
 
-  vector<vl> dp(7, vl(1000000, 0));
-  rep(i, N) dp[0][a[i]]++;
-
-  rep(i, 6) {
-    ll pow10 = POW(10, i);
-    rep(j, 1000000) {
-      ll current = j / pow10 % 10;
-      rep(k, 10 - current) {
-        // if (dp[i][tmp + pow10[i] * k]) cout << i + 1 << ":" << j << "    " << i << ":" << tmp + pow10[i] * k << "<<" << dp[i][tmp + pow10[i] * k] << "\n";
-        dp[i + 1][j + pow10 * k] += dp[i][j];
-      }
-    }
-  }
-
+  vl sum(N + 1, 0); rep(i, N) sum[i + 1] = sum[i] + a[i];
   ll ans = 0;
+  ans += X / sum[N] * N;
+  X %= sum[N];
   rep(i, N) {
-    ans += dp[6][999999 - a[i]];
-    if (check(a[i])) ans--;
+    if (sum[i + 1] > X) { cout << ans + i + 1 << "\n"; break; }
   }
-  cout << ans / 2 << endl;
 }
 
 signed main() {

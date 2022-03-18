@@ -30,38 +30,32 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-bool check(ll a){
-	while(a){
-		if (a % 10 >= 5) return false;
-    a /= 10;
-	}
-	return true;
-}
-
 void solve() {
   ll N; cin >> N;
-  vl a(N); rep(i, N) cin >> a[i];
+  vl a(1 << N); rep(i, 1 << N) cin >> a[i];
+  vector<vector<LP>> dp(N + 1, vector<LP>(1 << N, mp(0, 0)));
 
-  vector<vl> dp(7, vl(1000000, 0));
-  rep(i, N) dp[0][a[i]]++;
-
-  rep(i, 6) {
-    ll pow10 = POW(10, i);
-    rep(j, 1000000) {
-      ll current = j / pow10 % 10;
-      rep(k, 10 - current) {
-        // if (dp[i][tmp + pow10[i] * k]) cout << i + 1 << ":" << j << "    " << i << ":" << tmp + pow10[i] * k << "<<" << dp[i][tmp + pow10[i] * k] << "\n";
-        dp[i + 1][j + pow10 * k] += dp[i][j];
+  rep(i, 1 << N) dp[0][i] = mp(a[i], 0);
+  rep(i, N) {
+    rep(j, 1 << N) {
+      if (j >> i & 1) {
+        auto [a1, a2] = dp[i][j & ~(1 << i)];
+        auto [a3, a4] = dp[i][j];
+        vl t = { a1, a2, a3, a4 };
+        sort(all(t));
+        dp[i + 1][j] = mp(t[3], t[2]);
+      } else {
+        dp[i + 1][j] = dp[i][j];
       }
     }
   }
 
   ll ans = 0;
-  rep(i, N) {
-    ans += dp[6][999999 - a[i]];
-    if (check(a[i])) ans--;
+  rep2(i, 1, 1 << N) {
+    auto [a1, a2] = dp[N][i];
+    chmax(ans, a1 + a2);
+    cout << ans << "\n";
   }
-  cout << ans / 2 << endl;
 }
 
 signed main() {

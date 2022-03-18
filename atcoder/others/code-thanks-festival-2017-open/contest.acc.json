@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "code-thanks-festival-2017-open",
+    "title": "CODE THANKS FESTIVAL 2017(Parallel)",
+    "url": "https://atcoder.jp/contests/code-thanks-festival-2017-open"
+  },
+  "tasks": [
+    {
+      "id": "code_thanks_festival_2017_a",
+      "label": "A",
+      "title": "Time Penalty",
+      "url": "https://atcoder.jp/contests/code-thanks-festival-2017-open/tasks/code_thanks_festival_2017_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "code_thanks_festival_2017_a.cpp"
+      }
+    },
+    {
+      "id": "code_thanks_festival_2017_b",
+      "label": "B",
+      "title": "Concatenated Palindrome",
+      "url": "https://atcoder.jp/contests/code-thanks-festival-2017-open/tasks/code_thanks_festival_2017_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "code_thanks_festival_2017_b.cpp"
+      }
+    },
+    {
+      "id": "code_thanks_festival_2017_c",
+      "label": "C",
+      "title": "Factory",
+      "url": "https://atcoder.jp/contests/code-thanks-festival-2017-open/tasks/code_thanks_festival_2017_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "code_thanks_festival_2017_c.cpp"
+      }
+    },
+    {
+      "id": "code_thanks_festival_2017_d",
+      "label": "D",
+      "title": "Bus Tour",
+      "url": "https://atcoder.jp/contests/code-thanks-festival-2017-open/tasks/code_thanks_festival_2017_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "code_thanks_festival_2017_d.cpp"
+      }
+    },
+    {
+      "id": "code_thanks_festival_2017_e",
+      "label": "E",
+      "title": "Coin Authentication",
+      "url": "https://atcoder.jp/contests/code-thanks-festival-2017-open/tasks/code_thanks_festival_2017_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "code_thanks_festival_2017_e.cpp"
+      }
+    },
+    {
+      "id": "code_thanks_festival_2017_f",
+      "label": "F",
+      "title": "Limited Xor Subset",
+      "url": "https://atcoder.jp/contests/code-thanks-festival-2017-open/tasks/code_thanks_festival_2017_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "code_thanks_festival_2017_f.cpp"
+      }
+    },
+    {
+      "id": "code_thanks_festival_2017_g",
+      "label": "G",
+      "title": "Mixture Drug",
+      "url": "https://atcoder.jp/contests/code-thanks-festival-2017-open/tasks/code_thanks_festival_2017_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "code_thanks_festival_2017_g.cpp"
+      }
+    },
+    {
+      "id": "code_thanks_festival_2017_h",
+      "label": "H",
+      "title": "Union Sets",
+      "url": "https://atcoder.jp/contests/code-thanks-festival-2017-open/tasks/code_thanks_festival_2017_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "code_thanks_festival_2017_h.cpp"
+      }
+    }
+  ]
+}

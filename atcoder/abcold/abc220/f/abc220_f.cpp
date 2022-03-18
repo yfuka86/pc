@@ -30,38 +30,62 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
-bool check(ll a){
-	while(a){
-		if (a % 10 >= 5) return false;
-    a /= 10;
-	}
-	return true;
-}
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); } void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 void solve() {
   ll N; cin >> N;
-  vl a(N); rep(i, N) cin >> a[i];
+  Graph<ll> G(N);
+  rep(i, N - 1) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G.add_edge(a, b);
+  }
 
-  vector<vl> dp(7, vl(1000000, 0));
-  rep(i, N) dp[0][a[i]]++;
+  vl dpdist(N, 0), dpsize(N, 0);
+  function<void(ll, ll)> dfs1 = [&](ll v, ll p) {
+    dpsize[v] += 1;
+    for (auto &e: G[v]) {
+      if (e.to == p) continue;
+      dfs1(e.to, v);
+      dpsize[v] += dpsize[e.to];
+      dpdist[v] += dpdist[e.to] + dpsize[e.to];
+    }
+  };
+  dfs1(0, -1);
 
-  rep(i, 6) {
-    ll pow10 = POW(10, i);
-    rep(j, 1000000) {
-      ll current = j / pow10 % 10;
-      rep(k, 10 - current) {
-        // if (dp[i][tmp + pow10[i] * k]) cout << i + 1 << ":" << j << "    " << i << ":" << tmp + pow10[i] * k << "<<" << dp[i][tmp + pow10[i] * k] << "\n";
-        dp[i + 1][j + pow10 * k] += dp[i][j];
+  // coutarray(dpdist);
+  // coutarray(dpsize);
+
+  vl ans(N, 0);
+  function<void(ll, LP, ll)> dfs2 = [&](ll v, LP dpp, ll p) {
+    ll dist = 0, size = 1;
+    for (auto &e: G[v]) {
+      if (e.to == p) {
+        dist += dpp.first + dpp.second;
+        size += dpp.second;
+      } else {
+        dist += dpdist[e] + dpsize[e];
+        size += dpsize[e];
       }
     }
-  }
+    ans[v] = dist;
 
-  ll ans = 0;
+    for (auto &e: G[v]) {
+      if (e.to == p) continue;
+      dfs2(e.to, mp(dist - (dpdist[e] + dpsize[e]), size - dpsize[e]), v);
+    }
+  };
+  dfs2(0, mp(0, 0), -1);
+
   rep(i, N) {
-    ans += dp[6][999999 - a[i]];
-    if (check(a[i])) ans--;
+    cout << ans[i] << "\n";
   }
-  cout << ans / 2 << endl;
 }
 
 signed main() {
