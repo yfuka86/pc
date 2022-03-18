@@ -29,9 +29,32 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
 
 void solve() {
-  ll N; cin >> N;
+  ll N, M; cin >> N >> M;
+  vector<LP> op(M); rep(i, M) { ll a, b; cin >> a >> b; op[i] = mp(a, b); }
+  ll Q; cin >> Q;
+  vector<LP> q(Q); rep(i, Q) { ll a, b; cin >> a >> b; op[i] = mp(a, b); }
+
+  map<tuple<ll, ll, ll>, vl> cache;
+  vl t(Q); iota(all(t), 0);
+  cache[{M / 2, 0, M}] = t;
+
+  while (true) {
+    UnionFind un(N);
+
+  }
 }
 
 signed main() {
