@@ -41,19 +41,54 @@ struct UnionFind {
 };
 //------------------------------------------------------------------------------
 
+using T = tuple<ll, ll, ll, ll>;
+
 void solve() {
   ll N, M; cin >> N >> M;
   vector<LP> op(M); rep(i, M) { ll a, b; cin >> a >> b; op[i] = mp(a, b); }
   ll Q; cin >> Q;
-  vector<LP> q(Q); rep(i, Q) { ll a, b; cin >> a >> b; op[i] = mp(a, b); }
+  vector<LP> query(Q); rep(i, Q) { ll a, b; cin >> a >> b; query[i] = mp(a, b); }
 
-  map<tuple<ll, ll, ll>, vl> cache;
-  vl t(Q); iota(all(t), 0);
-  cache[{M / 2, 0, M}] = t;
+  if (M == 0) { rep(i, Q) cout << -1 << "\n"; return; }
 
-  while (true) {
-    UnionFind un(N);
+  priority_queue<T, vector<T>, greater<T>> que;
+  rep(i, Q) {
+    que.push({M / 2, -1, M, i});
+  }
 
+  vl ans(Q, -1);
+  while (!que.empty()) {
+    UnionFind un(N + 1);
+    vector<T> next;
+    rep(i, M) {
+      auto [x, y] = op[i];
+      un.unite(x, y);
+
+      while (!que.empty() && get<0>(que.top()) == i) {
+        ll mid, ng, ok, q; tie(mid, ng, ok, q) = que.top(); que.pop();
+        // cout << mid << " " << ng << " " << ok << " " << q << endl;
+        auto [a, b] = query[q];
+        // if (q == 2)  cout << i << " " << ng << " " << ok << " " << a << ":" << b << "&" << un.same(a, b) << endl;
+        if (un.same(a, b)) {
+          ok = mid;
+        } else ng = mid;
+
+        if (ok - 1 > ng) {
+          if ((ok + ng) / 2 > i) {
+            que.push({(ok + ng) / 2, ng, ok, q});
+          } else next.pb({(ok + ng) / 2, ng, ok, q});
+        } else {
+          ans[q] = ok + 1;
+        }
+      }
+    }
+
+    for (auto t: next) que.push(t);
+    next.clear();
+  }
+
+  rep(i, Q) {
+    cout << (ans[i] > M ? -1 : ans[i]) << "\n";
   }
 }
 
