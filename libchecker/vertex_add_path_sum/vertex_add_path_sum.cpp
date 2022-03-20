@@ -80,7 +80,30 @@ private:
 };
 
 void solve() {
-  ll N; cin >> N;
+  ll N, Q; cin >> N >> Q;
+  vl a(N); rep(i, N) cin >> a[i];
+  vl U(N), V(N);
+  HeavyLightDecomposition<ll> G(N);
+  rep2(i, 1, N) {
+    cin >> U[i] >> V[i];
+    G.add_edge(U[i], V[i]);
+  }
+  G.build();
+  rep(i, N) if(G.in[U[i]] > G.in[V[i]]) swap(U[i], V[i]);
+
+
+  auto f = [](const ll &a, const ll &b) { return a + b; };
+  rep(i, Q) {
+    ll q; cin >> q;
+    if (q) {
+      ll u, v; cin >> u >> v;
+      auto mat = g.query(y, z, Mat::mul_identity(), [&](int a, int b) { return seg.prod(a, b); }, f, true);
+    } else {
+      ll p; cin >> p;
+
+      seg.set(g.in[Y[v + 1]], m);
+    }
+  }
 }
 
 signed main() {

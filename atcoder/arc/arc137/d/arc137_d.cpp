@@ -33,21 +33,23 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 void solve() {
   ll n, m; cin >> n >> m;
   vl a(n); rep(i, n) cin >> a[i];
+  ll h = max(ceil_pow2(m), ceil_pow2(n)), s = POW(2, h);
 
-  vl ans(m);
+  vector<vl> ans(h + 1, vl(s, 0));
+  rep(i, n) ans[0][s - n + i] = a[i];
 
-  rep(i, m) {
-    ll tmp = 0;
-    rep_r(j, n) {
-      ll t = n - 1 - j;
-      cout << i << " " << t << " " << (t & i) << "so" << a[t] << "\n";
-      if ((t & i) == 0) tmp ^= a[t];
+  rep(i, h) {
+    rep(j, s) {
+      ans[i + 1][j] ^= ans[i][j];
+      if (j & 1 << i) {
+        ans[i + 1][j ^ 1 << i] ^= ans[i][j];
+      }
     }
-    ans[i] = tmp;
   }
+  // coutmatrix(ans);
 
-  coutarray(ans);
-
+  ans[h].resize(m);
+  coutarray(ans[h]);
 }
 
 signed main() {

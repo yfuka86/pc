@@ -29,26 +29,58 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
+ll inv(vl v) {
+  BIT<int> bs(v.size());
+  ll ans = 0;
+  rep(i, v.size()) {
+    ans += i - bs.sum(v[i]);
+    bs.add(v[i], 1);
+  }
+  return ans;
+}
 
 void solve() {
-  ll n; cin >> n;
+  vl s(3), t(3);
+  rep(i, 3) {
+    string S; cin >> S;
+    if (S == "R") s[i] = 0;
+    if (S == "G") s[i] = 1;
+    if (S == "B") s[i] = 2;
+  }
+  rep(i, 3) {
+    string S; cin >> S;
+    if (S == "R") t[i] = 0;
+    if (S == "G") t[i] = 1;
+    if (S == "B") t[i] = 2;
+  }
+  ll si = inv(s), ti = inv(t);
+  if ((si - ti) % 2) cout << "No" << "\n";
+  else cout << "Yes" << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
-}
-
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "?") {
-  cout << str <<  " " << q << "\n"; cout.flush();
-  A a; cin >> a; return a;
-}
-
-template<typename A> void ianswer(A a) {
-  cout << "! " << a << "\n"; cout.flush();
 }

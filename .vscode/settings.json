@@ -69,7 +69,8 @@
     "ios": "cpp",
     "__nullptr": "cpp",
     "chrono": "cpp",
-    "convolution": "cpp"
+    "convolution": "cpp",
+    "__tuple": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",

@@ -41,6 +41,17 @@ ll inv(ll a, ll p) { return (a == 1 ? 1 : (1 - p * inv(p % a, a)) / a + p); }
 modint operator/(modint a, modint b) { return a * modint(inv(b, mod)); }
 modint operator/=(modint& a, modint b) { a = a / b; return a; }
 //------------------------------------------------------------------------------
+// 典型部分列DP
+vl subseq_num(vector<ll> &v, ll m = mod) {
+  ll n = v.size(); map<ll, ll> lasti;
+  vl dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
+  rep(i, n) {
+    dp[i] += sum[i] - sum[lasti[v[i]]]; if (dp[i] < 0) dp[i] += m;
+    sum[i + 1] = (sum[i] + dp[i]) % m;
+    lasti[v[i]] = i;
+  }
+  return dp;
+}
 
 int main()
 {
@@ -50,23 +61,12 @@ int main()
   ll N; cin >> N;
   vl a(N);
   rep(i, N) cin >> a[i];
-  vl csum(N + 1, 0);
-  rep(i, N) csum[i + 1] = csum[i] + a[i];
+  vl csum(N, 0);
+  rep2(i, 1, N) csum[i] = csum[i - 1] + a[i - 1];
 
-  map<ll, ll> lastIndexOf;
-  vmi dp(N, modint(0));
-  vmi dpsum(N + 1, modint(0));
-  dp[0] = modint(1); dpsum[1] = modint(1);
-  rep2(i, 1, N) {
-    ll lasti = lastIndexOf.count(csum[i]) ? lastIndexOf[csum[i]] : 0;
-    dp[i] += dpsum[i] - dpsum[lasti];
-    dpsum[i + 1] = dpsum[i] + dp[i];
-    lastIndexOf[csum[i]] = i;
-  }
-  // coutarray(dp);
-  modint ans = accumulate(all(dp), modint(0));
-
-  cout << ans << "\n";
+  vl dp = subseq_num(csum, mod);
+  modint ans = accumulate(dp.begin(), dp.end() - 1, 0LL);
+  cout << ans % mod << "\n";
 }
 
 

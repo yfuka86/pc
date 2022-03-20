@@ -29,26 +29,26 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll N; cin >> N;
+  set<ll> rem;
+  rep2(i, 1, 2 * (N + 1)) {
+    rem.insert(i);
+  }
+  rep(i, N + 1) {
+    ll t = *rem.begin(); rem.erase(t);
+    cout << t << "\n";
+    cout.flush();
+    ll a; cin >> a;
+    rem.erase(a);
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
-}
-
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "?") {
-  cout << str <<  " " << q << "\n"; cout.flush();
-  A a; cin >> a; return a;
-}
-
-template<typename A> void ianswer(A a) {
-  cout << "! " << a << "\n"; cout.flush();
 }

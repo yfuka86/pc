@@ -5,6 +5,18 @@ ll get_lis(vector<ll> &a) {
 	return lower_bound(dp.begin(), dp.begin() + N, INF) - dp.begin();
 }
 
+// 典型部分列DP
+vl subseq_num(vector<ll> &v, ll m = mod) {
+  ll n = v.size(); map<ll, ll> lasti;
+  vl dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
+  rep(i, n) {
+    dp[i] += sum[i] - sum[lasti[v[i]]]; if (dp[i] < 0) dp[i] += m;
+    sum[i + 1] = (sum[i] + dp[i]) % m;
+    lasti[v[i]] = i;
+  }
+  return dp;
+}
+
 template<typename T>
 pair<typename vector<T>::iterator, typename vector<T>::iterator > max_successive(vector<T> &a) {
   ll c = 1; auto f = a.begin(), t = a.begin();

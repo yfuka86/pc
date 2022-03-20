@@ -29,26 +29,77 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
+
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+
+using T = tuple<ll, ll, ll>;
 void solve() {
-  ll n; cin >> n;
+  ll N, M; cin >> N >> M;
+  Graph<ll> G(N);
+  rep(i, M) {
+    ll u,v; cin >> u >> v; u--; v--;
+    G.add_edge(u, v);
+  }
+
+  // vector<vl> dp(1 << N, vl(N, LINF));
+
+  // rep(i, N) {
+  //   dp[1 << i][i] = 1;
+  // }
+
+  // rep(S, 1 << N) {
+  //   rep(i, N) {
+  //     for (auto &from: G[i]) {
+  //       if (dp[S][from] == LINF) continue;
+  //       chmin(dp[S ^ (1 << i)][i], dp[S][from] + 1);
+  //     }
+  //     for (auto &to: G[i]) {
+  //       if (dp[S][i] == LINF) continue;
+  //       chmin(dp[S ^ (1 << to)][to], dp[S][i] + 1);
+  //     }
+  //   }
+  // }
+  vector<vl> dp(1 << N, vl(N, LINF));
+  priority_queue<T, vector<T>, greater<T>> que;
+  rep(i, N) {
+    dp[1 << i][i] = 1;
+    que.push({1, 1 << i, i});
+  }
+
+  while(!que.empty()) {
+    ll c, S, i; tie(c, S, i) = que.top(); que.pop();
+    for (auto &to: G[i]) {
+      if (dp[S ^ (1 << to)][to] > c + 1) {
+        dp[S ^ (1 << to)][to] = c + 1;
+        que.push({c + 1, S ^ (1 << to), to});
+      }
+    }
+  }
+
+  ll ans = 0;
+  rep2(S, 1, 1 << N) {
+    ll t = LINF;
+    rep(i, N) chmin(t, dp[S][i]);
+    // cout << t << " ";
+    ans += t;
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
-}
-
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "?") {
-  cout << str <<  " " << q << "\n"; cout.flush();
-  A a; cin >> a; return a;
-}
-
-template<typename A> void ianswer(A a) {
-  cout << "! " << a << "\n"; cout.flush();
 }

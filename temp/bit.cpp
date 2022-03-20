@@ -16,6 +16,10 @@ struct BIT {
     return x; }
 };
 // ----------------------------------------------------------------------
+ll inv_num(vl& v) {
+  BIT<int> bs(v.size()); ll ans = 0;
+  rep(i, v.size()) { ans += i - bs.sum(v[i]); bs.add(v[i], 1); } return ans; }
+// ----------------------------------------------------------------------
 
 template<class t>
 struct BIT{
