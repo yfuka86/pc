@@ -22,7 +22,7 @@ struct EulerTour : Graph<T> {
 public:
   using Graph<T>::Graph; using Graph<T>::g; vector<int> in, out, par, dep, node, edge; vector<ll> edgec; SparseTable<LP> st;
   void build() {
-    ll n = g.size(), len = n * 2; in.assign(n, 0); out.assign(n, 0); par.assign(n, 0); dep.assign(len, -1); node.assign(len, 0); edge.assign(len, 0); edgec.assign(len, 0);
+    ll n = g.size(), len = n * 2; in.assign(n, -1); out.assign(n, -1); par.assign(n, -1); dep.assign(len, -1); node.assign(len - 1, -1); edge.assign(len, 0); edgec.assign(len, 0);
     int t = 0; dfs(Edge<T>(-1, 0, 0), 0, t);
     vector<LP> tmp(len); rep(i, len) tmp[i] = mp(dep[i], i); st.build(tmp);
   }
@@ -35,10 +35,10 @@ private:
   void dfs(Edge<T> e, int d, int &cur) {
     int p = e.from, v = e.to; par[v] = p; dep[cur] = d; node[cur] = v; edge[cur] = v; edgec[cur] = e.cost; in[v] = cur++;
     for(Edge<T> &next : g[v]) {
-      if(next.to == p) continue;
+      if(next.to == p || in[next.to] != -1) continue;
       dfs(next, d + 1, cur);
       cur++;
     }
-    out[v] = cur; dep[cur] = d - 1; node[cur] = p; edge[cur] = -e.to; edgec[cur] = -e.cost;
+    out[v] = cur - 1; dep[cur] = d - 1; node[cur] = p; edge[cur] = -e.to; edgec[cur] = -e.cost;
   }
 };

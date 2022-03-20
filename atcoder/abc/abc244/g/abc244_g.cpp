@@ -53,7 +53,7 @@ struct EulerTour : Graph<T> {
 public:
   using Graph<T>::Graph; using Graph<T>::g; vector<int> in, out, par, dep, node, edge; vector<ll> edgec; SparseTable<LP> st;
   void build() {
-    ll n = g.size(), len = n * 2; in.assign(n, 0); out.assign(n, 0); par.assign(n, 0); dep.assign(len, -1); node.assign(len, 0); edge.assign(len, 0); edgec.assign(len, 0);
+    ll n = g.size(), len = n * 2; in.assign(n, -1); out.assign(n, -1); par.assign(n, -1); dep.assign(len, -1); node.assign(len - 1, -1); edge.assign(len, 0); edgec.assign(len, 0);
     int t = 0; dfs(Edge<T>(-1, 0, 0), 0, t);
     vector<LP> tmp(len); rep(i, len) tmp[i] = mp(dep[i], i); st.build(tmp);
   }
@@ -66,11 +66,11 @@ private:
   void dfs(Edge<T> e, int d, int &cur) {
     int p = e.from, v = e.to; par[v] = p; dep[cur] = d; node[cur] = v; edge[cur] = v; edgec[cur] = e.cost; in[v] = cur++;
     for(Edge<T> &next : g[v]) {
-      if(next.to == p) continue;
+      if(next.to == p || in[next.to] != -1) continue;
       dfs(next, d + 1, cur);
       cur++;
     }
-    out[v] = cur; dep[cur] = d - 1; node[cur] = p; edge[cur] = -e.to; edgec[cur] = -e.cost;
+    out[v] = cur - 1; dep[cur] = d - 1; node[cur] = p; edge[cur] = -e.to; edgec[cur] = -e.cost;
   }
 };
 
@@ -81,13 +81,29 @@ void solve() {
     ll u,v; cin >> u >> v; u--; v--;
     G.add_edge(u, v);
   }
-  string s; cin >> s;
+  G.build();
+  string S; cin >> S;
+  vl s(N, 0); rep(i, N) if (S[i] == '1') s[i] = 1;
 
-  vl ans;
-  vl need;
-  rep(i, N) if (s[i] == '1') need.pb(i);
+  vl used(N, 0), ans;
+  auto add = [&](ll n) { ans.pb(n); used[n]^= 1; };
 
+  add(0);
+  rep2(i, 1, G.node.size() - 1) {
+    ll n = G.node[i];
+    if (G.in[n] == G.out[n]) {
+      // 葉の場合
+      if (s[n]) add(n);
+    } else {
+      if (ans.back() != n) add(n);
+      // 最後出る前に親との間を往復
+      if (G.out[n] == i) if (s[n] ^ used[n]) { add(G.par[n]); add(n); }
+    }
+  }
+  if (s[0] ^ used[0]) { ans.erase(ans.begin()); used[0] ^= 1; }
 
+  cout << ans.size() << "\n";
+  coutarray(ans, 1);
 }
 
 signed main() {
