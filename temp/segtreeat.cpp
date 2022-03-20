@@ -42,7 +42,7 @@ S mapping(F l, S r) { return l + r; }
 F composition(F l, F r) { { return l + r; } }
 F id() { return 0; }
 
-// lazy_segtree<S, op, e, F, mapping, composition, id> seg(a);
+lazy_segtree<S, op, e, F, mapping, composition, id> seg(a);
 // ll ans = seg.max_right<function<bool(S)>>(a,
 //   [&b](S x) {
 //     if (x.a == -1) return true;
@@ -72,3 +72,7 @@ template <class S, S (*op)(S, S), S (*e)()> struct segtree {
 };
 //------------------------------------------------------------------------------
 
+using S = ll;
+S op(S l, S r) { return l + r; }
+S e() { return 0; }
+segtree<S, op, e> seg(a);

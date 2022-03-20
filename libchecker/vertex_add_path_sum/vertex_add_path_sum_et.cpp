@@ -29,55 +29,51 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-
 template< typename T = ll > struct Edge {
   int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
   operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
 template< typename T = ll > struct Graph {
   vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
   size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); } void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+template< typename T > struct SparseTable {
+  vector< vector< T > > st; vector< int > lookup;
+  SparseTable() = default;
+  void build(const vector< T > &v) {
+    int b = 0; while((1 << b) <= v.size()) ++b; st.assign(b, vector< T >(1 << b));
+    for(int i = 0; i < v.size(); i++) st[0][i] = v[i];
+    for(int i = 1; i < b; i++) for(int j = 0; j + (1 << i) <= (1 << b); j++) st[i][j] = min(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
+    lookup.resize(v.size() + 1); for(int i = 2; i < lookup.size(); i++) lookup[i] = lookup[i >> 1] + 1; }
+  inline T rmq(int l, int r) const { int b = lookup[r - l]; return min(st[b][l], st[b][r - (1 << b)]); } };
 
 template< typename T = ll >
-struct HeavyLightDecomposition : Graph< T > {
+struct EulerTour : Graph<T> {
 public:
-  using Graph< T >::Graph; using Graph< T >::g; vector< int > sz, in, out, head, rev, par, dep;
+  using Graph<T>::Graph; using Graph<T>::g; vector<int> in, out, par, dep, node, edge; vector<ll> edgec; SparseTable<LP> st;
   void build() {
-    sz.assign(g.size(), 0); in.assign(g.size(), 0); out.assign(g.size(), 0); head.assign(g.size(), 0); rev.assign(g.size(), 0); par.assign(g.size(), 0); dep.assign(g.size(), 0);
-    dfs_sz(0, -1, 0); int t = 0; dfs_hld(0, -1, t); }
-  /* k: 0-indexed */
-  int la(int v, int k) { while(1) { int u = head[v]; if(in[v] - k >= in[u]) return rev[in[v] - k]; k -= in[v] - in[u] + 1; v = par[u]; } }
-  int lca(int u, int v) const { for(;; v = par[head[v]]) { if(in[u] > in[v]) swap(u, v); if(head[u] == head[v]) return u; } }
-  int dist(int u, int v) const { return dep[u] + dep[v] - 2 * dep[lca(u, v)]; }
-  template< typename E, typename Q, typename F, typename S >
-  E query(int u, int v, const E &ti, const Q &q, const F &f, const S &s, bool edge = false) {
-    E l = ti, r = ti; for(;; v = par[head[v]]) { if(in[u] > in[v]) swap(u, v), swap(l, r); if(head[u] == head[v]) break; l = f(q(in[head[v]], in[v] + 1), l); }
-    return s(f(q(in[u] + edge, in[v] + 1), l), r); }
-  template< typename E, typename Q, typename F >
-  E query(int u, int v, const E &ti, const Q &q, const F &f, bool edge = false) { return query(u, v, ti, q, f, f, edge); }
-  template< typename Q >
-  void add(int u, int v, const Q &q, bool edge = false) { for(;; v = par[head[v]]) { if(in[u] > in[v]) swap(u, v); if(head[u] == head[v]) break; q(in[head[v]], in[v] + 1); } q(in[u] + edge, in[v] + 1); }
-  /* {parent, child} */
-  vector< pair< int, int > > compress(vector< int > &remark) {
-    auto cmp = [&](int a, int b) { return in[a] < in[b]; };
-    sort(begin(remark), end(remark), cmp); remark.erase(unique(begin(remark), end(remark)), end(remark));
-    int K = (int) remark.size(); for(int k = 1; k < K; k++) remark.emplace_back(lca(remark[k - 1], remark[k]));
-    sort(begin(remark), end(remark), cmp); remark.erase(unique(begin(remark), end(remark)), end(remark));
-    vector< pair< int, int > > es; stack< int > st;
-    for(auto &k : remark) { while(!st.empty() && out[st.top()] <= in[k]) st.pop(); if(!st.empty()) es.emplace_back(st.top(), k); st.emplace(k); }
-    return es; }
-  explicit HeavyLightDecomposition(const Graph< T > &g) : Graph< T >(g) {}
+    ll n = g.size(), len = n * 2; in.assign(n, -1); out.assign(n, -1); par.assign(n, -1); dep.assign(len, -1); node.assign(len - 1, -1); edge.assign(len, 0); edgec.assign(len, 0);
+    int t = 0; dfs(Edge<T>(-1, 0, 0), 0, t);
+    vector<LP> tmp(len); rep(i, len) tmp[i] = mp(dep[i], i); st.build(tmp);
+  }
+  int depth(int u) const { return dep[in[u]]; }
+  int subtree_size(int u) const { return (out[u] - in[u] + 1) / 2; }
+  int lca(int u, int v) const { int l = in[u], r = out[v] + 1; if (l > r) swap(l, r); return node[st.rmq(l, r).second]; }
+  int dist(int u, int v) const { return depth(u) + depth(v) - 2 * depth(lca(u, v)); }
+
 private:
-  void dfs_sz(int idx, int p, int d) {
-    dep[idx] = d; par[idx] = p; sz[idx] = 1;
-    if(g[idx].size() && g[idx][0] == p) swap(g[idx][0], g[idx].back());
-    for(auto &to : g[idx]) { if(to == p) continue; dfs_sz(to, idx, d + 1); sz[idx] += sz[to]; if(sz[g[idx][0]] < sz[to]) swap(g[idx][0], to); } }
-  void dfs_hld(int idx, int p, int &times) {
-    in[idx] = times++; rev[in[idx]] = idx;
-    for(auto &to : g[idx]) { if(to == p) continue; head[to] = (g[idx][0] == to ? head[idx] : to); dfs_hld(to, idx, times); }
-    out[idx] = times; }
+  void dfs(Edge<T> e, int d, int &cur) {
+    int p = e.from, v = e.to; par[v] = p; dep[cur] = d; node[cur] = v; edge[cur] = v; edgec[cur] = e.cost; in[v] = cur++;
+    for(Edge<T> &next : g[v]) {
+      if(next.to == p || in[next.to] != -1) continue;
+      dfs(next, d + 1, cur);
+      cur++;
+    }
+    out[v] = cur - 1; dep[cur] = d - 1; node[cur] = p; edge[cur] = -e.to; edgec[cur] = -e.cost;
+  }
 };
+
 template<typename T>
 struct BIT {
   int n; vector<T> bit;
@@ -95,31 +91,27 @@ struct BIT {
     return x; }
 };
 
-
 void solve() {
   ll N, Q; cin >> N >> Q;
   vl a(N); rep(i, N) cin >> a[i];
-  HeavyLightDecomposition<ll> G(N);
-  rep2(i, 1, N) {
+  EulerTour<ll> G(N);
+  rep(i, N - 1) {
     ll u, v; cin >> u >> v;
     G.add_edge(u, v);
   }
   G.build();
-  BIT<ll> bs(N);
-  rep(i, N) { bs.add(G.in[i], a[i]); }
+  BIT<ll> bs(N * 2);
+  rep(i, N) { bs.add(G.in[i], a[i]); bs.add(G.out[i] + 1, -a[i]); }
 
   rep(i, Q) {
     ll q; cin >> q;
     if (q) {
       ll u, v; cin >> u >> v;
-      ll lca = G.lca(u, v), ans = 0;
-      ans += G.query(lca, u, 0LL, [&](ll a, ll b) { return bs.sum(a, b); }, [](ll a, ll b) {return a + b;});
-      ans += G.query(lca, v, 0LL, [&](ll a, ll b) { return bs.sum(a, b); }, [](ll a, ll b) {return a + b;});
-      cout << ans - bs.sum(G.in[lca], G.in[lca] + 1) << "\n";
+      ll lca = G.lca(u, v);
+      cout << bs.sum(G.in[lca], G.in[u] + 1) + bs.sum(G.in[lca], G.in[v] + 1) - bs.sum(G.in[lca], G.in[lca] + 1) << "\n";
     } else {
       ll p, x; cin >> p >> x;
-      ll v = G.in[p];
-      bs.add(v, x);
+      bs.add(G.in[p], x); bs.add(G.out[p] + 1, -x);
     }
   }
 }

@@ -28,7 +28,7 @@ public:
   }
   int depth(int u) const { return dep[in[u]]; }
   int subtree_size(int u) const { return (out[u] - in[u] + 1) / 2; }
-  int lca(int u, int v) const { int l = in[u], r = out[v]; if (l > r) swap(l, r); return node[st.rmq(l, r).second]; }
+  int lca(int u, int v) const { int l = in[u], r = out[v] + 1; if (l > r) swap(l, r); return node[st.rmq(l, r).second]; }
   int dist(int u, int v) const { return depth(u) + depth(v) - 2 * depth(lca(u, v)); }
 
 private:
