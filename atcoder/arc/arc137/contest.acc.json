@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc137",
+    "title": "AtCoder Regular Contest 137",
+    "url": "https://atcoder.jp/contests/arc137"
+  },
+  "tasks": [
+    {
+      "id": "arc137_a",
+      "label": "A",
+      "title": "Coprime Pair",
+      "url": "https://atcoder.jp/contests/arc137/tasks/arc137_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc137_a.cpp"
+      }
+    },
+    {
+      "id": "arc137_b",
+      "label": "B",
+      "title": "Count 1's",
+      "url": "https://atcoder.jp/contests/arc137/tasks/arc137_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc137_b.cpp"
+      }
+    },
+    {
+      "id": "arc137_c",
+      "label": "C",
+      "title": "Distinct Numbers",
+      "url": "https://atcoder.jp/contests/arc137/tasks/arc137_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc137_c.cpp"
+      }
+    },
+    {
+      "id": "arc137_d",
+      "label": "D",
+      "title": "Prefix XORs",
+      "url": "https://atcoder.jp/contests/arc137/tasks/arc137_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc137_d.cpp"
+      }
+    },
+    {
+      "id": "arc137_e",
+      "label": "E",
+      "title": "Bakery",
+      "url": "https://atcoder.jp/contests/arc137/tasks/arc137_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc137_e.cpp"
+      }
+    },
+    {
+      "id": "arc137_f",
+      "label": "F",
+      "title": "Overlaps",
+      "url": "https://atcoder.jp/contests/arc137/tasks/arc137_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc137_f.cpp"
+      }
+    }
+  ]
+}
