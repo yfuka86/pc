@@ -30,6 +30,16 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "? ") {
+  cout << str << q << "\n"; cout.flush();
+  A a; cin >> a; return a;
+}
+
+template<typename A> void ianswer(A a, string str = "! ") {
+  cout << str << a << "\n"; cout.flush();
+}
+
 void solve() {
   ll N; cin >> N;
   set<ll> rem;
@@ -38,9 +48,8 @@ void solve() {
   }
   rep(i, N + 1) {
     ll t = *rem.begin(); rem.erase(t);
-    cout << t << "\n";
-    cout.flush();
-    ll a; cin >> a;
+    ll a = iquery(t, "");
+    if (a == 0) return;
     rem.erase(a);
   }
 }
@@ -52,3 +61,4 @@ signed main() {
   int t = 1; // cin >> t;
   while (t--) solve();
 }
+

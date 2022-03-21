@@ -12,10 +12,11 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP;
 typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max();
-const ll LINF = LLONG_MAX;
-const double DINF = numeric_limits<double>::infinity();
+const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
 
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
@@ -41,14 +42,4 @@ signed main() {
   cout.tie(nullptr);
   int t; cin >> t;
   while (t--) solve();
-}
-
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "?") {
-  cout << str <<  " " << q << "\n"; cout.flush();
-  A a; cin >> a; return a;
-}
-
-template<typename A> void ianswer(A a) {
-  cout << "! " << a << "\n"; cout.flush();
 }
