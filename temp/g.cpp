@@ -19,10 +19,10 @@ vector<vl> floyd_warshall(Graph<ll> &G) {
   rep(k, n) rep(i, n) rep(j, n) { if (costs[i][k] == LINF || costs[k][j] == LINF) continue; costs[i][j] = min(costs[i][j], costs[i][k] + costs[k][j]); }
   return costs; }
 vl topo_sort(Graph<ll> G) {
-  ll n = G.size(); vl deg(n), ret; priority_queue<ll> que;
-  rep(i, n) for (Edge e: G[i]) deg[e.to]++; rep(i, n) if (deg[i] == 0) que.push(-i);
-  while (!que.empty()) { ll v = -que.top(); que.pop(); ret.pb(v);
-    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(-next); } G[v].clear(); }
+  ll n = G.size(); vl deg(n), ret; priority_queue<ll, vl, greater<ll>> que;
+  rep(i, n) for (Edge e: G[i]) deg[e.to]++; rep(i, n) if (deg[i] == 0) que.push(i);
+  while (!que.empty()) { ll v = que.top(); que.pop(); ret.pb(v);
+    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); } G[v].clear(); }
   if (accumulate(all(deg), 0LL) != 0) return {}; else return ret; }
 pair<ll, LP> diameter(Graph<ll> &G) {
   LP deepest = mp(0, 0); function<void(ll, ll, ll)> dfs = [&](ll v, ll p, ll d) { chmax(deepest, mp(d, v)); for (auto to: G[v]) if (to != p) dfs(to, v, d + to.cost); };

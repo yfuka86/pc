@@ -80,6 +80,6 @@
   "code-runner.executorMap": {
     "javascript": "node",
     "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
-    "cpp": "cd $dir && clang++ -std=c++17 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D",
+    "cpp": "cd $dir && g++ -std=c++17 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D",
   }
 }
