@@ -78,12 +78,11 @@ void solve() {
 
   rep(i, k) {
     rep(j, n) {
-      rep2(l, j, n) {
-        mint add = dp[i][j];
-        add *= comb(n - 1 - j, l - j);
-        ll c = (l - j) * (l - j - 1) / 2 + (l - j) * (n - 1 - l);
-        add *= mod_pow(i + 1, c);
-        dp[i + 1][l] += add;
+      rep(add, n - j) {
+        mint incr = dp[i][j];
+        incr *= comb(n - 1 - j, add);
+        incr *= mod_pow(k - i, (add * (add - 1) / 2) + add * j);
+        dp[i + 1][j + add] += incr;
       }
     }
   }
