@@ -10,7 +10,7 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM;
 typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
 const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
 

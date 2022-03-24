@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc208",
+    "title": "AtCoder Beginner Contest 208",
+    "url": "https://atcoder.jp/contests/abc208"
+  },
+  "tasks": [
+    {
+      "id": "abc208_a",
+      "label": "A",
+      "title": "Rolling Dice",
+      "url": "https://atcoder.jp/contests/abc208/tasks/abc208_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc208_a.cpp"
+      }
+    },
+    {
+      "id": "abc208_b",
+      "label": "B",
+      "title": "Factorial Yen Coin",
+      "url": "https://atcoder.jp/contests/abc208/tasks/abc208_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc208_b.cpp"
+      }
+    },
+    {
+      "id": "abc208_c",
+      "label": "C",
+      "title": "Fair Candy Distribution",
+      "url": "https://atcoder.jp/contests/abc208/tasks/abc208_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc208_c.cpp"
+      }
+    },
+    {
+      "id": "abc208_d",
+      "label": "D",
+      "title": "Shortest Path Queries 2",
+      "url": "https://atcoder.jp/contests/abc208/tasks/abc208_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc208_d.cpp"
+      }
+    },
+    {
+      "id": "abc208_e",
+      "label": "E",
+      "title": "Digit Products",
+      "url": "https://atcoder.jp/contests/abc208/tasks/abc208_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc208_e.cpp"
+      }
+    },
+    {
+      "id": "abc208_f",
+      "label": "F",
+      "title": "Cumulative Sum",
+      "url": "https://atcoder.jp/contests/abc208/tasks/abc208_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc208_f.cpp"
+      }
+    }
+  ]
+}

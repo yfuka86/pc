@@ -31,51 +31,47 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
-const ll mod = 1000000007;
-//------------------------------------------------------------------------------
-template< int mod >
-struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }
-  ModInt &operator/=(const ModInt &p) { *this *= p.inverse(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }
-  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }
-  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }
-  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static int get_mod() { return mod; }
-};
-using mint = ModInt< mod >;
-typedef vector<mint> vmi;
-//------------------------------------------------------------------------------
-const int max_n = 1 << 20;
-mint fact[max_n], factinv[max_n];
-void init_f() {
-  fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); }
-  factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
+
+
+vector<ll> primes_below(const ll N) {
+  vector<bool> is_prime(N + 1, true); for(ll i = 2; i * i <= N; i++) { if ((i > 2 && i % 2 == 0) || !is_prime[i]) continue; for(ll j = i * i; j <= N; j += i) is_prime[j] = false; }
+  vector<ll> ret; for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i); return ret; }
+
 void solve() {
-  ll n; cin >> n;
+  ll L, R; cin >> L >> R;
+  vl pri = primes_below(500000);
+  vector<set<ll>> primes(7);
+  rep(i, pri.size()) primes[0].insert(pri[i]);
+  rep(i, 6) for (ll p: primes[i]) {
+    for (ll j: primes[0]) {
+      if (p % j == 0) continue;
+      if (p * j > 500000) break;
+      primes[i + 1].insert(p * j);
+    }
+  }
+  ll ans = 0;
+  rep(i, 7) {
+    for (ll p: primes[i]) {
+      ll num = floor(R, p) - ceil(L, p) + 1;
+      if (num > 1) {
+        ll t = num * (num - 1);
+        if (i & 1) ans -= t; else ans += t;
+      }
+    }
+  }
+  rep2(i, max(L, 2LL), R) {
+    for (ll j = i; j <= R; j += i) {
+      if (j != i) ans -= 2;
+    }
+  }
+
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }
