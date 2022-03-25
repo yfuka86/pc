@@ -50,8 +50,8 @@ struct Rerooting : Graph<T> {
   }
 };
 
-using D = long long;
-using T = long long;
+using D = ll;
+using T = ll;
 D merge(D a, D b) { return max(a, b); }
 D e() { return 0; }
 D leaf() { return 0; }
