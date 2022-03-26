@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc229",
+    "title": "NEC Programming Contest 2021(AtCoder Beginner Contest 229)",
+    "url": "https://atcoder.jp/contests/abc229"
+  },
+  "tasks": [
+    {
+      "id": "abc229_a",
+      "label": "A",
+      "title": "First Grid",
+      "url": "https://atcoder.jp/contests/abc229/tasks/abc229_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc229_a.cpp"
+      }
+    },
+    {
+      "id": "abc229_b",
+      "label": "B",
+      "title": "Hard Calculation",
+      "url": "https://atcoder.jp/contests/abc229/tasks/abc229_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc229_b.cpp"
+      }
+    },
+    {
+      "id": "abc229_c",
+      "label": "C",
+      "title": "Cheese",
+      "url": "https://atcoder.jp/contests/abc229/tasks/abc229_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc229_c.cpp"
+      }
+    },
+    {
+      "id": "abc229_d",
+      "label": "D",
+      "title": "Longest X",
+      "url": "https://atcoder.jp/contests/abc229/tasks/abc229_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc229_d.cpp"
+      }
+    },
+    {
+      "id": "abc229_e",
+      "label": "E",
+      "title": "Graph Destruction",
+      "url": "https://atcoder.jp/contests/abc229/tasks/abc229_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc229_e.cpp"
+      }
+    },
+    {
+      "id": "abc229_f",
+      "label": "F",
+      "title": "Make Bipartite",
+      "url": "https://atcoder.jp/contests/abc229/tasks/abc229_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc229_f.cpp"
+      }
+    },
+    {
+      "id": "abc229_g",
+      "label": "G",
+      "title": "Longest Y",
+      "url": "https://atcoder.jp/contests/abc229/tasks/abc229_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc229_g.cpp"
+      }
+    },
+    {
+      "id": "abc229_h",
+      "label": "H",
+      "title": "Advance or Eat",
+      "url": "https://atcoder.jp/contests/abc229/tasks/abc229_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "abc229_h.cpp"
+      }
+    }
+  ]
+}

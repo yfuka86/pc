@@ -29,8 +29,61 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+
+void add(LP&a, LP&b) { a.first += b.first; a.second += b.second;}
+
 void solve() {
   ll N; cin >> N;
+  Graph<ll> G(N);
+  rep(i, N - 1) {
+    ll u, v; cin >> u >> v; u--; v--;
+    G.add_edge(u, v);
+  }
+
+  vl dp(N, 0);
+  function<void(ll, ll)> dfs1 = [&](ll v, ll p) {
+    chmax(dp[v], d[v]);
+    for (auto &e: G[v]) {
+      if (e.to == p) continue;
+      dfs1(e.to, v);
+      chmax(dp[v], dp[e.to] + e.cost);
+    }
+  };
+  dfs1(0, -1);
+
+  vl ans(N, 0);
+  function<void(ll, ll, ll)> dfs2 = [&](ll v, ll dpp, ll p) {
+    vector<LP> children; children.pb(mp(0, -1));
+    for (auto &e: G[v]) {
+      children.pb(e.to == p ? mp(dpp + e.cost, e) : mp(dp[e] + e.cost, e));
+    }
+    sort(all(children)); reverse(all(children));
+    ans[v] = children[0].first;
+
+    for (auto &e: G[v]) {
+      if (e.to == p) continue;
+      dfs2(e.to, max(children[children[0].second == e.to].first, d[v]), v);
+    }
+  };
+  dfs2(0, 0, -1);
+
+  rep(i, N) {
+    cout << ans[i].first << " " << ans[i].second << "\n";
+  }
+
+  ll ret = 0;
+  rep(i, N) if (ans[i].second == match) ret++;
+  cout << ret << "\n";
 }
 
 signed main() {

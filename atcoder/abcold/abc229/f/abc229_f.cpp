@@ -32,56 +32,40 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
+
 void solve() {
   ll n; cin >> n;
-  Graph<ll> G(n);
-  rep(i, N - 1) {
-    ll a, b; cin >> a >> b; a--; b--;
-    G.add_edge(a, b);
+  vl a(n), b(n); rep(i, n) cin >> a[i]; rep(i, n) cin >> b[i];
+
+  ll ans = LINF;
+
+  // 頂点0は0とする
+  vector<vl> dp(n, vl(2, 0));
+  dp[0][0] = a[0];
+  dp[0][1] = 1e12;
+
+  rep(i, n - 1) {
+    dp[i + 1][0] = min(dp[i][0] + b[i] + a[i + 1], dp[i][1] + a[i + 1]);
+    dp[i + 1][1] = min(dp[i][0], dp[i][1] + b[i]);
   }
+  chmin(ans, dp[n - 1][0] + b[n - 1]); chmin(ans, dp[n - 1][1]);
 
-  vl dp(N, 0);
-  function<void(ll, ll)> dfs1 = [&](ll v, ll p) {
-    dp[v] = 1;
-    for (auto &e: G[v]) {
-      if (e.to == p) continue;
-      dfs1(e.to, v);
-      dp[v] += dp[e.to];
-    }
-  };
-  dfs1(0, -1);
-
-  // coutarray(dpdist);
-  // coutarray(dpsize);
-  vl ans(N, 1);
-
-  function<void(ll, ll, ll)> dfs2 = [&](ll v, ll dpp, ll p) {
-    for (auto &e: G[v]) {
-      if (e.to == p) {
-        dp
-      } else {
-        dist += dpdist[e] + dpsize[e];
-        size += dpsize[e];
-      }
-    }
-    ans[v] = dist;
-
-    for (auto &e: G[v]) {
-      if (e.to == p) continue;
-      dfs2(e.to, ans[v] - dp[e], v);
-    }
-  };
-  dfs2(0, mp(0, 0), -1);
-
-  rep(i, N) {
-    cout << ans[i] << "\n";
+  dp.assign(n, vl(2, 0));
+  dp[0][0] = 1e12;
+  dp[0][1] = 0;
+  rep(i, n - 1) {
+    dp[i + 1][0] = min(dp[i][0] + b[i] + a[i + 1], dp[i][1] + a[i + 1]);
+    dp[i + 1][1] = min(dp[i][0], dp[i][1] + b[i]);
   }
+  chmin(ans, dp[n - 1][1] + b[n - 1]); chmin(ans, dp[n - 1][0]);
+
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }
