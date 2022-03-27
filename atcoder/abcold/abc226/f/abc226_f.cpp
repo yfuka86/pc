@@ -6,85 +6,136 @@
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
 #define pb push_back
+#define mp make_pair
 
 using namespace std;
-typedef long long ll; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max() / 3;
-const ll LINF = LLONG_MAX / 3;
-const double DINF = numeric_limits<double>::infinity();
+typedef long long ll; typedef unsigned long long ull; typedef long double ld;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
 
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
+ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
+template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
+template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
+template <class T> T POW(T x, int n) { assert(n >= 0); T res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<typename T> void coutarray(vector<T>& v) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i];} cout << "\n"; }
+template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cout << (a >> d) & 1; cout << "\n"; }
+template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
+vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-//------------------------------------------------------------------------------
+
 const ll mod = 998244353;
-struct modint { int n; modint() :n(0) { ; } modint(ll m) { if (m < 0 || mod <= m) { m %= mod; if (m < 0)m += mod; } n = m; } operator int() { return n; } };
-typedef vector<modint> vmi;
-bool operator==(modint a, modint b) { return a.n == b.n; }
-modint operator+=(modint& a, modint b) { a.n += b.n; if (a.n >= mod)a.n -= mod; return a; }
-modint operator-=(modint& a, modint b) { a.n -= b.n; if (a.n < 0)a.n += mod; return a; }
-modint operator*=(modint& a, modint b) { a.n = ((ll)a.n * b.n) % mod; return a; }
-modint operator+(modint a, modint b) { return a += b; }
-modint operator-(modint a, modint b) { return a -= b; }
-modint operator*(modint a, modint b) { return a *= b; }
-modint operator^(modint a, ll n) { if (n == 0) return modint(1); modint res = (a * a) ^ (n / 2); if (n % 2) res = res * a; return res; }
-ll inv(ll a, ll p) { return (a == 1 ? 1 : (1 - p * inv(p % a, a)) / a + p); }
-modint operator/(modint a, modint b) { return a * modint(inv(b, mod)); }
-modint operator/=(modint& a, modint b) { a = a / b; return a; }
 //------------------------------------------------------------------------------
-const int max_n = 200;
-modint fact[max_n], factinv[max_n];
+template< int mod >
+struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }
+  ModInt &operator/=(const ModInt &p) { *this *= p.inverse(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }
+  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }
+  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }
+  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >;
+typedef vector<mint> vmi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
 void init_f() {
-  fact[0] = modint(1); for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * modint(i + 1); }
-  factinv[max_n - 1] = modint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * modint(i + 1); } }
-modint comb(int a, int b) { if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-modint combP(int a, int b) { if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+  fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); }
+  factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
 //------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, ll m = mod) {
-  if (n < 0) { ll res = mod_pow(x, -n, m); return mod_pow(res, m - 2, m); }
-  if (abs(x) >= m) x %= m; if (x < 0) x += m; if (x == 0) return 0;
-  ll res = 1; while (n) { if (n & 1) res = res * x % m; x = x * x % m; n >>= 1; } return res; }
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
+
+
+void test(ll n) {
+  vl p(n); iota(all(p), 0);
+  vl a = p, b = p, original = p;
+  map<vl, ll> score;
+  do {
+    ll t = 1;
+    rep(i, n) b[i] = a[p[i]];
+    a = b;
+    while (a != original) {
+      rep(i, n) b[i] = a[p[i]];
+      a = b;
+      t++;
+    }
+    score[p] = t;
+  } while (next_permutation(all(p)));
+
+  map<ll, ll> count;
+  for (auto [v, s]: score) {
+    vl v2 = v;
+    // coutarray(v2);
+    // cout << s << "\n";
+    count[s]++;
+  }
+  coutmap(count);
+}
 
 int main()
 {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
+  // test(10);
 
   ll N, K; cin >> N >> K;
+  vector<map<ll, mint>> dp(N + 1);
 
   init_f();
+  // dp[1][1] = 1;
 
-  modint ans = modint(1);// そのままの順列の時を足しておく
-
-  rep2(i, 2, N + 1) {
-    ll score = i;
-    ll scorepow = mod_pow(score, K);
-    ll ntemp = N;
-    ll group = 0;
-
-    modint com = modint(1);
-    while(ntemp >= i) {
-      group++;
-      com *= comb(ntemp, i) * modint(i > 2 ? 2 : 1);
-      // cout << "comb" << comb(ntemp, i) << endl;
-
-      ntemp -= i;
+  // rep2(i, 2, N + 1) {
+  //   mint sum = 0;
+  //   for (ll j = 1; j <= i - j; j++) {
+  //     for(auto [s1, c1]: dp[i - j]) {
+  //       for(auto [s2, c2]: dp[j]) {
+  //         mint calc = c1 * c2 * comb(i, j);
+  //         if (j == i - j) calc /= 2;
+  //         sum += calc; dp[i][lcm(s1, s2)] += calc;
+  //       }
+  //     }
+  //   }
+  //   dp[i][i] = fact[i] - sum;
+  // }
+  dp[0][1] = 1;
+  rep(i, N) {
+    for (auto [l, x] : dp[i]) {
+      for (int j = 1; i + j <= N; ++j) {
+        dp[i + j][lcm(l, j)] += x * comb(N - i - 1, j - 1) * fact[j - 1];
+      }
     }
-    // cout << "group" << group << endl;
-    ans += com * modint(mod_pow(2, group) - 1) / fact[group] * modint(scorepow);
   }
-
-  cout << ans << "\n";
+  mint ans = 0;
+  for (auto [l, x] : dp[N]) {
+    ans += x * mod_pow(l, K);
+  }
+  cout << ans << endl;
 }
 
 

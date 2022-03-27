@@ -10,8 +10,8 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
 const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
 
 using A = ll;
@@ -33,13 +33,25 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll n, k; cin >> n >> k;
+  vl a(n), b(n); rep(i, n) cin >> a[i]; rep(i, n) cin >> b[i];
+  vector<vl> dp(n, vl(2, 0));
+  dp[0][0] = 1;
+  dp[0][1] = 1;
+
+  rep(i, n - 1) {
+    if (dp[i][0] && abs(a[i] - a[i + 1]) <= k) dp[i + 1][0] = 1;
+    if (dp[i][1] && abs(b[i] - a[i + 1]) <= k) dp[i + 1][0] = 1;
+    if (dp[i][0] && abs(a[i] - b[i + 1]) <= k) dp[i + 1][1] = 1;
+    if (dp[i][1] && abs(b[i] - b[i + 1]) <= k) dp[i + 1][1] = 1;
+  }
+  if (dp[n - 1][0] || dp[n - 1][1]) cout << "Yes" << "\n"; else cout << "No" << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

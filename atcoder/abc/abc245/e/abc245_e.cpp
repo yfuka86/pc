@@ -1,5 +1,6 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
+#include <atcoder/maxflow>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
@@ -8,10 +9,11 @@
 #define pb push_back
 #define mp make_pair
 
+using namespace atcoder;
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
 const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
 
 using A = ll;
@@ -33,13 +35,37 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll n, m; cin >> n >> m;
+
+  vl a(n), b(n), c(m), d(m);
+  rep(i, n) cin >> a[i]; rep(i, n) cin >> b[i];
+  rep(i, m) cin >> c[i]; rep(i, m) cin >> d[i];
+
+  vector<tuple<ll, ll, ll>> o;
+  rep(i, n) o.pb({a[i], 0, b[i]});
+  rep(i, m) o.pb({c[i], 1, d[i]});
+  sort(all(o)); reverse(all(o));
+
+  multiset<ll> s;
+
+  rep(i, n + m) {
+    ll _, kind, b;
+    tie(_, kind, b) = o[i];
+    if (kind == 0) {
+      auto itr = s.lower_bound(b);
+      if (itr == s.end()) { cout << "No" << "\n"; return; } else s.erase(itr);
+    } else {
+      s.insert(b);
+    }
+  }
+  cout << "Yes" << "\n";
+
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

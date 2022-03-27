@@ -10,8 +10,8 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
 const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
 
 using A = ll;
@@ -33,13 +33,25 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll n, m; cin >> n >> m;
+  vl a(n + 1), c(n + m + 1); rep(i, n + 1) cin >> a[i]; rep(i, n + m + 1) cin >> c[i];
+
+  vl b(m + 1, 0);
+  rep_r(i, m + 1) {
+    ll num = (m - i);
+    ll sum = 0;
+    rep(j, num) {
+      if (n - (num - j) >= 0) sum += b[m - j] * a[n - (num - j)];
+    }
+    b[i] = (c[n + i] - sum) / a[n];
+  }
+  coutarray(b);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

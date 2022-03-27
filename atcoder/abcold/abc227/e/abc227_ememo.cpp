@@ -33,13 +33,37 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  string S; cin >> S;
+  ll K; cin >> K;
+  ll N = S.size();
+
+  map<pair<string, ll>, ll> memo;
+
+  function<ll(string, ll)> f = [&](string s, ll k) -> ll {
+    if (k < 0) return 0;
+    if (s == "") return 1;
+    if (memo.count({s, k})) return memo[{s, k}];
+    ll res = 0;
+    for (char c: "KEY") {
+      rep(i, s.size()) {
+        if (s[i] == c) {
+          string t = s;
+          t.erase(i, 1);
+          res += f(t, k - i);
+          break;
+        }
+      }
+    }
+    return memo[{s, k}] = res;
+  };
+
+  cout << f(S, K) << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

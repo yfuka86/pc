@@ -9,10 +9,10 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> PQ; vector<ll> costs(G.size(), LINF); PQ.push(make_pair(0, start));
-  while(!PQ.empty()) {
-    auto [c, v] = PQ.top(); PQ.pop(); if (costs[v] <= c) continue; else costs[v] = c;
-    for(Edge e: G[v]) { ll nc = costs[v] + e.cost; if (costs[e.to] > nc) PQ.push(make_pair(nc, e.to)); } }
+  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); que.push(make_pair(0, start));
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (costs[v] <= c) continue; else costs[v] = c;
+    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (costs[to] > nc) que.push(make_pair(nc, to)); } }
   return costs; }
 vector<vl> floyd_warshall(Graph<ll> &G) {
   ll n = G.size(); vector<vl> costs(n, vl(n ,LINF)); rep(i, n) { costs[i][i] = 0; for(Edge e: G[i]) costs[i][e.to] = e.cost; }

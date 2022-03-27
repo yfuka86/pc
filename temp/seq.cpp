@@ -1,3 +1,4 @@
+// 典型LIS
 // <= ならupper_bound、< ならlower_boundにする必要がある
 ll get_lis(vector<ll> &a) {
 	ll N = a.size(); vector<ll> dp(N, INF);
@@ -17,13 +18,7 @@ vl subseq_num(vector<ll> &v, ll m = mod) {
   return dp;
 }
 
-template<typename T>
-pair<typename vector<T>::iterator, typename vector<T>::iterator > max_successive(vector<T> &a) {
-  ll c = 1; auto f = a.begin(), t = a.begin();
-  for (auto itr = a.begin(); itr != a.end(); itr++) { if (itr - a.begin() > 0 && *itr == *(itr - 1)) { c++; } else c = 1; if (c > t - f) { t = itr + 1; f = t - c; } }
-  return make_pair(f, t);
-}
-
+// 典型LCS
 int lcs(string &s1, string &s2){
   vector<vector<int> > dp(s1.size() + 1, vector<int>(s2.size() + 1, -1));
   function<int(int, int)> rec = [&](int m, int n) -> int {
@@ -33,6 +28,13 @@ int lcs(string &s1, string &s2){
     return max(rec(m, n - 1), rec(m - 1, n));
   };
   return rec(s1.size(), s2.size());
+}
+
+// 二次元累積和（一応）
+vvl cumsum2d(vvl &a) {
+  ll H = a.size(), W = a[0].size(); vvl sum(H + 1, vl(W + 1, 0));
+  rep(i, H) rep(j, W) sum[i + 1][j + 1] += sum[i + 1][j] + sum[i][j + 1] + a[i][j] - sum[i][j];
+  return sum;
 }
 
 // Rolling hash
