@@ -31,48 +31,54 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod >
+struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }
+  ModInt &operator/=(const ModInt &p) { *this *= p.inverse(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }
+  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }
+  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }
+  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >;
+typedef vector<mint> vmi;
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() {
+  fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); }
+  factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
 
 void solve() {
-  ll H, W, K; cin >> H >> W >> K;
-  vvl a(H, vl(W, 0)); rep(i, H) rep(j, W) cin >> a[i][j];
+  ll n; cin >> n;
 
-  ll ans = LINF;
-  rep(ik, H) {
-    rep(jk, W) {
-      ll pivot = a[ik][jk];
-      vector<vvl> dp(H, vvl(W, vl(K + 1, LINF)));
-
-      if (a[0][0] >= pivot) dp[0][0][1] = a[0][0];
-      if (a[0][0] <= pivot) dp[0][0][0] = 0;
-
-      rep(i, H) {
-        rep(j, W) {
-          rep(k, K + 1) {
-            if (dp[i][j][k] == LINF) continue;
-            if (i < H - 1) {
-              if (a[i + 1][j] >= pivot && k < K) chmin(dp[i + 1][j][k + 1], dp[i][j][k] + a[i + 1][j]);
-              if (a[i + 1][j] <= pivot) chmin(dp[i + 1][j][k], dp[i][j][k]);
-            }
-
-            if (j < W - 1) {
-              if (a[i][j + 1] >= pivot && k < K) chmin(dp[i][j + 1][k + 1], dp[i][j][k] + a[i][j + 1]);
-              if (a[i][j + 1] <= pivot) chmin(dp[i][j + 1][k], dp[i][j][k]);
-            }
-          }
-        }
-      }
-
-      chmin(ans, dp[H - 1][W - 1][K]);
-    }
-  }
-
-  cout << ans << "\n";
+  if (n & 1) { cout << 0 << "\n"; return; }
+  cout << fact[n / 2] * fact[n / 2] << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  init_f();
+  int t; cin >> t;
   while (t--) solve();
 }

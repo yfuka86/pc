@@ -32,47 +32,31 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-void solve() {
-  ll H, W, K; cin >> H >> W >> K;
-  vvl a(H, vl(W, 0)); rep(i, H) rep(j, W) cin >> a[i][j];
+bool solve() {
+  ll n; cin >> n;
+  vl p(n); rep(i, n) cin >> p[i];
 
-  ll ans = LINF;
-  rep(ik, H) {
-    rep(jk, W) {
-      ll pivot = a[ik][jk];
-      vector<vvl> dp(H, vvl(W, vl(K + 1, LINF)));
+  vl sum(n); iota(all(sum), 1); ll s = accumulate(all(sum), 0LL);
 
-      if (a[0][0] >= pivot) dp[0][0][1] = a[0][0];
-      if (a[0][0] <= pivot) dp[0][0][0] = 0;
+  LM freq;
+  ll odd = 0, even = 0;
 
-      rep(i, H) {
-        rep(j, W) {
-          rep(k, K + 1) {
-            if (dp[i][j][k] == LINF) continue;
-            if (i < H - 1) {
-              if (a[i + 1][j] >= pivot && k < K) chmin(dp[i + 1][j][k + 1], dp[i][j][k] + a[i + 1][j]);
-              if (a[i + 1][j] <= pivot) chmin(dp[i + 1][j][k], dp[i][j][k]);
-            }
-
-            if (j < W - 1) {
-              if (a[i][j + 1] >= pivot && k < K) chmin(dp[i][j + 1][k + 1], dp[i][j][k] + a[i][j + 1]);
-              if (a[i][j + 1] <= pivot) chmin(dp[i][j + 1][k], dp[i][j][k]);
-            }
-          }
-        }
-      }
-
-      chmin(ans, dp[H - 1][W - 1][K]);
-    }
+  ll total = 0;
+  if (p[0] - p[n - 1] > 1) return false;
+  rep(i, n) {
+    if (i < n - 1 && p[i + 1] - p[i] > 1) return false;
+    if (p[i] & 1) odd++; else even++;
+    freq[p[i]]++;
+    total += p[i];
   }
-
-  cout << ans << "\n";
+  if (freq[1] != 1) return false;
+  return true;
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
-  while (t--) solve();
+  int t; cin >> t;
+  while (t--) if (solve()) cout << "YES" << "\n"; else cout << "NO" << "\n";
 }

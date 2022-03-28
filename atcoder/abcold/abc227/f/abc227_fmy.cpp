@@ -32,6 +32,13 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
+
+void update(map<LP, ll> &m, LP k, ll v) {
+  if (m.count(k)) {
+    chmin(m[k], v);
+  } else m[k] = v;
+}
+
 void solve() {
   ll H, W, K; cin >> H >> W >> K;
   vvl a(H, vl(W, 0)); rep(i, H) rep(j, W) cin >> a[i][j];
@@ -40,29 +47,41 @@ void solve() {
   rep(ik, H) {
     rep(jk, W) {
       ll pivot = a[ik][jk];
-      vector<vvl> dp(H, vvl(W, vl(K + 1, LINF)));
+      // tuple そこまでのsum, 個数
+      vector<vector<map<LP, ll>>> dp(H, vector<map<LP, ll>>(W));
 
-      if (a[0][0] >= pivot) dp[0][0][1] = a[0][0];
-      if (a[0][0] <= pivot) dp[0][0][0] = 0;
+      if (a[0][0] > pivot) dp[0][0][{1, 0}] = a[0][0];
+      else if (a[0][0] == pivot) dp[0][0][{0, 1}] = 0;
+      else dp[0][0][{0, 0}] = 0;
 
       rep(i, H) {
         rep(j, W) {
-          rep(k, K + 1) {
-            if (dp[i][j][k] == LINF) continue;
+          for(auto [p, x]: dp[i][j]) {
+            auto [k1, k2] = p;
+            ll rem = H - 1 - i + W - 1 - j;
+            if (k1 + k2 + rem < K || k1 > K) continue;
+
             if (i < H - 1) {
-              if (a[i + 1][j] >= pivot && k < K) chmin(dp[i + 1][j][k + 1], dp[i][j][k] + a[i + 1][j]);
-              if (a[i + 1][j] <= pivot) chmin(dp[i + 1][j][k], dp[i][j][k]);
+              if (a[i + 1][j] > pivot) update(dp[i + 1][j], {k1 + 1, k2}, x + a[i + 1][j]);
+              else if (a[i + 1][j] == pivot) update(dp[i + 1][j], {k1, k2 + 1}, x);
+              else update(dp[i + 1][j], {k1, k2}, x);
             }
 
             if (j < W - 1) {
-              if (a[i][j + 1] >= pivot && k < K) chmin(dp[i][j + 1][k + 1], dp[i][j][k] + a[i][j + 1]);
-              if (a[i][j + 1] <= pivot) chmin(dp[i][j + 1][k], dp[i][j][k]);
+              if (a[i][j + 1] > pivot) update(dp[i][j + 1], {k1 + 1, k2}, x + a[i][j + 1]);
+              else if (a[i][j + 1] == pivot) update(dp[i][j + 1], {k1, k2 + 1}, x);
+              else update(dp[i][j + 1], {k1, k2}, x);
             }
           }
         }
       }
 
-      chmin(ans, dp[H - 1][W - 1][K]);
+      for (auto[p, x]: dp[H - 1][W - 1]) {
+        auto [k1, k2] = p;
+        // cout << k1 << " " << k2 << " " << x << "\n";
+        if (k1 > K || k1 + k2 < K) continue;
+        chmin(ans, x + (K - k1) * pivot);
+      }
     }
   }
 

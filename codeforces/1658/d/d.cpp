@@ -33,46 +33,44 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll H, W, K; cin >> H >> W >> K;
-  vvl a(H, vl(W, 0)); rep(i, H) rep(j, W) cin >> a[i][j];
+  ll l, r; cin >> l >> r;
+  ll n = r - l + 1;
+  vl a(n);
+  rep(i, n) cin >> a[i];
 
-  ll ans = LINF;
-  rep(ik, H) {
-    rep(jk, W) {
-      ll pivot = a[ik][jk];
-      vector<vvl> dp(H, vvl(W, vl(K + 1, LINF)));
-
-      if (a[0][0] >= pivot) dp[0][0][1] = a[0][0];
-      if (a[0][0] <= pivot) dp[0][0][0] = 0;
-
-      rep(i, H) {
-        rep(j, W) {
-          rep(k, K + 1) {
-            if (dp[i][j][k] == LINF) continue;
-            if (i < H - 1) {
-              if (a[i + 1][j] >= pivot && k < K) chmin(dp[i + 1][j][k + 1], dp[i][j][k] + a[i + 1][j]);
-              if (a[i + 1][j] <= pivot) chmin(dp[i + 1][j][k], dp[i][j][k]);
-            }
-
-            if (j < W - 1) {
-              if (a[i][j + 1] >= pivot && k < K) chmin(dp[i][j + 1][k + 1], dp[i][j][k] + a[i][j + 1]);
-              if (a[i][j + 1] <= pivot) chmin(dp[i][j + 1][k], dp[i][j][k]);
-            }
-          }
-        }
-      }
-
-      chmin(ans, dp[H - 1][W - 1][K]);
+  vl freq(17, 0);
+  ll lr = 0;
+  rep2(i, l, r + 1) {
+    lr ^= i;
+    rep(j, 17) {
+      if (i >> j & 1) freq[j]++;
     }
   }
 
+  vl afreq(17, 0);
+  ll sum = 0;
+  rep(i, n) {
+    sum ^= a[i];
+    rep(j, 17) {
+      if (a[i] >> j & 1) afreq[j]++;
+    }
+  }
+
+  // coutarray(freq);
+  // coutarray(afreq);
+
+  ll ans = 0;
+  rep(i, 17) {
+    if (freq[i] != afreq[i]) ans |= 1 << i;
+  }
   cout << ans << "\n";
+
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

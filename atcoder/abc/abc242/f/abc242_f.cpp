@@ -29,9 +29,78 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod >
+struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }
+  ModInt &operator/=(const ModInt &p) { *this *= p.inverse(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }
+  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }
+  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }
+  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >;
+typedef vector<mint> vmi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() {
+  fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); }
+  factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
 void solve() {
   ll N, M, B, W; cin >> N >> M >> B >> W;
+  init_f();
 
+  vector<vmi> bdp(N + 1, vmi(M + 1, 0));
+  vector<vmi> wdp(N + 1, vmi(M + 1, 0));
+  vector<vl> used(N + 1, vl(M + 1, 0));
+
+  function<mint(vector<vmi>&, ll, ll, ll)> f = [&](vector<vmi> &dp, ll i, ll j, ll x) {
+    if (used[i][j]) return dp[i][j];
+    used[i][j] = 1;
+    if (x > i * j) return dp[i][j] = mint(0);
+
+    mint ret = comb(i * j, x);
+    rep2(di, 1, i + 1) {
+      rep2(dj, 1, j + 1) {
+        if (di + dj == i + j) continue;
+        ret -= f(dp, di, dj, x) * comb(i, di) * comb(j, dj);
+      }
+    }
+    return dp[i][j] = ret;
+  };
+
+  f(bdp, N, M, B);
+  used.assign(N + 1, vl(M + 1, 0));
+  f(wdp, N, M, W);
+
+  mint ans = 0;
+  rep2(i, 1, N + 1) rep2(j, 1, M + 1) {
+    rep2(wi, 1, N - i + 1) rep2(wj, 1, M - j + 1) {
+      ans += bdp[i][j] * wdp[wi][wj] * comb(N, i) * comb(M, j) * comb(N - i, wi) * comb(M - j, wj);
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

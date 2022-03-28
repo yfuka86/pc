@@ -33,39 +33,17 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll H, W, K; cin >> H >> W >> K;
-  vvl a(H, vl(W, 0)); rep(i, H) rep(j, W) cin >> a[i][j];
-
-  ll ans = LINF;
-  rep(ik, H) {
-    rep(jk, W) {
-      ll pivot = a[ik][jk];
-      vector<vvl> dp(H, vvl(W, vl(K + 1, LINF)));
-
-      if (a[0][0] >= pivot) dp[0][0][1] = a[0][0];
-      if (a[0][0] <= pivot) dp[0][0][0] = 0;
-
-      rep(i, H) {
-        rep(j, W) {
-          rep(k, K + 1) {
-            if (dp[i][j][k] == LINF) continue;
-            if (i < H - 1) {
-              if (a[i + 1][j] >= pivot && k < K) chmin(dp[i + 1][j][k + 1], dp[i][j][k] + a[i + 1][j]);
-              if (a[i + 1][j] <= pivot) chmin(dp[i + 1][j][k], dp[i][j][k]);
-            }
-
-            if (j < W - 1) {
-              if (a[i][j + 1] >= pivot && k < K) chmin(dp[i][j + 1][k + 1], dp[i][j][k] + a[i][j + 1]);
-              if (a[i][j + 1] <= pivot) chmin(dp[i][j + 1][k], dp[i][j][k]);
-            }
-          }
-        }
-      }
-
-      chmin(ans, dp[H - 1][W - 1][K]);
-    }
+  ll n; cin >> n; string s; cin >> s;
+  vl idx;
+  rep(i, n) {
+    if (s[i] == '0') idx.pb(i);
   }
+  if (idx.size() == 0) { cout << 0 << "\n"; return; }
 
+  ll ans = 0;
+  rep(i, idx.size() - 1) {
+    if (idx[i + 1] - idx[i] < 3) ans += 3 - (idx[i + 1] - idx[i]);
+  }
   cout << ans << "\n";
 }
 
@@ -73,6 +51,6 @@ signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }
