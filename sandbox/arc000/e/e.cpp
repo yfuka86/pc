@@ -10,8 +10,8 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
 const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
 
 using A = ll;
@@ -31,16 +31,6 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
-
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 const ll mod = 1000000007;
 //------------------------------------------------------------------------------
@@ -66,7 +56,7 @@ struct ModInt {
   static int get_mod() { return mod; }
 };
 using mint = ModInt< mod >;
-typedef vector<mint> vmi; typedef vector<vmi> vvmi;
+typedef vector<mint> vmi;
 //------------------------------------------------------------------------------
 const int max_n = 1 << 20;
 mint fact[max_n], factinv[max_n];
@@ -80,59 +70,41 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
 void solve() {
-  ll n; cin >> n;
-  Graph<ll> G(n);
-  rep(i, n - 1) {
-    ll u, v; cin >> u >> v; u--; v--;
-    G.add_edge(u, v);
+  ll N, K, D; cin >> N >> K >> D;
+  vl H(N); rep(i, N) cin >> H[i];
+
+  BIT<mint> bs(100010);
+  bs.add(H[0], 1);
+
+  vmi dp(N, 0);
+  dp[0] = 1;
+  rep2(i, 1, N) {
+    dp[i] = bs.sum(max(H[i] - D + 1, 0LL), 100010);
+    bs.add(H[i], dp[i]);
+    if (i >= K) bs.add(H[i - K], -dp[i - K]);
   }
-
-  vector<vector<map<ll, mint>>> dp(n, vector<map<ll, mint>>(4));
-
-  function<void(ll, ll)> dfs = [&](ll v, ll p){
-    dp[v][0][0] = 1;
-    dp[v][1][1] = 1;
-    for(auto to: G[v]) {
-      if (to == p) continue;
-      dfs(to, v);
-      vector<map<ll, mint>> nm(4);
-
-      for(auto [vk, vx]: dp[v][0]) {
-        for(auto [k, x]: dp[to][0]) nm[0][vk + k] += vx * x;
-        for(auto [k, x]: dp[to][2]) nm[0][vk + k] += vx * x;
-        for(auto [k, x]: dp[to][1]) nm[2][vk + k + 1] += vx * x;
-        for(auto [k, x]: dp[to][3]) nm[2][vk + k + 1] += vx * x;
-      }
-      for(auto [vk, vx]: dp[v][2]) {
-        for(auto [k, x]: dp[to][0]) nm[2][vk + k] += vx * x;
-        for(auto [k, x]: dp[to][2]) nm[2][vk + k] += vx * x;
-        for(auto [k, x]: dp[to][1]) nm[2][vk + k] += vx * x;
-        for(auto [k, x]: dp[to][3]) nm[2][vk + k] += vx * x;
-      }
-
-      for(auto [vk, vx]: dp[v][1]) {
-        for(auto [k, x]: dp[to][0]) nm[1][vk + k + 1] += vx * x;
-        for(auto [k, x]: dp[to][2]) nm[1][vk + k] += vx * x;
-        for(auto [k, x]: dp[to][1]) nm[3][vk + k] += vx * x;
-        for(auto [k, x]: dp[to][3]) nm[3][vk + k] += vx * x;
-      }
-      for(auto [vk, vx]: dp[v][3]) {
-        for(auto [k, x]: dp[to][0]) nm[3][vk + k + 1] += vx * x;
-        for(auto [k, x]: dp[to][2]) nm[3][vk + k] += vx * x;
-        for(auto [k, x]: dp[to][1]) nm[3][vk + k] += vx * x;
-        for(auto [k, x]: dp[to][3]) nm[3][vk + k] += vx * x;
-      }
-      dp[v] = nm;
-    }
-  };
-  dfs(0, -1);
-
-  vmi ans(n + 1, 0);
-  rep(i, 4) {
-    for (auto[k, x]: dp[0][i]) ans[k] += x;
-  }
-  rep(i, n + 1) cout << ans[i] << "\n";
+  // coutarray(dp);
+  cout << dp[N - 1] << "\n";
 }
 
 signed main() {

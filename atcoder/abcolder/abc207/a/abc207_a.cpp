@@ -33,7 +33,12 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll a, b, c; cin >> a >> b >> c;
+  ll ans = 0;
+  chmax(ans, a + b);
+  chmax(ans, b + c);
+  chmax(ans, a + c);
+  cout << ans << "\n";
 }
 
 signed main() {

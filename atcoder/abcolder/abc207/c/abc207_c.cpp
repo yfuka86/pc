@@ -34,6 +34,24 @@ vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
   ll n; cin >> n;
+  vector<LP> range(n);
+  rep(i, n) {
+    ll t, l, r; cin >> t >> l >> r;
+    l *= 10; r *= 10;
+    if (t == 2) r--;
+    if (t == 3) l++;
+    if (t == 4) { l++; r--; }
+    range[i] = {l,r};
+  }
+
+  sort(all(range));
+  ll ans = 0;
+  rep(i, n) {
+    rep2(j, i + 1, n) {
+      if (range[i].second >= range[j].first) ans++;
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

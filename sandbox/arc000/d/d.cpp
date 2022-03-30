@@ -10,8 +10,8 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
 const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
 
 using A = ll;
@@ -33,11 +33,19 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll A, B, C, D; cin >> A >> B >> C >> D;
+  ll K, M; cin >> K >> M;
 
-  if (C * D <= B) { cout << -1 << "\n"; return; }
-
-  cout << ceil(A, (D * C - B)) << "\n";
+  ll ok = K, ng = 0;
+  while(ok > ng + 1) {
+    ll mid = (ok + ng) / 2;
+    ll sum = mid, rem = mid;
+    while (rem >= M) {
+      sum += rem / M;
+      rem = rem % M + rem / M;
+    }
+    if (sum >= K) ok = mid; else ng = mid;
+  }
+  cout << ok << "\n";
 }
 
 signed main() {

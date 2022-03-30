@@ -23,7 +23,7 @@ struct ModInt {
   static int get_mod() { return mod; }
 };
 using mint = ModInt< mod >;
-typedef vector<mint> vmi;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi;
 //------------------------------------------------------------------------------
 const int max_n = 1 << 20;
 mint fact[max_n], factinv[max_n];

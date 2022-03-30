@@ -32,8 +32,57 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
+LP crp(LP& a, LP& b, LP& c) {
+  auto [ox, oy] = a;
+  auto [bx, by] = b;
+  auto [cx, cy] = c;
+  ll x1 = bx - ox, y1 = by - oy;
+  ll x2 = cx - ox, y2 = cy - oy;
+  return {POW(y2 - y1, 2) + POW(x2 - x1, 2), x1 * y2 - y1 * x2};
+}
+
 void solve() {
   ll n; cin >> n;
+  vector<LP> S(n), T(n);
+  rep(i, n) {
+    ll a, b; cin >> a >> b; S[i] = mp(a, b);
+  }
+  rep(i, n) {
+    ll a, b; cin >> a >> b; T[i] = mp(a, b);
+  }
+  if (n == 1) {cout << "Yes" << "\n"; return; }
+
+  // S[0], S[1]に相当するものを見つける
+  auto [x1, y1] = S[0];
+  auto [x2, y2] = S[1];
+  ll dist = POW(x2 - x1, 2) + POW(y2 - y1, 2);
+
+  multiset<LP> id;
+  rep2(i, 2, n) {
+    id.insert(crp(S[0], S[1], S[i]));
+  }
+
+  rep(i, n) {
+    rep(j, n) {
+      if (i == j) continue;
+      auto [ix, iy] = T[i];
+      auto [jx, jy] = T[j];
+      ll d = POW(ix - jx, 2) + POW(iy - jy, 2);
+      if (d == dist) {
+        multiset<LP> tmp;
+        rep(k, n) {
+          if (k == i || k == j) continue;
+          tmp.insert(crp(T[i], T[j], T[k]));
+        }
+        if (tmp == id) {
+          // cout << i << " " << j << "\n";
+          // for (auto v: tmp) cout << v << " ";
+          cout << "Yes" << "\n"; return;
+        }
+      }
+    }
+  }
+  cout << "No" << "\n";
 }
 
 signed main() {
