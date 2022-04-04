@@ -95,7 +95,6 @@ struct HeavyLightDecomposition {
   int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
 
-
 template<typename T>
 struct BIT {
   int n; vector<T> bit;
@@ -113,29 +112,29 @@ struct BIT {
     return x; }
 };
 
-
 void solve() {
   ll N, Q; cin >> N >> Q;
   vl a(N); rep(i, N) cin >> a[i];
   Graph<ll> G(N);
   rep2(i, 1, N) {
-    ll u, v; cin >> u >> v;
-    G.add_edge(u, v);
+    ll p; cin >> p;
+    G.add_edge(p, i);
   }
   HeavyLightDecomposition<Graph<ll>> hld(G);
-  BIT<ll> bs(N);
-  rep(i, N) { bs.add(hld.down[i], a[i]); }
+
+  BIT<ll> bt(N);
+  rep(i, N) bt.add(hld.down[i], a[i]);
 
   rep(i, Q) {
     ll q; cin >> q;
-    if (q) {
-      ll u, v; cin >> u >> v;
-      ll ans = 0;
-      hld.path_query(u, v, true, [&](ll a, ll b){ ans += bs.sum(a, b); });
-      cout << ans << "\n";
+    if (q == 0) {
+      ll u, x; cin >> u >> x;
+      bt.add(hld.down[u], x);
     } else {
-      ll p, x; cin >> p >> x;
-      bs.add(hld.down[p], x);
+      ll u; cin >> u;
+      ll ans = 0;
+      hld.subtree_query(u, true, [&](ll a, ll b){ ans += bt.sum(a, b); });
+      cout << ans << "\n";
     }
   }
 }

@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc246",
+    "title": "AtCoder Beginner Contest 246",
+    "url": "https://atcoder.jp/contests/abc246"
+  },
+  "tasks": [
+    {
+      "id": "abc246_a",
+      "label": "A",
+      "title": "Four Points",
+      "url": "https://atcoder.jp/contests/abc246/tasks/abc246_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc246_a.cpp"
+      }
+    },
+    {
+      "id": "abc246_b",
+      "label": "B",
+      "title": "Get Closer",
+      "url": "https://atcoder.jp/contests/abc246/tasks/abc246_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc246_b.cpp"
+      }
+    },
+    {
+      "id": "abc246_c",
+      "label": "C",
+      "title": "Coupon",
+      "url": "https://atcoder.jp/contests/abc246/tasks/abc246_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc246_c.cpp"
+      }
+    },
+    {
+      "id": "abc246_d",
+      "label": "D",
+      "title": "2-variable Function",
+      "url": "https://atcoder.jp/contests/abc246/tasks/abc246_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc246_d.cpp"
+      }
+    },
+    {
+      "id": "abc246_e",
+      "label": "E",
+      "title": "Bishop 2",
+      "url": "https://atcoder.jp/contests/abc246/tasks/abc246_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc246_e.cpp"
+      }
+    },
+    {
+      "id": "abc246_f",
+      "label": "F",
+      "title": "typewriter",
+      "url": "https://atcoder.jp/contests/abc246/tasks/abc246_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc246_f.cpp"
+      }
+    },
+    {
+      "id": "abc246_g",
+      "label": "G",
+      "title": "Game on Tree 3",
+      "url": "https://atcoder.jp/contests/abc246/tasks/abc246_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc246_g.cpp"
+      }
+    },
+    {
+      "id": "abc246_h",
+      "label": "Ex",
+      "title": "01? Queries",
+      "url": "https://atcoder.jp/contests/abc246/tasks/abc246_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc246_h.cpp"
+      }
+    }
+  ]
+}

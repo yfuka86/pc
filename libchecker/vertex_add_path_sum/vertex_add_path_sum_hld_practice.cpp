@@ -10,13 +10,12 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
+typedef pair<int, int> P; typedef pair<ll, ll> LP;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+const int INF = numeric_limits<int>::max();
+const ll LINF = LLONG_MAX;
+const double DINF = numeric_limits<double>::infinity();
 
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
-template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
@@ -30,7 +29,6 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 template< typename T = ll > struct Edge {
   int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
@@ -38,15 +36,32 @@ template< typename T = ll > struct Edge {
 template< typename T = ll > struct Graph {
   vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
   size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); } void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+
 void solve() {
-  ll N; cin >> N;
+  ll N, Q; cin >> N >> Q;
+  vl a(N); rep(i, N) cin >> a[i];
   Graph<ll> G(N);
-  rep(i, N - 1) {
-    ll u, v; cin >> u >> v; u--; v--;
+  rep2(i, 1, N) {
+    ll u, v; cin >> u >> v;
     G.add_edge(u, v);
   }
 
@@ -84,10 +99,34 @@ void solve() {
     return dep[u] + dep[v] - dep[lca(u, v)] * 2;
   };
 
-  ll Q; cin >> Q;
+  BIT<ll> bs(N);
+  rep(i, N) { bs.add(in[i], a[i]); }
+
+  function<ll(ll, ll)> f = [&](ll a, ll b) { return bs.sum(a, b); };
+
+  function<ll(ll, ll, ll)> query = [&](ll u, ll v, ll ret) {
+    if (in[u] > in[v]) swap(u, v);
+    while (head[u] != head[v]) {
+      ret += f(in[head[v]], in[v] + 1);
+      v = par[head[v]];
+    }
+    ret += f(in[u], in[v] + 1);
+    return ret;
+  };
+
   rep(i, Q) {
-    ll a, b; cin >> a >> b; a--; b--;
-    cout << dist(a, b) + 1 << "\n";
+    ll q; cin >> q;
+    if (q) {
+      ll u, v; cin >> u >> v;
+      ll l = lca(u, v), ans = 0;
+      ans += query(l, u, 0LL);
+      ans += query(l, v, 0LL);
+      cout << ans - bs.sum(in[l], in[l] + 1) << "\n";
+    } else {
+      ll p, x; cin >> p >> x;
+      ll v = in[p];
+      bs.add(v, x);
+    }
   }
 }
 
@@ -95,8 +134,6 @@ signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
 }
-
-

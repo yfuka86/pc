@@ -10,13 +10,12 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
+typedef pair<int, int> P; typedef pair<ll, ll> LP;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+const int INF = numeric_limits<int>::max();
+const ll LINF = LLONG_MAX;
+const double DINF = numeric_limits<double>::infinity();
 
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
-template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
@@ -30,7 +29,6 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 template< typename T = ll > struct Edge {
   int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
@@ -41,53 +39,54 @@ template< typename T = ll > struct Graph {
   void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+template< typename T > struct SparseTable {
+  vector< vector< T > > st; vector< int > lookup;
+  SparseTable() = default;
+  void build(const vector< T > &v) {
+    int b = 0; while((1 << b) <= v.size()) ++b; st.assign(b, vector< T >(1 << b));
+    for(int i = 0; i < v.size(); i++) st[0][i] = v[i];
+    for(int i = 1; i < b; i++) for(int j = 0; j + (1 << i) <= (1 << b); j++) st[i][j] = min(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
+    lookup.resize(v.size() + 1); for(int i = 2; i < lookup.size(); i++) lookup[i] = lookup[i >> 1] + 1; }
+  inline T rmq(int l, int r) const { int b = lookup[r - l]; return min(st[b][l], st[b][r - (1 << b)]); } };
+
+template< typename T = ll >
+struct EulerTour : Graph<T> {
+public:
+  using Graph<T>::Graph; using Graph<T>::g; vector<int> in, out, par, dep, node, edge; vector<ll> edgec; SparseTable<LP> st;
+  void build() {
+    ll n = g.size(), len = n * 2; in.assign(n, 0); out.assign(n, 0); par.assign(n, 0); dep.assign(len, -1); node.assign(len, 0); edge.assign(len, 0); edgec.assign(len, 0);
+    int t = 0; dfs(Edge<T>(-1, 0, 0), 0, t);
+    vector<LP> tmp(len); rep(i, len) tmp[i] = mp(dep[i], i); st.build(tmp);
+  }
+  int depth(int u) const { return dep[in[u]]; }
+  int subtree_size(int u) const { return (out[u] - in[u] + 1) / 2; }
+  int lca(int u, int v) const { int l = in[u], r = out[v]; if (l > r) swap(l, r); return node[st.rmq(l, r).second]; }
+  int dist(int u, int v) const { return depth(u) + depth(v) - 2 * depth(lca(u, v)); }
+
+private:
+  void dfs(Edge<T> e, int d, int &cur) {
+    int p = e.from, v = e.to; par[v] = p; dep[cur] = d; node[cur] = v; edge[cur] = v; edgec[cur] = e.cost; in[v] = cur++;
+    for(Edge<T> &next : g[v]) {
+      if(next.to == p) continue;
+      dfs(next, d + 1, cur);
+      cur++;
+    }
+    out[v] = cur; dep[cur] = d - 1; node[cur] = p; edge[cur] = -e.to; edgec[cur] = -e.cost;
+  }
+};
 
 void solve() {
   ll N; cin >> N;
-  Graph<ll> G(N);
+  EulerTour<ll> G(N);
   rep(i, N - 1) {
-    ll u, v; cin >> u >> v; u--; v--;
-    G.add_edge(u, v);
+    ll a, b; cin >> a >> b; a--; b--;
+    G.add_edge(a, b);
   }
-
-  vl dep(N), par(N), sz(N, 1);
-  function<void(ll, ll, ll)> dfs_sz = [&](ll v, ll p, ll d){
-    dep[v] = d; par[v] = p;
-    if (G[v].front() == p) swap(G[v].front(), G[v].back());
-    for (auto &to: G[v]) { if (to == p) continue;
-      dfs_sz(to, v, d + 1);
-      sz[v] += sz[to];
-      if (sz[G[v].front()] < sz[to]) swap(G[v].front(), to);
-    }
-  };
-  dfs_sz(0, -1, 0);
-
-  vl in(N), out(N), rev(N), head(N);
-  function<void(ll, ll, ll&)> dfs_hld = [&](ll v, ll p, ll &cur) {
-    in[v] = cur++; rev[in[v]] = v;
-    for (auto &to: G[v]) { if (to == p) continue;
-      head[to] = (G[v].front() == to ? head[v] : to);
-      dfs_hld(to, v, cur);
-    }
-    out[v] = cur;
-  };
-  ll cur = 0; dfs_hld(0, -1, cur);
-
-  function<ll(ll, ll)> lca = [&](ll u, ll v) {
-    for(;; v = par[head[v]]) {
-      if(in[u] > in[v]) swap(u, v);
-      if(head[u] == head[v]) return u;
-    }
-  };
-
-  function<ll(ll, ll)> dist = [&](ll u, ll v) {
-    return dep[u] + dep[v] - dep[lca(u, v)] * 2;
-  };
-
+  G.build();
   ll Q; cin >> Q;
   rep(i, Q) {
     ll a, b; cin >> a >> b; a--; b--;
-    cout << dist(a, b) + 1 << "\n";
+    cout << G.dist(a, b) + 1 << "\n";
   }
 }
 
@@ -95,8 +94,6 @@ signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
 }
-
-

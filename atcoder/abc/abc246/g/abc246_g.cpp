@@ -43,52 +43,34 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 void solve() {
-  ll N; cin >> N;
-  Graph<ll> G(N);
-  rep(i, N - 1) {
+  ll n; cin >> n;
+  vl a(n, 0); rep2(i, 1, n) cin >> a[i];
+  Graph<ll> G(n);
+  rep(i, n - 1) {
     ll u, v; cin >> u >> v; u--; v--;
     G.add_edge(u, v);
   }
 
-  vl dep(N), par(N), sz(N, 1);
-  function<void(ll, ll, ll)> dfs_sz = [&](ll v, ll p, ll d){
-    dep[v] = d; par[v] = p;
-    if (G[v].front() == p) swap(G[v].front(), G[v].back());
-    for (auto &to: G[v]) { if (to == p) continue;
-      dfs_sz(to, v, d + 1);
-      sz[v] += sz[to];
-      if (sz[G[v].front()] < sz[to]) swap(G[v].front(), to);
-    }
-  };
-  dfs_sz(0, -1, 0);
-
-  vl in(N), out(N), rev(N), head(N);
-  function<void(ll, ll, ll&)> dfs_hld = [&](ll v, ll p, ll &cur) {
-    in[v] = cur++; rev[in[v]] = v;
-    for (auto &to: G[v]) { if (to == p) continue;
-      head[to] = (G[v].front() == to ? head[v] : to);
-      dfs_hld(to, v, cur);
-    }
-    out[v] = cur;
-  };
-  ll cur = 0; dfs_hld(0, -1, cur);
-
-  function<ll(ll, ll)> lca = [&](ll u, ll v) {
-    for(;; v = par[head[v]]) {
-      if(in[u] > in[v]) swap(u, v);
-      if(head[u] == head[v]) return u;
-    }
-  };
-
-  function<ll(ll, ll)> dist = [&](ll u, ll v) {
-    return dep[u] + dep[v] - dep[lca(u, v)] * 2;
-  };
-
-  ll Q; cin >> Q;
-  rep(i, Q) {
-    ll a, b; cin >> a >> b; a--; b--;
-    cout << dist(a, b) + 1 << "\n";
+  ll ng = *max_element(all(a)) + 1, ok = 0;
+  while (ng > ok + 1) {
+    ll mid = (ng + ok) / 2;
+    vl dp(n, 0);
+    function<void(ll, ll)> dfs = [&](ll v, ll p) {
+      ll sum = 0;
+      for (auto &to: G[v]) {
+        if (to == p) continue;
+        dfs(to, v);
+        sum += dp[to];
+      }
+      sum = max<ll>(sum - 1, 0);
+      if (a[v] >= mid) sum++;
+      dp[v] = sum;
+    };
+    dfs(0, -1);
+    // cout << mid << "\n"; coutarray(dp);
+    if (dp[0] == 0) ng = mid; else ok = mid;
   }
+  cout << ok << "\n";
 }
 
 signed main() {
@@ -98,5 +80,3 @@ signed main() {
   int t = 1; //cin >> t;
   while (t--) solve();
 }
-
-

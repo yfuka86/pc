@@ -30,65 +30,49 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
-
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+vl dx = {1, -1, 1, -1}; vl dy = {1, -1, -1, 1};
 
 void solve() {
-  ll N; cin >> N;
-  Graph<ll> G(N);
-  rep(i, N - 1) {
-    ll u, v; cin >> u >> v; u--; v--;
-    G.add_edge(u, v);
+  ll n; cin >> n;
+  ll sx, sy, tx, ty; cin >> sx >> sy >> tx >> ty; sx--; sy--; tx--; ty--;
+  vvl grid(n, vl(n, 0));
+
+  rep(i, n) {
+    string s; cin >> s;
+    rep(j, n) {
+      if (s[j] == '#') grid[i][j] = 1;
+    }
   }
 
-  vl dep(N), par(N), sz(N, 1);
-  function<void(ll, ll, ll)> dfs_sz = [&](ll v, ll p, ll d){
-    dep[v] = d; par[v] = p;
-    if (G[v].front() == p) swap(G[v].front(), G[v].back());
-    for (auto &to: G[v]) { if (to == p) continue;
-      dfs_sz(to, v, d + 1);
-      sz[v] += sz[to];
-      if (sz[G[v].front()] < sz[to]) swap(G[v].front(), to);
+  if ((abs(tx - sx) % 2) != (abs(ty - sy) % 2)) { cout << -1 << "\n"; return; }
+
+  vector<vvl> cost(n, vvl(n, vl(4, LINF)));
+  queue<LT> que;
+  que.push({0, sx, sy});
+
+  while(!que.empty()) {
+    ll c, x, y; tie(c, x, y) = que.front(); que.pop();
+    if (x == tx && y == ty) break;
+    rep(i, 4) {
+      ll k = 1;
+      while(true) {
+        ll tox = x + dx[i] * k;
+        ll toy = y + dy[i] * k;
+        if (tox >= n || tox < 0 || toy >= n || toy < 0) break;
+        if (grid[tox][toy]) break;
+        if (chmin(cost[tox][toy][i], c + 1)) {
+          que.push({c + 1, tox, toy});
+        } else break;
+        k++;
+      }
     }
-  };
-  dfs_sz(0, -1, 0);
 
-  vl in(N), out(N), rev(N), head(N);
-  function<void(ll, ll, ll&)> dfs_hld = [&](ll v, ll p, ll &cur) {
-    in[v] = cur++; rev[in[v]] = v;
-    for (auto &to: G[v]) { if (to == p) continue;
-      head[to] = (G[v].front() == to ? head[v] : to);
-      dfs_hld(to, v, cur);
-    }
-    out[v] = cur;
-  };
-  ll cur = 0; dfs_hld(0, -1, cur);
-
-  function<ll(ll, ll)> lca = [&](ll u, ll v) {
-    for(;; v = par[head[v]]) {
-      if(in[u] > in[v]) swap(u, v);
-      if(head[u] == head[v]) return u;
-    }
-  };
-
-  function<ll(ll, ll)> dist = [&](ll u, ll v) {
-    return dep[u] + dep[v] - dep[lca(u, v)] * 2;
-  };
-
-  ll Q; cin >> Q;
-  rep(i, Q) {
-    ll a, b; cin >> a >> b; a--; b--;
-    cout << dist(a, b) + 1 << "\n";
   }
+
+  ll ans = *min_element(all(cost[tx][ty]));
+  if (ans == LINF) cout << -1 << "\n";
+  else cout << ans << "\n";
+
 }
 
 signed main() {
@@ -98,5 +82,3 @@ signed main() {
   int t = 1; //cin >> t;
   while (t--) solve();
 }
-
-
