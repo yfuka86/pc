@@ -1,4 +1,3 @@
-
-  //   ll n; cin >> n;
-  //   cout << solve(n) << "\n";
+0) {
+  //   if (check(n, i)) return i;
   // }
