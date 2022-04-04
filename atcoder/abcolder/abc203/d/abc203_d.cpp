@@ -12,7 +12,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
 typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max() / 2 - 10; const ll LINF = LLONG_MAX / 2 - 10; const double DINF = numeric_limits<double>::infinity();
+const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
 
 using A = ll;
 template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
@@ -32,14 +32,40 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
+vvl cumsum2d(vvl &a) {
+  ll H = a.size(), W = a[0].size(); vvl sum(H + 1, vl(W + 1, 0));
+  rep(i, H) rep(j, W) sum[i + 1][j + 1] += sum[i + 1][j] + sum[i][j + 1] + a[i][j] - sum[i][j];
+  return sum;
+}
+
 void solve() {
-  ll n; cin >> n;
+  ll n, k; cin >> n >> k;
+  vvl h(n, vl(n, 0));
+  rep(i, n) rep(j, n) cin >> h[i][j];
+
+  ll ng = -1, ok = 1e9;
+  while (ok > ng + 1) {
+    ll mid = (ng + ok) / 2;
+
+    vvl tmp(n, vl(n, 0));
+    rep(i, n) rep(j, n) tmp[i][j] = h[i][j] > mid;
+    vvl cumsum = cumsum2d(tmp);
+
+    ll sum = LINF;
+    for(ll i = 0; i + k <= n; i++) {
+      for(ll j = 0; j + k <= n; j++) {
+        chmin(sum, cumsum[i][j] + cumsum[i + k][j + k] - cumsum[i + k][j] - cumsum[i][j + k]);
+      }
+    }
+    if (sum <= floor(k * k, 2)) ok = mid; else ng = mid;
+  }
+  cout << ok << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }
