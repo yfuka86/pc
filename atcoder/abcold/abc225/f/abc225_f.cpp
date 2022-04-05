@@ -32,8 +32,33 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
+struct Card {
+  string s;
+
+  bool operator<(const struct Card& other) const {
+    return s + other.s < other.s + s;
+  }
+};
+
 void solve() {
-  ll N; cin >> N;
+  ll N, K; cin >> N >> K;
+  vector<Card> S(N);
+  rep(i, N) { string s; cin >> s; S[i] = {s}; }
+
+  sort(all(S));
+
+  string sinf = string(100, 'z');
+  vector<vs> dp(N + 1, vs(K + 1, sinf));
+  rep(i, N + 1) { dp[i][0] = ""; }
+
+  rep_r(i, N) {
+    rep(j, K) {
+      dp[i][j + 1] = min(dp[i + 1][j + 1], S[i].s + dp[i + 1][j]);
+      // cout << i << " " << j + 1 << " " << dp[i][j + 1] << "\n";
+    }
+  }
+
+  cout << dp[0][K] << "\n";
 }
 
 signed main() {

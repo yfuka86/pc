@@ -56,23 +56,28 @@ struct lazy_segtree {
   void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
 
-struct S { ll a; };
-struct F {};
+struct S { ll sz, val; };
+using F = ll;
 
-S op(S l, S r) { return S{max(l.a, r.a)}; }
-S e() { return S{-1}; }
-S mapping(F l, S r) { return S{r.a}; }
-F composition(F l, F r) { { return F{}; } }
-F id() { return F{}; }
+S op(S l, S r) { return {l.sz + r.sz, l.val + r.val}; }
+S e() { return {1, 0}; }
+S mapping(F f, S x) { if (f == -1) return x; else return { x.sz, f * x.sz }; }
+F composition(F f, F g) { return f == -1 ? g : f; }
+F id() { return -1; }
 
-// lazy_segtree<S, op, e, F, mapping, composition, id> seg(a);
-// ll ans = seg.max_right<function<bool(S)>>(a,
-//   [&b](S x) {
-//     if (x.a == -1) return true;
-//     return x.a < b;
-//   }
-// );
-//------------------------------------------------------------------------------
+using lseg = lazy_segtree<S, op, e, F, mapping, composition, id>;
+
+void asc(lseg&seg, ll l, ll r) {
+  S p = seg.prod(l, r);
+  seg.apply(l, r - p.val, 0);
+  seg.apply(r - p.val, r, 1);
+}
+
+void desc(lseg&seg, ll l, ll r) {
+  S p = seg.prod(l, r);
+  seg.apply(l, l + p.val, 1);
+  seg.apply(l + p.val, r, 0);
+}
 
 int main()
 {
@@ -80,9 +85,33 @@ int main()
   cin.tie(nullptr);
 
   ll N, Q, X; cin >> N >> Q >> X;
+  vl P(N); rep(i, N) cin >> P[i];
 
+  vector<S> p0(N), p1(N);
+  rep(i, N) {
+    if (P[i] == X) { p0[i] = {1, 0}; p1[i] = {1, 1}; }
+    else p0[i] = p1[i] = {1, P[i] > X ? 1 : 0};
+  }
 
-  cout << N << "\n";
+  lseg seg0(p0);
+  lseg seg1(p1);
+
+  rep(i, Q) {
+    ll c, l, r; cin >> c >> l >> r; l--;
+    if (c == 1) {
+      asc(seg0, l, r);
+      asc(seg1, l, r);
+    } else {
+      desc(seg0, l, r);
+      desc(seg1, l, r);
+    }
+    // rep(i, N) cout << seg0.get(i).val << " "; cout << "\n";
+    // rep(i, N) cout << seg1.get(i).val << " "; cout << "\n";
+  }
+
+  rep(i, N) {
+    if (seg0.get(i).val == 0 && seg1.get(i).val == 1) { cout << i + 1 << "\n"; return 0; }
+  }
 }
 
 

@@ -1,4 +1,7 @@
 #pragma GCC optimize("Ofast")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+// #pragma GCC target("avx512f")
 #include <bits/stdc++.h>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
@@ -19,62 +22,106 @@ const double DINF = numeric_limits<double>::infinity();
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<typename T> void coutarray(vector<T>& v) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i];} cout << "\n"; }
-template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
-template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cout << (a >> d) & 1; cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
+struct Mo {
+  int width;
+  vector<int> left, right, order;
 
-int ceil_pow2(int n) { int x = 0; while ((1U << x) < (unsigned int)(n)) x++; return x; }
+  Mo(int N, int Q) : order(Q) {
+    width = max<int>(1, 1.0 * N / max<double>(1.0, sqrt(Q * 2.0 / 3.0)));
+    iota(begin(order), end(order), 0);
+  }
 
-//------------------------------------------------------------------------------
-template <class S, S (*op)(S, S), S (*e)()> struct segtree {
-  public:
-  segtree() : segtree(0) {}
-  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
-  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
-  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
-  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
-  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
-  S all_prod() const { return d[1]; }
-  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
-  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
-    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
-  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
-  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
-    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
-  private:
-  int _n, size, log; std::vector<S> d;
-  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+  void insert(int l, int r) { /* [l, r) */
+    left.emplace_back(l);
+    right.emplace_back(r);
+  }
+
+  template <typename AL, typename AR, typename DL, typename DR, typename REM>
+  void run(const AL &add_left, const AR &add_right, const DL &delete_left,
+           const DR &delete_right, const REM &rem) {
+    assert(left.size() == order.size());
+    sort(begin(order), end(order), [&](int a, int b) {
+      int ablock = left[a] / width, bblock = left[b] / width;
+      if (ablock != bblock) return ablock < bblock;
+      if (ablock & 1) return right[a] < right[b];
+      return right[a] > right[b];
+    });
+    int nl = 0, nr = 0;
+    for (auto idx : order) {
+      while (nl > left[idx]) add_left(--nl);
+      while (nr < right[idx]) add_right(nr++);
+      while (nl < left[idx]) delete_left(nl++);
+      while (nr > right[idx]) delete_right(--nr);
+      rem(idx);
+    }
+  }
 };
-//------------------------------------------------------------------------------
-vl cube(100); rep2(i, 1, 101) { cube[i - 1] = i * i * i; }
-ll cubedivide(ll n) {
-  rep2(i, 1, 100) while (n % cube[i] == 0) n /= cube[i];
-  return n;
-}
-struct S { ll a; };
-S op(S l, S r) { return cubedivide(l.a * r.a); }
-S e() { return S{-1}; }
 
+//-------------------------------------------------------
+// https://atcoder.jp/contests/abc238/submissions/29086825
+// https://cp-algorithms.com/algebra/prime-sieve-linear.html
+const int PSX = 1e6 + 1;
+struct PrimeSieve {
+  bitset<PSX> is_prime; vector<int> pr;
+  int mu[PSX];  // moebius
+  int pf[PSX];  // pf[i] := smallest prime p s.t. p | i
+  PrimeSieve(){
+    is_prime.flip(); is_prime[0] = is_prime[1] = false; mu[1] = 1;
+    for (int i = 2; i < PSX; i++) {
+      if (is_prime[i]) { pr.push_back(i); pf[i] = i; mu[i] = -1; }
+      for (int p : pr) {
+        if (ll(i) * p >= PSX) break;
+        is_prime[i * p] = false; mu[i * p] = -mu[i]; pf[i * p] = p;
+        if (i % p == 0) { mu[i * p] = 0; break; }
+      }
+    }
+  }
+  vector<pair<int, int>> factorize(int x) { vector<pair<int, int>> vec; while (pf[x] > 1) { int d = pf[x], c = 0; while (x % d == 0) { x /= d; c++; } vec.emplace_back(d, c); } if (x != 1) vec.emplace_back(x, 1); return vec; }
+};
 
-int main()
-{
+int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
   ll N, Q; cin >> N >> Q;
   vl a(N); rep(i, N) cin >> a[i];
-  segtree<S, op, e> seg(a);
 
-  rep(i, q) {
-    ll l, r; cin >> l >> r; l--;
-    seg.prod(l, )
+  vector<vector<P>> pf(N);
+  PrimeSieve ps;
+
+  rep(i, N) {
+    pf[i] = ps.factorize(a[i]);
   }
 
-  cout << N << "\n";
-}
+  Mo mo(N, Q);
+  vb ans(Q);
+  rep(i, Q) {
+    int l, r; cin >> l >> r; l--; mo.insert(l, r);
+  }
 
+  vi primetable(1000000, 0);
+  ll c = 0;
+  auto add = [&](int i) {
+    for (auto [p, n]: pf[i]) {
+      if (primetable[p] % 3 == 0) c++;
+      primetable[p] += n;
+      if (primetable[p] % 3 == 0) c--;
+    }
+  };
+  auto erase = [&](int i) {
+    for (auto [p, n]: pf[i]) {
+      if (primetable[p] % 3 == 0) c++;
+      primetable[p] -= n;
+      if (primetable[p] % 3 == 0) c--;
+    }
+  };
+  auto rem = [&](int idx) {
+    ans[idx] = c == 0;
+  };
+  mo.run(add, add, erase, erase, rem);
+  for (auto p: ans) cout << (p ? "Yes" : "No") << "\n";
+}
 
 
