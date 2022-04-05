@@ -1,7 +1,4 @@
 #pragma GCC optimize("Ofast")
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
-// #pragma GCC target("avx512f")
 #include <bits/stdc++.h>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
