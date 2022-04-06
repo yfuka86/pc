@@ -1,47 +1,37 @@
 #pragma GCC optimize("Ofast")
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <map>
-#include <set>
-#include <queue>
-#include <math.h>
-#include <vector>
-#include <algorithm>
-#include <limits>
-#include <climits>
-#include <cassert>
-#include <bitset>
-#include <numeric>
+#include <bits/stdc++.h>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
 #define pb push_back
+#define mp make_pair
 
 using namespace std;
-typedef long long ll;
-typedef long double ld;
-typedef pair<int, int> P;
-typedef pair<ll, ll> LP;
-typedef vector<int> vi;
-typedef vector<ll> vl;
-typedef vector<string> vs;
-const int INF = numeric_limits<int>::max();
-const ll LINF = LLONG_MAX;
-const double DINF = numeric_limits<double>::infinity();
+typedef long long ll; typedef unsigned long long ull; typedef long double ld;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+const int INF = numeric_limits<int>::max() / 2 - 10; const ll LINF = LLONG_MAX / 2 - 10; const double DINF = numeric_limits<double>::infinity();
 
-int bitcount(int n) { int c = 0; for ( ; n != 0 ; n &= n - 1 ) c++; return c;}
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
+ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
+template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
+template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
+template <class T> T POW(T x, int n) { assert(n >= 0); T res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<typename T> void coutarray(vector<T>& v) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i];} cout << "\n"; }
+template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cout << (a >> d) & 1; cout << "\n"; }
+template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
+vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+
 //------------------------------------------------------------------------------
 struct UnionFind {
   vector<ll> par, s, e;
@@ -54,30 +44,38 @@ struct UnionFind {
 };
 //------------------------------------------------------------------------------
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
+void solve() {
+  ll H, W; cin >> H >> W;
+  ll Q; cin >> Q;
 
-  ll H, W, Q;
-  cin >> H >> W >> Q;
-  vector<vector<bool>> colored(H, vector<bool>(W, false));
   UnionFind un(H * W);
-
+  vb colored(H * W, 0);
   rep(i, Q) {
-    ll t; cin >> t;
-    if (t == 1) {
+    ll q; cin >> q;
+    if (q == 1) {
       ll r, c; cin >> r >> c; r--; c--;
-      colored[r][c] = true;
-      if (r > 0 && colored[r - 1][c]) un.unite(r * W + c, (r - 1) * W + c);
-      if (r < H - 1 && colored[r + 1][c]) un.unite(r * W + c, (r + 1) * W + c);
-      if (c > 0 && colored[r][c - 1]) un.unite(r * W + c, r * W + c - 1);
-      if (c < W - 1 && colored[r][c + 1]) un.unite(r * W + c, r * W + c + 1);
+      ll id = r * W + c;
+      colored[id] = true;
+      rep(j, 4) {
+        ll dr = r + dx[j], dc = c + dy[j];
+        if (dr >= 0 && dr < H && dc >= 0 && dc < W) {
+          ll adj = dr * W + dc;
+          if (colored[adj]) un.unite(id, adj);
+        }
+      }
     } else {
       ll ra, ca, rb, cb; cin >> ra >> ca >> rb >> cb; ra--; ca--; rb--; cb--;
-      cout << (colored[ra][ca] && un.same(ra * W + ca, rb * W + cb) ? "Yes" : "No") << "\n";
+      ll a = ra * W + ca, b = rb * W + cb;
+      if (colored[a] && colored[b] && un.same(a, b)) cout << "Yes" << "\n"; else cout << "No" << "\n";
     }
   }
+
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; //cin >> t;
+  while (t--) solve();
+}
