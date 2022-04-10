@@ -33,34 +33,27 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N; cin >> N;
-  vl A(N); rep(i, N) cin >> A[i];
+  ll n; cin >> n;
+  vl a(n), b(n); rep(i, n) cin >> a[i]; rep(i, n) cin >> b[i];
 
-  vl a = A;
-  sort(all(a));
-  ll ans = accumulate(a.begin() + N / 2, a.end(), 0LL);
-  ll threshold = a[N / 2 - 1];
+  vvl dp(n, vl(2, LINF));
+  dp[0][0] = 0; dp[0][1] = 0;
+  rep(i, n - 1) {
+    ll s0 = abs(a[i + 1] - a[i]) + abs(b[i + 1] - b[i]);
+    ll s1 = abs(a[i + 1] - b[i]) + abs(b[i + 1] - a[i]);
 
-  vl ba(N);
-  rep(i, N) {
-    if (A[i] > threshold) ba[i] = -1; else ba[i] = 1;
+    chmin(dp[i + 1][1], dp[i][0] + s1);
+    chmin(dp[i + 1][1], dp[i][1] + s0);
+    chmin(dp[i + 1][0], dp[i][0] + s0);
+    chmin(dp[i + 1][0], dp[i][1] + s1);
   }
-
-
-  vl sum(N + 1, 0);
-  rep(i, N) {
-    sum[i + 1] = sum[i] + ba[i];
-  }
-  // coutarray(ba);
-  // coutarray(sum);
-
-  cout << min_element(all(sum)) - sum.begin() << " " << ans << "\n";
+  cout << min(dp[n - 1][0], dp[n - 1][1]) << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

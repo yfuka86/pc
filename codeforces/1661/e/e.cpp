@@ -33,34 +33,13 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N; cin >> N;
-  vl A(N); rep(i, N) cin >> A[i];
-
-  vl a = A;
-  sort(all(a));
-  ll ans = accumulate(a.begin() + N / 2, a.end(), 0LL);
-  ll threshold = a[N / 2 - 1];
-
-  vl ba(N);
-  rep(i, N) {
-    if (A[i] > threshold) ba[i] = -1; else ba[i] = 1;
-  }
-
-
-  vl sum(N + 1, 0);
-  rep(i, N) {
-    sum[i + 1] = sum[i] + ba[i];
-  }
-  // coutarray(ba);
-  // coutarray(sum);
-
-  cout << min_element(all(sum)) - sum.begin() << " " << ans << "\n";
+  ll n; cin >> n;
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

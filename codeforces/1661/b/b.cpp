@@ -33,34 +33,34 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N; cin >> N;
-  vl A(N); rep(i, N) cin >> A[i];
+  ll n; cin >> n;
+  vl a(n); rep(i, n) cin >> a[i];
 
-  vl a = A;
-  sort(all(a));
-  ll ans = accumulate(a.begin() + N / 2, a.end(), 0LL);
-  ll threshold = a[N / 2 - 1];
+  vl num(32768, LINF);
+  num[0] = 0;
 
-  vl ba(N);
-  rep(i, N) {
-    if (A[i] > threshold) ba[i] = -1; else ba[i] = 1;
+  queue<ll> que;
+  que.push(0);
+  while (!que.empty()) {
+    ll t = que.front(); que.pop();
+    if (t % 2 == 0) {
+      ll nx = (t + 32768) / 2;
+      ll nx2 = t / 2;
+      if (chmin(num[nx], num[t] + 1)) que.push(nx);
+      if (chmin(num[nx2], num[t] + 1)) que.push(nx2);
+    }
+    ll ns = (t + 32768 - 1) % 32768;
+    if (chmin(num[ns], num[t] + 1)) que.push(ns);
   }
 
-
-  vl sum(N + 1, 0);
-  rep(i, N) {
-    sum[i + 1] = sum[i] + ba[i];
-  }
-  // coutarray(ba);
-  // coutarray(sum);
-
-  cout << min_element(all(sum)) - sum.begin() << " " << ans << "\n";
+  rep(i, n) a[i] = num[a[i]];
+  coutarray(a);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; t = 1;
   while (t--) solve();
 }

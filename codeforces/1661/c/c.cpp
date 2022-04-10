@@ -33,34 +33,34 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N; cin >> N;
-  vl A(N); rep(i, N) cin >> A[i];
+  ll n; cin >> n;
+  vl h(n); rep(i, n) cin >> h[i];
+  ll ma1 = *max_element(all(h));
+  ll ma2 = ma1 + 1;
 
-  vl a = A;
-  sort(all(a));
-  ll ans = accumulate(a.begin() + N / 2, a.end(), 0LL);
-  ll threshold = a[N / 2 - 1];
+  function<ll(ll)> calc = [&](ll ma) {
+    ll odd = 0;
+    ll even = 0;
+    rep(i, n) {
+      ll rem = ma - h[i];
+      even += rem / 2;
+      odd += (rem & 1) ? 1 : 0;
+    }
+    if (even > odd) {
+      ll k = (even - odd + 1) / 3;
+      even -= k;
+      odd += k * 2;
+    }
+    return max(odd * 2 - 1, even * 2);
+  };
 
-  vl ba(N);
-  rep(i, N) {
-    if (A[i] > threshold) ba[i] = -1; else ba[i] = 1;
-  }
-
-
-  vl sum(N + 1, 0);
-  rep(i, N) {
-    sum[i + 1] = sum[i] + ba[i];
-  }
-  // coutarray(ba);
-  // coutarray(sum);
-
-  cout << min_element(all(sum)) - sum.begin() << " " << ans << "\n";
+  cout << min(calc(ma1), calc(ma2)) << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

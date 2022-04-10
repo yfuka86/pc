@@ -1,0 +1,3 @@
+ // coutarray(subt);
+  // coutarray(opsum);
+ 

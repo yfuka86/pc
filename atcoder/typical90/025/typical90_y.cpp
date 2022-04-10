@@ -37,7 +37,7 @@ void solve() {
 
   ll ans = 0;
   function<void(ll, multiset<ll>&)> check = [&](ll p, multiset<ll> &S) {
-    ll m = B + p;
+    ll m = B + p; if (m > N) return;
     vl s1;
     while (m > 0) {
       if (m % 10 == 0) return;
@@ -45,8 +45,7 @@ void solve() {
       m /= 10;
     }
     sort(all(s1));
-    vl s2;
-    for(auto s: S) s2.pb(s);
+    vl s2; for(auto s: S) s2.pb(s);
     if (s1 == s2) ans++;
   };
 
