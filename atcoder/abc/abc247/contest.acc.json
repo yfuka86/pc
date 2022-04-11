@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc247",
+    "title": "AtCoder Beginner Contest 247",
+    "url": "https://atcoder.jp/contests/abc247"
+  },
+  "tasks": [
+    {
+      "id": "abc247_a",
+      "label": "A",
+      "title": "Move Right",
+      "url": "https://atcoder.jp/contests/abc247/tasks/abc247_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc247_a.cpp"
+      }
+    },
+    {
+      "id": "abc247_b",
+      "label": "B",
+      "title": "Unique Nicknames",
+      "url": "https://atcoder.jp/contests/abc247/tasks/abc247_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc247_b.cpp"
+      }
+    },
+    {
+      "id": "abc247_c",
+      "label": "C",
+      "title": "1 2 1 3 1 2 1",
+      "url": "https://atcoder.jp/contests/abc247/tasks/abc247_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc247_c.cpp"
+      }
+    },
+    {
+      "id": "abc247_d",
+      "label": "D",
+      "title": "Cylinder",
+      "url": "https://atcoder.jp/contests/abc247/tasks/abc247_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc247_d.cpp"
+      }
+    },
+    {
+      "id": "abc247_e",
+      "label": "E",
+      "title": "Max Min",
+      "url": "https://atcoder.jp/contests/abc247/tasks/abc247_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc247_e.cpp"
+      }
+    },
+    {
+      "id": "abc247_f",
+      "label": "F",
+      "title": "Cards",
+      "url": "https://atcoder.jp/contests/abc247/tasks/abc247_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc247_f.cpp"
+      }
+    },
+    {
+      "id": "abc247_g",
+      "label": "G",
+      "title": "Dream Team",
+      "url": "https://atcoder.jp/contests/abc247/tasks/abc247_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc247_g.cpp"
+      }
+    },
+    {
+      "id": "abc247_h",
+      "label": "Ex",
+      "title": "Rearranging Problem",
+      "url": "https://atcoder.jp/contests/abc247/tasks/abc247_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc247_h.cpp"
+      }
+    }
+  ]
+}

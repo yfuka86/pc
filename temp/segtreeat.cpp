@@ -43,12 +43,12 @@ F composition(F f, F g) { { return f + g; } }
 F id() { return 0; }
 
 lazy_segtree<S, op, e, F, mapping, composition, id> seg(a);
-// ll ans = seg.max_right<function<bool(S)>>(a,
-//   [&b](S x) {
-//     if (x.a == -1) return true;
-//     return x.a < b;
-//   }
-// );
+ll ans = seg.max_right<function<bool(S)>>(a,
+  [&b](S x) {
+    if (x.a == -1) return true;
+    return x.a < b;
+  }
+);
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 template <class S, S (*op)(S, S), S (*e)()> struct segtree {
