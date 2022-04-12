@@ -11,7 +11,7 @@
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> vvvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
 const int INF = numeric_limits<int>::max() / 2 - 10; const ll LINF = LLONG_MAX / 2 - 10; const double DINF = numeric_limits<double>::infinity();
 
 using A = ll;
@@ -34,6 +34,23 @@ vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
   ll N; cin >> N;
+  vvl A(N, vl(N, 0)); rep(i, N) rep(j, N) cin >> A[i][j];
+  ll M; cin >> M;
+  vvl R(N, vl(N, 0)); rep(i, M) { ll x, y; cin >> x >> y; x--; y--; R[x][y] = 1; R[y][x] = 1; }
+
+  vvvl dp(N + 1, vvl(1 << N, vl(N, LINF)));
+  dp[0][0][0] = 0;
+
+  rep(i, N) {
+    rep(S, 1 << N) {
+      rep(from, N) rep(to, N) {
+        if (S & 1 << to || (i != 0 && R[from][to])) continue;
+        chmin(dp[i + 1][S | 1 << to][to], dp[i][S][from] + A[to][i]);
+      }
+    }
+  }
+  ll ans = *min_element(all(dp[N][(1 << N) - 1]));
+  if (ans == LINF) cout << -1 << "\n"; else cout << ans << "\n";
 }
 
 signed main() {

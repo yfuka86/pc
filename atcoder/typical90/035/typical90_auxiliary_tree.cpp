@@ -116,6 +116,7 @@ void solve() {
       v[i] = {hld.down[t], t};
     }
 
+    // auxiliary tree構築
     sort(all(v));
     rep(i, k) {
       ll lca = hld.lca(v[i].second, v[(i + 1) % k].second);
@@ -135,6 +136,7 @@ void solve() {
       aG.add_edge(st.top(), next);
       st.push(next);
     }
+    // ここまで
 
     ll ans = 0;
     for(auto [_, n]: v) {

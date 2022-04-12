@@ -56,6 +56,16 @@ ll sub_hash(vl& h, ll l, ll r) {
   ll ret = h[r] - (b_fact(r - l) * h[l] % P_M); if (ret < 0) ret += P_M;
   return ret;
 }
+
+// 1回O(1)で擬似回転するベクタ rotateの第二引数と同じ(右シフトならsize-1、左シフトなら1)
+template<typename T>
+struct RotateVector {
+  __uint128_t offset = 0; vector<T> vec;
+  RotateVector(vector<T> &v) { vec = v; }
+  void rotate(ll a) { offset += a; }
+  T &operator[](int k) { return vec[(k + offset) % vec.size()]; }
+};
+
 // ビット列を反転のインデックスのみで保持したいもの
 struct Bitseq {
   vector<ll> ranges;

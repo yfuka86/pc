@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc215",
+    "title": "AtCoder Beginner Contest 215",
+    "url": "https://atcoder.jp/contests/abc215"
+  },
+  "tasks": [
+    {
+      "id": "abc215_a",
+      "label": "A",
+      "title": "Your First Judge",
+      "url": "https://atcoder.jp/contests/abc215/tasks/abc215_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc215_a.cpp"
+      }
+    },
+    {
+      "id": "abc215_b",
+      "label": "B",
+      "title": "log2(N)",
+      "url": "https://atcoder.jp/contests/abc215/tasks/abc215_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc215_b.cpp"
+      }
+    },
+    {
+      "id": "abc215_c",
+      "label": "C",
+      "title": "One More aab aba baa",
+      "url": "https://atcoder.jp/contests/abc215/tasks/abc215_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc215_c.cpp"
+      }
+    },
+    {
+      "id": "abc215_d",
+      "label": "D",
+      "title": "Coprime 2",
+      "url": "https://atcoder.jp/contests/abc215/tasks/abc215_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc215_d.cpp"
+      }
+    },
+    {
+      "id": "abc215_e",
+      "label": "E",
+      "title": "Chain Contestant",
+      "url": "https://atcoder.jp/contests/abc215/tasks/abc215_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc215_e.cpp"
+      }
+    },
+    {
+      "id": "abc215_f",
+      "label": "F",
+      "title": "Dist Max 2",
+      "url": "https://atcoder.jp/contests/abc215/tasks/abc215_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc215_f.cpp"
+      }
+    },
+    {
+      "id": "abc215_g",
+      "label": "G",
+      "title": "Colorful Candies 2",
+      "url": "https://atcoder.jp/contests/abc215/tasks/abc215_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc215_g.cpp"
+      }
+    },
+    {
+      "id": "abc215_h",
+      "label": "H",
+      "title": "Cabbage Master",
+      "url": "https://atcoder.jp/contests/abc215/tasks/abc215_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "abc215_h.cpp"
+      }
+    }
+  ]
+}

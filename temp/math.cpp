@@ -51,3 +51,23 @@ ll mex(vl& v) {
   set<ll> S; for(ll n: v) S.insert(n);
   ll ret = 0; while (S.find(ret) != S.end()) ret++;
   return ret; }
+
+// mod.cppに依存している
+// a^x ≡ b (mod. m) となる最小の正の整数 x を求める
+ll mod_log(ll a, ll b, ll m) {
+  a %= m; b %= m; ll sqrtm = sqrt_ceil(m);
+  map<ll, ll> apow; ll rem = a;
+  for(ll r = 1; r < sqrtm; ++r) {
+    if (!apow.count(rem)) apow[rem] = r;
+    (rem *= a) %= m;
+  }
+
+  ll A = mod_pow(mod_inv(a, m), sqrtm, m);
+  rem = b;
+  for(ll q = 0; q < sqrtm; ++q) {
+    if (rem == 1 && q > 0) return q * sqrtm;
+    else if (apow.count(rem)) return q * sqrtm + apow[rem];
+    (rem *= A) %= m;
+  }
+  return -1;
+}
