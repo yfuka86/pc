@@ -9,55 +9,59 @@
 #define mp make_pair
 
 using namespace std;
-typedef long long ll; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max();
-const ll LINF = LLONG_MAX;
-const double DINF = numeric_limits<double>::infinity();
+typedef long long ll; typedef unsigned long long ull; typedef long double ld;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> vvvl;
+typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
 
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
+ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
+template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
+template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
+template <class T> T POW(T x, int n) { assert(n >= 0); T res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<typename T> void coutarray(vector<T>& v) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i];} cout << "\n"; }
+template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cout << (a >> d) & 1; cout << "\n"; }
+template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
+template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
+template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
+vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-
+void solve() {
   ll H, W; cin >> H >> W;
-  vector<vl> p(H, vl(W));
-  rep(i, H) rep(j, W) cin >> p[i][j];
+  vvl P(H, vl(W)); rep(i, H) rep(j, W) cin >> P[i][j];
 
   ll ans = 0;
-  rep(S, 1 << H)  {
-    map<ll, ll> possible;
+  rep2(S, 1, 1 << H) {
+    map<ll, ll> sum;
+    ll unit = __builtin_popcount(S);
     rep(j, W) {
-      ll color = 0;
-      bool valid = true;
-      rep(i, H) {
-        if (S >> i & 1) {
-          if (color == 0) color = p[i][j];
-          if (color != p[i][j]) valid = false;
-        }
+      bool valid = true; ll c = 0;
+      rep(i, H) if (S & 1 << i) {
+        if (c == 0) c = P[i][j];
+        else if (c != P[i][j]) { valid = false; break; }
       }
-      if (valid) possible[color]++;
+      if (valid) sum[c] += unit;
     }
-
-    ll row_count = 0;
-    for (auto [color, count]: possible) {
-      chmax(row_count, count);
+    for (auto [color, count]: sum) {
+      chmax(ans, count);
     }
-    chmax(ans, __builtin_popcount(S) * row_count);
   }
-
   cout << ans << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; //cin >> t;
+  while (t--) solve();
+}

@@ -10,73 +10,86 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max();
-const ll LINF = LLONG_MAX;
-const double DINF = numeric_limits<double>::infinity();
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> vvvl;
+typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
 
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
+ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
+template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
+template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
+template <class T> T POW(T x, int n) { assert(n >= 0); T res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<typename T> void coutarray(vector<T>& v) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i];} cout << "\n"; }
+template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cout << (a >> d) & 1; cout << "\n"; }
+template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
+template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
+template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
+vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
+vl topo_sort(Graph<ll> G) {
+  ll n = G.size(); vl deg(n), ret; priority_queue<ll, vl, greater<ll>> que;
+  rep(i, n) for (Edge e: G[i]) deg[e.to]++; rep(i, n) if (deg[i] == 0) que.push(i);
+  while (!que.empty()) { ll v = que.top(); que.pop(); ret.pb(v);
+    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); } G[v].clear(); }
+  if (accumulate(all(deg), 0LL) != 0) return {}; else return ret; }
+
+ll batch = 50000;
+using BS = bitset<50000>;
+
+void solve() {
   ll N, M, Q; cin >> N >> M >> Q;
-
-  vector<vl> G(N);
-  // x < y の性質ゆえトポロジカルソート不必要
+  Graph<ll> G(N);
   rep(i, M) {
     ll x, y; cin >> x >> y; x--; y--;
-    G[y].pb(x);
+    G.add_directed_edge(x, y);
   }
+  vl sorted = topo_sort(G);
 
-  vector<LP> q(Q);
-  rep(i, Q) {
-    ll a, b; cin >> a >> b; a--; b--;
-    q[i] = mp(a, b);
-  }
+  vector<LT> query(Q);
+  rep(i, Q) { ll a, b; cin >> a >> b; a--; b--; query[i] = {a, b, i}; }
 
-  auto calc = [&](vector<ull>& dp) -> void{
-    rep(i, N) {
-      for (ll from: G[i]) {
-        dp[i] |= dp[from];
+  vb ans(Q, false);
+  rep(i, 2) {
+    vector<BS> dp(N);
+    ll offset = i * batch;
+    for(auto v: sorted) {
+      if (v / batch == i) dp[v].set(v % batch);
+      for(auto to: G[v]) {
+        dp[to] |= dp[v];
       }
     }
-  };
-
-  // rep(i, Q) {
-  //   vl dp(N, 0);
-  //   dp[q[i].first] = 1;
-  //   calc(dp);
-  //   if (dp[q[i].second] == 1) cout << "Yes" << "\n"; else cout << "No" << "\n";
-  // }
-
-  ll cur = 0;
-  while(cur * 64 < Q) {
-    vector<ull> dp(N, 0);
-    rep(i, 64) {
-      if (cur * 64 + i >= Q) break;
-      LP p = q[cur * 64 + i];
-      dp[p.first] |= (1ULL << i);
+    rep(j, Q) {
+      auto [a, b, q] = query[j];
+      if (a / batch == i) if (dp[b][a % batch]) ans[q] = true;
     }
-    calc(dp);
-    rep(i, 64) {
-      if (cur * 64 + i >= Q) break;
-      LP p = q[cur * 64 + i];
-      if ((dp[p.second] >> i) & 1) cout << "Yes" << "\n"; else cout << "No" << "\n";
-    }
-    cur++;
   }
+
+  rep(i, Q) cout << (ans[i] ? "Yes" : "No") << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; //cin >> t;
+  while (t--) solve();
+}

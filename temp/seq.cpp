@@ -1,9 +1,9 @@
 // 典型LIS
 // <= ならupper_bound、< ならlower_boundにする必要がある
-ll get_lis(vector<ll> &a) {
-	ll N = a.size(); vector<ll> dp(N, INF);
-	for (ll i = 0; i < N; ++i) *upper_bound(dp.begin(), dp.begin() + N, a[i]) = a[i];
-	return lower_bound(dp.begin(), dp.begin() + N, INF) - dp.begin();
+ll get_lis(vl &a) {
+	ll N = a.size(); vl dp(N, LINF);
+	for (ll i = 0; i < N; ++i) *upper_bound(all(dp), a[i]) = a[i];
+	return lower_bound(all(dp), INF) - dp.begin();
 }
 
 // 典型部分列DP

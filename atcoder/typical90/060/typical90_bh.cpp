@@ -9,56 +9,67 @@
 #define mp make_pair
 
 using namespace std;
-typedef long long ll; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max();
-const ll LINF = LLONG_MAX;
-const double DINF = numeric_limits<double>::infinity();
+typedef long long ll; typedef unsigned long long ull; typedef long double ld;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> vvvl;
+typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
 
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
+ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
+template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
+template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
+template <class T> T POW(T x, int n) { assert(n >= 0); T res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<typename T> void coutarray(vector<T>& v) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i];} cout << "\n"; }
+template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cout << (a >> d) & 1; cout << "\n"; }
+template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
+template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
+template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
+vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-ll get_lis(vector<ll> &a) {
-	ll N = a.size(); vector<ll> dp(N, INF);
-	for (ll i = 0; i < N; ++i) *upper_bound(dp.begin(), dp.begin() + N, a[i]) = a[i];
-	return lower_bound(dp.begin(), dp.begin() + N, INF) - dp.begin();
+// 典型LIS
+// <= ならupper_bound、< ならlower_boundにする必要がある
+ll get_lis(vl &a) {
+	ll N = a.size(); vl dp(N, LINF);
+	for (ll i = 0; i < N; ++i) *upper_bound(all(dp), a[i]) = a[i];
+	return lower_bound(all(dp), INF) - dp.begin();
 }
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-
+void solve() {
   ll N; cin >> N;
-  vl a(N); rep(i, N) cin >> a[i];
-  vl ra = a; reverse(all(ra));
-  vector<ll> dp(N, INF), rdp(N, INF);
-  vector<ll> idp(N, 0), ridp(N, 0);
-  for (ll i = 0; i < N; ++i) {
-    auto itr = lower_bound(all(dp), a[i]);
-    *itr = a[i];
-    idp[i] = itr - dp.begin();
+  vl A(N); rep(i, N) cin >> A[i];
+  vl rA = A; reverse(all(rA));
 
-    auto ritr = lower_bound(all(rdp), ra[i]);
-    *ritr = ra[i];
-    ridp[i] = ritr - rdp.begin();
+  vl dp(N, INF), ldp(N, 0);
+  rep(i, N) {
+    *lower_bound(all(dp), A[i]) = A[i];
+    ldp[i] = lower_bound(all(dp), INF) - dp.begin();
+  }
+  vl rdp(N, INF), lrdp(N, 0);
+  rep(i, N) {
+    *lower_bound(all(rdp), rA[i]) = rA[i];
+    lrdp[i] = lower_bound(all(rdp), INF) - rdp.begin();
   }
 
   ll ans = 0;
   rep(i, N) {
-    if (i == N - 1) { chmax(ans, idp[i]); break; }
-    chmax(ans, idp[i] + ridp[N - i - 1]);
+    chmax(ans, ldp[i] + lrdp[N - 1 - i]);
   }
-
-  cout << ans + 1 << "\n";
+  cout << ans - 1 << "\n";
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; //cin >> t;
+  while (t--) solve();
+}

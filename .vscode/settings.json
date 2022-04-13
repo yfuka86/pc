@@ -70,7 +70,16 @@
     "__nullptr": "cpp",
     "chrono": "cpp",
     "convolution": "cpp",
-    "__tuple": "cpp"
+    "__tuple": "cpp",
+    "__mutex_base": "cpp",
+    "__node_handle": "cpp",
+    "any": "cpp",
+    "future": "cpp",
+    "shared_mutex": "cpp",
+    "thread": "cpp",
+    "variant": "cpp",
+    "stop_token": "cpp",
+    "syncstream": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",
