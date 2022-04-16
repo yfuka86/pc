@@ -19,15 +19,23 @@ vl subseq_num(vector<ll> &v, ll m = mod) {
 }
 
 // 典型LCS
-int lcs(string &s1, string &s2){
-  vector<vector<int> > dp(s1.size() + 1, vector<int>(s2.size() + 1, -1));
-  function<int(int, int)> rec = [&](int m, int n) -> int {
-    if (dp[m][n] != -1) return dp[m][n];
-    if (m == 0 || n == 0) return dp[m][n] = 0;
-    if (s1[m - 1] == s2[n - 1]) return dp[m][n] = rec(m - 1, n - 1) + 1;
-    return max(rec(m, n - 1), rec(m - 1, n));
-  };
-  return rec(s1.size(), s2.size());
+string lcs(string &s1, string &s2){
+  ll s1n = s1.size(), s2n = s2.size();
+  vvl dp(s1n + 1, vl(s2n + 1, 0));
+  vector<vlp> dpfrom(s1n + 1, vlp(s2n + 1, {-1, -1}));
+  rep(i, s1n) rep(j, s2n) {
+    if (s1[i] == s2[j]) { dp[i + 1][j + 1] = dp[i][j] + 1; dpfrom[i + 1][j + 1] = {i, j};
+    } else {
+      dp[i + 1][j + 1] = max(dp[i + 1][j], dp[i][j + 1]); dpfrom[i + 1][j + 1] = dp[i + 1][j] > dp[i][j + 1] ? mp(i + 1, j) : mp(i, j + 1);
+    }
+  }
+
+  string s = ""; ll m = s1n, n = s2n;
+  while (dpfrom[m][n].first >= 0) {
+    if (dpfrom[m][n] == mp(m - 1, n - 1)) s.pb(s1[m - 1]);
+    auto [tm, tn] = dpfrom[m][n]; m = tm; n = tn;
+  }
+  reverse(all(s)); return s;
 }
 
 // 二次元累積和（一応）

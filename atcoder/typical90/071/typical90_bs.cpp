@@ -34,9 +34,77 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+vl topo_sort(Graph<ll> G) {
+  ll n = G.size(); vl deg(n), ret; priority_queue<ll, vl, greater<ll>> que;
+  rep(i, n)
+    for (Edge e: G[i]) deg[e.to]++;
+    rep(i, n)
+      if (deg[i] == 0)
+        que.push(i);
+  while (!que.empty()) { ll v = que.top(); que.pop(); ret.pb(v);
+    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); } G[v].clear(); }
+  if (accumulate(all(deg), 0LL) != 0) return {}; else return ret;
+}
 
 void solve() {
-  ll N; cin >> N;
+  ll N, M, K; cin >> N >> M >> K;
+  Graph<ll> G(N);
+  vl deg(N, 0);
+  rep(i, M) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G.add_directed_edge(a, b);
+    deg[b]++;
+  }
+  vl que;
+  rep(i, N) if (deg[i] == 0) que.pb(i);
+
+  vl perm; vvl ans;
+  function<bool()> dfs = [&](){
+    if (perm.size() == N) { ans.pb(perm); return true; }
+    if (que.size() == 0) return false;
+    if (ans.size() >= K) return false;
+
+    // for (auto itr = que.begin(); itr != que.end(); itr++) {
+    rep_r(i, que.size()) {
+      if (ans.size() >= K) break;
+      ll next = que[i];
+      que.erase(que.begin() + i);
+
+      for (ll to: G[next]) {
+        deg[to]--;
+        if (deg[to] == 0) que.pb(to);
+      }
+
+      perm.pb(next);
+      if (!dfs()) return false;
+      if (perm.size() > 0) perm.pop_back();
+
+      for (ll to: G[next]) {
+        if (deg[to] == 0) que.pop_back();
+        deg[to]++;
+      }
+      que.insert(que.begin() + i, next);
+    }
+    return true;
+  };
+  dfs();
+
+  if (ans.size() == K) {
+    for(auto a: ans) coutarray(a, 1);
+  } else {
+    cout << -1 << "\n";
+  }
+
 }
 
 signed main() {

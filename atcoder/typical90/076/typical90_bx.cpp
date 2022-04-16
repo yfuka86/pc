@@ -10,56 +10,53 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max();
-const ll LINF = LLONG_MAX;
-const double DINF = numeric_limits<double>::infinity();
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
+typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> vvvl;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb;
+const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
 
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
+ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
+template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
+template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
+template <class T> T POW(T x, int n) { assert(n >= 0); T res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<typename T> void coutarray(vector<T>& v) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i];} cout << "\n"; }
+template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cout << (a >> d) & 1; cout << "\n"; }
+template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
+template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
+template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
+vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-int main()
-{
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-
+void solve() {
   ll N; cin >> N;
-  vl a(N * 2, 0);
-  vl s(N * 2 + 1, 0);
-  rep(i, N) {
-    cin >> a[i];
-    a[i + N] = a[i];
-  }
+  vl A(N); rep(i, N) cin >> A[i];
+  vl sum(N * 2 + 1, 0); rep(i, N * 2) sum[i + 1] = sum[i] + A[i % N];
+  ll tot = accumulate(all(A), 0LL);
+  if (tot % 10 != 0) { cout << "No" << "\n"; return; }
 
-  if (accumulate(a.begin(), a.begin() + N, 0LL) % 10 != 0) {cout << "No" << "\n"; return 0;}
-
-  ll target = accumulate(a.begin(), a.begin() + N, 0LL) / 10, start = 0, end = 1;
-
-  rep(i, N * 2) {
-    s[i + 1] = s[i] + a[i];
-  }
-
-  while (start <= N - 1) {
-    ll now = s[end] - s[start];
-    if (now == target) {
-      cout << "Yes" << "\n";
-      return 0;
-    } else if (now < target) {
-      end++;
-    } else {
-      start++;
-    }
+  ll l = 0, r = 1;
+  while (l < N || r < 2 * N) {
+    ll s = sum[r] - sum[l];
+    if (s == tot / 10) { cout << "Yes" << "\n"; return; }
+    if (s < tot / 10) r++;
+    else if (s > tot / 10) l++;
   }
   cout << "No" << "\n";
-  return 0;
 }
 
-
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; //cin >> t;
+  while (t--) solve();
+}
