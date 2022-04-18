@@ -1,5 +1,6 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
+#include <atcoder/maxflow>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
@@ -34,10 +35,46 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+vl dx = {1, 1, 0, -1, -1, -1, 0, 1}; vl dy = {0, 1, 1, 1, 0, -1, -1, -1};
 
+using namespace atcoder;
 void solve() {
-  ll N; cin >> N;
+  ll N, T; cin >> N >> T;
+  map<LP, vl> m;
+
+  mf_graph<ll> mf(10 * N + 2);
+  ll s = 10 * N, t = s + 1;
+
+  rep(i, N) {
+    ll x, y; cin >> x >> y;
+    mf.add_edge(s, i, 1);
+    rep(d, 8) {
+      ll id = N + i * 8 + d;
+      m[{x + dx[d] * T, y + dy[d] * T}].pb(id);
+      mf.add_edge(i, id, 1);
+    }
+  }
+
+  rep(i, N) {
+    ll x, y; cin >> x >> y;
+    mf.add_edge(N * 9 + i, t, 1);
+    if (m.count({x, y})) {
+      for (auto n: m[{x, y}]) {
+        mf.add_edge(n, N * 9 + i, 1);
+      }
+    }
+  }
+
+  if (mf.flow(s, t) == N) {
+    cout << "Yes" << "\n";
+    for (auto edge: mf.edges()) {
+      if (edge.from < N && edge.flow == 1) {
+        cout << edge.to - N - edge.from * 8 + 1 << " ";
+      }
+    }
+    cout << "\n";
+  } else cout << "No" << "\n";
+
 }
 
 signed main() {

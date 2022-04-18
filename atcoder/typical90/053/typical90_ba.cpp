@@ -38,17 +38,6 @@ template<typename A> void ianswer(A a) {
 
 void solve() {
   ll n; cin >> n;
-
-  // if (n <= 15) {
-  //   ll ans = 0;
-  //   rep(i, n) {
-  //     chmax(ans, iquery(i + 1));
-  //   }
-  //   ianswer(ans);
-  //   return;
-  // }
-
-  //-------------------------------------------------------------------------------
   vl fib = { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597 };
   ll mi = 0, ma = -1;
   for(ll f: fib) if (f >= n) { ma = f; break; }

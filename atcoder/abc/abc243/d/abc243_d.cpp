@@ -31,14 +31,9 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 
 void solve() {
   ll N, X; cin >> N >> X;
-  string bin = "";
-  while(X) {
-    if (X & 1) bin.pb('1'); else bin.pb('0');
-    X >>= 1;
-  }
-  reverse(all(bin));
-
   string S; cin >> S;
+
+  string bin = bitset<100>(X).to_string();
   rep(i, N) {
     if (S[i] == 'U') {
       bin.pop_back();
@@ -49,11 +44,7 @@ void solve() {
     }
   }
 
-  ll ans = 0;
-  rep(i, bin.size()) {
-    ans <<= 1;
-    if (bin[i] == '1') ans |= 1;
-  }
+  ll ans = stoll(bin, nullptr, 2);
   cout << ans << endl;
 }
 
