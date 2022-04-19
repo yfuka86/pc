@@ -35,7 +35,8 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
-const ll mod = 998244353;
+
+const ll mod = 1000000007;
 //------------------------------------------------------------------------------
 template< int mod > struct ModInt {
   int x; ModInt() : x(0) {}
@@ -64,24 +65,26 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
+vector<ll> primes_below(const ll N) {
+  vector<bool> is_prime(N + 1, true); for(ll i = 2; i * i <= N; i++) { if ((i > 2 && i % 2 == 0) || !is_prime[i]) continue; for(ll j = i * i; j <= N; j += i) is_prime[j] = false; }
+  vector<ll> ret; for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i); return ret; }
 
 void solve() {
-  string S; cin >> S;
-  map<ll, ll> freq;
-  ll N = S.size();
-  rep(i, N) freq[S[i] - 'a']++;
-  init_f();
+  ll N, K; cin >> N >> K;
+  vl ps = primes_below(K);
 
-  vmi dp(N + 1, 0);
-  dp[0] = 1;
-  for(auto [type, n]: freq) {
-    rep_r(i, N) {
-      rep2_r(j, 1, n + 1) {
-        if (i + j <= N) dp[i + j] += dp[i] * comb(i + j, j);
-      }
+  vmi f(K + 1, 0);
+  rep2(i, 1, K + 1) f[i] = mod_pow(K / i, N);
+  for (auto p: ps) {
+    for (ll i = 1; i * p <= K; i++) {
+      f[i] -= f[i*p];
     }
   }
-  cout << accumulate(dp.begin() + 1, dp.end(), mint(0)) << "\n";
+  mint ans = 0;
+  rep2(i, 1, K + 1) {
+    ans += f[i] * i;
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
