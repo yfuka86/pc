@@ -26,10 +26,9 @@ map<long long, long long> prime_factorize(long long N) {
   for (long long a = 2; a * a <= N; ++a) { if (N % a != 0) continue; long long ex = 0; while (N % a == 0) { ++ex; N /= a; } res[a]= ex; }
   if (N != 1) res[N] = 1; return res; }
 
-vector<long long> divisor(long long n) {
-  vector<long long> ret;
-  for (long long i = 1; i * i <= n; i++) { if (n % i == 0) { ret.push_back(i); if (i * i != n) ret.push_back(n / i); } }
-  sort(ret.begin(), ret.end()); return ret; }
+vl divisor(ll n) {
+  vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } }
+  sort(all(ret)); return ret; }
 
 // ap + bq = gcd(a, b)
 LP extGCD(ll a, ll b) {

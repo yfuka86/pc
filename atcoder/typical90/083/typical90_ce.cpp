@@ -35,9 +35,46 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 void solve() {
-  ll N; cin >> N;
+  ll N, M; cin >> N >> M;
+  Graph<ll> G(N);
+  rep(i, M) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G.add_edge(a, b);
+  }
+
+  ll threshold = sqrt_ceil(M);
+  vb is_star(N);
+  Graph<ll> star(N);
+  rep(i, N) if (G[i].size() > threshold) is_star[i] = true;
+  rep(i, N) for (auto to: G[i]) if (is_star[i] && is_star[to]) star.add_edge(i, to);
+
+  // 順番/色
+  vector<LP> scolor(N, {-1, 1}); // それ自体に塗られた色
+  vector<LP> color(N, {-1, 1}); // 隣から塗られた色
+
+  ll Q; cin >> Q; rep(i, Q) {
+    ll x, y; cin >> x >> y; x--;
+
+    auto [n, c] = scolor[x]; auto check = [&](LP &a) { if (chmax(n, a.first)) c = a.second; };
+    check(color[x]);
+    for (auto next: star[x]) check(scolor[next]);
+    if (!is_star[x]) for (auto next: G[x]) check(scolor[next]);
+    cout << c << "\n";
+
+    scolor[x] = {i, y};
+    if (!is_star[x]) for (auto next: G[x]) color[next] = {i, y};
+  }
 }
 
 signed main() {

@@ -34,17 +34,33 @@ vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
   ll N, K; cin >> N >> K;
-    rep(i, N) {
-      rep2(j, i + 1, N) {
-        if ((S >> i & 1) && (S >> j & 1)) chmax(sdist[S], dist[i][j]);
+  map<ll, ll> all; vl kset;
+  rep(i, 1 << N) {
+    all[i] = 1;
+    if (__builtin_popcount(i) == K) kset.pb(i);
+  }
+
+  vl ans; ll cur = 0; all[0] = 0; ans.pb(cur);
+  while (ans.size() < (1 << N)) {
+    bool found = false;
+    ll c = 0;
+    for (ll v: kset) {
+      c++;
+      if (all[cur ^ v]) {
+        found = true;
+        cur ^= v;
+        all[cur] = 0;
+        ans.pb(cur);
+        break;
       }
     }
-    for (ll s = S; s != 0; s = (s - 1) & S) {
-      rep(i, K) {
-        if (dp[S - s][i] == LINF) continue;
-        chmin(dp[S][i + 1], max(dp[S - s][i], sdist[s]));
-      }
-    }
+    if (!found) break;
+  }
+
+  if (ans.size() != (1 << N)) cout << "No" << "\n";
+  else {
+    cout << "Yes" << "\n";
+    coutarray(ans);
   }
 }
 
