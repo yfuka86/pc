@@ -87,24 +87,46 @@ template <class S, S (*op)(S, S), S (*e)()> struct segtree {
 //------------------------------------------------------------------------------
 
 using S = ll;
-S op(S l, S r) { return min(l, r); }
-S e() { return LINF; }
+S minop(S l, S r) { return min(l, r); }
+S mine() { return LINF; }
 S maxop(S l, S r) { return max(l, r); }
 S maxe() { return 0; }
+
+struct R {
+  int h; mint w;
+  R(int h, mint w): h(h), w(w) {};
+};
+
+struct D {
+  stack<R> st;
+  mint tot;
+  D() {}
+  void add(int h, mint w) {
+    while (!st.empty() && st.top().h <= h) {
+      auto [nh, nw] = st.top();
+      tot -= nw * nh;
+      w += nw;
+      st.pop();
+    }
+    tot += w * h;
+    st.emplace(h, w);
+  }
+};
 
 void solve() {
   ll N; cin >> N;
   vl A(N); rep(i, N) cin >> A[i];
-  segtree<S, op, e> mins(A);
-  segtree<S, maxop, maxe> maxs(A);
+  // segtree<S, minop, mine> mins(A);
+  // segtree<S, maxop, maxe> maxs(A);
 
   vmi dp(N + 1);
+  D dmax, dmin;
   dp[0] = 1;
-
   rep(i, N) {
-    rep(j, i + 1) {
-      dp[i + 1] += dp[j] * (maxs.prod(j, i + 1) - mins.prod(j, i + 1));
-    }
+    dmax.add(A[i], dp[i]);
+    dmin.add(-A[i], dp[i]);
+    // cout << i <<" "<<  dmax.tot << " " << dmin.tot << "\n";
+    dp[i + 1] = dmax.tot + dmin.tot;
   }
   cout << dp[N] << "\n";
 }
