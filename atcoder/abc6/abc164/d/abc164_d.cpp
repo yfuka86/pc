@@ -37,19 +37,23 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N, D; cin >> N >> D;
-  vl A(N); rep(i, N) cin >> A[i];
+  string S; cin >> S;
+  ll N = S.size();
+  vl a(N);
+  rep(i, N) a[i] = S[i] - '0';
+  vl dp(2019, 0), dpt(2019, 0);
 
   ll ans = 0;
-  rep(S, 1 << N) {
-    ll aprod = (1ULL << D) - 1;
-    rep(i, N) {
-      if (S & 1ULL << i) {
-        aprod &= ~A[i];
-      }
+  rep(i, N) {
+    dpt[a[i] % 2019] += 1;
+    rep(j, 2019) {
+      dpt[(j * 10 + a[i]) % 2019] += dp[j];
     }
-    ans += (__builtin_popcountll(S) & 1 ? -1 : 1) * POW(2, __builtin_popcountll(aprod));
+    dp = dpt;
+    ans += dp[0];
+    dpt.assign(2019, 0);
   }
+
   cout << ans << "\n";
 }
 

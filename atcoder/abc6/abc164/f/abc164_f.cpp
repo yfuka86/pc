@@ -36,21 +36,118 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-void solve() {
-  ll N, D; cin >> N >> D;
-  vl A(N); rep(i, N) cin >> A[i];
+template<class T> void flip(vector<vector<T>> &a) {
+  rep(i, a.size()) rep(j,i) {
+    swap(a[i][j], a[j][i]);
+  }
+}
 
-  ll ans = 0;
-  rep(S, 1 << N) {
-    ll aprod = (1ULL << D) - 1;
-    rep(i, N) {
-      if (S & 1ULL << i) {
-        aprod &= ~A[i];
+
+void solve() {
+  ll N; cin >> N;
+  vvl s(2, vl(N, 0));
+  vector<vector<ull>> val(2, vector<ull>(N, 0));
+  rep(i, N) cin >> s[0][i];
+  rep(i, N) cin >> s[1][i];
+  rep(i, N) cin >> val[0][i];
+  rep(i, N) cin >> val[1][i];
+  function<vvl(ll)> bit = [&](ll b)-> vvl {
+    vvl ret(N, vl(N, -1));
+    vvl uv(2, vl(N, 0));
+    rep(i, 2) rep(j, N) uv[i][j] = 1 & (val[i][j] >> b);
+
+    rep(t, 2) {
+      rep(i, N) {
+        if (s[t][i]) {
+          if (!uv[t][i]) rep(j, N) ret[i][j] = 0;
+        } else {
+          if (uv[t][i]) rep(j, N) ret[i][j] = 1;
+        }
+      }
+      flip(ret);
+    }
+
+    rep(t, 2) {
+      rep(i, N) {
+        if (s[t][i]) {
+          if (uv[t][i]) {
+            rep(j, N) if (ret[i][j] == -1) { ret[i][j] = 1; break; }
+          }
+        }
+      }
+      flip(ret);
+    }
+
+    set<ll> iss, jss;
+    rep(i, N) rep(j, N) if (ret[i][j] == -1) { iss.insert(i); jss.insert(j); }
+    vl is, js;
+    for (auto i: iss) is.pb(i);
+    for (auto j: jss) js.pb(j);
+
+    if (is.size() > 1 && js.size() > 1) {
+      rep(i, is.size()) rep(j, js.size()) {
+        ret[is[i]][js[j]] = (i + j) % 2;
+      }
+      return ret;
+    }
+    if (is.size() == 0 && js.size() == 0) return ret;
+
+    if (is.size() == 1) {
+      ll i = is[0];
+      rep(jj, js.size()) {
+        ll j = js[jj];
+        if (s[1][j] && uv[1][j]) {
+          ll ok = false;
+          rep(ii, N) if (ret[ii][j]) { ok = true; break; }
+          if (ok) {
+            if (s[0][i] && uv[0][i]) ret[i][j] = 1; else ret[i][j] = 0;
+          } else {
+            ret[i][j] = 1;
+          }
+        }
+      }
+    } else {
+      ll j = js[0];
+      rep(ii, is.size()) {
+        ll i = is[ii];
+        if (s[0][i] && uv[0][i]) {
+          ll ok = false;
+          rep(jj, N) if (ret[i][jj]) { ok = true; break; }
+          if (ok) {
+            if (s[1][j] && uv[1][j]) ret[i][j] = 1; else ret[i][j] = 0;
+          } else {
+            ret[i][j] = 1;
+          }
+        }
       }
     }
-    ans += (__builtin_popcountll(S) & 1 ? -1 : 1) * POW(2, __builtin_popcountll(aprod));
+
+    return ret;
+  };
+
+  vvl ans(N, vl(N, 0));
+  rep(b, 64) {
+    vvl bans = bit(b);
+    // coutmatrix(bans);
+    rep(i, N) rep(j, N) {
+      ans[i][j] |= (bans[i][j] == 1 ? 1ull : 0ull) << b;
+    }
   }
-  cout << ans << "\n";
+  rep(t, 2) {
+    rep(i, N) {
+      if (s[t][i]) {
+        ull sum = 0;
+        rep(j, N) sum |= ans[i][j];
+        if (sum != val[t][i]) { cout << -1 << "\n"; return; }
+      } else {
+        ull sum = ans[i][0];
+        rep2(j, 1, N) sum &= ans[i][j];
+        if (sum != val[t][i]) { cout << -1 << "\n"; return; }
+      }
+    }
+    flip(ans);
+  }
+  coutmatrix(ans);
 }
 
 signed main() {

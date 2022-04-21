@@ -35,22 +35,60 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+
 
 void solve() {
-  ll N, D; cin >> N >> D;
-  vl A(N); rep(i, N) cin >> A[i];
+  ll N, M, S; cin >> N >> M >> S;
+  Graph<LP> G(N);
+  ll asum = 5000;
+  rep(i, M) {
+    ll u, v, a, b; cin >> u >> v >> a >> b; u--; v--;
+    asum += a;
+    G.add_edge(u, v, {a, b});
+  }
+  vlp ex(N);
+  rep(i, N) {
+    ll c, d; cin >> c >> d;
+    ex[i] = {c, d};
+  }
 
-  ll ans = 0;
-  rep(S, 1 << N) {
-    ll aprod = (1ULL << D) - 1;
-    rep(i, N) {
-      if (S & 1ULL << i) {
-        aprod &= ~A[i];
+  priority_queue<LT, vector<LT>, greater<LT>> que;
+  vvl costs(G.size(), vl(asum + 1, LINF));
+  auto push = [&](ll c, ll v, ll s) {
+    s = min<ll>(s, asum);
+    if (costs[v][s] <= c) return;
+    costs[v][s] = c;
+    que.push({c, v, s});
+  };
+  que.push({0, 0, min<ll>(S, asum)});
+  rep(i, min<ll>(S, asum) + 1) costs[0][i] = 0;
+
+  while(!que.empty()) {
+    auto [c, v, s] = que.top(); que.pop();
+    bool valid = true;
+    if (costs[v][s] != c) continue;
+
+    auto [C, D] = ex[v];
+    push(c + D, v, s + C);
+    for(auto &to: G[v]) {
+      auto [a, b] = to.cost;
+      if (s - a >= 0) {
+        push(c + b, to, s - a);
       }
     }
-    ans += (__builtin_popcountll(S) & 1 ? -1 : 1) * POW(2, __builtin_popcountll(aprod));
   }
-  cout << ans << "\n";
+
+  rep2(i, 1, N) cout << *min_element(all(costs[i])) << "\n";
 }
 
 signed main() {
