@@ -36,30 +36,46 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-void solve() {
-  ll N, X; cin >> N >> X;
-  vl A(N); rep(i, N) cin >> A[i];
+std::vector<std::string> split(std::string str, char del) {
+    int first = 0;
+    int last = str.find_first_of(del);
 
-  vector<LM> dp(N + 1);
+    std::vector<std::string> result;
 
-  function<ll(ll, ll)> f = [&](ll i, ll x) {
-    if (dp[i].count(x)) return dp[i][x];
+    while (first < str.size()) {
+        std::string subStr(str, first, last - first);
 
-    if (i == N - 1) return dp[i][x] = 1;
-    if (x % A[i + 1] != 0) {
-      return dp[i][x] = f(i + 1, ceil(x, A[i + 1]) * A[i + 1]) + f(i + 1, floor(x, A[i + 1]) * A[i + 1]);
-    } else {
-      return dp[i][x] = f(i + 1, x);
+        result.push_back(subStr);
+
+        first = last + 1;
+        last = str.find_first_of(del, first);
+
+        if (last == std::string::npos) {
+            last = str.size();
+        }
     }
-  };
 
-  cout << f(0, X) << "\n";
+    return result;
+}
+
+void solve() {
+  ll n; cin >> n;
+  string s; cin >> s;
+
+  bool valid = true;
+  for (auto sp: split(s, 'W')) {
+    if (sp.size() == 0) continue;
+    map<char, ll> freq;
+    for (auto c: sp) freq[c]++;
+    if (freq.size() == 1) { valid = false; break; }
+  }
+  cout << (valid ? "YES" : "NO") << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

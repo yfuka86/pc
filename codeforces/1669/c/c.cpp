@@ -37,29 +37,26 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N, X; cin >> N >> X;
-  vl A(N); rep(i, N) cin >> A[i];
+  ll n; cin >> n;
+  vl a(n); rep(i, n) cin >> a[i];
 
-  vector<LM> dp(N + 1);
-
-  function<ll(ll, ll)> f = [&](ll i, ll x) {
-    if (dp[i].count(x)) return dp[i][x];
-
-    if (i == N - 1) return dp[i][x] = 1;
-    if (x % A[i + 1] != 0) {
-      return dp[i][x] = f(i + 1, ceil(x, A[i + 1]) * A[i + 1]) + f(i + 1, floor(x, A[i + 1]) * A[i + 1]);
+  bool o_odd = false, o_even = false, e_odd = false, e_even = false;
+  rep(i, n) {
+    if (i & 1) {
+      if (a[i] & 1) o_odd = true; else o_even = true;
     } else {
-      return dp[i][x] = f(i + 1, x);
+      if (a[i] & 1) e_odd = true; else e_even = true;
     }
-  };
-
-  cout << f(0, X) << "\n";
+  }
+  if (o_odd && o_even) { cout << "NO" << "\n"; return; }
+  if (e_odd && e_even) { cout << "NO" << "\n"; return; }
+  cout << "YES" << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

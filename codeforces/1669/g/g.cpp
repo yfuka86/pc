@@ -37,29 +37,28 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N, X; cin >> N >> X;
-  vl A(N); rep(i, N) cin >> A[i];
+  ll n, m; cin >> n >> m;
+  vs grid(n);
+  rep(i, n) cin >> grid[i];
 
-  vector<LM> dp(N + 1);
-
-  function<ll(ll, ll)> f = [&](ll i, ll x) {
-    if (dp[i].count(x)) return dp[i][x];
-
-    if (i == N - 1) return dp[i][x] = 1;
-    if (x % A[i + 1] != 0) {
-      return dp[i][x] = f(i + 1, ceil(x, A[i + 1]) * A[i + 1]) + f(i + 1, floor(x, A[i + 1]) * A[i + 1]);
-    } else {
-      return dp[i][x] = f(i + 1, x);
+  rep(_, 50) {
+    rep(j, m) {
+      rep2_r(i, 1, n) {
+        if (grid[i][j] == '.' && grid[i - 1][j] == '*') swap(grid[i][j], grid[i - 1][j]);
+      }
     }
-  };
+  }
 
-  cout << f(0, X) << "\n";
+  rep(i, n) {
+    cout << grid[i] << "\n";
+  }
+  cout << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

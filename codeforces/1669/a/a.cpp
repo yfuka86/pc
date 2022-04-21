@@ -37,29 +37,23 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N, X; cin >> N >> X;
-  vl A(N); rep(i, N) cin >> A[i];
-
-  vector<LM> dp(N + 1);
-
-  function<ll(ll, ll)> f = [&](ll i, ll x) {
-    if (dp[i].count(x)) return dp[i][x];
-
-    if (i == N - 1) return dp[i][x] = 1;
-    if (x % A[i + 1] != 0) {
-      return dp[i][x] = f(i + 1, ceil(x, A[i + 1]) * A[i + 1]) + f(i + 1, floor(x, A[i + 1]) * A[i + 1]);
-    } else {
-      return dp[i][x] = f(i + 1, x);
-    }
-  };
-
-  cout << f(0, X) << "\n";
+  ll n; cin >> n;
+  cout << "Division ";
+  if (n >= 1900) {
+    cout << 1 << "\n";
+  } else if (n >= 1600) {
+    cout << 2 << "\n";
+  } else if (n >= 1400) {
+    cout << 3 << "\n";
+  } else {
+    cout << 4 << "\n";
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

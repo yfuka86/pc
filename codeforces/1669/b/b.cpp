@@ -37,29 +37,22 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N, X; cin >> N >> X;
-  vl A(N); rep(i, N) cin >> A[i];
+  ll n; cin >> n;
+  vl a(n); rep(i, n) cin >> a[i];
 
-  vector<LM> dp(N + 1);
+  map<ll, ll> freq;
+  rep(i, n) freq[a[i]]++;
 
-  function<ll(ll, ll)> f = [&](ll i, ll x) {
-    if (dp[i].count(x)) return dp[i][x];
-
-    if (i == N - 1) return dp[i][x] = 1;
-    if (x % A[i + 1] != 0) {
-      return dp[i][x] = f(i + 1, ceil(x, A[i + 1]) * A[i + 1]) + f(i + 1, floor(x, A[i + 1]) * A[i + 1]);
-    } else {
-      return dp[i][x] = f(i + 1, x);
-    }
-  };
-
-  cout << f(0, X) << "\n";
+  for (auto [f, c]: freq) {
+    if (c >= 3) { cout << f << "\n"; return; }
+  }
+  cout << -1 << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }
