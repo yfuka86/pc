@@ -36,54 +36,40 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-bool check(ll a) {
-  while (a > 0) {
-    ll d = a % 10;
-    if (d + d >= 10) return false;
-    a /= 10;
+
+// Reference:
+// D. Gusfield,
+// Algorithms on Strings, Trees, and Sequences: Computer Science and
+// Computational Biology
+template <class T> std::vector<int> z_algorithm(const std::vector<T>& s) {
+  int n = int(s.size());
+  if (n == 0) return {};
+  std::vector<int> z(n);
+  z[0] = 0;
+  for (int i = 1, j = 0; i < n; i++) {
+    int& k = z[i];
+    k = (j + z[j] <= i) ? 0 : std::min(j + z[j] - i, z[i - j]);
+    while (i + k < n && s[k] == s[i + k]) k++;
+    if (j + z[j] < i + z[i]) j = i;
   }
-  return true;
+  z[0] = n;
+  return z;
 }
 
-const ll X = 1e2;
-void solve() {
-  ll N; cin >> N;
-  vl a(N); rep(i, N) cin >> a[i];
-  vl supl = a;
-  rep(i, N) supl[i] = X - 1 - supl[i];
-
-  vl f(X, 0);
-  rep(i, N) f[supl[i]]++;
-  coutarray(f);
-
-  // rep_r(i, X) {
-  //   ll t = i;
-  //   vl digits;
-  //   rep(_, 6) {
-  //     digits.pb(t % 10);
-  //     t /= 10;
-  //   }
-  //   rep(j, 6) {
-  //     if (digits[j] == 0) continue;
-  //     f[i - POW(10, j)] += f[i];
-  //     break;
-  //   }
-  // }
-
-  rep(i, 6) {
-    ll p10 = POW(10, i);
-    rep_r(j, X) {
-      if (j / p10 > 0) f[j - p10] += f[j];
-    }
+std::vector<int> z_algorithm(const std::string& s) {
+  int n = int(s.size());
+  std::vector<int> s2(n);
+  for (int i = 0; i < n; i++) {
+    s2[i] = s[i];
   }
+  return z_algorithm(s2);
+}
 
-  coutarray(f);
 
-  ll ans = 0;
-  rep(i, N) ans += f[supl[i]];
-  rep(i, N) if (check(a[i])) ans--;
-  cout << ans / 2 << "\n";
-
+void solve() {
+  string S; cin >> S;
+  vi z = z_algorithm(S);
+  coutarray(z);
 }
 
 signed main() {

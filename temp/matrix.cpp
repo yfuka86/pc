@@ -1,4 +1,5 @@
 template<class T> void flip(vector<vector<T>> &a) {
+  assert(a.size() == a[0].size());
   rep(i, a.size()) rep(j, i) {
     swap(a[i][j], a[j][i]);
   }

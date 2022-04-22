@@ -94,6 +94,8 @@ void solve() {
   vl ps = primes_below(M);
   vvl is(M);
   rep(i, N) is[a[i]].pb(i);
+  // rep(i, M) for(auto j: is[i]) cout << j << " ";
+  cout << "\n";
   for (auto p: ps) {
     for (ll i = M / p; i >= 1; --i) {
       is[i].insert(is[i].end(), is[i*p].begin(), is[i*p].end());
@@ -130,7 +132,6 @@ void solve() {
   }
 
   coutarray(f);
-
   //約数メビウス変換（GCDごとの計算）----------------------------------------------------
   for (auto p: ps) {
     for (ll i = 1; i * p < M; i++) {
@@ -139,6 +140,7 @@ void solve() {
     }
   }
   coutarray(f);
+
   mint ans = 0;
   rep2(x, 1, M) ans += f[x] * x;
   cout << ans << "\n";

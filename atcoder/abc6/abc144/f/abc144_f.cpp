@@ -42,6 +42,13 @@ template< typename T = ll > struct Graph {
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
+vl topo_sort(Graph<ll> G) {
+  ll n = G.size(); vl deg(n), ret; priority_queue<ll, vl, greater<ll>> que;
+  rep(i, n) for (Edge e: G[i]) deg[e.to]++; rep(i, n) if (deg[i] == 0) que.push(i);
+  while (!que.empty()) { ll v = que.top(); que.pop(); ret.pb(v);
+    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); } G[v].clear(); }
+  if (accumulate(all(deg), 0LL) != 0) return {}; else return ret; }
+
 void solve() {
   ll N, M; cin >> N >> M;
   Graph<ll> G(N);
@@ -53,41 +60,45 @@ void solve() {
     G.add_directed_edge(s, t);
   }
 
-  ll delfrom = -1, deledge = -1;
-  vector<ld> dp(M, 0);
-  function<void(ll, ld)> dfs = [&](ll v, ld pr) {
-    if (v == N - 1) return;
-    ld nextpr = pr / (G[v].size() - (delfrom == v));
-    if (nextpr < 1e-7) return;
-    for(auto &e: G[v]) {
-      if (e.idx == deledge) continue;
-      dp[e.idx] += nextpr;
-      dfs(e.to, nextpr);
-    }
-  };
-  dfs(0, 1);
+  vl tv = topo_sort(G);
 
-  vector<pair<ld, ll>> maxedge(M);
-  rep(i, M) maxedge[i] = {dp[i], i};
-  sort(all(maxedge)); reverse(all(maxedge));
-  ld delfirst = -1;
-
-  ld ans = accumulate(all(dp), 0.0);
-  rep(i, M) {
-    if (maxedge[i].first < (delfirst - 1e-6)) break;
-    auto e = edges[maxedge[i].second];
-    if (G[e.first].size() > 1) {
-      if (delfirst == -1) delfirst = maxedge[i].first;
-      delfrom = e.first;
-      deledge = i;
-      dp.assign(M, 0);
-      dfs(0, 1);
-      chmin<ld>(ans, accumulate(all(dp), 0.0));
+  // 確率
+  vector<ld> dp(N, 0);
+  dp[0] = 1;
+  for (auto v: tv) {
+    for (auto to: G[v]) {
+      dp[to] += dp[v] / G[v].size();
     }
   }
-
   // coutarray(dp);
-  cout << fixed << setprecision(10) << ans << "\n";
+
+  // そこからの移動回数期待値
+  vector<ld> dpt(N, 0);
+  reverse(all(tv));
+  for (auto v: tv) {
+    ld sum = 0;
+    for (auto to: G[v]) {
+      sum += dpt[to] + 1;
+    }
+    dpt[v] = G[v].size() ? sum / G[v].size() : 0;
+  }
+  // coutarray(dpt);
+
+  // 辺消去のシミュレーション
+  ld subt = 0;
+  rep(i, N) {
+    if (G[i].size() < 2) continue;
+    ld nextma = 0;
+    for (auto to: G[i]) {
+      chmax(nextma, dpt[to] + 1);
+    }
+    ld newdpt = (dpt[i] * G[i].size() - nextma) / (G[i].size() - 1);
+    // cout << dp[i] << " " << G[i].size() << " " << nextma << " " << dpt[i] << " " << newdpt << "\n";
+    // cout << dpt[i] << " " << newdpt << "\n";
+    chmax(subt, dp[i] * (dpt[i] - newdpt));
+  }
+
+  cout << fixed << setprecision(10) << dpt[0] - subt << "\n";
 }
 
 signed main() {

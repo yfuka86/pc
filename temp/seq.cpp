@@ -65,47 +65,31 @@ ll sub_hash(vl& h, ll l, ll r) {
   return ret;
 }
 
-// 1回O(1)で擬似回転するベクタ rotateの第二引数と同じ(右シフトならsize-1、左シフトなら1)
-template<typename T>
-struct RotateVector {
-  __uint128_t offset = 0; vector<T> vec;
-  RotateVector(vector<T> &v) { vec = v; }
-  void rotate(ll a) { offset += a; }
-  T &operator[](int k) { return vec[(k + offset) % vec.size()]; }
-};
 
-// ビット列を反転のインデックスのみで保持したいもの
-struct Bitseq {
-  vector<ll> ranges;
-  Bitseq() : ranges(0) {}
-
-  void invert(ll l, ll r) {
-    assert(l < r);
-    auto litr = lower_bound(all(ranges), l);
-    if (litr == ranges.end()) { ranges.pb(l); } else {
-      if (*litr == l) ranges.erase(litr); else ranges.insert(litr, l);
-    }
-    auto ritr = lower_bound(all(ranges), r);
-    if (ritr == ranges.end()) { ranges.pb(r); } else {
-      if (*ritr == r) ranges.erase(ritr); else ranges.insert(ritr, r);
-    }
+// Reference:
+// D. Gusfield,
+// Algorithms on Strings, Trees, and Sequences: Computer Science and
+// Computational Biology
+template <class T> std::vector<int> z_algorithm(const std::vector<T>& s) {
+  int n = int(s.size());
+  if (n == 0) return {};
+  std::vector<int> z(n);
+  z[0] = 0;
+  for (int i = 1, j = 0; i < n; i++) {
+    int& k = z[i];
+    k = (j + z[j] <= i) ? 0 : std::min(j + z[j] - i, z[i - j]);
+    while (i + k < n && s[k] == s[i + k]) k++;
+    if (j + z[j] < i + z[i]) j = i;
   }
+  z[0] = n;
+  return z;
+}
 
-  void on(ll l, ll r) {
-    assert(l < r);
-    auto litr = lower_bound(all(ranges), l); if (litr == ranges.end()) { ranges.pb(l); ranges.pb(r); return; }
-
-    if ((litr - ranges.begin()) % 2 == 0) { litr = ranges.insert(litr, l); litr++; }
-    auto ritr = upper_bound(all(ranges), r); ranges.insert(ritr, r);
-
-    if (litr == ranges.end()) return;
-    auto itr = ranges.erase(litr, ritr);
-    if (ranges.size() % 2 == 1) ranges.erase(itr);
+std::vector<int> z_algorithm(const std::string& s) {
+  int n = int(s.size());
+  std::vector<int> s2(n);
+  for (int i = 0; i < n; i++) {
+    s2[i] = s[i];
   }
-
-  bool include(ll at) {
-    auto itr = upper_bound(all(ranges), at);
-    if (itr == ranges.end()) return false;
-    return (itr - ranges.begin()) % 2 == 1;
-  }
-};
+  return z_algorithm(s2);
+}
