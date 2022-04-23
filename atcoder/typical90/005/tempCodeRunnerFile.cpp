@@ -1,0 +1,3 @@
+
+  //   coutarray(ans[i]);
+  // }

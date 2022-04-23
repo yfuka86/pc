@@ -73,7 +73,25 @@ void solve() {
   ll N, B, K; cin >> N >> B >> K;
   vl c(K); rep(i, K) cin >> c[i];
 
+  vl p10(64, 0); p10[0] = 10; rep(i, 63) p10[i + 1] = p10[i] * p10[i] % B;
+  vvmi dp(64, vmi(B, 0));
+  rep(i, K) { dp[0][c[i] % B] += 1; }
+  rep(i, 63) {
+    rep(j, B) rep(k, B) {
+      dp[i + 1][(j * p10[i] + k) % B] += dp[i][j] * dp[i][k];
+    }
+  }
 
+  vvmi ans(64, vmi(B, 0));
+  ans[0][0] = 1;
+  rep(i, 63) {
+    if (N & 1ULL << i) {
+      rep(j, B) rep(k, B) {
+        ans[i + 1][(j * p10[i] + k) % B] += ans[i][j] * dp[i][k];
+      }
+    } else ans[i + 1] = ans[i];
+  }
+  cout << ans[63][0] << "\n";
 }
 
 signed main() {
