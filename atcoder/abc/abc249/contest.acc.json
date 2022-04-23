@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc249",
+    "title": "Monoxer Programming Contest 2022（AtCoder Beginner Contest 249）",
+    "url": "https://atcoder.jp/contests/abc249"
+  },
+  "tasks": [
+    {
+      "id": "abc249_a",
+      "label": "A",
+      "title": "Jogging",
+      "url": "https://atcoder.jp/contests/abc249/tasks/abc249_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc249_a.cpp"
+      }
+    },
+    {
+      "id": "abc249_b",
+      "label": "B",
+      "title": "Perfect String",
+      "url": "https://atcoder.jp/contests/abc249/tasks/abc249_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc249_b.cpp"
+      }
+    },
+    {
+      "id": "abc249_c",
+      "label": "C",
+      "title": "Just K",
+      "url": "https://atcoder.jp/contests/abc249/tasks/abc249_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc249_c.cpp"
+      }
+    },
+    {
+      "id": "abc249_d",
+      "label": "D",
+      "title": "Index Trio",
+      "url": "https://atcoder.jp/contests/abc249/tasks/abc249_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc249_d.cpp"
+      }
+    },
+    {
+      "id": "abc249_e",
+      "label": "E",
+      "title": "RLE",
+      "url": "https://atcoder.jp/contests/abc249/tasks/abc249_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc249_e.cpp"
+      }
+    },
+    {
+      "id": "abc249_f",
+      "label": "F",
+      "title": "Ignore Operations",
+      "url": "https://atcoder.jp/contests/abc249/tasks/abc249_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc249_f.cpp"
+      }
+    },
+    {
+      "id": "abc249_g",
+      "label": "G",
+      "title": "Xor Cards",
+      "url": "https://atcoder.jp/contests/abc249/tasks/abc249_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc249_g.cpp"
+      }
+    },
+    {
+      "id": "abc249_h",
+      "label": "Ex",
+      "title": "Dye Color",
+      "url": "https://atcoder.jp/contests/abc249/tasks/abc249_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc249_h.cpp"
+      }
+    }
+  ]
+}
