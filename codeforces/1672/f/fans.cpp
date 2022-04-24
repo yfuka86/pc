@@ -38,8 +38,19 @@ vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
   ll n; cin >> n;
-  vl a(n); rep(i, n) cin >> a[i];
+  vl a(n); rep(i, n) cin >> a[i], a[i]--;
 
+  vl cnt(n, 0);
+  rep(i, n) cnt[a[i]]++;
+
+  vlp P(n);
+  rep(i, n) P[i] = {a[i], i};
+  sort(all(P));
+  ll mx = *max_element(all(cnt));
+
+  vl b(n);
+  rep(i, n) b[P[(i + mx) % n].second] = P[i].first;
+  coutarray(b, 1);
 }
 
 signed main() {
