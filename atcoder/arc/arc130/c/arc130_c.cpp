@@ -34,7 +34,7 @@ ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; i
 template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
+template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << ""; cout << v[i] + offset; } }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
@@ -45,13 +45,79 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  string A, B; cin >> A >> B;
+  // string A = RandGen().snum(10, 1), B = RandGen().snum(15, 1);
+  bool swaped = false;
+  if (A.size() > B.size()) swaped = true, swap(A, B);
+  map<ll, ll> fqa, fqb;
+
+  rep(i, A.size()) fqa[A[i] - '0']++;
+  rep(i, B.size()) fqb[B[i] - '0']++;
+
+  vl a9, b9, a, b, rema, remb;
+
+  rep2_r(i, 1, 9) {
+    while (fqa[i] && fqb[9 - i]) {
+      fqa[i]--; fqb[9 - i]--;
+      a9.pb(i); b9.pb(9 - i);
+    }
+  }
+  reverse(all(a9)); reverse(all(b9));
+
+  rep2(sum, 10, 19) {
+    rep2(i, 1, 10) {
+      while (fqa[i] && fqb[sum - i]) {
+        fqa[i]--; fqb[sum - i]--;
+        a.pb(i); b.pb(sum - i);
+      }
+    }
+  }
+
+  if (a.size() == 0 && a9.size() != 0) {
+    ll i = a9.back();
+    for (auto [t, c]: fqb) {
+      if (i + t >= 10) {
+        fqb[t]--;
+        a.pb(i); b.pb(t);
+        a9.pop_back();
+        fqb[b9.back()]++;
+        b9.pop_back();
+        break;
+      }
+    }
+  }
+  for (auto [t, c]: fqa) {
+    rep(_, c) rema.pb(t);
+  }
+  for (auto [t, c]: fqb) {
+    rep(_, c) remb.pb(t);
+  }
+
+  if (swaped) {
+    coutarray(remb);
+    coutarray(b9);
+    coutarray(b);
+    cout << "\n";
+    coutarray(rema);
+    coutarray(a9);
+    coutarray(a);
+    cout << "\n";
+  } else {
+    coutarray(rema);
+    coutarray(a9);
+    coutarray(a);
+    cout << "\n";
+    coutarray(remb);
+    coutarray(b9);
+    coutarray(b);
+    cout << "\n";
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

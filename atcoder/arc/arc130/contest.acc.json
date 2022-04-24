@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc130",
+    "title": "AtCoder Regular Contest 130",
+    "url": "https://atcoder.jp/contests/arc130"
+  },
+  "tasks": [
+    {
+      "id": "arc130_a",
+      "label": "A",
+      "title": "Remove One Character",
+      "url": "https://atcoder.jp/contests/arc130/tasks/arc130_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc130_a.cpp"
+      }
+    },
+    {
+      "id": "arc130_b",
+      "label": "B",
+      "title": "Colorful Lines",
+      "url": "https://atcoder.jp/contests/arc130/tasks/arc130_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc130_b.cpp"
+      }
+    },
+    {
+      "id": "arc130_c",
+      "label": "C",
+      "title": "Digit Sum Minimization",
+      "url": "https://atcoder.jp/contests/arc130/tasks/arc130_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc130_c.cpp"
+      }
+    },
+    {
+      "id": "arc130_d",
+      "label": "D",
+      "title": "Zigzag Tree",
+      "url": "https://atcoder.jp/contests/arc130/tasks/arc130_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc130_d.cpp"
+      }
+    },
+    {
+      "id": "arc130_e",
+      "label": "E",
+      "title": "Increasing Minimum",
+      "url": "https://atcoder.jp/contests/arc130/tasks/arc130_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc130_e.cpp"
+      }
+    },
+    {
+      "id": "arc130_f",
+      "label": "F",
+      "title": "Replace by Average",
+      "url": "https://atcoder.jp/contests/arc130/tasks/arc130_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc130_f.cpp"
+      }
+    }
+  ]
+}
