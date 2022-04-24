@@ -36,49 +36,179 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-// ----------------------------------------------------------------------
-template<typename T>
-struct BIT {
-  int n; vector<T> bit;
-  BIT(int _n = 0) : n(_n), bit(n + 1) {}
-  // sum of [0, i), 0 <= i <= n
-  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
-  // 0 <= i < n
-  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
-  //[l, r) 0 <= l < r < n
-  T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, sum(i) >= w, none -> n
-  int lower_bound(T w) {
-    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
-    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
-    return x; }
+struct Barrett {
+  using u32 = unsigned int;
+  using i64 = long long;
+  using u64 = unsigned long long;
+  u32 m;
+  u64 im;
+  Barrett() : m(), im() {}
+  Barrett(int n) : m(n), im(u64(-1) / m + 1) {}
+  constexpr inline i64 quo(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? x - 1 : x;
+  }
+  constexpr inline i64 rem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? r + m : r;
+  }
+  constexpr inline pair<i64, int> quorem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    if (m <= r) return {x - 1, r + m};
+    return {x, r};
+  }
+  constexpr inline i64 pow(u64 n, i64 p) {
+    u32 a = rem(n), r = m == 1 ? 0 : 1;
+    while (p) {
+      if (p & 1) r = rem(u64(r) * a);
+      a = rem(u64(a) * a);
+      p >>= 1;
+    }
+    return r;
+  }
 };
-// ----------------------------------------------------------------------
 
-ll mod_pow(ll x, ll n, ll p) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+struct ArbitraryModInt {
+  int x;
+
+  ArbitraryModInt() : x(0) {}
+
+  ArbitraryModInt(int64_t y) {
+    int z = y % get_mod();
+    if (z < 0) z += get_mod();
+    x = z;
+  }
+
+  ArbitraryModInt &operator+=(const ArbitraryModInt &p) {
+    if ((x += p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator-=(const ArbitraryModInt &p) {
+    if ((x += get_mod() - p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator*=(const ArbitraryModInt &p) {
+    x = rem((unsigned long long)x * p.x);
+    return *this;
+  }
+
+  ArbitraryModInt &operator/=(const ArbitraryModInt &p) {
+    *this *= p.inverse();
+    return *this;
+  }
+
+  ArbitraryModInt operator-() const { return ArbitraryModInt(-x); }
+
+  ArbitraryModInt operator+(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) += p;
+  }
+
+  ArbitraryModInt operator-(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) -= p;
+  }
+
+  ArbitraryModInt operator*(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) *= p;
+  }
+
+  ArbitraryModInt operator/(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) /= p;
+  }
+
+  bool operator==(const ArbitraryModInt &p) const { return x == p.x; }
+
+  bool operator!=(const ArbitraryModInt &p) const { return x != p.x; }
+
+  ArbitraryModInt inverse() const {
+    int a = x, b = get_mod(), u = 1, v = 0, t;
+    while (b > 0) {
+      t = a / b;
+      swap(a -= t * b, b);
+      swap(u -= t * v, v);
+    }
+    return ArbitraryModInt(u);
+  }
+
+  ArbitraryModInt pow(int64_t n) const {
+    ArbitraryModInt ret(1), mul(x);
+    while (n > 0) {
+      if (n & 1) ret *= mul;
+      mul *= mul;
+      n >>= 1;
+    }
+    return ret;
+  }
+
+  friend ostream &operator<<(ostream &os, const ArbitraryModInt &p) {
+    return os << p.x;
+  }
+
+  friend istream &operator>>(istream &is, ArbitraryModInt &a) {
+    int64_t t;
+    is >> t;
+    a = ArbitraryModInt(t);
+    return (is);
+  }
+
+  int get() const { return x; }
+
+  inline unsigned int rem(unsigned long long p) { return barrett().rem(p); }
+
+  static inline Barrett &barrett() {
+    static Barrett b;
+    return b;
+  }
+
+  static inline int &get_mod() {
+    static int mod = 0;
+    return mod;
+  }
+
+  static void set_mod(int md) {
+    assert(0 < md && md <= (1LL << 30) - 1);
+    get_mod() = md;
+    barrett() = Barrett(md);
+  }
+};
+
+using mint = ArbitraryModInt;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> vvvmi;
+
 void solve() {
   ll N, P; cin >> N >> P;
+  mint::set_mod(P);
 
-  vvl dp(N + 1, vl(N * 2 + 1, 0));
+  vvmi dp(N, vmi(N + 1, 0));
+  vvmi dpsum(N, vmi(N + 2, 0));
   dp[0][0] = 1;
 
   rep(i, N) {
-    rep(j, N) {
-      rep2(k, 1, N - i + 1) {
-        ll add = 0;
-        if (k < 10) add = 2;
-        else if (k < 100) add = 3;
-        else if (k < 1000) add = 4;
-        else add = 5;
-        dp[i + k][j + add] += dp[i][j] * (i == 0 ? 26 : 25) % P;
-        dp[i + k][j + add] %= P;
-      }
+    rep(j, N + 1) {
+      // rep2(k, 1, N - i + 1) {
+      //   ll add = 0;
+      //   if (k < 10) add = 2;
+      //   else if (k < 100) add = 3;
+      //   else if (k < 1000) add = 4;
+      //   else add = 5;
+      //   dp[i + k][j + add] += dp[i][j] * (i == 0 ? 26 : 25) % P;
+      //   dp[i + k][j + add] %= P;
+      // }
+      if (i >= 2) { dp[i][j] += (dpsum[i - 2][j] - dpsum[i - 2][max<ll>(0, j - 9)]) * (i - 2 == 0 ? 26 : 25); }
+      if (i >= 3) { dp[i][j] += (dpsum[i - 3][max<ll>(0, j - 9)] - dpsum[i - 3][max<ll>(0, j - 99)]) * (i - 3 == 0 ? 26 : 25); }
+      if (i >= 4) { dp[i][j] += (dpsum[i - 4][max<ll>(0, j - 99)] - dpsum[i - 4][max<ll>(0, j - 999)]) * (i - 4 == 0 ? 26 : 25); }
+      if (i >= 5) { dp[i][j] += (dpsum[i - 5][max<ll>(0, j - 999)] - dpsum[i - 5][0]) * (i - 5 == 0 ? 26 : 25); }
+
+      dpsum[i][j + 1] = dpsum[i][j] + dp[i][j];
     }
   }
 
-  ll ans = 0;
-  rep(i, N) ans += dp[N][i], ans %= P;
-
+  mint ans = 0;
+  rep(i, N) ans += dp[i][N];
   cout << ans << "\n";
 }
 

@@ -37,8 +37,15 @@ using S = ll; using F = ll;
 S op(S l, S r) { return l + r; }
 S e() { return 0; }
 S mapping(F f, S x) { return f + x; }
-F composition(F f, F g) { { return f + g; } }
+F composition(F f, F g) { return f + g; }
 F id() { return 0; }
+
+using S = ll; using F = ll;
+S op(S l, S r) { return min(l, r); }
+S e() { return LINF; }
+S mapping(F f, S x) { return f != -1 ? f : x; }
+F composition(F f, F g) { return f != -1 ? f : g; }
+F id() { return -1; }
 
 lazy_segtree<S, op, e, F, mapping, composition, id> seg(a);
 ll ans = seg.max_right<function<bool(S)>>(a,

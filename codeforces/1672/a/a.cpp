@@ -36,23 +36,21 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-void solve() {
-  ll N; cin >> N;
-  vl a(N); rep(i, N) cin >> a[i];
-  map<ll, vl> idx;
 
-  rep(i, N) idx[a[i]].pb(i);
-  ll Q; cin >> Q;
-  rep(i, Q) {
-    ll l, r, x; cin >> l >> r >> x; l--;
-    cout << lbs(idx[x], r) - lbs(idx[x], l) << "\n";
-  }
+void solve() {
+  ll n; cin >> n;
+  vl a(n); rep(i, n) cin >> a[i];
+
+  ll cut = 0;
+  rep(i, n) cut += a[i] - 1;
+
+  if (cut & 1) cout << "errorgorn" << "\n"; else cout << "maomao90" << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

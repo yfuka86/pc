@@ -37,22 +37,15 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N; cin >> N;
-  vl a(N); rep(i, N) cin >> a[i];
-  map<ll, vl> idx;
+  ll n; cin >> n;
+  vl a(n); rep(i, n) cin >> a[i];
 
-  rep(i, N) idx[a[i]].pb(i);
-  ll Q; cin >> Q;
-  rep(i, Q) {
-    ll l, r, x; cin >> l >> r >> x; l--;
-    cout << lbs(idx[x], r) - lbs(idx[x], l) << "\n";
-  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }

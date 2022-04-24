@@ -36,23 +36,37 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-void solve() {
-  ll N; cin >> N;
-  vl a(N); rep(i, N) cin >> a[i];
-  map<ll, vl> idx;
+bool solve() {
+  ll n; cin >> n;
+  vl a(n), b(n);
+  rep(i, n) cin >> a[i]; rep(i, n) cin >> b[i];
 
-  rep(i, N) idx[a[i]].pb(i);
-  ll Q; cin >> Q;
-  rep(i, Q) {
-    ll l, r, x; cin >> l >> r >> x; l--;
-    cout << lbs(idx[x], r) - lbs(idx[x], l) << "\n";
+  map<ll, ll> rem;
+  ll ai = n - 1, bi = n - 1;
+
+  while (ai >= 0) {
+    if (bi >= 0 && a[ai] == b[bi]) {
+      ai--; bi--;
+    } else {
+      if (bi == n - 1) return false;
+      if (bi >= 0 && b[bi] == b[bi + 1]) {
+        rem[b[bi]]++; bi--;
+      } else {
+        if (rem[a[ai]] > 0) {
+          rem[a[ai]]--; ai--;
+        } else {
+          return false;
+        }
+      }
+    }
   }
+  return true;
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
-  while (t--) solve();
+  int t; cin >> t;
+  while (t--) if (solve()) cout << "YES" << "\n"; else cout << "NO" << "\n";
 }

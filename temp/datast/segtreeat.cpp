@@ -24,7 +24,17 @@ using S = ll;
 S op(S l, S r) { return l + r; }
 S e() { return 0; }
 
+S op(S l, S r) { return max(l, r); }
+S e() { return -LINF; }
+
 segtree<S, op, e> seg(a);
+
+ll ans = seg.max_right<function<bool(S)>>(0,
+  [&b](S x) {
+    // if (x == -LINF) return true;
+    return x < b;
+  }
+);
 
 namespace rq_is_c_min{
   using S = ll;

@@ -42,8 +42,8 @@ void solve() {
   map<char, ll> m;
   for (auto c: S) {
     m[c]++;
-    if (0<=c - 'a' && c - 'a' <= 25) l = true;
-    if (0<=c - 'A' && c - 'A' <= 25) u = true;
+    if (islower(c)) l = true;
+    if (isupper(c)) u = true;
   }
   for (auto [_, c]: m) {
     if (c > 1) d = false;
