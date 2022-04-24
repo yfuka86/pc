@@ -19,12 +19,6 @@ const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX 
 using A = ll;
 template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
-struct RandGen {
-  using uidll = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
-  ll lint(ll a, ll b) { uidll d(a, b - 1); return d(mt); }
-  vl vlint(ll a, ll b, ll l) { uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
-  vl vlperm(ll a) { vl perm(a); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
-};
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
@@ -43,13 +37,14 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll N, M, K, X; cin >> N >> M >> K >> X;
+  vl A(N); rep(i, N) cin >> A[i];
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }
