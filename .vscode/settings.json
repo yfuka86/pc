@@ -79,7 +79,9 @@
     "thread": "cpp",
     "variant": "cpp",
     "stop_token": "cpp",
-    "syncstream": "cpp"
+    "syncstream": "cpp",
+    "__locale": "cpp",
+    "__string": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",

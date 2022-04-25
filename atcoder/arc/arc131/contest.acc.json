@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc131",
+    "title": "AtCoder Regular Contest 131",
+    "url": "https://atcoder.jp/contests/arc131"
+  },
+  "tasks": [
+    {
+      "id": "arc131_a",
+      "label": "A",
+      "title": "Two Lucky Numbers",
+      "url": "https://atcoder.jp/contests/arc131/tasks/arc131_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc131_a.cpp"
+      }
+    },
+    {
+      "id": "arc131_b",
+      "label": "B",
+      "title": "Grid Repainting 4",
+      "url": "https://atcoder.jp/contests/arc131/tasks/arc131_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc131_b.cpp"
+      }
+    },
+    {
+      "id": "arc131_c",
+      "label": "C",
+      "title": "Zero XOR",
+      "url": "https://atcoder.jp/contests/arc131/tasks/arc131_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc131_c.cpp"
+      }
+    },
+    {
+      "id": "arc131_d",
+      "label": "D",
+      "title": "AtArcher",
+      "url": "https://atcoder.jp/contests/arc131/tasks/arc131_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc131_d.cpp"
+      }
+    },
+    {
+      "id": "arc131_e",
+      "label": "E",
+      "title": "Christmas Wreath",
+      "url": "https://atcoder.jp/contests/arc131/tasks/arc131_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc131_e.cpp"
+      }
+    },
+    {
+      "id": "arc131_f",
+      "label": "F",
+      "title": "ARC Stamp",
+      "url": "https://atcoder.jp/contests/arc131/tasks/arc131_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc131_f.cpp"
+      }
+    }
+  ]
+}

@@ -22,10 +22,10 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 struct RandGen {
   using uidll = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll lint(ll a, ll b) { uidll d(a, b - 1); return d(mt); }
-  vl vlint(ll a, ll b, ll l) { uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
-  vl vlperm(ll a) { vl perm(a); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
-  string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(a, z, l); string s; rep(i, l) s.pb('a' + az[i]); return s; }
-  string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(zero, ten, l); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
+  vl vlint(ll l, ll a, ll b) { uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
+  vl vlperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
+  string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
+  string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
 };
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }

@@ -21,8 +21,8 @@ template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 struct RandGen {
   using uidll = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
-  ll lint(ll a, ll b) { assert(a < b); uidll d(a, b - 1); return d(mt); }
-  vl vlint(ll l, ll a, ll b) { assert(a < b); uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
+  ll lint(ll a, ll b) { uidll d(a, b - 1); return d(mt); }
+  vl vlint(ll l, ll a, ll b) { uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vlperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
   string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
@@ -44,93 +44,62 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-vl naive(ll N, vl a, vl b) {
-  vl ans; ans.pb(LINF);
-  rep2(S, 1, 1 << N) {
-    vl t;
-    rep(i, N) if (S & 1 << i) t.pb(a[i]);
-    rep(i, N) if (S & 1 << i) t.pb(b[i]);
-    chmin(ans, t);
+ll mex(vl& v) {
+  set<ll> S; for(ll n: v) S.insert(n);
+  ll ret = 0; while (S.find(ret) != S.end()) ret++;
+  return ret; }
+
+ll check(vl S) {
+  if (S.size() == 0) return 0;
+  if (S.size() == 1) return 1;
+
+  ll prod = 0;
+  for(auto s: S) prod ^= s;
+  if (find(all(S), prod) != S.end()) return 1;
+
+  vl t;
+  rep(i, S.size()) {
+    ll memo = S[i];
+    S.erase(S.begin() + i);
+    t.pb(check(S));
+    S.insert(S.begin() + i, memo);
   }
-  return ans;
+  return mex(t);
 }
 
-// vl solve(ll N, vl a, vl b) {
+void enum_perm(ll N, ll from, ll to) { // [from, to)
+  vl st; rep(i, N) st.pb(from);
+  while (true) {
+    set<ll> S;
+    rep(i, N) S.insert(st[i]);
+    ll prod = 0;
+    for (auto s: S) prod ^= s;
+    if (S.size() == N && prod) {
+      coutarray(st);
+      cout << check(st) << "\n";
+    }
+
+    while (st.back() == to) st.pop_back();
+    if (st.size() == 0) break;
+    st.back()++;
+    while (st.size() < N) st.pb(from);
+  }
+}
+
 void solve() {
   ll N; cin >> N;
-  vl a(N), b(N);
-  rep(i, N) cin >> a[i];
-  rep(i, N) cin >> b[i];
+  vl A(N); rep(i, N) cin >> A[i];
 
-  vector<LT> t(N), sorted(N), sorted2(N);
-  rep(i, N) { t[i] = {a[i], b[i], i}; sorted[i] = {a[i], b[i], i}; sorted2[i] = {a[i], i, b[i]}; }
-  sort(all(sorted));sort(all(sorted2));
-
-  vector<LT> ans;
-  auto [fa, fb, fi] = sorted.front();
-
-  if (fa < fb) {
-    rep(i, N) {
-      auto [aa, bb, ii] = t[i];
-      if (aa == fa) ans.pb(t[i]);
-    }
-
-    for (auto t: sorted2) {
-      auto [la, lb, li] = ans.back();
-      auto [aa, ii, bb] = t;
-      if (ii > li) {
-        if (aa < get<1>(ans.front())) {
-          ans.pb({aa, bb, ii});
-        } else if (aa == get<1>(ans.front())) {
-          if (ans.size() >= 1) {
-            ll idx = 1;
-            while (idx < ans.size()) {
-              if (get<1>(ans.front()) < get<1>(ans[idx])) {
-                ans.pb({aa, bb, ii});
-                break;
-              } else if (get<1>(ans.front()) == get<1>(ans[idx])) {
-                idx++;
-              } else break;
-            }
-
-          }
-        }
-      }
-    }
-  } else {
-    ans.pb(sorted.front());
+  if (N & 1) cout << "Win" << "\n";
+  else {
+    ll prod = 0;
+    rep(i, N) prod ^= A[i];
+    rep(i, N) if (prod == A[i]) { cout << "Win" << "\n"; return; }
+    cout << "Lose" << "\n";
   }
 
-  vl ansa;
-  for (auto t: ans) { ansa.pb(get<0>(t)); }
-  for (auto t: ans) { ansa.pb(get<1>(t)); }
-  // return ansa;
-  coutarray(ansa);
+  // enum_perm(4, 1, 10);
 }
-
-// void compare() {
-//   RandGen rg;
-//   ll c = 0, loop = 10;
-//   while (true) {
-//     c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n";
-//     ll N = 15;
-//     vl a = rg.vlint(N, 1, 1e1);
-//     vl b = rg.vlint(N, 1, 1e1);
-//     vl n = naive(N, a, b);
-//     vl s = solve(N, a, b);
-//     if (n != s) {
-//       cout << c << "times tried" << "\n";
-//       cout << N << "\n";
-//       coutarray(a);
-//       coutarray(b);
-//       cout << "naive:" << "\n";
-//       coutarray(n);
-//       cout << "solve:" << "\n";
-//       coutarray(s);
-//       break;
-//     }
-//   }
-// }
 
 signed main() {
   ios::sync_with_stdio(false);
