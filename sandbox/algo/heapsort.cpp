@@ -21,8 +21,8 @@ template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 struct RandGen {
   using uidll = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
-  ll lint(ll a, ll b) { assert(a < b); uidll d(a, b - 1); return d(mt); }
-  vl vlint(ll l, ll a, ll b) { assert(a < b); uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
+  ll lint(ll a, ll b) { uidll d(a, b - 1); return d(mt); }
+  vl vlint(ll l, ll a, ll b) { uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vlperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
   string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
@@ -33,7 +33,8 @@ ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
-template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
+template<typename T> void uniq(vector<T>&a){ sort(all(a)); a.erase(unique(all(a)), a.end()); }
+template<typename T> void comp(vector<T>&a){ vector<T> b = a; uniq(b); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
 template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
@@ -44,39 +45,33 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-vl naive(ll N, vl a) {
-  vl ans;
-  return ans;
-}
+void solve() {
+  ll N, M; cin >> N >> M;
+  vl A(N); rep(i, N) cin >> A[i];
 
-vl solve(ll N, vl a) {
-  // ll N; cin >> N;
-  // vl a(N); rep(i, N) cin >> a[i];
-  vl ans;
-  return ans;
-}
-
-void compare() {
-  RandGen rg;
-  ll c = 0, loop = 10;
-  while (true) {
-    c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 15;
-    vl a = rg.vlint(N, 1, 1e1);
-    vl b = rg.vlint(N, 1, 1e1);
-    vl n = naive(N, a);
-    vl s = solve(N, a);
-    if (n != s) {
-      cout << c << "times tried" << "\n";
-      cout << N << "\n";
-      coutarray(a);
-      cout << "naive:" << "\n";
-      coutarray(n);
-      cout << "solve:" << "\n";
-      coutarray(s);
-      break;
+  auto subr = [&](ll k, ll lim) {
+    while (1) {
+      ll v = A[k], select = k;
+      ll l = (k << 1) + 1, r = (k << 1) + 2;
+      if (l < lim && A[l] > v) select = l, v = A[l];
+      if (r < lim && A[r] > v) select = r, v = A[r];
+      if (select == k) break; else swap(A[k], A[select]), k = select;
     }
+  };
+
+  ll x = N / 2 - 1;
+  while (x >= 0) {
+    ll k = x;
+    subr(k, N);
+    x--;
   }
+  coutarray(A);
+  rep_r(i, N) {
+    swap(A[0], A[i]);
+    subr(0, i);
+    if (i == M) coutarray(A);
+  }
+  coutarray(A);
 }
 
 signed main() {
@@ -84,5 +79,5 @@ signed main() {
   cin.tie(nullptr);
   cout.tie(nullptr);
   int t = 1; //cin >> t;
-  while (t--) compare();
+  while (t--) solve();
 }
