@@ -45,14 +45,45 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-void solve() {
-  ll n; cin >> n;
+using BS = bitset<64>;
+bool solve() {
+  ll a, b; cin >> a >> b;
+  if (a == b) return true;
+
+  function<bool(string)> check1 = [&](string s) {
+    rep(i, s.size()) if (s[i] != '1') return false;
+    return true;
+  };
+
+  vl A(2);
+  A[0] = a << 1 | 1; A[1] = a >> __builtin_ctzll(a);
+
+  BS b2(b); string bs = b2.to_string();
+  while (bs[0] == '0') bs.erase(0, 1);
+
+  rep(i, 2) {
+    BS abs(A[i]); string as = abs.to_string();
+    while (as[0] == '0') as.erase(0, 1);
+    string ras = as; reverse(all(ras));
+
+    // cout << as << " " << bs << "\n";
+
+    ll idx = bs.find(as), ridx = bs.find(ras);
+    if (idx != string::npos) {
+      if (check1(bs.substr(0, idx)) && check1(bs.substr(idx + as.size()))) return true;
+    }
+    if (ridx != string::npos) {
+      if (check1(bs.substr(0, ridx)) && check1(bs.substr(ridx + ras.size()))) return true;
+    }
+  }
+
+  return false;
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
-  while (t--) solve();
+  int t = 1; //cin >> t;
+  while (t--) if (solve()) cout << "YES" << "\n"; else cout << "NO" << "\n";
 }

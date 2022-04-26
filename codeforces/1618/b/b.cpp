@@ -47,6 +47,16 @@ vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
   ll n; cin >> n;
+  vs s(n - 2); rep(i, n - 2) cin >> s[i];
+
+  string ans;
+  rep(i, n - 2) {
+    if (ans.size() && ans.back() == s[i][0]) ans.pb(s[i][1]);
+    else ans += s[i];
+  }
+
+  while (ans.size() < n) ans.pb('a');
+  cout << ans << "\n";
 }
 
 signed main() {

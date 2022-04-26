@@ -46,7 +46,11 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  vl a(7, 0); rep(i, 7) cin >> a[i];
+  ll ma = a[6];
+  ll b = ma - a[5];
+  ll c = ma - a[4];
+  cout << ma - b - c << " " << b << " " << c << "\n";
 }
 
 signed main() {

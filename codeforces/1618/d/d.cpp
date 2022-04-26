@@ -46,7 +46,16 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll n, k; cin >> n >> k;
+  vl a(n); rep(i, n) cin >> a[i];
+  sort(all(a));
+  vl is, js;
+  rep(_, k) { js.pb(a.back()); a.pop_back(); }
+  rep(_, k) { is.pb(a.back()); a.pop_back(); }
+
+  ll ans = 0;
+  rep(i, k) ans += is[i] / js[i];
+  cout << ans + accumulate(all(a), 0LL) << "\n";
 }
 
 signed main() {

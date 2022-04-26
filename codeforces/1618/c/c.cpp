@@ -47,6 +47,24 @@ vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
   ll n; cin >> n;
+  vl a(n); rep(i, n) cin >> a[i];
+
+  ll evengcd = a[0];
+  ll oddgcd = a[1];
+  rep(i, n) {
+    if (i & 1) oddgcd = gcd(oddgcd, a[i]); else evengcd = gcd(evengcd, a[i]);
+  }
+
+  bool even = true, odd = true;
+  rep(i, n) {
+    if (i & 1) { if (a[i] % evengcd == 0) even = false; }
+    else { if (a[i] % oddgcd == 0) odd = false; }
+  }
+
+  if (even) cout << evengcd << "\n";
+  else if (odd) cout << oddgcd << "\n";
+  else cout << 0 << "\n";
+
 }
 
 signed main() {

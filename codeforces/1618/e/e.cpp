@@ -47,6 +47,22 @@ vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
   ll n; cin >> n;
+  vl b(n); rep(i, n) cin >> b[i];
+
+  ll nsum = n * (n + 1) / 2;
+  ll bsum = accumulate(all(b), 0LL);
+  if (bsum % nsum != 0) { cout << "NO" << "\n"; return; }
+  ll asum = bsum / nsum;
+
+  vl a(n);
+  rep(i, n) {
+    ll diff = asum - (b[(i + 1) % n] - b[i]);
+    if (diff % n != 0 || diff <= 0) { cout << "NO" << "\n"; return; }
+    a[(i + 1) % n] = diff / n;
+  }
+
+  cout << "YES" << "\n";
+  coutarray(a);
 }
 
 signed main() {

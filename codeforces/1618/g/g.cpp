@@ -45,14 +45,76 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  // if (size(rx)<size(ry)) swap(rx,ry);
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
-  ll n; cin >> n;
+  ll n, m, q; cin >> n >> m >> q;
+  vl a(n), b(m); rep(i, n) cin >> a[i]; rep(i, m) cin >> b[i];
+
+  vl mono(n + m), monosum(n + m + 1, 0);
+  vl item(n + m), itemsum(n + m + 1, 0);
+  {
+    vlp temp(n + m); rep(i, n) temp[i] = {a[i], 1}; rep(i, m) temp[i + n] = {b[i], 0};
+    sort(all(temp));
+    rep(i, n + m) if (temp[i].second) mono[i] = 1;
+    rep(i, n + m) monosum[i + 1] = monosum[i] + mono[i];
+    rep(i, n + m) item[i] = temp[i].first;
+    rep(i, n + m) itemsum[i + 1] = itemsum[i] + item[i];
+  }
+
+  vlp diff(n + m - 1); rep(i, n + m - 1) diff[i] = {item[i + 1] - item[i], i};
+  sort(all(diff)); reverse(all(diff));
+
+  UnionFind uf(n + m);
+  vlp Q(q); rep(i, q) { ll t; cin >> t; Q[i] = {t, i}; }
+  sort(all(Q));
+  vl ans(q);
+
+  ll sum = accumulate(all(a), 0LL);
+  rep(_, q) {
+    auto [k, i] = Q[_];
+
+    while (diff.size() && diff.back().first <= k) {
+      auto [_, x] = diff.back();
+      diff.pop_back();
+
+      ll r = uf.root(x) + 1;
+      ll osize = uf.size(x);
+      ll monoitem = monosum[r] - monosum[r - osize];
+
+      uf.unite(x + 1, x);
+      ll nr = uf.root(x) + 1;
+      ll nsize = uf.size(x);
+      ll nmonoitem = monosum[nr] - monosum[nr - nsize];
+      if (monoitem) {
+        sum -= itemsum[x + 1] - itemsum[x + 1 - monoitem];
+        ll newidx = x + 1 + nsize - osize - (nmonoitem - monoitem);
+        sum += itemsum[newidx] - itemsum[newidx - monoitem];
+      }
+    }
+    ans[i] = sum;
+  }
+
+  rep(i, q) {
+    cout << ans[i] << "\n";
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
 }
