@@ -54,11 +54,11 @@ void solve() {
     auto [a,b,m] = meal[i];
     M[a + b - m].pb({a - (m - min(b, m)), max<ll>(a - m, 0), i});
   }
+  for (auto &[_, v]: M) sort(all(v));
 
   ll acount = 0;
   vlp ans(n);
-  for (auto [_, v]: M) {
-    sort(all(v));
+  for (auto &[_, v]: M) {
     acount++;
     ll cur = get<0>(v[0]);
     rep(i, v.size()) {
