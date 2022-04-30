@@ -20,9 +20,9 @@ using A = ll;
 template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 struct RandGen {
-  using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
-  ll lint(ll a, ll b) { ud d(a, b - 1); return d(mt); }
-  vl vlint(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
+  using uidll = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
+  ll lint(ll a, ll b) { uidll d(a, b - 1); return d(mt); }
+  vl vlint(ll l, ll a, ll b) { uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vlperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
   string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
@@ -43,10 +43,80 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+vl dx = {1,-1,0,0}; vl dy = {0,0,-1,1};
+
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 
 void solve() {
-  ll n; cin >> n;
+  ll n, m; cin >> n >> m;
+  vs grid(n);
+  rep(i, n) cin >> grid[i];
+
+  function<ll(ll)> next = [&](ll i) {
+    ll c = grid[i / m][i % m];
+    ll d; rep(k, 4) if (c == "DULR"[k]) d = k;
+    ll ni = i / m + dx[d], nj = i % m + dy[d];
+    if (ni >= 0 && ni < n && nj >= 0 && nj < m) {
+      return ni * m + nj;
+    } else return -1LL;
+  };
+
+  vl dp(n * m, -1);
+  vb cycle(n * m, false);
+  {
+    UnionFind un(n * m);
+    rep(id, n * m) {
+      ll nid = next(id);
+      if (nid == -1) continue;
+
+      if (!un.same(id, nid)) un.unite(id, nid);
+      else {
+        cycle[id] = 1;
+        ll c = 1;
+        do {
+          c++;
+          cycle[nid] = 1;
+          nid = next(nid);
+        } while (nid != id);
+        do {
+          dp[nid] = c;
+          nid = next(nid);
+        } while (nid != id);
+      }
+    }
+  }
+
+  rep(i, n * m) {
+    if (dp[i] != -1) continue;
+    vl st = {i}; ll c = 0;
+
+    while (1) {
+      ll nid = next(st.back());
+      if (nid == -1) { break; }
+      if (dp[nid] != -1) { c = dp[nid]; break; }
+      st.pb(nid);
+    }
+    while (st.size()) {
+      c++;
+      dp[st.back()] = c;
+      st.pop_back();
+    }
+  }
+
+
+  ll id = max_element(all(dp)) - dp.begin();
+  cout << id / m + 1 << " " << id % m + 1 << " " << dp[id] << "\n";
 }
 
 signed main() {

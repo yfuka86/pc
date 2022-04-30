@@ -20,9 +20,9 @@ using A = ll;
 template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 struct RandGen {
-  using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
-  ll lint(ll a, ll b) { ud d(a, b - 1); return d(mt); }
-  vl vlint(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
+  using uidll = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
+  ll lint(ll a, ll b) { uidll d(a, b - 1); return d(mt); }
+  vl vlint(ll l, ll a, ll b) { uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vlperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
   string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
@@ -47,6 +47,26 @@ vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
   ll n; cin >> n;
+  vl a(n); rep(i, n) cin >> a[i];
+  string color; cin >> color;
+
+  multiset<ll> incr, decr;
+  rep(i, n) {
+    if (color[i] == 'R') incr.insert(a[i]);
+    else decr.insert(a[i]);
+  }
+
+  rep2(i, 1, n + 1) {
+    if (decr.lower_bound(i) != decr.end()) {
+      decr.erase(decr.lower_bound(i));
+    } else if (incr.upper_bound(i) != incr.begin()) {
+      incr.erase(prev(incr.upper_bound(i)));
+    } else {
+      cout << "NO" << "\n"; return;
+    }
+    // cout << decr.size() << " " << incr.size() << "\n";
+  }
+  cout << "YES" << "\n";
 }
 
 signed main() {

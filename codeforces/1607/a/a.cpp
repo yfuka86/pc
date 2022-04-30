@@ -20,9 +20,9 @@ using A = ll;
 template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 struct RandGen {
-  using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
-  ll lint(ll a, ll b) { ud d(a, b - 1); return d(mt); }
-  vl vlint(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
+  using uidll = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
+  ll lint(ll a, ll b) { uidll d(a, b - 1); return d(mt); }
+  vl vlint(ll l, ll a, ll b) { uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vlperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
   string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
@@ -46,7 +46,20 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  string s, t; cin >> s >> t;
+  ll cur = 0;
+  vl idx(t.size());
+
+  rep(i, t.size()) {
+    auto res = s.find(t[i]);
+    if (res != string::npos) idx[i] = res; else idx[i] = -1;
+  }
+
+  ll ans = 0;
+  rep(i, idx.size() - 1) {
+    ans += abs(idx[i + 1] - idx[i]);
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

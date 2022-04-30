@@ -20,9 +20,9 @@ using A = ll;
 template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 struct RandGen {
-  using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
-  ll lint(ll a, ll b) { ud d(a, b - 1); return d(mt); }
-  vl vlint(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
+  using uidll = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
+  ll lint(ll a, ll b) { uidll d(a, b - 1); return d(mt); }
+  vl vlint(ll l, ll a, ll b) { uidll d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vlperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
   string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
@@ -46,7 +46,44 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll n, m; cin >> n >> m;
+  vlp ab(n); rep(i, n) cin >> ab[i].first >> ab[i].second;
+  vlp ansr(n);
+
+  ll l = 0, r = 0;
+  {
+    rep(i, n) {
+      auto [a, b] = ab[i];
+      ll froma = min(a, m);
+      ll fromb = m - froma;
+      l += a - froma - (b - fromb);
+    }
+    rep(i, n) {
+      auto [a, b] = ab[i];
+      ll fromb = min(b, m);
+      ll froma = m - fromb;
+      ansr[i] = {froma, fromb};
+      r += a - froma - (b - fromb);
+    }
+  }
+
+  ll ans;
+  if (l <= 0 && r >= 0) { if (r & 1) ans = 1; else ans = 0; } else ans = min(abs(l), abs(r));
+
+  ll rem = (r - (ans < l || ans > r ? -ans : ans)) / 2;
+  rep(i, n) {
+    auto [a, b] = ab[i];
+    auto [froma, fromb] = ansr[i];
+    ll move = min(rem, min(a - froma, fromb));
+    rem -= move;
+    ansr[i] = {froma + move, fromb - move};
+  }
+
+  cout << ans << "\n";
+  rep(i, n) {
+    cout << ansr[i].first << " " << ansr[i].second << "\n";
+  }
+
 }
 
 signed main() {

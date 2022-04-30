@@ -11,6 +11,9 @@ for p in $(eval echo {a..$2});
 do
   mkdir ${p}
   cp ~/work/pc/temp/maincf.cpp ./${p}/${p}.cpp
+  cd ${p}
+  oj d "https://codeforces.com/contest/$1/problem/${p}"
+  cd ..
 done
 
 exit 0
