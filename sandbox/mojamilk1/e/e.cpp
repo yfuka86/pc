@@ -19,13 +19,22 @@ const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX 
 using A = ll;
 template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
+struct RandGen {
+  using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
+  ll lint(ll a, ll b) { ud d(a, b - 1); return d(mt); }
+  vl vlint(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
+  vl vlperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
+  string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
+  string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
+};
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
-template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
+template<typename T> void uniq(vector<T>&a){ sort(all(a)); a.erase(unique(all(a)), a.end()); }
+template<typename T> void comp(vector<T>&a){ vector<T> b = a; uniq(b); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
 template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
@@ -65,23 +74,56 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
+// Rolling hash
+const ll P_B = 17, P_M = 1e9 + 7;
+vl bf(1e6 + 10, -1);
+ll b_fact(ll p) {
+  if (bf[p] == -1) { bf[0] = 1; rep(i, 1e6 + 9) bf[i + 1] = bf[i] * P_B % P_M; }
+  return bf[p];
+}
+
+vl s_hash(vl& s) {
+  vl h(s.size() + 1, 0);
+  rep(i, s.size()) { h[i + 1] = (P_B * h[i] + s[i]) % P_M; }
+  return h;
+}
+
+ll sub_hash(vl& h, ll l, ll r) {
+  assert(0 <= l && r <= h.size());
+  ll ret = h[r] - (b_fact(r - l) * h[l] % P_M); if (ret < 0) ret += P_M;
+  return ret;
+}
 
 void solve() {
-  ll N, K; cin >> N >> K;
+  ll N; cin >> N;
+  string T; cin >> T;
 
-  vvmi dp(N + 1, vmi(K + 2, 0));
+  vl t; rep(i, T.size()) t.pb(T[i] == '1');
+  vl sh = s_hash(t);
 
-  // rep(i, K + 1) dp[1][i] = K + 1 - i;
-
-  rep_r(k, K + 1) rep(i, k ? min(floor(K, k), N) : N) {
-    dp[i + 1][k] += dp[i + 1][k + 1];
-    rep(di, i + 1) {
-      dp[i + 1][k] += (i - di ? dp[i - di][k] : 1) * (di ? dp[di][k + 1] : 1);
+  vl bidx(T.size(), 0);
+  rep(i, T.size()) {
+    vl vt; vt.insert(vt.end(), t.begin(), t.begin() + i);
+    vt.pb(T[i] == '0' ? 1 : 0);
+    vl ssh = s_hash(vt);
+    rep_r(d, i + 1) {
+      if (sub_hash(sh, 0, d) == sub_hash(ssh, i - d + 1, i + 1)){ bidx[i] = d; break; }
     }
   }
-  // if (N < 100) coutmatrix(dp);
-  cout << dp[N][0] << "\n";
 
+  vvmi dp(N + 1, vmi(T.size() + 1, 0));
+  dp[0][0] = 1;
+
+  rep(i, N) {
+    rep(j, T.size()) {
+      dp[i + 1][j + 1] += dp[i][j];
+      dp[i + 1][bidx[j]] += dp[i][j];
+    }
+    dp[i + 1][T.size()] += dp[i][T.size()] * 2;
+  }
+  // coutmatrix(dp);
+
+  cout << dp[N][T.size()] << "\n";
 }
 
 signed main() {
