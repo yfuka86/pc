@@ -74,42 +74,97 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
-// Rolling hash
-const ll P_B = 17, P_M = 1e9 + 7;
-vl bf(1e6 + 10, -1);
-ll b_fact(ll p) {
-  if (bf[p] == -1) { bf[0] = 1; rep(i, 1e6 + 9) bf[i + 1] = bf[i] * P_B % P_M; }
-  return bf[p];
-}
+struct RollingHash {
+  static const uint64_t mod = (1ull << 61ull) - 1;
+  using uint128_t = __uint128_t;
+  vector< uint64_t > power;
+  const uint64_t base;
 
-vl s_hash(vl& s) {
-  vl h(s.size() + 1, 0);
-  rep(i, s.size()) { h[i + 1] = (P_B * h[i] + s[i]) % P_M; }
-  return h;
-}
+  static inline uint64_t add(uint64_t a, uint64_t b) {
+    if((a += b) >= mod) a -= mod;
+    return a;
+  }
 
-ll sub_hash(vl& h, ll l, ll r) {
-  assert(0 <= l && r <= h.size());
-  ll ret = h[r] - (b_fact(r - l) * h[l] % P_M); if (ret < 0) ret += P_M;
-  return ret;
-}
+  static inline uint64_t mul(uint64_t a, uint64_t b) {
+    uint128_t c = (uint128_t) a * b;
+    return add(c >> 61, c & mod);
+  }
+
+  static inline uint64_t generate_base() {
+    mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
+    uniform_int_distribution< uint64_t > rand(1, RollingHash::mod - 1);
+    return rand(mt);
+  }
+
+  inline void expand(size_t sz) {
+    if(power.size() < sz + 1) {
+      int pre_sz = (int) power.size();
+      power.resize(sz + 1);
+      for(int i = pre_sz - 1; i < sz; i++) {
+        power[i + 1] = mul(power[i], base);
+      }
+    }
+  }
+
+  explicit RollingHash(uint64_t base = generate_base()) : base(base), power{1} {}
+
+  vector< uint64_t > build(const string &s) const {
+    int sz = s.size();
+    vector< uint64_t > hashed(sz + 1);
+    for(int i = 0; i < sz; i++) {
+      hashed[i + 1] = add(mul(hashed[i], base), s[i]);
+    }
+    return hashed;
+  }
+
+  template< typename T >
+  vector< uint64_t > build(const vector< T > &s) const {
+    int sz = s.size();
+    vector< uint64_t > hashed(sz + 1);
+    for(int i = 0; i < sz; i++) {
+      hashed[i + 1] = add(mul(hashed[i], base), s[i]);
+    }
+    return hashed;
+  }
+
+  uint64_t query(const vector< uint64_t > &s, int l, int r) {
+    expand(r - l);
+    return add(s[r], mod - mul(s[l], power[r - l]));
+  }
+
+  uint64_t combine(uint64_t h1, uint64_t h2, size_t h2len) {
+    expand(h2len);
+    return add(mul(h1, power[h2len]), h2);
+  }
+
+  int lcp(const vector< uint64_t > &a, int l1, int r1, const vector< uint64_t > &b, int l2, int r2) {
+    int len = min(r1 - l1, r2 - l2);
+    int low = 0, high = len + 1;
+    while(high - low > 1) {
+      int mid = (low + high) / 2;
+      if(query(a, l1, l1 + mid) == query(b, l2, l2 + mid)) low = mid;
+      else high = mid;
+    }
+    return low;
+  }
+};
 
 void solve() {
   ll N; cin >> N;
   string T; cin >> T;
 
-  vl t; rep(i, T.size()) t.pb(T[i] == '1');
-  vl sh = s_hash(t);
+  RollingHash roll;
+  auto rh = roll.build(T);
 
   vl bidx(T.size(), 0);
   rep(i, T.size()) {
-    vl vt; vt.insert(vt.end(), t.begin(), t.begin() + i);
-    vt.pb(T[i] == '0' ? 1 : 0);
-    vl ssh = s_hash(vt);
+    string ts = T.substr(0, i) + (T[i] == '0' ? "1" : "0");
+    auto srh = roll.build(ts);
     rep_r(d, i + 1) {
-      if (sub_hash(sh, 0, d) == sub_hash(ssh, i - d + 1, i + 1)){ bidx[i] = d; break; }
+      if (roll.query(rh, 0, d) == roll.query(srh, i - d + 1, i + 1)){ bidx[i] = d; break; }
     }
   }
+  // coutarray(bidx);
 
   vvmi dp(N + 1, vmi(T.size() + 1, 0));
   dp[0][0] = 1;

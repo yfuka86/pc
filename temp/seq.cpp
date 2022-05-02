@@ -45,27 +45,6 @@ vvl cumsum2d(vvl &a) {
   return sum;
 }
 
-// Rolling hash
-const ll P_B = 17, P_M = 1e9 + 7;
-vl bf(1e6 + 10, -1);
-ll b_fact(ll p) {
-  if (bf[p] == -1) { bf[0] = 1; rep(i, 1e6 + 9) bf[i + 1] = bf[i] * P_B % P_M; }
-  return bf[p];
-}
-
-vl s_hash(vl& s) {
-  vl h(s.size() + 1, 0);
-  rep(i, s.size()) { h[i + 1] = (P_B * h[i] + s[i]) % P_M; }
-  return h;
-}
-
-ll sub_hash(vl& h, ll l, ll r) {
-  assert(0 <= l && l < r && r <= h.size());
-  ll ret = h[r] - (b_fact(r - l) * h[l] % P_M); if (ret < 0) ret += P_M;
-  return ret;
-}
-
-
 // Reference:
 // D. Gusfield,
 // Algorithms on Strings, Trees, and Sequences: Computer Science and
