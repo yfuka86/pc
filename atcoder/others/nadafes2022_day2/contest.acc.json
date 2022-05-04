@@ -1,0 +1,185 @@
+{
+  "contest": {
+    "id": "nadafes2022_day2",
+    "title": "灘校文化祭コンテスト 2022 Day2",
+    "url": "https://atcoder.jp/contests/nadafes2022_day2"
+  },
+  "tasks": [
+    {
+      "id": "nadafes2022_day2_a",
+      "label": "A",
+      "title": "ACPN",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_a.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_b",
+      "label": "B",
+      "title": "Min Max Min",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_b.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_c",
+      "label": "C",
+      "title": "Time Bombs",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_c.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_d",
+      "label": "D",
+      "title": "NPCA Network",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_d.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_e",
+      "label": "E",
+      "title": "Hamiltonian Circuit",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_e.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_f",
+      "label": "F",
+      "title": "Charge",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_f.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_g",
+      "label": "G",
+      "title": "Interval GCD",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_g.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_h",
+      "label": "H",
+      "title": "Tourist on Graph",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_h.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_i",
+      "label": "I",
+      "title": "Product of LCM of GCD",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_i.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_j",
+      "label": "J",
+      "title": "Sum Equality",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_j.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_k",
+      "label": "K",
+      "title": "Exhibition 3",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_k.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_l",
+      "label": "L",
+      "title": "Min Diff Min",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_l.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_m",
+      "label": "M",
+      "title": "Swapping Brackets",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_m.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_n",
+      "label": "N",
+      "title": "All Crosses",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_n.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_o",
+      "label": "O",
+      "title": "Simple Inversion Problem",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_o.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day2_p",
+      "label": "P",
+      "title": "Turn it Over",
+      "url": "https://atcoder.jp/contests/nadafes2022_day2/tasks/nadafes2022_day2_p",
+      "directory": {
+        "path": "p",
+        "testdir": "test",
+        "submit": "nadafes2022_day2_p.cpp"
+      }
+    }
+  ]
+}

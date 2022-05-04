@@ -1,0 +1,185 @@
+{
+  "contest": {
+    "id": "nadafes2022_day1",
+    "title": "灘校文化祭コンテスト 2022 Day1",
+    "url": "https://atcoder.jp/contests/nadafes2022_day1"
+  },
+  "tasks": [
+    {
+      "id": "nadafes2022_day1_a",
+      "label": "A",
+      "title": "Max Inversion",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_a.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_b",
+      "label": "B",
+      "title": "Exist Multiples",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_b.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_c",
+      "label": "C",
+      "title": "Flood",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_c.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_d",
+      "label": "D",
+      "title": "Double Permutations",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_d.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_e",
+      "label": "E",
+      "title": "Even Degree",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_e.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_f",
+      "label": "F",
+      "title": "Mth Next Permutation",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_f.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_g",
+      "label": "G",
+      "title": "Road Closed",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_g.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_h",
+      "label": "H",
+      "title": "Traveling PCT Problem",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_h.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_i",
+      "label": "I",
+      "title": "NPCA Kingdom",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_i.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_j",
+      "label": "J",
+      "title": "Excluded LCM",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_j.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_k",
+      "label": "K",
+      "title": "Li",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_k.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_l",
+      "label": "L",
+      "title": "Lexicographic Euler Tour",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_l.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_m",
+      "label": "M",
+      "title": "Random Drawing",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_m.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_n",
+      "label": "N",
+      "title": "Range Flip",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_n.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_o",
+      "label": "O",
+      "title": "Swapping Desks",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_o.cpp"
+      }
+    },
+    {
+      "id": "nadafes2022_day1_p",
+      "label": "P",
+      "title": "Sum of Max of Difference",
+      "url": "https://atcoder.jp/contests/nadafes2022_day1/tasks/nadafes2022_day1_p",
+      "directory": {
+        "path": "p",
+        "testdir": "test",
+        "submit": "nadafes2022_day1_p.cpp"
+      }
+    }
+  ]
+}

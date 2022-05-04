@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "arc059",
+    "title": "AtCoder Regular Contest 059",
+    "url": "https://atcoder.jp/contests/arc059"
+  },
+  "tasks": [
+    {
+      "id": "arc059_a",
+      "label": "C",
+      "title": "Be Together",
+      "url": "https://atcoder.jp/contests/arc059/tasks/arc059_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc059_a.cpp"
+      }
+    },
+    {
+      "id": "arc059_b",
+      "label": "D",
+      "title": "Unbalanced",
+      "url": "https://atcoder.jp/contests/arc059/tasks/arc059_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc059_b.cpp"
+      }
+    },
+    {
+      "id": "arc059_c",
+      "label": "E",
+      "title": "Children and Candies",
+      "url": "https://atcoder.jp/contests/arc059/tasks/arc059_c",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc059_c.cpp"
+      }
+    },
+    {
+      "id": "arc059_d",
+      "label": "F",
+      "title": "Unhappy Hacking",
+      "url": "https://atcoder.jp/contests/arc059/tasks/arc059_d",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc059_d.cpp"
+      }
+    }
+  ]
+}
