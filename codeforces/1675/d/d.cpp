@@ -45,110 +45,41 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
-vector<ll> primes_below(const ll N) {
-  vector<bool> is_prime(N + 1, true); for(ll i = 2; i * i <= N; i++) { if ((i > 2 && i % 2 == 0) || !is_prime[i]) continue; for(ll j = i * i; j <= N; j += i) is_prime[j] = false; }
-  vector<ll> ret; for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i); return ret; }
-
-
-//-------------------------------------------------------
-// https://atcoder.jp/contests/abc238/submissions/29086825
-// https://cp-algorithms.com/algebra/prime-sieve-linear.html
-const int PSX = 1e6 + 1;
-struct PrimeSieve {
-  bitset<PSX> is_prime; vector<int> pr;
-  int mu[PSX];  // moebius
-  int pf[PSX];  // pf[i] := smallest prime p s.t. p | i
-  PrimeSieve(){
-    is_prime.flip(); is_prime[0] = is_prime[1] = false; mu[1] = 1;
-    for (int i = 2; i < PSX; i++) {
-      if (is_prime[i]) { pr.push_back(i); pf[i] = i; mu[i] = -1; }
-      for (int p : pr) {
-        if (ll(i) * p >= PSX) break;
-        is_prime[i * p] = false; mu[i * p] = -mu[i]; pf[i * p] = p;
-        if (i % p == 0) { mu[i * p] = 0; break; }
-      }
-    }
-  }
-  vector<pair<int, int>> factorize(int x) { vector<pair<int, int>> vec; while (pf[x] > 1) { int d = pf[x], c = 0; while (x % d == 0) { x /= d; c++; } vec.emplace_back(d, c); } if (x != 1) vec.emplace_back(x, 1); return vec; }
-};
-
 void solve() {
-  ll N; cin >> N;
-  vl P(N + 1); rep(i, N) cin >> P[i + 1];
-  vl ps = primes_below(N);
+  ll n; cin >> n;
+  vl p(n); rep(i, n) { cin >> p[i]; p[i]--; }
 
-  vvl is(N + 1);
-  rep2(i, 1, N + 1) is[i].pb(P[i]);
-  for (auto p: ps) {
-    for (ll i = N / p; i >= 1; --i) {
-      is[i].insert(is[i].end(), is[i*p].begin(), is[i*p].end());
-    }
-  }
+  vl used(n, 0);
+  vvl path; vl pathinv(n, 0);
 
-  vl plist;
-  {
-    PrimeSieve ps;
-    rep2(i, 2, N + 1) {
-      bool valid = true;
-      for (auto [p, c]: ps.factorize(i)) if (c > 1) valid = false;
-      if (valid) plist.pb(i);
-    }
-  }
+  function<void(ll)> dfs = [&](ll v) {
+    if (p[v] == v) { path.pb({}); path.back().pb(v); pathinv[v] = path.size() - 1; used[v] = 1; return; }
 
-  // coutmatrix(is);
+    if (!used[p[v]]) dfs(p[v]);
 
-  vl f(N + 1, 0);
-  // rep2(p, 2, N + 1) {
-  for (auto p: plist) {
-    vl &v = is[p];
-    if (v.size() <= 1) continue;
-
-    if (v.size() < sqrt_ceil(N)) {
-      rep(i, v.size()) {
-        rep2(j, i + 1, v.size()) {
-          if (gcd(v[i], v[j]) > 1) f[p]++;
-        }
-      }
+    if (path[pathinv[p[v]]].back() == p[v]) {
+      path[pathinv[p[v]]].pb(v); pathinv[v] = pathinv[p[v]]; used[v] = 1;
     } else {
-      vl cnt(N + 1, 0);
-      for (auto e: v) cnt[e] += 1;
-      for (auto p: ps) {
-        for (ll i = N / p; i >= 1; --i) {
-          cnt[i] += cnt[i*p];
-        }
-      }
-      rep(i, N + 1) {
-        if (cnt[i]) cnt[i] = cnt[i] * (cnt[i] - 1) / 2;
-      }
-      for (auto p: ps) {
-        for (ll i = 1; i * p <= N; i++) {
-          cnt[i] -= cnt[i*p];
-        }
-      }
-      f[p] = accumulate(cnt.begin() + 2, cnt.end(), 0LL);
+      path.pb({}); path.back().pb(v); pathinv[v] = path.size() - 1; used[v] = 1;
     }
+  };
+
+  rep(i, n) {
+    if (!used[i]) dfs(i);
   }
 
-  // coutarray(f);
-
-  for (auto p: ps) {
-    for (ll i = 1; i * p <= N; i++) {
-      f[i] -= f[i*p];
-    }
+  cout << path.size() << "\n";
+  for (auto p: path) {
+    cout << p.size() << "\n";
+    coutarray(p, 1);
   }
-
-  // coutarray(f);
-
-  ll ans = accumulate(f.begin() + 2, f.end(), 0LL);
-  rep2(i, 2, N + 1) if (P[i] != 1) ans++;
-
-  cout << ans << "\n";
+  cout << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }
