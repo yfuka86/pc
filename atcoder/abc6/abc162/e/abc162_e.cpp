@@ -19,13 +19,22 @@ const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX 
 using A = ll;
 template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
+struct RandGen {
+  using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
+  ll lint(ll a, ll b) { ud d(a, b - 1); return d(mt); }
+  vl vlint(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
+  vl vlperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
+  string saz(ll l, ll a = 0, ll z = 26) { vl az = vlint(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
+  string snum(ll l, ll zero = 0, ll ten = 10) { vl zt = vlint(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
+};
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
-template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
+template<typename T> void uniq(vector<T>&a){ sort(all(a)); a.erase(unique(all(a)), a.end()); }
+template<typename T> void comp(vector<T>&a){ vector<T> b = a; uniq(b); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
 template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
@@ -35,7 +44,6 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
-
 const ll mod = 1000000007;
 //------------------------------------------------------------------------------
 template< int mod > struct ModInt {
@@ -65,24 +73,56 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
-vector<ll> primes_below(const ll N) {
-  vector<bool> is_prime(N + 1, true); for(ll i = 2; i * i <= N; i++) { if ((i > 2 && i % 2 == 0) || !is_prime[i]) continue; for(ll j = i * i; j <= N; j += i) is_prime[j] = false; }
-  vector<ll> ret; for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i); return ret; }
+//-------------------------------------------------------
+// https://atcoder.jp/contests/abc238/submissions/29086825
+// https://cp-algorithms.com/algebra/prime-sieve-linear.html
+const int PSX = 1e6 + 1;
+struct PrimeSieve {
+  bitset<PSX> is_prime; vector<int> pr;
+  int mu[PSX];  // moebius
+  int pf[PSX];  // pf[i] := smallest prime p s.t. p | i
+  PrimeSieve(){
+    is_prime.flip(); is_prime[0] = is_prime[1] = false; mu[1] = 1;
+    for (int i = 2; i < PSX; i++) {
+      if (is_prime[i]) { pr.push_back(i); pf[i] = i; mu[i] = -1; }
+      for (int p : pr) {
+        if (ll(i) * p >= PSX) break;
+        is_prime[i * p] = false; mu[i * p] = -mu[i]; pf[i * p] = p;
+        if (i % p == 0) { mu[i * p] = 0; break; }
+      }
+    }
+  }
+  vector<pair<int, int>> factorize(int x) { vector<pair<int, int>> vec; while (pf[x] > 1) { int d = pf[x], c = 0; while (x % d == 0) { x /= d; c++; } vec.emplace_back(d, c); } if (x != 1) vec.emplace_back(x, 1); return vec; }
+};
+
 
 void solve() {
   ll N, K; cin >> N >> K;
-  vl ps = primes_below(K);
 
-  vmi f(K + 1, 0);
-  rep2(i, 1, K + 1) f[i] = mod_pow(K / i, N);
-  for (auto p: ps) {
-    for (ll i = 1; i * p <= K; i++) {
-      f[i] -= f[i*p];
+  init_f();
+  vmi cnt(K + 1, 0);
+  rep2(i, 1, K + 1) {
+    cnt[i] = mint(K / i).pow(N);
+  }
+
+  rep2_r(i, 1, K + 1) {
+    ll x = 2;
+    for (ll x = 2; i * x <= K; x++) {
+      cnt[i] -= cnt[x * i];
     }
   }
+
+  // PrimeSieve ps;
+  // rep2(p, 1, K + 1) {
+  //   if (!ps.is_prime[p]) continue;
+  //   for (ll i = 1; i * p <= K; i++) {
+  //     cnt[i] -= cnt[i*p];
+  //   }
+  // }
+
   mint ans = 0;
   rep2(i, 1, K + 1) {
-    ans += f[i] * i;
+    ans += cnt[i] * i;
   }
   cout << ans << "\n";
 }
