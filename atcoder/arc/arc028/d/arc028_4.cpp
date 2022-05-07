@@ -511,22 +511,54 @@ struct FormalPowerSeries : vector< T > {
   }
 };
 
-template< typename mint >
-using FPS = FormalPowerSeries< mint >;
+using FPS = FormalPowerSeries<mint>;
 
+// fにa + b * x^nを掛ける
+auto mul_simple(FPS &f, mint a, mint b, int n){
+  for(int i = (int)f.size() - 1 ; i >= 0 ; i--){
+    f[i] *= a;
+    if (i >= n) f[i] += f[i - n] * b;
+  }
+};
+
+// fからa + b * x^nを割る
+auto div_simple(FPS &f, mint a, mint b, int n){
+  int n = f.size()
+  for(int i = 0 ; i < (int)f.size(); i++){
+    f[i] /= a;
+    if (i + n < (int)f.size()) f[i + n] -= f[i] * b;
+  }
+};
 
 void solve() {
   ll N, M, Q; cin >> N >> M >> Q;
   vl a(N); rep(i, N) cin >> a[i];
-  rep(_, Q) {
-    ll k, x; cin >> k >> x;
+
+  FPS tot(M + 1, 0);
+  tot[0] = 1;
+
+  rep(i, N) {
+    mul_simple(tot, 1, -1, a[i] + 1);
+    div_simple(tot, 1, -1, 1);
   }
 
-  FPS<mint> x({1, 2});
-  FPS<mint> y({0, 1, 2, 3, 4, 5});
-  auto z = x * y;
-  coutarray(z);
-  cout << accumulate(all(z), mint(0)) << "\n";
+  vvmi ans(N, vmi(M + 1, 0));
+  rep(i, N) {
+    div_simple(tot, 1, -1, a[i] + 1);
+    mul_simple(tot, 1, -1, 1);
+
+    rep(x, M + 1) {
+      ans[i][x] = tot[x];
+    }
+
+    div_simple(tot, 1, -1, 1);
+    mul_simple(tot, 1, -1, a[i] + 1);
+  }
+
+  rep(_, Q) {
+    ll k, x; cin >> k >> x; k--;
+    cout << ans[k][M - x] << "\n";
+  }
 }
 
 signed main() {

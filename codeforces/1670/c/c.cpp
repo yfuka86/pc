@@ -44,6 +44,7 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+
 const ll mod = 1000000007;
 //------------------------------------------------------------------------------
 template< int mod > struct ModInt {
@@ -73,55 +74,45 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
-//-------------------------------------------------------
-// https://atcoder.jp/contests/abc238/submissions/29086825
-// https://cp-algorithms.com/algebra/prime-sieve-linear.html
-const int PSX = 1e6 + 1;
-struct PrimeSieve {
-  bitset<PSX> is_prime; vector<int> pr;
-  int mu[PSX];  // moebius
-  int pf[PSX];  // pf[i] := smallest prime p s.t. p | i
-  PrimeSieve(){
-    is_prime.flip(); is_prime[0] = is_prime[1] = false; mu[1] = 1;
-    for (int i = 2; i < PSX; i++) {
-      if (is_prime[i]) { pr.push_back(i); pf[i] = i; mu[i] = -1; }
-      for (int p : pr) {
-        if (ll(i) * p >= PSX) break;
-        is_prime[i * p] = false; mu[i * p] = -mu[i]; pf[i * p] = p;
-        if (i % p == 0) { mu[i * p] = 0; break; }
-      }
-    }
-  }
-  vector<pair<int, int>> factorize(int x) { vector<pair<int, int>> vec; while (pf[x] > 1) { int d = pf[x], c = 0; while (x % d == 0) { x /= d; c++; } vec.emplace_back(d, c); } if (x != 1) vec.emplace_back(x, 1); return vec; }
+
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
 };
+//------------------------------------------------------------------------------
 
 
 void solve() {
-  ll N, K; cin >> N >> K;
+  ll n; cin >> n;
+  vl a(n), b(n), d(n);
+  rep(i, n) { cin >> a[i]; a[i]--; }
+  rep(i, n) { cin >> b[i]; b[i]--; }
+  rep(i, n) { cin >> d[i]; d[i]--; }
 
-  init_f();
-  vmi cnt(K + 1, 0);
-  rep2(i, 1, K + 1) {
-    cnt[i] = mint(K / i).pow(N);
+  set<ll> ds;
+  rep(i, n) if (d[i] != -1) ds.insert(d[i]);
+
+  UnionFind uf(n);
+  rep(i, n) {
+    uf.unite(a[i], b[i]);
   }
 
-  // rep2_r(p, 1, K + 1) {
-  //   for (ll i = 2; i * p <= K; i++) {
-  //     cnt[p] -= cnt[i*p];
-  //   }
-  // }
-
-  PrimeSieve ps;
-  rep2(p, 1, K + 1) {
-    if (!ps.is_prime[p]) continue;
-    for (ll i = 1; i * p <= K; i++) {
-      cnt[i] -= cnt[i*p];
+  vl used(n, 0);
+  rep(i, n) {
+    if (d[i] != -1) used[uf.root(d[i])] = 1;
+  }
+  mint ans = 1;
+  rep(i, n) {
+    if (d[i] == -1 && !used[uf.root(a[i])]) {
+      if (uf.size(a[i]) > 1) ans *= 2;
+      used[uf.root(a[i])] = 1;
     }
-  }
-
-  mint ans = 0;
-  rep2(i, 1, K + 1) {
-    ans += cnt[i] * i;
   }
   cout << ans << "\n";
 }
@@ -130,6 +121,6 @@ signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }
