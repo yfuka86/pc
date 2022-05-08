@@ -43,16 +43,69 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
-const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
+vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll N, X; cin >> N >> X;
+  vl A(N); rep(i, N) cin >> A[i];
+  sort(all(A));
+
+  vl p2(61, 1);
+  rep(i, 60) p2[i + 1] = p2[i] * 2;
+  // x回操作する場合
+  function<LP(ll, ll)> f = [&](ll x, ll a) {
+    return mp(a * p2[x], a * p2[x] + X * (p2[x] - 1));
+  };
+  ll MAXT = 32;
+
+  rep2(x, 1, MAXT) {
+    auto [l, r] = f(x, A[0]);
+
+    bool zero = true;
+    rep2(i, 1, N) {
+      bool valid = false;
+      rep2(y, 1, MAXT) {
+        auto [tl, tr] = f(y, A[i]);
+        if (!(tr < l || r < tl)) { cout << i << " " <<  tl << " " <<  tr << "\n"; valid = true; break; }
+      }
+      if (!valid) { zero = false; break; }
+    }
+    if (zero) { cout << 0 << "\n"; return; }
+  }
+  cout << "not0" << "\n";
+
+
+  function<bool(ll, ll)> check = [&](ll x, ll diff) {
+    rep2(i, 1, N) {
+      bool valid = false;
+      if (abs(x - A[i]) <= diff) return true;
+      rep2(y, 1, MAXT) {
+        auto [tl, tr] = f(y, A[i]);
+        if (abs(x - tl) <= diff || abs(x - tr) <= diff) { valid = true; break; }
+      }
+      if (valid) continue; else return false;
+    }
+    return true;
+  };
+
+  ll ok = A.back() - A.front(), ng = 0;
+  while(ok > ng + 1) {
+    ll mid = (ok + ng) / 2;
+    bool valid = false;
+    rep2(x, 1, MAXT) {
+      auto [l, r] = f(x, A[0]);
+      if (check(l, mid) || check(r, mid)) { valid = true; break; }
+    }
+    if (valid) ok = mid; else ng = mid;
+  }
+
+  cout << ok << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

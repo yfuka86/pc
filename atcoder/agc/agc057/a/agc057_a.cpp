@@ -43,10 +43,22 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
-const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
+vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+ll solve(ll L, ll R) {
+  if (L > R) return 0;
 
-void solve() {
-  ll n; cin >> n;
+  ll pow10 = 1;
+  while (POW(10, pow10) < R) { pow10++; }
+  ll a = POW(10, pow10);
+  ll b = POW(10, pow10 - 1);
+
+  if (L > b) { return R - L + 1; }
+
+  if (R < b * 2) {
+    return min(a - 1, R) - max(max(R / 10 + 1, R - b + 1), L) + 1;
+  } else {
+    return min(a - 1, R) - b + 1;
+  }
 }
 
 signed main() {
@@ -54,5 +66,8 @@ signed main() {
   cin.tie(nullptr);
   cout.tie(nullptr);
   int t; cin >> t;
-  while (t--) solve();
+  while (t--) {
+    ll L, R; cin >> L >> R;
+    cout << solve(L, R) << "\n";
+  }
 }

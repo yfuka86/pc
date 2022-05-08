@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "agc057",
+    "title": "AtCoder Grand Contest 057",
+    "url": "https://atcoder.jp/contests/agc057"
+  },
+  "tasks": [
+    {
+      "id": "agc057_a",
+      "label": "A",
+      "title": "Antichain of Integer Strings",
+      "url": "https://atcoder.jp/contests/agc057/tasks/agc057_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "agc057_a.cpp"
+      }
+    },
+    {
+      "id": "agc057_b",
+      "label": "B",
+      "title": "2A + x",
+      "url": "https://atcoder.jp/contests/agc057/tasks/agc057_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "agc057_b.cpp"
+      }
+    },
+    {
+      "id": "agc057_c",
+      "label": "C",
+      "title": "Increment or Xor",
+      "url": "https://atcoder.jp/contests/agc057/tasks/agc057_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "agc057_c.cpp"
+      }
+    },
+    {
+      "id": "agc057_d",
+      "label": "D",
+      "title": "Sum Avoidance",
+      "url": "https://atcoder.jp/contests/agc057/tasks/agc057_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "agc057_d.cpp"
+      }
+    },
+    {
+      "id": "agc057_e",
+      "label": "E",
+      "title": "RowCol/ColRow Sort",
+      "url": "https://atcoder.jp/contests/agc057/tasks/agc057_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "agc057_e.cpp"
+      }
+    },
+    {
+      "id": "agc057_f",
+      "label": "F",
+      "title": "Reflection",
+      "url": "https://atcoder.jp/contests/agc057/tasks/agc057_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "agc057_f.cpp"
+      }
+    }
+  ]
+}

@@ -46,13 +46,22 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll n; cin >> n;
+  ll N, M, T; cin >> N >> M >> T;
+  vlp ab(N);
+  vvl p(M, vl(T));
+  rep(i, M) {
+    ll a, b; cin >> a >> b; a--; b--; ab[i] = {a, b};
+    rep(j, T) {
+      cin >> p[i][j];
+    }
+  }
+
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

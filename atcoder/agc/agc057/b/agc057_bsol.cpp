@@ -43,16 +43,52 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
-const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
+vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll N, X; cin >> N >> X;
+  vl A(N); rep(i, N) cin >> A[i];
+  sort(all(A));
+
+  vl p2(61, 1);
+  rep(i, 60) p2[i + 1] = p2[i] * 2;
+  // x回操作する場合
+  function<LP(ll, ll)> f = [&](ll x, ll a) {
+    return mp(a * p2[x], a * p2[x] + X * (p2[x] - 1));
+  };
+  ll MAXX = 32;
+  ll target = A.back();
+
+  vlp lp;
+  rep(i, N - 1) {
+    if (A[i] == target) continue;
+    bool included = false;
+    ll lower = A[i], upper = LINF;
+    rep2(x, 1, MAXX) {
+      auto [l, r] = f(x, A[i]);
+      if (l > target) chmin(upper, l);
+      else if (r < target) chmax(lower, r);
+      else { included = true; break; }
+    }
+    if (!included) lp.pb({lower, upper});
+  }
+
+  ll n = lp.size();
+  sort(all(lp));
+
+  ll ans = LINF;
+  vl rightmax(n + 1, target);
+  rep(i, n) rightmax[i + 1] = max(rightmax[i], lp[i].second);
+  rep(i, n) chmin(ans, rightmax[i] - lp[i].first);
+  chmin(ans, rightmax[n] - target);
+
+  if (ans < X) cout << 0 << "\n"; else cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }
