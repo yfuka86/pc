@@ -214,25 +214,3 @@ using fast_factorize::divisors;
 using fast_factorize::factor_count;
 using fast_factorize::factorize;
 using fast_factorize::is_prime;
-
-//-------------------------------------------------------
-// https://atcoder.jp/contests/abc238/submissions/29086825
-// https://cp-algorithms.com/algebra/prime-sieve-linear.html
-const int PSX = 1e6 + 1;
-struct PrimeSieve {
-  bitset<PSX> is_prime; vector<int> pr;
-  int mu[PSX];  // moebius
-  int pf[PSX];  // pf[i] := smallest prime p s.t. p | i
-  PrimeSieve(){
-    is_prime.flip(); is_prime[0] = is_prime[1] = false; mu[1] = 1;
-    for (int i = 2; i < PSX; i++) {
-      if (is_prime[i]) { pr.push_back(i); pf[i] = i; mu[i] = -1; }
-      for (int p : pr) {
-        if (ll(i) * p >= PSX) break;
-        is_prime[i * p] = false; mu[i * p] = -mu[i]; pf[i * p] = p;
-        if (i % p == 0) { mu[i * p] = 0; break; }
-      }
-    }
-  }
-  vector<pair<int, int>> factorize(int x) { vector<pair<int, int>> vec; while (pf[x] > 1) { int d = pf[x], c = 0; while (x % d == 0) { x /= d; c++; } vec.emplace_back(d, c); } if (x != 1) vec.emplace_back(x, 1); return vec; }
-};

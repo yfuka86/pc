@@ -1,7 +1,16 @@
 
-  // rep2(i, 1, N + 1) is[i].pb(P[i]);
-  // for (auto p: ps) {
-  //   for (ll i = N / p; i >= 1; --i) {
-  //     is[i].insert(is[i].end(), is[i*p].begin(), is[i*p].end());
+  // vl c2(n + 1);
+  // rep(i, n + 1) c2[i] = ll(i + 1) * i / 2;
+
+  // ll ans = 0;
+  // rep2(k, 2, n + 1) {
+  //   if (mu[k] == 0) continue;
+  //   ll now = 0;
+  //   map<ll, ll> s;
+  //   for (ll i = k; i <= n; i += k) {
+  //     for (ll x: ds[p[i]]) s[x]++;
   //   }
+  //   for (auto [_, cnt]: s) now += c2[cnt];
+  //   ans += now * mu[k];
   // }
+  // cout << ans << 
