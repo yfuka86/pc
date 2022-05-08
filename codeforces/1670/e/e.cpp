@@ -70,31 +70,31 @@ void solve() {
     ll u, v; cin >> u >> v; u--; v--;
     G.add_edge(u, v);
   }
-  auto [d, dia] = diameter(G);
-  auto [u, v] = dia;
-  vl dp(n, LINF); dp[u] = 0; dp[v] = 0;
-  function<void(ll, ll)> ecc = [&](ll v, ll p) {
-    for (auto to: G[v]) {
+
+  vl node(n, -1), edge(n - 1, -1);
+  node[0] = n;
+  vl cand(n - 1);
+  iota(all(cand), 1);
+
+  function<void(ll,ll,ll)> dfs = [&](ll v, ll p, ll d) {
+    for (auto to: G[v] ) {
       if (to == p) continue;
-      ecc(to, v);
-      chmin(dp[v], dp[to] + 1);
+      ll t = cand.back(); cand.pop_back();
+      if (d & 1) {
+        edge[to.idx] = t;
+        node[to] = t ^ n;
+      } else {
+        edge[to.idx] = t ^ n;
+        node[to] = t;
+      }
+      dfs(to, v, d + 1);
     }
   };
-  ll center = max_element(all(dp)) - dp.begin();
-  cout << center << "\n";
+  dfs(0, -1, 0);
 
-
-  vl vertices(n);
-  vl edges(n - 1);
-
-
-  function<void(ll, ll)> dfs = [&](ll v, ll p) {
-    for (auto to: G[v]) {
-      if (to == p) continue;
-      dfs(to, v);
-    }
-  };
-
+  cout << 1 << "\n";
+  coutarray(node);
+  coutarray(edge);
 }
 
 signed main() {

@@ -46,13 +46,37 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll n; cin >> n;
+  ll n, m; cin >> n >> m;
+  vl a(n); rep(i, n) cin >> a[i];
+  reverse(all(a));
+  vl sum(n + 1, 0); rep(i, n) sum[i + 1] = sum[i] + a[i];
+
+  // dp[n][max][used] = 操作回数
+  vvvl dp(n + 1, vvl(m + 1, vl(m + 1, LINF)));
+  dp[0][0][0] = 0;
+  rep(i, n) {
+    rep(ma, m / (n - i + 1) + 1) rep(used, m + 1) {
+      if (dp[i][ma][used] == LINF) continue;
+      ll extra = used - sum[i];
+
+      rep2(k, ma, m / (n - i) + 1) {
+        if (used + k > m) break;
+        chmin(dp[i + 1][k][used + k], dp[i][ma][used] + abs(a[i] - extra - k));
+      }
+    }
+  }
+
+  ll ans = LINF;
+  rep(i, m + 1) {
+    chmin(ans, dp[n][i][m]);
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }
