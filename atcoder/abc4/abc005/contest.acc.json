@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc005",
+    "title": "AtCoder Beginner Contest 005",
+    "url": "https://atcoder.jp/contests/abc005"
+  },
+  "tasks": [
+    {
+      "id": "abc005_1",
+      "label": "A",
+      "title": "おいしいたこ焼きの作り方",
+      "url": "https://atcoder.jp/contests/abc005/tasks/abc005_1",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc005_1.cpp"
+      }
+    },
+    {
+      "id": "abc005_2",
+      "label": "B",
+      "title": "おいしいたこ焼きの食べ方",
+      "url": "https://atcoder.jp/contests/abc005/tasks/abc005_2",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc005_2.cpp"
+      }
+    },
+    {
+      "id": "abc005_3",
+      "label": "C",
+      "title": "おいしいたこ焼きの売り方",
+      "url": "https://atcoder.jp/contests/abc005/tasks/abc005_3",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc005_3.cpp"
+      }
+    },
+    {
+      "id": "abc005_4",
+      "label": "D",
+      "title": "おいしいたこ焼きの焼き方",
+      "url": "https://atcoder.jp/contests/abc005/tasks/abc005_4",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc005_4.cpp"
+      }
+    }
+  ]
+}
