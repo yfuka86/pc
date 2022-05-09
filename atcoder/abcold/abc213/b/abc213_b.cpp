@@ -47,6 +47,9 @@ vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
   ll N; cin >> N;
+  vlp a(N); rep(i, N) { ll t; cin >> t; a[i] = {t, i}; }
+  sort(all(a));
+  cout << (a.end() - 2)->second + 1 << "\n";
 }
 
 signed main() {

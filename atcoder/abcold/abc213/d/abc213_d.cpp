@@ -44,9 +44,37 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
 
 void solve() {
   ll N; cin >> N;
+  Graph<ll> G(N);
+  rep(i, N - 1) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G.add_directed_edge(a, b, b);
+    G.add_directed_edge(b, a, a);
+  }
+  rep(i, N) sort(all(G[i]));
+
+  function<void(ll, ll)> dfs = [&] (ll v, ll p) {
+    cout << v + 1 << " ";
+    for (auto to: G[v]) {
+      if (to == p) continue;
+      dfs(to, v);
+      cout << v + 1 << " ";
+    }
+  };
+  dfs(0, -1);
+  cout << "\n";
 }
 
 signed main() {

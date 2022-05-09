@@ -46,7 +46,21 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
 void solve() {
-  ll N; cin >> N;
+  ll H, W, N; cin >> H >> W >> N;
+  vlp card;
+  vl hm, wm;
+  rep(i, N) {
+    ll a, b; cin >> a >> b; a--; b--;
+    hm.pb(a); wm.pb(b);
+    card.pb({a, b});
+  }
+  sort(all(hm));
+  uniq(hm);
+  sort(all(wm));
+  uniq(wm);
+  rep(i, N) {
+    cout << lbs(hm, card[i].first) + 1 << " " << lbs(wm, card[i].second) + 1 << "\n";
+  }
 }
 
 signed main() {

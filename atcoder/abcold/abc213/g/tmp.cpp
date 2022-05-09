@@ -1,0 +1,2 @@
+outarray(dp);
+  c

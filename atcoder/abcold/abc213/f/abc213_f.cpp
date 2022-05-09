@@ -45,8 +45,28 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
 
+// Reference:
+// D. Gusfield,
+// Algorithms on Strings, Trees, and Sequences: Computer Science and
+// Computational Biology
+template <class T> std::vector<int> z_algorithm(const std::vector<T>& s) {
+  int n = int(s.size());
+  if (n == 0) return {};
+  std::vector<int> z(n);
+  z[0] = 0;
+  for (int i = 1, j = 0; i < n; i++) {
+    int& k = z[i];
+    k = (j + z[j] <= i) ? 0 : std::min(j + z[j] - i, z[i - j]);
+    while (i + k < n && s[k] == s[i + k]) k++;
+    if (j + z[j] < i + z[i]) j = i;
+  }
+  z[0] = n;
+  return z;
+}
+
 void solve() {
   ll N; cin >> N;
+  string S; cin >> S;
 }
 
 signed main() {
