@@ -45,8 +45,18 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
+// 典型LIS
+// <= ならupper_bound、< ならlower_boundにする必要がある
+ll get_lis(vl &a) {
+	ll N = a.size(); vl dp(N, LINF);
+	for (ll i = 0; i < N; ++i) *upper_bound(all(dp), a[i]) = a[i];
+	return lower_bound(all(dp), INF) - dp.begin();
+}
+
 void solve() {
   ll N; cin >> N;
+  vl a(N); rep(i, N) cin >> a[i];
+  cout << N - get_lis(a) << "\n";
 }
 
 signed main() {

@@ -64,8 +64,7 @@ void solve() {
   ll N; cin >> N;
   vl a(N), b(N); rep(i, N) cin >> a[i]; rep(i, N) cin >> b[i];
 
-  vl cnta(N), cntb(N); vector<ull> hasha(N), hashb(N);
-
+  vector<ull> hasha(N), hashb(N);
   set<ll> sa, sb;
   rep(i, N) {
     hasha[i] = i ? hasha[i - 1] : 0;
@@ -73,14 +72,12 @@ void solve() {
       sa.insert(a[i]);
       hasha[i] ^= ch(a[i]);
     }
-    cnta[i] = sa.size();
 
     hashb[i] = i ? hashb[i - 1] : 0;
     if (sb.find(b[i]) == sb.end()) {
       sb.insert(b[i]);
       hashb[i] ^= ch(b[i]);
     }
-    cntb[i] = sb.size();
   }
   // coutarray(hasha);
   // coutarray(hashb);
@@ -88,7 +85,7 @@ void solve() {
   ll Q; cin >> Q;
   rep(i, Q) {
     ll x, y; cin >> x >> y; x--; y--;
-    if (cnta[x] == cntb[y] && hasha[x] == hashb[y]) cout << "Yes" << "\n"; else cout << "No" << "\n";
+    if (hasha[x] == hashb[y]) cout << "Yes" << "\n"; else cout << "No" << "\n";
   }
 }
 

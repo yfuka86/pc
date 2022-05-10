@@ -1,35 +1,42 @@
+vl naive(ll N, vl a) {
+  vl ans;
+  return ans;
+}
+
+vl solve(ll N, vl a) {
+  // ll N; cin >> N;
+  // vl a(N); rep(i, N) cin >> a[i];
+  vl ans;
+  return ans;
+}
+
 void compare() {
   RandGen rg;
   ll c = 0, loop = 10;
   while (true) {
-    c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n";
-    ll N = rg.lint(1, 1e2);
-    vl A = rg.vlint(N, 1, 1e1);
-    ll s = solve(N, A); ll n = naive(N, A);
-    if (s != n) {
+    c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 15;
+    vl a = rg.vlint(N, 1, 1e1);
+    vl b = rg.vlint(N, 1, 1e1);
+    vl n = naive(N, a);
+    vl s = solve(N, a);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
       cout << N << "\n";
-      coutarray(A);
-      cout << "naive:" << n << "\n";
-      cout << "solve:" << s << "\n";
+      coutarray(a);
+      cout << "naive:" << "\n";
+      coutarray(n);
+      cout << "solve:" << "\n";
+      coutarray(s);
       break;
     }
   }
 }
 
-ll solve(ll N, vl A) {
-}
-
-void enum_perm(ll N, ll from, ll to) { // [from, to)
-  vl st; rep(i, N) st.pb(from);
-  while (true) {
-    if (1) {
-      coutarray(st);
-      cout << check(st) << "\n";
-    }
-
-    while (st.back() == to) st.pop_back();
-    if (st.size() == 0) break;
-    st.back()++;
-    while (st.size() < N) st.pb(from);
-  }
+signed main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int t = 1; //cin >> t;
+  while (t--) compare();
 }

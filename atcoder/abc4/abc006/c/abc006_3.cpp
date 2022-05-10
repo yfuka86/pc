@@ -46,7 +46,18 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll N; cin >> N;
+  ll N, M; cin >> N >> M;
+  if (M < N * 2 || N * 4 < M) { cout << "-1 -1 -1" << "\n"; return; }
+
+  ll a = N, b = 0, c = 0;
+
+  auto f = [&](){ return a * 2 + b * 3 + c * 4; };
+  b += min(M - f(), N);
+  a -= b;
+
+  c += min(M - f(), N);
+  b -= c;
+  cout << a << " " << b << " " << c << "\n";
 }
 
 signed main() {

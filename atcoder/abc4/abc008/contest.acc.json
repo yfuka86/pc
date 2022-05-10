@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc008",
+    "title": "AtCoder Beginner Contest 008",
+    "url": "https://atcoder.jp/contests/abc008"
+  },
+  "tasks": [
+    {
+      "id": "abc008_1",
+      "label": "A",
+      "title": "アルバム",
+      "url": "https://atcoder.jp/contests/abc008/tasks/abc008_1",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc008_1.cpp"
+      }
+    },
+    {
+      "id": "abc008_2",
+      "label": "B",
+      "title": "投票",
+      "url": "https://atcoder.jp/contests/abc008/tasks/abc008_2",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc008_2.cpp"
+      }
+    },
+    {
+      "id": "abc008_3",
+      "label": "C",
+      "title": "コイン",
+      "url": "https://atcoder.jp/contests/abc008/tasks/abc008_3",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc008_3.cpp"
+      }
+    },
+    {
+      "id": "abc008_4",
+      "label": "D",
+      "title": "金塊ゲーム",
+      "url": "https://atcoder.jp/contests/abc008/tasks/abc008_4",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc008_4.cpp"
+      }
+    }
+  ]
+}
