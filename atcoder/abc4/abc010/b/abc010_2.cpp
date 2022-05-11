@@ -47,6 +47,16 @@ const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
   ll N; cin >> N;
+  vl a(N); rep(i, N) cin >> a[i];
+
+  ll ans = 0;
+  rep(i, N) {
+    while (a[i] % 2 == 0 || a[i] % 3 == 2) {
+      a[i]--;
+      ans++;
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

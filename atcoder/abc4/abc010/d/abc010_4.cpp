@@ -1,5 +1,6 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
+
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
 #define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
@@ -45,8 +46,26 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
+#include <atcoder/maxflow>
+using namespace atcoder;
+
 void solve() {
-  ll N; cin >> N;
+  ll N, G, E; cin >> N >> G >> E;
+  vl p(G); rep(i, G) cin >> p[i];
+
+  mf_graph<ll> mf(N + 1);
+  ll t = N;
+
+  rep(i, E) {
+    ll a, b; cin >> a >> b;
+    mf.add_edge(a, b, 1);
+    mf.add_edge(b, a, 1);
+  }
+  rep(i, G) {
+    mf.add_edge(p[i], t, 1);
+  }
+
+  cout << mf.flow(0, t) << "\n";
 }
 
 signed main() {

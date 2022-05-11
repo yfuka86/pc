@@ -46,24 +46,32 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll sx, sy, tx, ty, T, V; cin >> sx >> sy >> tx >> ty >> T >> V;
-  ll n; cin >> n;
-  vl x(n), y(n);
-  rep(i, n) cin >> x[i] >> y[i];
+  ll n, k; cin >> n >> k;
+  vl a(n); rep(i, n) cin >> a[i];
+  map<ll, ll> freq;
+  rep(i, n) freq[a[i]]++;
 
-  rep(i, n) {
-    ld d = sqrt(POW(x[i] - sx, 2) + POW(y[i] - sy, 2));
-    ld d2 = sqrt(POW(tx - x[i], 2) + POW(ty - y[i], 2));
+  map<ll, ll> valid;
+  for (auto [num, cnt]: freq) if (cnt >= k) valid[num]++;
 
-    if (d + d2 <= V * T) { cout << "YES" << "\n"; return; }
+  ll l = -1, r = -1, lans = -1, rans = -1, ma = -1;
+  for (auto [num, _]: valid) {
+    if (r + 1 == num) {
+      r = num;
+    } else {
+      l = num; r = num;
+    }
+
+    if (chmax(ma, r - l)) lans = l, rans = r;
   }
-  cout << "NO" << "\n";
+  if (lans != -1) cout << lans << " " << rans << "\n";
+  else cout << -1 << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
 }
