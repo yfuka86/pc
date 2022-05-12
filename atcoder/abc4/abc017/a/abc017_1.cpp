@@ -46,7 +46,8 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll M, D; cin >> M >> D; cout << (M % D ? "NO" : "YES") << "\n";
+  ll a, b, c, d, e, f; cin >> a >> b >> c >> d >> e >> f;
+  cout << (a * b + c * d + e * f) / 10 << "\n";
 }
 
 signed main() {

@@ -46,7 +46,18 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll M, D; cin >> M >> D; cout << (M % D ? "NO" : "YES") << "\n";
+  ll N, M; cin >> N >> M;
+  vl imos(M + 1, 0);
+  ll tot = 0;
+  rep(i, N) {
+    ll l, r, s; cin >> l >> r >> s;
+    tot += s;
+    imos[--l] += s;
+    imos[r] -= s;
+  }
+  rep(i, M) imos[i+1] += imos[i];
+
+  cout << tot - *min_element(imos.begin(), imos.end() - 1) << "\n";
 }
 
 signed main() {

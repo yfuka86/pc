@@ -46,7 +46,33 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll M, D; cin >> M >> D; cout << (M % D ? "NO" : "YES") << "\n";
+  ll R, C, K; cin >> R >> C >> K;
+  vvl grid(R, vl(C, 0));
+  rep(i, R) {
+    string s; cin >> s;
+    rep(j, C) {
+      if (s[j] == 'x') grid[i][j] = 1;
+    }
+  }
+  vvl sum(R, vl(C + 1, 0));
+  rep(i, R) {
+    rep(j, C) {
+      sum[i][j + 1] = sum[i][j] + grid[i][j];
+    }
+  }
+
+  vlp cand;
+  rep2(i, K - 1, R - (K - 1)) {
+    rep2(j, K - 1, C - (K - 1)) {
+      ll s = 0;
+      for(ll k = -K+1; k < K; k++) {
+        s += sum[i + k][j + K - abs(k)] - sum[i + k][j - K + 1 + abs(k)];
+      }
+      if (!s) cand.pb({i, j});
+    }
+  }
+
+  cout << cand.size() << "\n";
 }
 
 signed main() {

@@ -46,7 +46,16 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll M, D; cin >> M >> D; cout << (M % D ? "NO" : "YES") << "\n";
+  string s; cin >> s;
+
+  ll i = 0;
+
+  while (i < s.size()) {
+    if (i < s.size() - 1 && s[i] == 'c' && s[i + 1] == 'h') i += 2;
+    else if (s[i] == 'o' || s[i] == 'k' || s[i] == 'u') i++;
+    else { cout << "NO" << "\n"; return; }
+  }
+  cout << "YES" << "\n";
 }
 
 signed main() {

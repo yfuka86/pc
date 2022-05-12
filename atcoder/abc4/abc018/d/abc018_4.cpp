@@ -46,7 +46,27 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll M, D; cin >> M >> D; cout << (M % D ? "NO" : "YES") << "\n";
+  ll N, M, P, Q, R; cin >> N >> M >> P >> Q >> R;
+  map<ll, vlp> woman;
+
+  rep(i, R) {
+    ll x, y, z; cin >> x >> y >> z; x--; y--;
+    woman[x].pb({y, z});
+  }
+
+  ll ans = 0;
+  rep(S, 1 << M) {
+    if (__builtin_popcount(S) != Q) continue;
+    vl womanv(N, 0);
+    rep(i, N) {
+      for (auto [y, z]: woman[i]) {
+        if (S & 1 << y) womanv[i] += z;
+      }
+    }
+    sort(all(womanv)); reverse(all(womanv));
+    chmax(ans, accumulate(womanv.begin(), womanv.begin() + P, 0ll));
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
