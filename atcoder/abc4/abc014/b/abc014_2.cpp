@@ -31,7 +31,14 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
 void solve() {
-  ll N; cin >> N;
+  ll n, X; cin >> n >> X;
+  vl a(n); rep(i, n) cin >> a[i];
+
+  ll ans = 0;
+  rep(i, n) {
+    ans += (X & 1 << i ? a[i] : 0);
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

@@ -32,6 +32,15 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 
 void solve() {
   ll N; cin >> N;
+  vl range(1000002, 0);
+  rep(i, N) {
+    ll a, b; cin >> a >> b; b++;
+    range[a]++; range[b]--;
+  }
+  rep(i, 1000001) {
+    range[i + 1] += range[i];
+  }
+  cout << *max_element(all(range)) << "\n";
 }
 
 signed main() {
