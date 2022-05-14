@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc019",
+    "title": "AtCoder Beginner Contest 019",
+    "url": "https://atcoder.jp/contests/abc019"
+  },
+  "tasks": [
+    {
+      "id": "abc019_1",
+      "label": "A",
+      "title": "高橋くんと年齢",
+      "url": "https://atcoder.jp/contests/abc019/tasks/abc019_1",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc019_1.cpp"
+      }
+    },
+    {
+      "id": "abc019_2",
+      "label": "B",
+      "title": "高橋くんと文字列圧縮",
+      "url": "https://atcoder.jp/contests/abc019/tasks/abc019_2",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc019_2.cpp"
+      }
+    },
+    {
+      "id": "abc019_3",
+      "label": "C",
+      "title": "高橋くんと魔法の箱",
+      "url": "https://atcoder.jp/contests/abc019/tasks/abc019_3",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc019_3.cpp"
+      }
+    },
+    {
+      "id": "abc019_4",
+      "label": "D",
+      "title": "高橋くんと木の直径",
+      "url": "https://atcoder.jp/contests/abc019/tasks/abc019_4",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc019_4.cpp"
+      }
+    }
+  ]
+}

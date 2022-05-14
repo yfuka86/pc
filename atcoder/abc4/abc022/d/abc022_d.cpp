@@ -48,15 +48,44 @@ template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { 
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
+// https://nyaannyaan.github.io/library/geometry/integer-geometry.hpp
+
+struct Point {
+  using T = __int128_t;
+  T x, y;
+  Point() : x(0), y(0) {}
+  Point(T x_, T y_) : x(x_), y(y_) {}
+  Point &operator+=(const Point &p) { this->x += p.x; this->y += p.y; return *this; }
+  Point &operator-=(const Point &p) { this->x -= p.x; this->y -= p.y; return *this; }
+
+  int pos() const { if (y < 0) return -1; if (y == 0 && 0 <= x) return 0; return 1; }
+  Point operator+(const Point &p) const { return Point(*this) += p; }
+  Point operator-(const Point &p) const { return Point(*this) -= p; }
+  Point operator-() const { return Point(-this->x, -this->y); }
+  bool operator==(const Point &p) const { return x == p.x && y == p.y; }
+  bool operator!=(const Point &p) const { return x != p.x || y != p.y; }
+  bool operator<(const Point &p) const { return x == p.x ? y < p.y : x < p.x; }
+  friend istream &operator>>(istream &is, Point &p) { long long x, y; is >> x >> y; p.x = x, p.y = y; return is; }
+  friend ostream &operator<<(ostream &os, const Point &p) { os << (long long)(p.x) << " " << (long long)(p.y); return os; }
+};
+using Points = vector<Point>;
+
+Point::T dot(const Point &a, const Point &b) { return a.x * b.x + a.y * b.y; }
+Point::T cross(const Point &a, const Point &b) { return a.x * b.y - a.y * b.x; }
 
 void solve() {
-  ll n; cin >> n;
+  ll N; cin >> N;
+  vl ax(N), ay(N), bx(N), by(N);
+  rep(i, N) cin >> ax[i] >> ay[i];
+  rep(i, N) cin >> bx[i] >> by[i];
+
+
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

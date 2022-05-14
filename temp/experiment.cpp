@@ -16,8 +16,8 @@ void compare() {
   while (true) {
     c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll N = 15;
-    vl a = rg.vlint(N, 1, 1e1);
-    vl b = rg.vlint(N, 1, 1e1);
+    vl a = rg.vecl(N, 1, 1e1);
+    vl b = rg.vecl(N, 1, 1e1);
     vl n = naive(N, a);
     vl s = solve(N, a);
     if (n != s) {

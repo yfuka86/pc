@@ -50,13 +50,18 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll n; cin >> n;
+  ll N, S, T; cin >> N >> S >> T;
+  vlin(a, N);
+  rep(i, N - 1) a[i + 1] += a[i];
+  ll ans = 0;
+  rep(i, N) if (S <= a[i] && a[i] <= T) ans++;
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

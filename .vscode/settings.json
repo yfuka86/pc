@@ -81,7 +81,8 @@
     "stop_token": "cpp",
     "syncstream": "cpp",
     "__locale": "cpp",
-    "__string": "cpp"
+    "__string": "cpp",
+    "typeindex": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",

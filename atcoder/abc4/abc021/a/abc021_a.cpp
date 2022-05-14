@@ -50,13 +50,15 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll n; cin >> n;
+  ll N; cin >> N;
+  cout << __builtin_popcount(N) << "\n";
+  rep(i, 32) if (N & 1 << i) cout << POW(2, i) << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

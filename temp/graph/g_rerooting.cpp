@@ -1,59 +1,75 @@
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+// Rerooting
+// f1(c1, c2) ... merge value of child node
+// f2(memo[i], chd, par) ... return value from child node to parent node
+// memo[i] ... result of subtree rooted i
+// dp[i] ... result of tree rooted i
+template <typename T, typename G, typename F1, typename F2>
+struct Rerooting {
+  const G &g;
+  const F1 f1;
+  const F2 f2;
+  vector<T> memo, dp;
+  T I;
 
-template <typename T, typename D, D (*merge)(D, D), D (*e)(),
-          D (*leaf)(), D (*apply)(D, int, int, T)>
-struct Rerooting : Graph<T> {
-  vector<D> dp, memo;
-  Rerooting(int n) : Graph<T>::Graph(n) {}
-  vector<D> run() {
-    memo.resize((*this).size(), e());
-    dp.resize((*this).size());
-    dfs1(0, -1);
-    dfs2(0, -1, e());
-    return dp;
+  Rerooting(const G &_g, const F1 _f1, const F2 _f2, const T &I_)
+      : g(_g), f1(_f1), f2(_f2), memo(g.size(), I_), dp(g.size(), I_), I(I_) {
+    dfs(0, -1);
+    efs(0, -1, I);
   }
-  void dfs1(int c, int p) {
-    bool upd = false;
-    for (Edge<T> &d : (*this)[c]) {
-      if (d == p) continue;
-      dfs1(d, c);
-      upd = true;
-      memo[c] = merge(memo[c], apply(memo[d], d, c, d.T));
+
+  const T &operator[](int i) const { return dp[i]; }
+
+  void dfs(int cur, int par) {
+    for (auto &dst : g[cur]) {
+      if (dst == par) continue;
+      dfs(dst, cur);
+      memo[cur] = f1(memo[cur], f2(memo[dst], dst, cur));
     }
-    if (!upd) memo[c] = leaf();
   }
-  void dfs2(int c, int p, const D &val) {
-    vector<D> ds{val};
-    for (Edge<T> &d : (*this)[c]) {
-      if (d == p) continue;
-      ds.push_back(apply(memo[d], d, c, d.T));
+
+  void efs(int cur, int par, const T &pval) {
+    // get cumulative sum
+    vector<T> buf;
+    for (auto dst : g[cur]) {
+      if (dst == par) continue;
+      buf.push_back(f2(memo[dst], dst, cur));
     }
-    int n = ds.size(), idx = 1;
-    vector<D> head(n + 1, e()), tail(n + 1, e());
-    for (int i = 0; i++ < n;) head[i] = merge(head[i - 1], ds[i - 1]);
-    for (int i = n; i-- > 0;) tail[i] = merge(tail[i + 1], ds[i]);
-    dp[c] = head[n];
-    for (Edge<T> &d : (*this)[c]) {
-      if (d == p) continue;
-      D sub = merge(head[idx], tail[idx + 1]);
-      dfs2(d, c, apply(sub, c, d, d.T));
+    vector<T> head(buf.size() + 1), tail(buf.size() + 1);
+    head[0] = tail[buf.size()] = I;
+    for (int i = 0; i < (int)buf.size(); i++) head[i + 1] = f1(head[i], buf[i]);
+    for (int i = (int)buf.size() - 1; i >= 0; i--)
+      tail[i] = f1(tail[i + 1], buf[i]);
+
+    // update
+    dp[cur] = par == -1 ? head.back() : f1(pval, head.back());
+
+    // propagate
+    int idx = 0;
+    for (auto &dst : g[cur]) {
+      if (dst == par) continue;
+      efs(dst, cur, f2(f1(pval, f1(head[idx], tail[idx + 1])), cur, dst));
       idx++;
     }
   }
 };
 
-using D = ll;
-using T = ll;
-D merge(D a, D b) { return max(a, b); }
-D e() { return 0; }
-D leaf() { return 0; }
-D apply(D a, int c, int, T w) { return max<D>(a, D[c]) + w; }
-Rerooting<T, D, merge, e, leaf, apply> g(N);
+/**
+ * @brief Rerooting(全方位木DP)
+ * @docs docs/tree/rerooting.md
+ */
+
+using T = ;
+// identify element of f1, and answer of leaf
+T I = ;
+
+// merge value of child node
+auto f1 = [&](T x, T y) -> T {
+
+};
+
+// return value from child node to parent node
+auto f2 = [&](T x, int chd, int par) -> T {
+
+};
+
+Rerooting<T, decltype(g), decltype(f1), decltype(f2)> dp(g, f1, f2, I);

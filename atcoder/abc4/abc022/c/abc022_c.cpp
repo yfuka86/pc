@@ -49,14 +49,47 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
 void solve() {
-  ll n; cin >> n;
+  ll N, M; cin >> N >> M;
+  Graph<ll> G(N);
+  rep(i, M) {
+    ll u, v, l; cin >> u >> v >> l; u--; v--;
+    G.add_edge(u, v, l);
+  }
+
+  ll ans = LINF;
+  for (auto &e: G[0]) {
+    ll remove = e.idx;
+    priority_queue<LP, vector<LP>, greater<LP>> que;
+
+    vl cost(N, LINF); que.push({0, 0}); cost[0] = 0;
+    while(!que.empty()) {
+      auto[c, v] = que.top(); que.pop();
+      if (cost[v] < c) continue;
+      for (auto &to: G[v]) {
+        if (to.idx == remove) continue;
+        if (chmin(cost[to], c + to.cost)) que.push({c + to.cost, to});
+      }
+    }
+    chmin(ans, e.cost + cost[e.to]);
+  }
+  cout << (ans != LINF ? ans : -1) << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }

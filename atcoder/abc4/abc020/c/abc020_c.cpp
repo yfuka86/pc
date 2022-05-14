@@ -50,13 +50,48 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll n; cin >> n;
+  ll H, W, T; cin >> H >> W >> T;
+  vvl grid(H, vl(W, 0));
+  LP S, G;
+  rep(i, H) {
+    string s; cin >> s;
+    rep(j, W) {
+      if (s[j] == 'S') S = {i, j};
+      if (s[j] == 'G') G = {i, j};
+      if (s[j] == '#') grid[i][j] = 1;
+    }
+  }
+
+  ll ok = 0, ng = 1e9;
+  while (ng > ok + 1) {
+    ll mid = (ok + ng) / 2;
+    queue<LP> que;
+    que.push(S);
+    vvl cost(H, vl(W, LINF));
+    cost[S.first][S.second] = 0;
+    while (!que.empty()) {
+      auto [x, y] = que.front(); que.pop();
+      rep(d, 4) {
+        ll di = x + dx[d];
+        ll dj = y + dy[d];
+        if (0 <= di && di < H && 0 <= dj && dj < W) {
+          if (grid[di][dj]) {
+            if (chmin(cost[di][dj], cost[x][y] + mid)) que.push({di, dj});
+          } else {
+            if (chmin(cost[di][dj], cost[x][y] + 1)) que.push({di, dj});
+          }
+        }
+      }
+    }
+    if (cost[G.first][G.second] <= T) ok = mid; else ng = mid;
+  }
+  cout << ok << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
 }
