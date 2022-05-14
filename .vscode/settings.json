@@ -82,7 +82,8 @@
     "syncstream": "cpp",
     "__locale": "cpp",
     "__string": "cpp",
-    "typeindex": "cpp"
+    "typeindex": "cpp",
+    "lazysegtree": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",

@@ -48,91 +48,47 @@ template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { 
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
-// https://nyaannyaan.github.io/library/geometry/integer-geometry.hpp
 
-struct Point {
-  using T = __int128_t;
-  T x, y;
-  Point() : x(0), y(0) {}
-  Point(T x_, T y_) : x(x_), y(y_) {}
-  Point &operator+=(const Point &p) { this->x += p.x; this->y += p.y; return *this; }
-  Point &operator-=(const Point &p) { this->x -= p.x; this->y -= p.y; return *this; }
-
-  int pos() const { if (y < 0) return -1; if (y == 0 && 0 <= x) return 0; return 1; }
-  Point operator+(const Point &p) const { return Point(*this) += p; }
-  Point operator-(const Point &p) const { return Point(*this) -= p; }
-  Point operator-() const { return Point(-this->x, -this->y); }
-  bool operator==(const Point &p) const { return x == p.x && y == p.y; }
-  bool operator!=(const Point &p) const { return x != p.x || y != p.y; }
-  bool operator<(const Point &p) const { return x == p.x ? y < p.y : x < p.x; }
-  friend istream &operator>>(istream &is, Point &p) { long long x, y; is >> x >> y; p.x = x, p.y = y; return is; }
-  friend ostream &operator<<(ostream &os, const Point &p) { os << (long long)(p.x) << " " << (long long)(p.y); return os; }
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inverse(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
 };
-using Points = vector<Point>;
-
-Point::T dot(const Point &a, const Point &b) { return a.x * b.x + a.y * b.y; }
-Point::T cross(const Point &a, const Point &b) { return a.x * b.y - a.y * b.x; }
-
-// sort by argument (-Pi ~ Pi)
-void ArgumentSort(Points &v) {
-  sort(begin(v), end(v), [](Point a, Point b) {
-    if (a.pos() != b.pos()) return a.pos() < b.pos();
-    return cross(a, b) > 0;
-  });
-}
-
-// 1 ... counterclockwise / 0 straight / -1 clockwise
-int ccw(const Point &a, const Point &b, const Point &c) {
-  Point::T t = cross(b - a, c - a);
-  return t < 0 ? -1 : t == 0 ? 0 : 1;
-}
-
-Points ConvexHull(const Points &ps) {
-  int N = (int)ps.size();
-  for (int i = 0; i < N - 1; i++) assert(ps[i].x <= ps[i + 1].x);
-  if (N <= 2) return ps;
-  Points convex(2 * N);
-  int k = 0;
-  for (int i = 0; i < N; convex[k++] = ps[i++]) {
-    while (k >= 2 && ccw(convex[k - 2], convex[k - 1], ps[i]) <= 0) --k;
-  }
-  for (int i = N - 2, t = k + 1; i >= 0; convex[k++] = ps[i--]) {
-    while (k >= t && ccw(convex[k - 2], convex[k - 1], ps[i]) <= 0) --k;
-  }
-  convex.resize(k - 1);
-  return convex;
-}
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> vvvmi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
 void solve() {
-  ll N; cin >> N;
-  Points A(N), B(N);
-  rep(i, N) {
-    ll x, y; cin >> x >> y; A[i] = {x,y};
-  }
-  rep(i, N) {
-    ll x, y; cin >> x >> y; B[i] = {x,y};
-  }
-  sort(all(A)); sort(all(B));
-  Points cha = ConvexHull(A), chb = ConvexHull(B);
+  ll n; cin >> n;
+  string s; cin >> s;
+  ll q; cin >> q;
 
-  ll SA = 0, SB = 0;
-  rep(i, N) {
-    // SA += cross(cha[(i + 1) % N], cha[i]);
-    Point diff = cha[(i + 1) % N] - cha[i];
-    SA += diff.x * diff.x + diff.y * diff.y;
-    // SB += cross(chb[(i + 1) % N], chb[i]);
-    Point diffb = chb[(i + 1) % N] - chb[i];
-    SB += diffb.x * diffb.x + diffb.y * diffb.y;
-  }
-  // SA = abs(SA); SB = abs(SB);
-  // cout << SA << " " << SB << "\n";
-  cout << fixed << setprecision(10) << sqrt((ld)SB / SA) << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
 }

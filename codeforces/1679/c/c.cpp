@@ -48,85 +48,51 @@ template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { 
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
-// https://nyaannyaan.github.io/library/geometry/integer-geometry.hpp
-
-struct Point {
-  using T = __int128_t;
-  T x, y;
-  Point() : x(0), y(0) {}
-  Point(T x_, T y_) : x(x_), y(y_) {}
-  Point &operator+=(const Point &p) { this->x += p.x; this->y += p.y; return *this; }
-  Point &operator-=(const Point &p) { this->x -= p.x; this->y -= p.y; return *this; }
-
-  int pos() const { if (y < 0) return -1; if (y == 0 && 0 <= x) return 0; return 1; }
-  Point operator+(const Point &p) const { return Point(*this) += p; }
-  Point operator-(const Point &p) const { return Point(*this) -= p; }
-  Point operator-() const { return Point(-this->x, -this->y); }
-  bool operator==(const Point &p) const { return x == p.x && y == p.y; }
-  bool operator!=(const Point &p) const { return x != p.x || y != p.y; }
-  bool operator<(const Point &p) const { return x == p.x ? y < p.y : x < p.x; }
-  friend istream &operator>>(istream &is, Point &p) { long long x, y; is >> x >> y; p.x = x, p.y = y; return is; }
-  friend ostream &operator<<(ostream &os, const Point &p) { os << (long long)(p.x) << " " << (long long)(p.y); return os; }
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
 };
-using Points = vector<Point>;
-
-Point::T dot(const Point &a, const Point &b) { return a.x * b.x + a.y * b.y; }
-Point::T cross(const Point &a, const Point &b) { return a.x * b.y - a.y * b.x; }
-
-// sort by argument (-Pi ~ Pi)
-void ArgumentSort(Points &v) {
-  sort(begin(v), end(v), [](Point a, Point b) {
-    if (a.pos() != b.pos()) return a.pos() < b.pos();
-    return cross(a, b) > 0;
-  });
-}
-
-// 1 ... counterclockwise / 0 straight / -1 clockwise
-int ccw(const Point &a, const Point &b, const Point &c) {
-  Point::T t = cross(b - a, c - a);
-  return t < 0 ? -1 : t == 0 ? 0 : 1;
-}
-
-Points ConvexHull(const Points &ps) {
-  int N = (int)ps.size();
-  for (int i = 0; i < N - 1; i++) assert(ps[i].x <= ps[i + 1].x);
-  if (N <= 2) return ps;
-  Points convex(2 * N);
-  int k = 0;
-  for (int i = 0; i < N; convex[k++] = ps[i++]) {
-    while (k >= 2 && ccw(convex[k - 2], convex[k - 1], ps[i]) <= 0) --k;
-  }
-  for (int i = N - 2, t = k + 1; i >= 0; convex[k++] = ps[i--]) {
-    while (k >= t && ccw(convex[k - 2], convex[k - 1], ps[i]) <= 0) --k;
-  }
-  convex.resize(k - 1);
-  return convex;
-}
+// ----------------------------------------------------------------------
 
 void solve() {
-  ll N; cin >> N;
-  Points A(N), B(N);
-  rep(i, N) {
-    ll x, y; cin >> x >> y; A[i] = {x,y};
-  }
-  rep(i, N) {
-    ll x, y; cin >> x >> y; B[i] = {x,y};
-  }
-  sort(all(A)); sort(all(B));
-  Points cha = ConvexHull(A), chb = ConvexHull(B);
+  ll n, q; cin >> n >> q;
+  BIT<ll> btx(n), bty(n);
+  map<ll, ll> freqx, freqy;
 
-  ll SA = 0, SB = 0;
-  rep(i, N) {
-    // SA += cross(cha[(i + 1) % N], cha[i]);
-    Point diff = cha[(i + 1) % N] - cha[i];
-    SA += diff.x * diff.x + diff.y * diff.y;
-    // SB += cross(chb[(i + 1) % N], chb[i]);
-    Point diffb = chb[(i + 1) % N] - chb[i];
-    SB += diffb.x * diffb.x + diffb.y * diffb.y;
+  rep(_, q) {
+    ll t; cin >> t;
+    if (t == 1) {
+      ll x, y; cin >> x >> y; x--; y--;
+      freqx[x]++;
+      freqy[y]++;
+      if (freqx[x] == 1) btx.add(x, 1);
+      if (freqy[y] == 1) bty.add(y, 1);
+    } else if (t == 2) {
+      ll x, y; cin >> x >> y; x--; y--;
+      freqx[x]--;
+      freqy[y]--;
+      if (freqx[x] == 0) btx.add(x, -1);
+      if (freqy[y] == 0) bty.add(y, -1);
+    } else {
+      ll x, y, x2, y2; cin >> x >> y >> x2 >> y2; x--; y--;
+      if (btx.sum(x, x2) == x2 - x || bty.sum(y, y2) == y2 - y) cout << "Yes" << "\n"; else cout << "No" << "\n";
+    }
+
   }
-  // SA = abs(SA); SB = abs(SB);
-  // cout << SA << " " << SB << "\n";
-  cout << fixed << setprecision(10) << sqrt((ld)SB / SA) << "\n";
+
 }
 
 signed main() {

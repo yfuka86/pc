@@ -48,91 +48,70 @@ template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { 
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
-// https://nyaannyaan.github.io/library/geometry/integer-geometry.hpp
 
-struct Point {
-  using T = __int128_t;
-  T x, y;
-  Point() : x(0), y(0) {}
-  Point(T x_, T y_) : x(x_), y(y_) {}
-  Point &operator+=(const Point &p) { this->x += p.x; this->y += p.y; return *this; }
-  Point &operator-=(const Point &p) { this->x -= p.x; this->y -= p.y; return *this; }
-
-  int pos() const { if (y < 0) return -1; if (y == 0 && 0 <= x) return 0; return 1; }
-  Point operator+(const Point &p) const { return Point(*this) += p; }
-  Point operator-(const Point &p) const { return Point(*this) -= p; }
-  Point operator-() const { return Point(-this->x, -this->y); }
-  bool operator==(const Point &p) const { return x == p.x && y == p.y; }
-  bool operator!=(const Point &p) const { return x != p.x || y != p.y; }
-  bool operator<(const Point &p) const { return x == p.x ? y < p.y : x < p.x; }
-  friend istream &operator>>(istream &is, Point &p) { long long x, y; is >> x >> y; p.x = x, p.y = y; return is; }
-  friend ostream &operator<<(ostream &os, const Point &p) { os << (long long)(p.x) << " " << (long long)(p.y); return os; }
+//2021/12/22-ac----------------------------------------------------------------
+template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S), F (*composition)(F, F), F (*id)()>
+struct lazy_segtree {
+  public:
+  lazy_segtree() : lazy_segtree(0) {}
+  explicit lazy_segtree(int n) : lazy_segtree(std::vector<S>(n, e())) {}
+  explicit lazy_segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); lz = std::vector<F>(size, id()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
+  void set(int p, S x) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
+  S get(int p) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); return d[p]; }
+  S prod(int l, int r) { assert(0 <= l && l <= r && r <= _n); if (l == r) return e(); l += size; r += size; for (int i = log; i >= 1; i--) { if (((l >> i) << i) != l) push(l >> i); if (((r >> i) << i) != r) push((r - 1) >> i); } S sml = e(), smr = e();
+    while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
+  S all_prod() { return d[1]; }
+  void apply(int p, F f) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); d[p] = mapping(f, d[p]); for (int i = 1; i <= log; i++) update(p >> i); }
+  void apply(int l, int r, F f) { assert(0 <= l && l <= r && r <= _n); if (l == r) return; l += size; r += size; for (int i = log; i >= 1; i--) { if (((l >> i) << i) != l) push(l >> i); if (((r >> i) << i) != r) push((r - 1) >> i); }
+    { int l2 = l, r2 = r; while (l < r) { if (l & 1) all_apply(l++, f); if (r & 1) all_apply(--r, f); l >>= 1; r >>= 1; } l = l2; r = r2; } for (int i = 1; i <= log; i++) { if (((l >> i) << i) != l) update(l >> i); if (((r >> i) << i) != r) update((r - 1) >> i); } }
+  template <bool (*g)(S)> int max_right(int l) { return max_right(l, [](S x) { return g(x); }); }
+  template <class G> int max_right(int l, G g) { assert(0 <= l && l <= _n); assert(g(e())); if (l == _n) return _n; l += size; for (int i = log; i >= 1; i--) push(l >> i); S sm = e();
+    do { while (l % 2 == 0) l >>= 1; if (!g(op(sm, d[l]))) { while (l < size) { push(l); l = (2 * l); if (g(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
+  template <bool (*g)(S)> int min_left(int r) { return min_left(r, [](S x) { return g(x); }); }
+  template <class G> int min_left(int r, G g) { assert(0 <= r && r <= _n); assert(g(e())); if (r == 0) return 0; r += size; for (int i = log; i >= 1; i--) push((r - 1) >> i); S sm = e();
+    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!g(op(d[r], sm))) { while (r < size) { push(r); r = (2 * r + 1); if (g(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
+  private:
+  int _n, size, log; std::vector<S> d; std::vector<F> lz;
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+  void all_apply(int k, F f) { d[k] = mapping(f, d[k]); if (k < size) lz[k] = composition(f, lz[k]); }
+  void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
-using Points = vector<Point>;
 
-Point::T dot(const Point &a, const Point &b) { return a.x * b.x + a.y * b.y; }
-Point::T cross(const Point &a, const Point &b) { return a.x * b.y - a.y * b.x; }
 
-// sort by argument (-Pi ~ Pi)
-void ArgumentSort(Points &v) {
-  sort(begin(v), end(v), [](Point a, Point b) {
-    if (a.pos() != b.pos()) return a.pos() < b.pos();
-    return cross(a, b) > 0;
-  });
-}
-
-// 1 ... counterclockwise / 0 straight / -1 clockwise
-int ccw(const Point &a, const Point &b, const Point &c) {
-  Point::T t = cross(b - a, c - a);
-  return t < 0 ? -1 : t == 0 ? 0 : 1;
-}
-
-Points ConvexHull(const Points &ps) {
-  int N = (int)ps.size();
-  for (int i = 0; i < N - 1; i++) assert(ps[i].x <= ps[i + 1].x);
-  if (N <= 2) return ps;
-  Points convex(2 * N);
-  int k = 0;
-  for (int i = 0; i < N; convex[k++] = ps[i++]) {
-    while (k >= 2 && ccw(convex[k - 2], convex[k - 1], ps[i]) <= 0) --k;
-  }
-  for (int i = N - 2, t = k + 1; i >= 0; convex[k++] = ps[i--]) {
-    while (k >= t && ccw(convex[k - 2], convex[k - 1], ps[i]) <= 0) --k;
-  }
-  convex.resize(k - 1);
-  return convex;
-}
+struct S {
+  ll a; int sz;
+};
+using F = ll;
+S op(S l, S r) { return {l.a + r.a, l.sz + r.sz}; }
+S e() { return {0, 0}; }
+S mapping(F f, S x) { return f != -1 ? S{f * x.sz, x.sz} : x; }
+F composition(F f, F g) { return f != -1 ? f : g; }
+F id() { return -1; }
 
 void solve() {
-  ll N; cin >> N;
-  Points A(N), B(N);
-  rep(i, N) {
-    ll x, y; cin >> x >> y; A[i] = {x,y};
+  ll n, q; cin >> n >> q;
+  vlin(a, n);
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(n);
+  rep(i, n) {
+    seg.set(i, {a[i], 1});
   }
-  rep(i, N) {
-    ll x, y; cin >> x >> y; B[i] = {x,y};
+  rep(_, q) {
+    ll t; cin >> t;
+    if (t == 1) {
+      ll i, x; cin >> i >> x; i--;
+      seg.apply(i, i + 1, x);
+    } else {
+      ll x; cin >> x;
+      seg.apply(0, n, x);
+    }
+    cout << seg.prod(0, n).a << "\n";
   }
-  sort(all(A)); sort(all(B));
-  Points cha = ConvexHull(A), chb = ConvexHull(B);
-
-  ll SA = 0, SB = 0;
-  rep(i, N) {
-    // SA += cross(cha[(i + 1) % N], cha[i]);
-    Point diff = cha[(i + 1) % N] - cha[i];
-    SA += diff.x * diff.x + diff.y * diff.y;
-    // SB += cross(chb[(i + 1) % N], chb[i]);
-    Point diffb = chb[(i + 1) % N] - chb[i];
-    SB += diffb.x * diffb.x + diffb.y * diffb.y;
-  }
-  // SA = abs(SA); SB = abs(SB);
-  // cout << SA << " " << SB << "\n";
-  cout << fixed << setprecision(10) << sqrt((ld)SB / SA) << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t = 1;// cin >> t;
   while (t--) solve();
 }
