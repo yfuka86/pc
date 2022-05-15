@@ -46,7 +46,18 @@ template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a),
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll N; cin >> N;
+  ll N, A, B; cin >> N >> A >> B;
+  ll cur = 0;
+
+  rep(i, N) {
+    string s; cin >> s; ll d; cin >> d;
+    d = min(max(d, A), B);
+    if (s == "East") cur += d; else cur -= d;
+  }
+
+  if (cur > 0) cout << "East " << cur << "\n";
+  else if (cur < 0) cout << "West " << abs(cur) << "\n";
+  else cout << 0 << "\n";
 }
 
 signed main() {

@@ -45,8 +45,64 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
+vvl b(2, vl(3, 0)), c(3, vl(2, 0));
+
+LP score(ll board) {
+  LP ans = {0, 0};
+  rep(i, 3) {
+    rep(j, 3) {
+      ll id = i * 3 + j;
+      if (i < 2) {
+        if ((board >> id & 1) ^ (board >> id + 3 & 1)) ans.second += b[i][j]; else ans.first += b[i][j];
+      }
+      if (j < 2) {
+        if ((board >> id & 1) ^ (board >> id + 1 & 1)) ans.second += c[i][j]; else ans.first += c[i][j];
+      }
+    }
+  }
+  return ans;
+}
+
 void solve() {
-  ll N; cin >> N;
+  rep(i, 2) rep(j, 3) cin >> b[i][j];
+  rep(i, 3) rep(j, 2) cin >> c[i][j];
+
+  map<ll, LP> scores;
+  rep(i, 1 << 9) if (__builtin_popcount(i) == 5) scores[i] = score(i);
+
+  function<LP(vl, ll)> dfs = [&](vl rem, ll now) {
+    // chokudai turn
+    if (rem.size() & 1) {
+      if (rem.size() == 1) return scores[now | 1 << *rem.begin()];
+
+      LP ret = {-1, LINF};
+      rep(i, rem.size()) {
+        ll choice = rem[i];
+        rem.erase(rem.begin() + i);
+        LP t = dfs(rem, now | 1 << choice);
+        if (t.first > ret.first) ret = t;
+        rem.insert(rem.begin() + i, choice);
+      }
+      return ret;
+    } else {
+      LP ret = {LINF, -1};
+      rep(i, rem.size()) {
+        ll choice = rem[i];
+        rem.erase(rem.begin() + i);
+        LP t = dfs(rem, now);
+        if (t.second > ret.second) ret = t;
+        rem.insert(rem.begin() + i, choice);
+      }
+      return ret;
+    }
+  };
+  vl rem(9); iota(all(rem), 0);
+  auto [f, s] = dfs(rem, 0);
+  cout << f << "\n";
+  cout << s << "\n";
+
+  // auto [f, s] = score(0b101011010);
+  // cout << f << " " << s << "\n";
 }
 
 signed main() {

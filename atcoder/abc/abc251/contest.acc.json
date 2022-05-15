@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc251",
+    "title": "Panasonic Programming Contest 2022(AtCoder Beginner Contest 251)",
+    "url": "https://atcoder.jp/contests/abc251"
+  },
+  "tasks": [
+    {
+      "id": "abc251_a",
+      "label": "A",
+      "title": "Six Characters",
+      "url": "https://atcoder.jp/contests/abc251/tasks/abc251_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc251_a.cpp"
+      }
+    },
+    {
+      "id": "abc251_b",
+      "label": "B",
+      "title": "At Most 3 (Judge ver.)",
+      "url": "https://atcoder.jp/contests/abc251/tasks/abc251_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc251_b.cpp"
+      }
+    },
+    {
+      "id": "abc251_c",
+      "label": "C",
+      "title": "Poem Online Judge",
+      "url": "https://atcoder.jp/contests/abc251/tasks/abc251_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc251_c.cpp"
+      }
+    },
+    {
+      "id": "abc251_d",
+      "label": "D",
+      "title": "At Most 3 (Contestant ver.)",
+      "url": "https://atcoder.jp/contests/abc251/tasks/abc251_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc251_d.cpp"
+      }
+    },
+    {
+      "id": "abc251_e",
+      "label": "E",
+      "title": "Tahakashi and Animals",
+      "url": "https://atcoder.jp/contests/abc251/tasks/abc251_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc251_e.cpp"
+      }
+    },
+    {
+      "id": "abc251_f",
+      "label": "F",
+      "title": "Two Spanning Trees",
+      "url": "https://atcoder.jp/contests/abc251/tasks/abc251_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc251_f.cpp"
+      }
+    },
+    {
+      "id": "abc251_g",
+      "label": "G",
+      "title": "Intersection of Polygons",
+      "url": "https://atcoder.jp/contests/abc251/tasks/abc251_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc251_g.cpp"
+      }
+    },
+    {
+      "id": "abc251_h",
+      "label": "Ex",
+      "title": "Fill Triangle",
+      "url": "https://atcoder.jp/contests/abc251/tasks/abc251_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc251_h.cpp"
+      }
+    }
+  ]
+}

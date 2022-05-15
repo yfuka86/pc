@@ -226,12 +226,13 @@ void solve() {
     }
 
     vl dp(n, 0);
-    ll valid = false;
     vvi scc = g.scc();
-    reverse(all(scc));
 
+    if (scc.size() < n) { ok = mid; continue; }
+
+    ll valid = false;
+    reverse(all(scc));
     for (auto vec: scc) {
-      if (vec.size() > 1) { valid = true; break; }
       for (auto v: vec) {
         for (auto to: G[v]) {
           chmax(dp[v], dp[to] + 1);
@@ -240,8 +241,6 @@ void solve() {
       }
       if (valid) break;
     }
-    // cout << mid << " " << valid << "\n";
-    // coutarray(dp);
     if (valid) ok = mid; else ng = mid;
   }
   cout << (ok == ma ? -1 : ok) << "\n";

@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc024",
+    "title": "AtCoder Beginner Contest 024",
+    "url": "https://atcoder.jp/contests/abc024"
+  },
+  "tasks": [
+    {
+      "id": "abc024_a",
+      "label": "A",
+      "title": "動物園",
+      "url": "https://atcoder.jp/contests/abc024/tasks/abc024_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc024_a.cpp"
+      }
+    },
+    {
+      "id": "abc024_b",
+      "label": "B",
+      "title": "自動ドア",
+      "url": "https://atcoder.jp/contests/abc024/tasks/abc024_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc024_b.cpp"
+      }
+    },
+    {
+      "id": "abc024_c",
+      "label": "C",
+      "title": "民族大移動",
+      "url": "https://atcoder.jp/contests/abc024/tasks/abc024_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc024_c.cpp"
+      }
+    },
+    {
+      "id": "abc024_d",
+      "label": "D",
+      "title": "動的計画法",
+      "url": "https://atcoder.jp/contests/abc024/tasks/abc024_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc024_d.cpp"
+      }
+    }
+  ]
+}

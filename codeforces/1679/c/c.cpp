@@ -69,8 +69,11 @@ struct BIT {
 
 void solve() {
   ll n, q; cin >> n >> q;
-  BIT<ll> btx(n), bty(n);
+  // BIT<ll> btx(n), bty(n);
   map<ll, ll> freqx, freqy;
+  set<ll> stx, sty;
+
+  rep(i, n) {stx.insert(i); sty.insert(i); }
 
   rep(_, q) {
     ll t; cin >> t;
@@ -78,17 +81,23 @@ void solve() {
       ll x, y; cin >> x >> y; x--; y--;
       freqx[x]++;
       freqy[y]++;
-      if (freqx[x] == 1) btx.add(x, 1);
-      if (freqy[y] == 1) bty.add(y, 1);
+      // if (freqx[x] == 1) btx.add(x, 1);
+      // if (freqy[y] == 1) bty.add(y, 1);
+      if (freqx[x] == 1) stx.erase(x);
+      if (freqy[y] == 1) sty.erase(y);
     } else if (t == 2) {
       ll x, y; cin >> x >> y; x--; y--;
       freqx[x]--;
       freqy[y]--;
-      if (freqx[x] == 0) btx.add(x, -1);
-      if (freqy[y] == 0) bty.add(y, -1);
+      // if (freqx[x] == 0) btx.add(x, -1);
+      // if (freqy[y] == 0) bty.add(y, -1);
+      if (freqx[x] == 0) stx.insert(x);
+      if (freqy[y] == 0) sty.insert(y);
     } else {
       ll x, y, x2, y2; cin >> x >> y >> x2 >> y2; x--; y--;
-      if (btx.sum(x, x2) == x2 - x || bty.sum(y, y2) == y2 - y) cout << "Yes" << "\n"; else cout << "No" << "\n";
+      auto itrx = stx.lower_bound(x);
+      auto itry = sty.lower_bound(y);
+      if (itrx == stx.end() || *itrx >= x2 || itry == sty.end() || *itry >= y2) cout << "Yes" << "\n"; else cout << "No" << "\n";
     }
 
   }

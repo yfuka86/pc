@@ -112,20 +112,27 @@ void solve() {
   rep(i, N) {
     ll x, y; cin >> x >> y; B[i] = {x,y};
   }
+
+  // auto a = accumulate(all(A), Point{0, 0});
+  // auto b = accumulate(all(B), Point{0, 0});
+
+  // ld centax = (ld)a.x / N, centay = (ld)a.y / N;
+  // ld centbx = (ld)b.x / N, centby = (ld)b.y / N;
+
+  // ld amax = 0, bmax = 0;
+  // rep(i, N) {
+  //   chmax(amax, sqrt(pow(A[i].x - centax, 2) + pow(A[i].y - centay, 2)));
+  //   chmax(bmax, sqrt(pow(B[i].x - centbx, 2) + pow(B[i].y - centby, 2)));
+  // }
+  // cout << fixed << setprecision(10) << bmax / amax << "\n";
+
   sort(all(A)); sort(all(B));
   Points cha = ConvexHull(A), chb = ConvexHull(B);
 
   ll SA = 0, SB = 0;
-  rep(i, N) {
-    // SA += cross(cha[(i + 1) % N], cha[i]);
-    Point diff = cha[(i + 1) % N] - cha[i];
-    SA += diff.x * diff.x + diff.y * diff.y;
-    // SB += cross(chb[(i + 1) % N], chb[i]);
-    Point diffb = chb[(i + 1) % N] - chb[i];
-    SB += diffb.x * diffb.x + diffb.y * diffb.y;
-  }
-  // SA = abs(SA); SB = abs(SB);
-  // cout << SA << " " << SB << "\n";
+  rep(i, cha.size()) { SA += cross(cha[(i + 1) % cha.size()], cha[i]); }
+  rep(i, chb.size()) { SB += cross(chb[(i + 1) % chb.size()], chb[i]); }
+  SA = abs(SA); SB = abs(SB);
   cout << fixed << setprecision(10) << sqrt((ld)SB / SA) << "\n";
 }
 
