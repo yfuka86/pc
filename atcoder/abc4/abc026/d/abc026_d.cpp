@@ -52,13 +52,31 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll N; cin >> N;
+  ld A, B, C;
+  cin >> A >> B >> C;
+  auto f = [&](ld t) {
+    return A * t + B * sin(C * t * M_PI);
+  };
+
+  // ld ans = 0;
+
+  // while (1) {
+    ld ng = 1000, ok = 0;
+    ll t = 50;
+    while (t--) {
+      ld mid = (ng + ok) / 2;
+      if (f(mid) > 100.0) ng = mid; else ok = mid;
+    }
+  //   ans = ok;
+  //   if ((ll)abs(f(ans) * 1e6 - 1e8) == 0) break;
+  // }
+  cout << ok << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
-  cout.tie(nullptr);
+  cout.tie(nullptr); cout << fixed << setprecision(12);
   int t = 1; //cin >> t;
   while (t--) solve();
 }

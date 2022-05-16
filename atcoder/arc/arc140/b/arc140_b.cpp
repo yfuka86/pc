@@ -53,8 +53,34 @@ const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
   ll N; cin >> N;
-  ll A = N / 2;
-  cout << A * (N-A) << "\n";
+  string S; cin >> S;
+  auto rl = RLE(S);
+
+  multiset<ll> ope;
+  rep(i, rl.size() - 2) {
+    if (rl[i].first == 'A' && rl[i + 1].first == 'R' && rl[i + 2].first == 'C') {
+      if (rl[i + 1].second == 1) {
+        ope.insert(min(rl[i].second, rl[i + 2].second));
+      }
+    }
+  }
+
+  ll ans = 0;
+  while (ope.size()) {
+    if (ans & 1) {
+      // 偶数回目
+      ope.erase(ope.begin());
+      ans++;
+    } else {
+      // 奇数回目
+      auto itr = ope.end(); itr--;
+      ll last = *itr;
+      ope.erase(itr);
+      if (last > 1) ope.insert(last - 1);
+      ans++;
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

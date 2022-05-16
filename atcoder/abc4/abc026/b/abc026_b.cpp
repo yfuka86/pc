@@ -53,12 +53,22 @@ const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
   ll N; cin >> N;
+  vlin(R, N);
+  sort(all(R)); reverse(all(R));
+
+  ll ans = 0;
+  rep(i, N) {
+    if (i & 1) ans -= POW(R[i], 2);
+    else ans += POW(R[i], 2);
+  }
+  cout << ans * M_PI << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
+  cout << fixed << setprecision(12);
   int t = 1; //cin >> t;
   while (t--) solve();
 }

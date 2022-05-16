@@ -51,10 +51,47 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-void solve() {
-  ll N; cin >> N;
-  ll A = N / 2;
-  cout << A * (N-A) << "\n";
+// 典型LIS
+// <= ならupper_bound、< ならlower_boundにする必要がある
+ll get_lis(vl &a) {
+	ll N = a.size(); vl dp(N, LINF);
+	for (ll i = 0; i < N; ++i) *lower_bound(all(dp), a[i]) = a[i];
+	return lower_bound(all(dp), INF) - dp.begin();
+}
+
+ll naive(ll N, ll X) {
+  vl v(N); iota(all(v), 0);
+  ll ans = 0;
+  do {
+    if (v[0] != X - 1) continue;
+    vl diff(N - 1);
+    rep(i, N - 1) diff[i] = abs(v[i + 1] - v[i]);
+    if (chmax(ans, get_lis(diff))) coutarray(v);
+  } while (next_permutation(all(v)));
+  return ans;
+}
+
+ll solve(ll N, ll X) {
+  return 0;
+}
+
+void compare() {
+  RandGen rg;
+  ll c = 0, loop = 10;
+  while (true) {
+    c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 8;
+    ll a = rg.l(1, 9);
+    ll n = naive(N, a);
+    ll s = solve(N, a);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
+      cout << N << " " << a << "\n";
+      cout << "naive:" << n << "\n";
+      cout << "solve:" << s << "\n";
+      break;
+    }
+  }
 }
 
 signed main() {
@@ -62,5 +99,6 @@ signed main() {
   cin.tie(nullptr);
   cout.tie(nullptr);
   int t = 1; //cin >> t;
-  while (t--) solve();
+  while (t--) compare();
 }
+

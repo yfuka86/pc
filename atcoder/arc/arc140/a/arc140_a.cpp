@@ -51,10 +51,33 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
+vl divisor(ll n) {
+  vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } }
+  sort(all(ret)); return ret; }
+
 void solve() {
-  ll N; cin >> N;
-  ll A = N / 2;
-  cout << A * (N-A) << "\n";
+  ll N, K; cin >> N >> K;
+  string S; cin >> S;
+
+  vl d = divisor(N);
+  ll ans = N;
+  for (ll div: d) {
+    ll cycle = div;
+    div = N / div;
+    if (N - cycle <= K) { chmin(ans, cycle); continue; }
+
+    vector<map<char, ll>> freq(cycle);
+
+    rep(i, N) freq[i % cycle][S[i]]++;
+    ll need = 0;
+    rep(i, cycle) {
+      ll ma = 0;
+      for (auto [_, c]: freq[i]) chmax(ma, c);
+      need += N / cycle - ma;
+    }
+    if (need <= K) chmin(ans, cycle);
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

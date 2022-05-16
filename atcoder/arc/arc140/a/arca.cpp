@@ -25,6 +25,7 @@ struct RandGen {
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vecperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
+  string str(ll l, vl op, char lead = 'A') { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(lead + op[fig[i]]); return s; }
   string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
 };
@@ -45,22 +46,130 @@ template <class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S,
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 
 template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
-template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
+template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first << " " << p.second << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
+vl divisor(ll n) {
+  vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } }
+  sort(all(ret)); return ret; }
+
 void solve() {
   ll N; cin >> N;
-  ll A = N / 2;
-  cout << A * (N-A) << "\n";
+}
+
+ll solve(ll N, ll K, string S) {
+  ll ans = LINF;
+
+  vl d = divisor(N); reverse(all(d));
+  for (ll div: d) {
+    ll cycle = N / div;
+    ll cur = 0;
+    do {
+      map<string, ll> freq;
+      for (ll i = 0; i < N; i += cycle) {
+        freq[S.substr(i, cycle)]++;
+      }
+      // coutmap(freq);
+
+      string mas = ""; ll cnt = 0; for(auto[k, c]: freq) if (chmax(cnt, c)) mas = k;
+      ll need = 0;
+      for (auto [k, c]: freq) {
+        rep(i, cycle) if (mas[i] != k[i]) need += c;
+      }
+      if (need <= K) { chmin(ans, cycle); }
+
+      rotate(S.begin(), S.begin() + 1, S.end()); cur++;
+    } while (cur < cycle);
+  }
+  return ans;
+}
+
+void enum_check(ll N, ll from, ll to, function<bool(vl&)> check) { // size, [from, to)
+  to--; vl st(N, from);
+  while (true) {
+    assert(st.size() == N); if (!check(st)) break;
+
+    while (st.back() == to) st.pop_back(); if (st.size() == 0) break;
+    st.back()++; while (st.size() < N) st.pb(from);
+  }
+}
+
+ll naive(ll N, ll K, string S) {
+  map<char,ll> freq;
+  rep(i, N) freq[S[i]]++;
+  vector<char> cand;
+  for (auto [c, cnt]: freq) cand.pb(c);
+
+  ll ans = LINF;
+  rep(ST, 1 << N) {
+    ll k = __builtin_popcount(ST);
+    if (k > K || k == 0) continue;
+
+    enum_check(k, 0, cand.size(), [&](vl &en) {
+      string stmp = S;
+      rep(i, N) {
+        if (ST & 1 << i) {
+          stmp[i] = cand[en.back()];
+          en.pop_back();
+        }
+      }
+      set<string> fs;
+      rep(_, N) {
+        fs.insert(stmp);
+        rotate(stmp.begin(), stmp.begin() + 1, stmp.end());
+      }
+      chmin<ll>(ans, fs.size());
+      return true;
+    });
+  }
+  return ans;
+
+  // vl d = divisor(N);
+  // ll ans = N;
+  // for (ll div: d) {
+  //   ll cycle = div;
+  //   div = N / div;
+  //   if (N - cycle <= K) { chmin(ans, cycle); continue; }
+
+  //   vector<map<char, ll>> freq(cycle);
+
+  //   rep(i, N) freq[i % cycle][S[i]]++;
+  //   ll need = 0;
+  //   rep(i, cycle) {
+  //     ll ma = 0;
+  //     for (auto [_, c]: freq[i]) chmax(ma, c);
+  //     need += N / cycle - ma;
+  //   }
+  //   if (need <= K) chmin(ans, cycle);
+  // }
+  // return ans;
+}
+
+void execute() {
+  // solve(); return;
+  RandGen rg; ll c = 0, loop = 10;
+  while (true) {
+    c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 9;
+    ll K = 3;
+    string S = rg.straz(N);
+    auto s = solve(N, K, S); auto n = naive(N, K, S);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
+      cout << N << " " << K << " " << S << "\n";
+      cout << "solve: " << s << "\n";
+      cout << "naive: " << n << "\n";
+      break;
+    }
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
+  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(12);
   int t = 1; //cin >> t;
-  while (t--) solve();
+  while (t--) execute();
 }

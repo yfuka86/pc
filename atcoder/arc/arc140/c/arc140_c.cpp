@@ -52,9 +52,42 @@ template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll N; cin >> N;
-  ll A = N / 2;
-  cout << A * (N-A) << "\n";
+  ll N, X; cin >> N >> X;
+
+  vl ans;
+  ll center;
+  if (N & 1) {
+    center = (N + 1) / 2;
+  } else {
+    ll centl = N / 2, centu = centl + 1;
+    if (X == centl || X == centu) center = X;
+    else if (X < centl) center = centu;
+    else center = centl;
+  }
+
+  vl remup, remlo;
+  rep2(i, 1, N + 1) {
+    if (i == center || i == X) continue;
+    if (i < center) remlo.pb(i); else remup.pb(i);
+  }
+  reverse(all(remlo));
+  ans.pb(X);
+  if (X != center) ans.pb(center);
+
+  if (remup.size() != remlo.size()) {
+    if (remup.size() < remlo.size()) swap(remup, remlo);
+    rep(i, remlo.size()) {
+      ans.pb(remup[i]);
+      ans.pb(remlo[i]);
+    }
+    ans.pb(remup.back());
+  } else {
+    rep(i, remlo.size()) {
+      ans.pb(remlo[i]);
+      ans.pb(remup[i]);
+    }
+  }
+  coutarray(ans);
 }
 
 signed main() {

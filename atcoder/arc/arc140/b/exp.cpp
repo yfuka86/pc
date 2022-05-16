@@ -25,6 +25,7 @@ struct RandGen {
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vecperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
+  string str(ll l, vl op, char lead = 'A') { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(lead + op[fig[i]]); return s; }
   string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
 };
@@ -45,16 +46,121 @@ template <class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S,
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 
 template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
-template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
+template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first << " " << p.second << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-void solve() {
-  ll N; cin >> N;
-  ll A = N / 2;
-  cout << A * (N-A) << "\n";
+ll naive(ll N, string S) {
+  auto rl = RLE(S);
+
+  multiset<ll> ope;
+  rep(i, rl.size() - 2) {
+    if (rl[i].first == 'A' && rl[i + 1].first == 'R' && rl[i + 2].first == 'C') {
+      if (rl[i + 1].second == 1) {
+        ope.insert(min(rl[i].second, rl[i + 2].second));
+      }
+    }
+  }
+
+  ll ans = 0;
+  while (ope.size()) {
+    if (ans & 1) {
+      // 偶数回目
+      ope.erase(ope.begin());
+      ans++;
+    } else {
+      // 奇数回目
+      auto itr = ope.end(); itr--;
+      ll last = *itr;
+      ope.erase(itr);
+      if (last > 1) ope.insert(last - 1);
+      ans++;
+    }
+  }
+  return ans;
+}
+
+ll solve(ll N, string S) {
+    multiset<int> depth;
+    int ind = 0;
+    int cntA = 0;
+    int cntC = 0;
+    bool flag = false;
+    while(ind < (int)S.size()){
+        if(S[ind] == 'A'){
+            if(flag){
+                int a = min(cntA, cntC);
+                if(a) depth.insert(a);
+                flag = false;
+                cntA = 0;
+                cntC = 0;
+            }
+            cntA++;
+        }else if(S[ind] == 'R'){
+            if(flag){
+                int a = min(cntA, cntC);
+                if(a) depth.insert(a);
+                flag = false;
+                cntA = 0;
+                cntC = 0;
+            }
+            if(cntA) flag = true;
+        }else{
+            if(flag) cntC++;
+        }
+        ind++;
+        if(ind == (int)S.size() && flag){
+            int a = min(cntA, cntC);
+            if(a) depth.insert(a);
+            flag = false;
+            cntA = 0;
+            cntC = 0;
+        }
+    }
+    bool ODD = true;
+    int ans = 0;
+    while(!depth.empty()){
+        if(ODD){
+            ODD = false;
+            auto itr = prev(depth.end());
+            int a = *itr;
+            a--;
+            depth.erase(itr);
+            depth.insert(a);
+            depth.erase(0);
+            ans++;
+            continue;
+        }else{
+            ODD = true;
+            auto itr = depth.begin();
+            depth.erase(itr);
+            ans++;
+            continue;
+        }
+    }
+  return ans;
+}
+
+void compare() {
+  RandGen rg;
+  ll c = 0, loop = 10;
+  while (true) {
+    c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 5;
+    string S = rg.str(N, {0,2,17});
+    ll n = naive(N, S);
+    ll s = solve(N, S);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
+      cout << N << "\n";
+      cout << S << "\n";
+      cout << "naive:" << n << "\n";
+      cout << "solve:" << s << "\n";
+      break;
+    }
+  }
 }
 
 signed main() {
@@ -62,5 +168,5 @@ signed main() {
   cin.tie(nullptr);
   cout.tie(nullptr);
   int t = 1; //cin >> t;
-  while (t--) solve();
+  while (t--) compare();
 }

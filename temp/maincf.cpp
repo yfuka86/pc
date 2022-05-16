@@ -8,6 +8,8 @@
 #define vlin(name,sz) vl name(sz); rep(i,sz) cin>>name[i];
 #define pb push_back
 #define mp make_pair
+#define fi first
+#define se second
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
@@ -25,6 +27,7 @@ struct RandGen {
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vecperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
+  string str(ll l, vl op, char lead = 'A') { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(lead + op[fig[i]]); return s; }
   string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
 };
@@ -45,20 +48,45 @@ template <class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S,
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 
 template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
-template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
+template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first << " " << p.second << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
-  ll n; cin >> n;
+  ll N; cin >> N;
+}
+
+ll solve(ll N, vl a) {
+  ll ans; return ans;
+}
+
+ll naive(ll N, vl a) {
+  ll ans; return ans;
+}
+
+void execute() {
+  solve(); return;
+  RandGen rg; ll c = 0, loop = 10;
+  while (true) {
+    c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 10;
+    vl a = rg.vecl(N, 1, 1e2);
+    auto s = solve(N, a); auto n = naive(N, a);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
+      cout << N << "\n"; coutarray(a);
+      cout << "solve: " << s << "\n";
+      cout << "naive: " << n << "\n";
+      break;
+    }
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
+  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(12);
   int t; cin >> t;
   while (t--) solve();
 }

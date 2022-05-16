@@ -53,6 +53,21 @@ const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
   ll N; cin >> N;
+  vlin(B, N - 1); rep(i, N - 1) B[i]--;
+  vl s(N, -1);
+
+  function<ll(ll)> dfs = [&](ll v) {
+    if (s[v] != -1) return s[v];
+
+    ll mi = LINF, ma = 0;
+    rep(i, N - 1) { if (B[i] == v) chmin(mi, dfs(i + 1)), chmax(ma, dfs(i + 1)); }
+
+    if (mi == LINF) return s[v] = 1;
+    else return s[v] = mi + ma + 1;
+  };
+  cout << dfs(0) << "\n";
+
+
 }
 
 signed main() {

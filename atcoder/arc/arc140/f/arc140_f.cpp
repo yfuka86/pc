@@ -53,8 +53,6 @@ const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 void solve() {
   ll N; cin >> N;
-  ll A = N / 2;
-  cout << A * (N-A) << "\n";
 }
 
 signed main() {
