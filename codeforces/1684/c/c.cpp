@@ -8,6 +8,8 @@
 #define vlin(name,sz) vl name(sz); rep(i,sz) cin>>name[i];
 #define pb push_back
 #define mp make_pair
+#define fi first
+#define se second
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
@@ -25,6 +27,7 @@ struct RandGen {
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vecperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
+  string str(ll l, vl op, char lead = 'A') { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(lead + op[fig[i]]); return s; }
   string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
 };
@@ -51,14 +54,38 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
+ll solve(ll N, vl a) {
+  ll ans = -1; return ans;
+}
+
+ll naive(ll N, vl a) {
+  ll ans = 1; return ans;
+}
+
+void compare() {
+  RandGen rg; ll c = 0, loop = 10;
+  while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 10;
+    vl a = rg.vecl(N, 1, 1e2);
+    auto s = solve(N, a); auto n = naive(N, a);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
+      cout << N << "\n"; coutarray(a);
+      cout << "solve: " << s << "\n";
+      cout << "naive: " << n << "\n";
+      break;
+    }
+  }
+}
+
 void solve() {
   ll N; cin >> N;
 }
 
 signed main() {
   ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  int t; cin >> t;
   while (t--) solve();
+  // while (t--) compare();
 }

@@ -110,10 +110,11 @@ ll naive(ll N, ll K, string S) {
 
     enum_check(k, 0, cand.size(), [&](vl &en) {
       string stmp = S;
+      auto itr = en.begin();
       rep(i, N) {
         if (ST & 1 << i) {
-          stmp[i] = cand[en.back()];
-          en.pop_back();
+          stmp[i] = cand[*itr];
+          itr++;
         }
       }
       set<string> fs;
@@ -153,8 +154,8 @@ void execute() {
   RandGen rg; ll c = 0, loop = 10;
   while (true) {
     c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 9;
-    ll K = 3;
+    ll N = 6;
+    ll K = 2;
     string S = rg.straz(N);
     auto s = solve(N, K, S); auto n = naive(N, K, S);
     if (n != s) {
