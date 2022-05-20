@@ -27,7 +27,7 @@ struct RandGen {
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vecperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
-  string str(ll l, vector<char> op) { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(op[fig[i]]); return s; }
+  string str(ll l, vl op, char lead = 'A') { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(lead + op[fig[i]]); return s; }
   string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
 };
@@ -80,12 +80,37 @@ void compare() {
 
 void solve() {
   ll N; cin >> N;
+  vlin(a, N);
+
+  auto calc = [&](ll l, ll r) {
+    if (l > r) swap(l, r);
+    vl t;
+    rep(i, N) { if (l <= i && i <= r) t.pb(a[i]); }
+    ll a=0, b=0;
+    rep(i, t.size()) {
+      if (i & 1) b += t[i]; else a += t[i];
+    }
+    return mp(a, b);
+  };
+
+  ll tama = -LINF;
+  rep(i, N) {
+    ll temp = -LINF, aoma = -LINF;
+    rep(j, N) {
+      if (i == j) continue;
+      auto [a, b] = calc(i, j);
+      // cout << i << ":" << j << " " << a << " " << b << "\n";
+      if (chmax(aoma, b)) temp = a;
+    }
+    chmax(tama, temp);
+  }
+  cout << tama << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

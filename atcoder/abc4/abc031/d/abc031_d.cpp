@@ -27,7 +27,7 @@ struct RandGen {
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vecperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
-  string str(ll l, vector<char> op) { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(op[fig[i]]); return s; }
+  string str(ll l, vl op, char lead = 'A') { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(lead + op[fig[i]]); return s; }
   string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
 };
@@ -78,14 +78,51 @@ void compare() {
   }
 }
 
+vl digits(ll a) {
+  vl ret;
+  while (a > 0) {
+    ret.pb(a % 10);
+    a /= 10;
+  }
+  reverse(all(ret));
+  return ret;
+}
+
 void solve() {
-  ll N; cin >> N;
+  ll K, N; cin >> K >> N;
+  vl v(N); vs w(N);
+  rep(i, N) {
+    cin >> v[i] >> w[i];
+  }
+  vvl vv(N); rep(i, N) vv[i] = digits(v[i]);
+
+  rep(S, POW(3, K)) {
+    ll s = S; vl length; rep(i, K) { length.pb(s % 3 + 1); s /= 3; }
+
+    vs ans(K, "");
+    // coutarray(length);
+    bool valid = true;
+    rep(i, N) {
+      ll sum = 0;
+      for (auto d: vv[i]) sum += length[d - 1];
+      if (sum != w[i].size()) { valid = false; break; }
+
+      ll cur = 0;
+      for (auto d: vv[i]) {
+        string ss = w[i].substr(cur, length[d - 1]);
+        cur += length[d - 1];
+        if (ans[d - 1].size() == 0) ans[d - 1] = ss;
+        else if (ans[d - 1] != ss) { valid = false; break; }
+      }
+    }
+    if (valid) { rep(i, K) cout << ans[i] << "\n"; return; }
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
