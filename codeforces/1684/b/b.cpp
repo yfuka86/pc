@@ -79,7 +79,12 @@ void compare() {
 }
 
 void solve() {
-  ll N; cin >> N;
+  ll a, b, c; cin >> a >> b >> c;
+  ll x = ceil(INF, a * b) * a * b + a, y = b, z = c;
+
+  // cout << x % y << " " << y % z << " " << z % x << "\n";
+  assert (x % y == a && y % z == b && z % x == c);
+  cout << x << " " << y << " " << z << "\n";
 }
 
 signed main() {

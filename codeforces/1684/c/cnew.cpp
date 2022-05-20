@@ -83,57 +83,6 @@ void solve() {
   vvl grid(n, vl(m));
   rep(i, n) rep(j, m) cin >> grid[i][j];
 
-  vvl toswap(n);
-  rep(i, n) {
-    rep(j, m - 1) {
-      if (grid[i][j + 1] < grid[i][j]) toswap[i].pb(j);
-    }
-  }
-
-  rep(i, n) if (toswap[i].size() > 2) { cout << -1 << "\n"; return; }
-  if (all_of(all(toswap), [&](vl s) { return s.size() == 0; })) { cout << 1 << " " << 1 << "\n"; return; }
-
-  // checkが必要なケース
-  auto check = [&](ll from, ll to) {
-    // cout << from << " " << to << "\n";
-    rep(i, n) {
-      // if (toswap[i].size() == 2) {
-      //   if (toswap[i].front() != from || toswap[i].back() + 1 != to) return false;
-      // } else if (toswap[i].size() == 1) {
-      //   if (toswap[i].front() != from && toswap[i].back() != from) return false;
-      // }
-
-      bool valid = true;
-      swap(grid[i][from], grid[i][to]);
-      if (from > 0 && grid[i][from - 1] > grid[i][from]) valid = false;
-      if (grid[i][from] > grid[i][from + 1]) valid = false;
-      if (grid[i][to - 1] > grid[i][to]) valid = false;
-      if (to < m - 1 && grid[i][to] > grid[i][to + 1]) valid = false;
-      swap(grid[i][from], grid[i][to]);
-      if (!valid) return false;
-    }
-    return true;
-  };
-
-  {// 2ヶ所ある場合
-    rep(i, n) if (toswap[i].size() == 2) {
-      ll from = toswap[i].front(), to = toswap[i].back() + 1;
-      if (check(from, to)) { cout << from + 1 << " " << to + 1 << "\n"; return; }
-      else { cout << -1 << "\n"; return; }
-    }
-  }
-  // cout << "try1" << "\n";
-  {// 1ヶ所だけの場合
-    ll from;
-    rep(i, n) if (toswap[i].size()){ from = toswap[i].front(); break; }
-    rep(to, from + 1) {
-      if (check(to, from + 1)) { cout << to + 1 << " " << (from + 1) + 1 << "\n"; return; }
-    }
-    rep2(to, from + 1, m) {
-      if (check(from, to)) { cout << from + 1 << " " << to + 1 << "\n"; return; }
-    }
-    cout << -1 << "\n";
-  }
 }
 
 signed main() {

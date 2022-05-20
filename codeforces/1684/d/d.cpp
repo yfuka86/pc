@@ -78,8 +78,38 @@ void compare() {
   }
 }
 
+
 void solve() {
-  ll N; cin >> N;
+  ll n, k; cin >> n >> k;
+  vlin(a, n);
+  if (n == k) { cout << 0 << "\n"; return; }
+
+  vlp sorted(n);
+  rep(i, n) sorted[i] = {a[i] + i, i};
+  sort(all(sorted));
+  set<ll> nojump;
+  rep(i, n - k) nojump.insert(sorted[i].se);
+
+  ll sum = 0;
+  ll jump = 0;
+  rep(i, n) {
+    if (nojump.find(i) != nojump.end()) {
+      sum += jump + a[i];
+    } else {
+      jump++;
+    }
+  }
+  cout << sum << "\n";
+
+  // vl dp(n - k + 1, LINF);
+  // dp[0] = 0;
+
+  // rep(i, n) {
+  //   rep_r(j, n - k) {
+  //     chmin(dp[j + 1], dp[j] + (i - j) + a[i]);
+  //   }
+  // }
+  // cout << dp[n - k] << "\n";
 }
 
 signed main() {

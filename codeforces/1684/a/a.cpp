@@ -80,6 +80,10 @@ void compare() {
 
 void solve() {
   ll N; cin >> N;
+  vl digits;
+  while(N > 0) {digits.pb(N % 10); N /= 10;}
+  if (digits.size() == 2) cout << digits.front() << "\n";
+  else cout << *min_element(all(digits)) << "\n";
 }
 
 signed main() {
