@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc027",
+    "title": "AtCoder Beginner Contest 027",
+    "url": "https://atcoder.jp/contests/abc027"
+  },
+  "tasks": [
+    {
+      "id": "abc027_a",
+      "label": "A",
+      "title": "長方形",
+      "url": "https://atcoder.jp/contests/abc027/tasks/abc027_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc027_a.cpp"
+      }
+    },
+    {
+      "id": "abc027_b",
+      "label": "B",
+      "title": "島と橋",
+      "url": "https://atcoder.jp/contests/abc027/tasks/abc027_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc027_b.cpp"
+      }
+    },
+    {
+      "id": "abc027_c",
+      "label": "C",
+      "title": "倍々ゲーム",
+      "url": "https://atcoder.jp/contests/abc027/tasks/abc027_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc027_c.cpp"
+      }
+    },
+    {
+      "id": "abc027_d",
+      "label": "D",
+      "title": "ロボット",
+      "url": "https://atcoder.jp/contests/abc027/tasks/abc027_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc027_d.cpp"
+      }
+    }
+  ]
+}
