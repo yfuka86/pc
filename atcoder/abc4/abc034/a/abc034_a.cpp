@@ -54,101 +54,19 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-//------------------------------------------------------------------------------
-template <class S, S (*op)(S, S), S (*e)()> struct segtree {
-  public:
-  segtree() : segtree(0) {}
-  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
-  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
-  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
-  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
-  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
-  S all_prod() const { return d[1]; }
-  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
-  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
-    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
-  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
-  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
-    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
-  private:
-  int _n, size, log; std::vector<S> d;
-  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
-};
-//------------------------------------------------------------------------------
-
-using S = ll;
-S op(S l, S r) { return min(l, r); }
-S e() { return LINF; }
-
-
-
-struct R {
-  int h; ll w;
-  R(int h, ll w): h(h), w(w) {};
-};
-
-struct D {
-  stack<R> st;
-  ll ma = 0;
-  D() {}
-  void add(int h, ll w) {
-    ll tw = 0;
-    while (!st.empty() && st.top().h >= h) {
-      auto [lh, lw] = st.top();
-      tw += lw;
-      chmax(ma, tw * lh);
-      st.pop();
-    }
-    st.emplace(h, tw + w);
-  }
-};
-
-
 ll solve(ll N, vl a) {
-  stack<LP> st;
-  ll ans = 0;
-  a.pb(0);
-  D d;
-
-  rep(i, N + 1) {
-    d.add(a[i], 1);
-  }
-  return d.ma;
+  ll ans = -1; return ans;
 }
 
-// ll solve(ll N, vl a) {
-//   stack<LP> st;
-//   ll ans = 0;
-//   a.pb(0);
-
-//   rep(i, N + 1) {
-//     ll lasti = i;
-//     while(st.size() > 0 && st.top().fi >= a[i]) {
-//       auto [h, li] = st.top(); st.pop();
-//       lasti = li;
-//       chmax(ans, h * (i - li));
-//     }
-//     st.push({a[i], lasti});
-//   }
-//   return ans;
-// }
-
 ll naive(ll N, vl a) {
-  segtree<S, op, e> seg(a);
-  ll ans = 0;
-  rep(i, N) {
-    rep2(j, i, N) {
-      chmax(ans, seg.prod(i, j + 1) * (j - i + 1));
-    }
-  }
-  return ans;
+  ll ans = 1; return ans;
 }
 
 void compare() {
   RandGen rg; ll c = 0, loop = 10;
   while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 100;
-    vl a = rg.vecl(N, 1, 1e9);
+    ll N = 10;
+    vl a = rg.vecl(N, 1, 1e2);
     auto s = solve(N, a); auto n = naive(N, a);
     if (n != s) {
       cout << c << "times tried" << "\n";
@@ -160,18 +78,15 @@ void compare() {
   }
 }
 
-
-
-
 void solve() {
-  // ll N; cin >> N;
-  // vlin(a, N);
+  ll x,y; cin>>x>>y;
+  if (x < y)cout << "Better" << "\n"; else cout << "Worse" << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
   int t = 1; // cin >> t;
-  // while (t--) solve();
-  while (t--) compare();
+  while (t--) solve();
+  // while (t--) compare();
 }

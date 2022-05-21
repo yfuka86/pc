@@ -78,89 +78,69 @@ void compare() {
   }
 }
 
-// https://nyaannyaan.github.io/library/geometry/integer-geometry.hpp
+// https://nyaannyaan.github.io/library/geometry/geometry.hpp
 
-struct Point {
-  using T = __int128_t;
-  T x, y;
-  Point() : x(0), y(0) {}
-  Point(T x_, T y_) : x(x_), y(y_) {}
-  Point &operator+=(const Point &p) { this->x += p.x; this->y += p.y; return *this; }
-  Point &operator-=(const Point &p) { this->x -= p.x; this->y -= p.y; return *this; }
-
-  int pos() const { if (y < 0) return -1; if (y == 0 && 0 <= x) return 0; return 1; }
-  Point operator+(const Point &p) const { return Point(*this) += p; }
-  Point operator-(const Point &p) const { return Point(*this) -= p; }
-  Point operator-() const { return Point(-this->x, -this->y); }
-  bool operator==(const Point &p) const { return x == p.x && y == p.y; }
-  bool operator!=(const Point &p) const { return x != p.x || y != p.y; }
-  bool operator<(const Point &p) const { return x == p.x ? y < p.y : x < p.x; }
-  friend istream &operator>>(istream &is, Point &p) { long long x, y; is >> x >> y; p.x = x, p.y = y; return is; }
-  friend ostream &operator<<(ostream &os, const Point &p) { os << (long long)(p.x) << " " << (long long)(p.y); return os; }
-};
+using Real = long double;
+using Point = complex<Real>;
 using Points = vector<Point>;
+constexpr Real EPS = 1e-10;  // 問題によって変える！
+constexpr Real pi = 3.141592653589793238462643383279L;
+istream &operator>>(istream &is, Point &p) {
+  Real a, b;
+  is >> a >> b;
+  p = Point(a, b);
+  return is;
+}
+ostream &operator<<(ostream &os, Point &p) {
+  return os << real(p) << " " << imag(p);
+}
+inline bool eq(Real a, Real b) { return fabs(b - a) < EPS; }
 
-Point::T dot(const Point &a, const Point &b) { return a.x * b.x + a.y * b.y; }
-Point::T cross(const Point &a, const Point &b) { return a.x * b.y - a.y * b.x; }
-
-// sort by argument (-Pi ~ Pi)
-void ArgumentSort(Points &v) {
-  sort(begin(v), end(v), [](Point a, Point b) {
-    if (a.pos() != b.pos()) return a.pos() < b.pos();
-    return cross(a, b) > 0;
-  });
+Point operator*(const Point &p, const Real &d) {
+  return Point(real(p) * d, imag(p) * d);
 }
 
-// 1 ... counterclockwise / 0 straight / -1 clockwise
-int ccw(const Point &a, const Point &b, const Point &c) {
-  Point::T t = cross(b - a, c - a);
-  return t < 0 ? -1 : t == 0 ? 0 : 1;
+namespace std {
+bool operator<(const Point &a, const Point &b) {
+  return a.real() != b.real() ? a.real() < b.real() : a.imag() < b.imag();
 }
+}  // namespace std
+
+Real cross(const Point &a, const Point &b) {
+  return real(a) * imag(b) - imag(a) * real(b);
+}
+Real dot(const Point &a, const Point &b) {
+  return real(a) * real(b) + imag(a) * imag(b);
+}
+
+// 偏角ソート
+// 与えられた中心と点集合に対して、偏角のリストを返す
+vector<Real> arg_sort(Point &a , Points ps){
+  vector<Real> ret;
+  for(Point& p : ps) if(a != p) ret.push_back(atan2(p.imag() - a.imag(), p.real() - a.real()));
+  sort(begin(ret) , end(ret));
+  return ret;
+};
 
 void solve() {
   ll N; cin >> N;
   Points p(N);
-  rep(i, N) {
-    ll x, y; cin >> x >> y; p[i] = {x, y};
-  }
+  rep(i, N) cin >> p[i];
 
   ll ob = 0, right = 0;
-
   rep(i, N) {
-    Points t; rep(j, N) if (i != j) t.pb(p[j] - p[i]);
-    ArgumentSort(t);
-    t.insert(t.end(), t.begin(), t.end());
-
+    auto sorted = arg_sort(p[i], p);
+    rep(j, N - 1) sorted.pb(sorted[j] + 2 * M_PI);
     rep(j, N - 1) {
-      t[j]
-
-      ll over90 = binary_search([&](ll mid) {
-        if (mid >= n) return true;
-        if (dot(t[j], t[mid]) < 0) return true; else return false;
-      }, j + N - 1, 0);
-      ll less180 = binary_search([&](ll mid) {
-        if (mid >= n) return true;
-        if (dot(tfirst, t[mid]) > th) return true; else return false;
-      }, n, 0);
+      auto li1 = lower_bound(sorted.begin() + j + 1, sorted.end(), sorted[j] + M_PI / 2 - EPS);
+      auto li2 = lower_bound(sorted.begin() + j + 1, sorted.end(), sorted[j] + M_PI / 2 + EPS);
+      auto ui = lower_bound(sorted.begin() + j + 1, sorted.end(), sorted[j] + M_PI - EPS);
+      ob += ui - li2;
+      right += li2 - li1;
     }
-
-    ll obout = binary_search([&](ll mid) {
-      if (mid >= n) return true;
-      if (dot(tfirst, t[mid]) > th) return true; else return false;
-    }, n, 0);
-    ll ob = binary_search([&](ll mid) {
-      if (mid >= n) return true;
-      if (dot(tfirst, t[mid]) < 0) return true; else return false;
-    }, n, 0);
-
-    cout << (ll)tfirst.x << ":" << (ll)tfirst.y << "\n";
-    cout << ob << "\n";
-    ob += n - ob + 1;
-    // right += ob - obin;
   }
 
   ll tot = N * (N - 1) * (N - 2) / 6;
-
   cout << tot - (ob + right) << " " << right << " " << ob << "\n";
 }
 
