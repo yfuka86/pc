@@ -72,3 +72,34 @@ std::vector<int> z_algorithm(const std::string& s) {
   }
   return z_algorithm(s2);
 }
+
+vs split(string str, char del) {
+  int cur = 0; vs res;
+  while (cur < str.size()) {
+    auto to = str.find(del, cur); if (to == string::npos) to = str.size();
+    res.pb(str.substr(cur, to - cur));
+    cur = to + 1;
+  }
+  return res;
+}
+
+struct R {
+  int h; mint w;
+  R(int h, mint w): h(h), w(w) {};
+};
+
+struct D {
+  stack<R> st;
+  mint tot;
+  D() {}
+  void add(int h, mint w) {
+    while (!st.empty() && st.top().h <= h) {
+      auto [nh, nw] = st.top();
+      tot -= nw * nh;
+      w += nw;
+      st.pop();
+    }
+    tot += w * h;
+    st.emplace(h, w);
+  }
+};
