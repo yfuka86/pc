@@ -31,8 +31,8 @@ int main()
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
-  ll N; cin >> N;
-  cout << N << "\n";
+  string s; int i; cin >> s >> i;
+  cout << s[--i] << "\n";
 }
 
 

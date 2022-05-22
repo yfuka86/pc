@@ -81,14 +81,15 @@ void compare() {
 void solve() {
   ll N; cin >> N;
   vlin(a, N);
-  vlp stu(N);
-  rep(i, N) {
-    stu[i] = {a[i], i + 1};
+  a.pb(0);
+
+  vl dp(N + 2, LINF); dp[1] = 0;
+
+  rep2(i, 1, N) {
+    chmin(dp[i + 1], dp[i] + abs(a[i] - a[i - 1]));
+    chmin(dp[i + 2], dp[i] + abs(a[i + 1] - a[i - 1]));
   }
-  sort(all(stu)); reverse(all(stu));
-  rep(i, N) {
-    cout << stu[i].se << "\n";
-  }
+  cout << dp[N] << "\n";
 }
 
 signed main() {

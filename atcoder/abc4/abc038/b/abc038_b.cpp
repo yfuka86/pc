@@ -79,16 +79,8 @@ void compare() {
 }
 
 void solve() {
-  ll N; cin >> N;
-  vlin(a, N);
-  vlp stu(N);
-  rep(i, N) {
-    stu[i] = {a[i], i + 1};
-  }
-  sort(all(stu)); reverse(all(stu));
-  rep(i, N) {
-    cout << stu[i].se << "\n";
-  }
+  ll h1,w1,h2,w2; cin >> h1 >> w1 >> h2 >> w2;
+  if (h1 == h2 || h1 == w2 || w1 == h2 || w1 == w2) cout << "YES" << "\n"; else cout << "NO" << "\n";
 }
 
 signed main() {

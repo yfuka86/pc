@@ -79,16 +79,8 @@ void compare() {
 }
 
 void solve() {
-  ll N; cin >> N;
-  vlin(a, N);
-  vlp stu(N);
-  rep(i, N) {
-    stu[i] = {a[i], i + 1};
-  }
-  sort(all(stu)); reverse(all(stu));
-  rep(i, N) {
-    cout << stu[i].se << "\n";
-  }
+  string t; cin >> t;
+  cout << (t.back() == 'T' ? "YES" : "NO") << "\n";
 }
 
 signed main() {

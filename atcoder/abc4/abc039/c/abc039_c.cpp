@@ -79,16 +79,12 @@ void compare() {
 }
 
 void solve() {
-  ll N; cin >> N;
-  vlin(a, N);
-  vlp stu(N);
-  rep(i, N) {
-    stu[i] = {a[i], i + 1};
-  }
-  sort(all(stu)); reverse(all(stu));
-  rep(i, N) {
-    cout << stu[i].se << "\n";
-  }
+  string s; cin >> s;
+  string piano = "WBWBWWBWBWBW"; rep(i, 2) piano.insert(piano.end(), all(piano));
+
+  ll id = piano.find(s);
+  vs table = {"Do", "Re", "Mi", "Fa", "So", "La", "Si"};
+  cout << table[ceil(id, 2)] << "\n";
 }
 
 signed main() {

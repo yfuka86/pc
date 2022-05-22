@@ -79,7 +79,7 @@ void compare() {
 }
 
 void solve() {
-  ll N; cin >> N;
+  ll n; cin >> n;
 }
 
 signed main() {

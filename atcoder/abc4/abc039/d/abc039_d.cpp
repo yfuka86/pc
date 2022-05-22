@@ -79,16 +79,48 @@ void compare() {
 }
 
 void solve() {
-  ll N; cin >> N;
-  vlin(a, N);
-  vlp stu(N);
-  rep(i, N) {
-    stu[i] = {a[i], i + 1};
+  ll H, W; cin >> H >> W;
+  vvl grid(H, vl(W, 0));
+  rep(i, H) {
+    string s; cin >> s;
+    rep(j, W) if (s[j] == '#') grid[i][j] = 1;
   }
-  sort(all(stu)); reverse(all(stu));
-  rep(i, N) {
-    cout << stu[i].se << "\n";
+
+  vvl origin(H, vl(W, 0));
+  rep(i, H) {
+    rep(j, W) {
+      bool valid = true;
+      rep2(di, -1, 2) rep2(dj, -1, 2) {
+        ll x = i + di, y = j + dj;
+        if (0 <= x && x < H && 0 <= y && y < W) {
+          if (!grid[x][y]) valid = false;
+        }
+      }
+      if (valid) origin[i][j] = 1;
+    }
   }
+
+  vvl recover(H, vl(W, 0));
+  rep(i, H) {
+    rep(j, W) {
+      rep2(di, -1, 2) rep2(dj, -1, 2) {
+        ll x = i + di, y = j + dj;
+        if (0 <= x && x < H && 0 <= y && y < W && origin[x][y]) {
+          recover[i][j] = 1; break;
+        }
+      }
+    }
+  }
+
+  if (recover == grid) {
+    cout << "possible" << "\n";
+    rep(i, H) {
+      rep(j, W) {
+        if (origin[i][j]) cout << "#"; else cout << ".";
+      }
+      cout << "\n";
+    }
+  } else cout << "impossible" << "\n";
 }
 
 signed main() {

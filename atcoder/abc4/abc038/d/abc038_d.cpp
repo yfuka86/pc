@@ -80,15 +80,23 @@ void compare() {
 
 void solve() {
   ll N; cin >> N;
-  vlin(a, N);
-  vlp stu(N);
+  vlp box(N);
   rep(i, N) {
-    stu[i] = {a[i], i + 1};
+    ll w, h; cin >> w >> h;
+    box[i] = {w, -h};
   }
-  sort(all(stu)); reverse(all(stu));
+
+  sort(all(box));
+  vl dp(N, LINF);
   rep(i, N) {
-    cout << stu[i].se << "\n";
+    ll h = -box[i].se;
+    *lower_bound(all(dp), h) = h;
   }
+  // coutarray(dp);
+
+  ll ans = 0;
+  rep(i, N) if (dp[i] != LINF) ans = i + 1;
+  cout << ans << "\n";
 }
 
 signed main() {

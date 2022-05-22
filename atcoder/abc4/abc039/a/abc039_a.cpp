@@ -79,16 +79,8 @@ void compare() {
 }
 
 void solve() {
-  ll N; cin >> N;
-  vlin(a, N);
-  vlp stu(N);
-  rep(i, N) {
-    stu[i] = {a[i], i + 1};
-  }
-  sort(all(stu)); reverse(all(stu));
-  rep(i, N) {
-    cout << stu[i].se << "\n";
-  }
+  ll a, b, c; cin >> a >> b >> c;
+  cout << a * b * 2 + b * c * 2 + c * a * 2 << "\n";
 }
 
 signed main() {

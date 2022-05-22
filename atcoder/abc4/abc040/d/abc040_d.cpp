@@ -77,18 +77,43 @@ void compare() {
     }
   }
 }
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
 
 void solve() {
-  ll N; cin >> N;
-  vlin(a, N);
-  vlp stu(N);
-  rep(i, N) {
-    stu[i] = {a[i], i + 1};
+  ll N, M; cin >> N >> M;
+  vector<LT4> S;
+  rep(i, M) {
+    ll a, b, y; cin >> a >> b >> y; a--; b--;
+    S.pb({y, 0, a, b});
   }
-  sort(all(stu)); reverse(all(stu));
-  rep(i, N) {
-    cout << stu[i].se << "\n";
+  ll Q; cin >> Q;
+  rep(i, Q) {
+    ll v, w; cin >> v >> w; v--;
+    S.pb({w, 1, v, i});
   }
+
+  // 2つ目の要素を0, 1にしているのでwj年「以前」を満たすようにソートできる
+  sort(all(S)); reverse(all(S));
+  vl ans(Q);
+  UnionFind uf(N);
+  for (auto t: S) { auto [_, q, a, b] = t;
+    if (q) {
+      ans[b] = uf.size(a);
+    } else {
+      uf.unite(a, b);
+    }
+  }
+  coutarray(ans, 0, "\n");
 }
 
 signed main() {

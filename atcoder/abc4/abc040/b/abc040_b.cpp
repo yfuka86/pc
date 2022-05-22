@@ -80,15 +80,15 @@ void compare() {
 
 void solve() {
   ll N; cin >> N;
-  vlin(a, N);
-  vlp stu(N);
-  rep(i, N) {
-    stu[i] = {a[i], i + 1};
+  ll n = sqrt_ceil(N);
+
+  ll ans = LINF;
+  rep2(a, 1, n + 1) {
+    for(ll b = a; a * b <= N; b++) {
+      chmin(ans, b - a + N - a * b);
+    }
   }
-  sort(all(stu)); reverse(all(stu));
-  rep(i, N) {
-    cout << stu[i].se << "\n";
-  }
+  cout << ans << "\n";
 }
 
 signed main() {

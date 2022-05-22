@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc038",
+    "title": "AtCoder Beginner Contest 038",
+    "url": "https://atcoder.jp/contests/abc038"
+  },
+  "tasks": [
+    {
+      "id": "abc038_a",
+      "label": "A",
+      "title": "お茶",
+      "url": "https://atcoder.jp/contests/abc038/tasks/abc038_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc038_a.cpp"
+      }
+    },
+    {
+      "id": "abc038_b",
+      "label": "B",
+      "title": "ディスプレイ",
+      "url": "https://atcoder.jp/contests/abc038/tasks/abc038_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc038_b.cpp"
+      }
+    },
+    {
+      "id": "abc038_c",
+      "label": "C",
+      "title": "単調増加",
+      "url": "https://atcoder.jp/contests/abc038/tasks/abc038_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc038_c.cpp"
+      }
+    },
+    {
+      "id": "abc038_d",
+      "label": "D",
+      "title": "プレゼント",
+      "url": "https://atcoder.jp/contests/abc038/tasks/abc038_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc038_d.cpp"
+      }
+    }
+  ]
+}
