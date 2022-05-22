@@ -79,7 +79,27 @@ void compare() {
 }
 
 void solve() {
-  ll N; cin >> N;
+  string S; ll T; cin >> S >> T;
+
+  ll x = 0, y = 0, free = 0;
+  rep(i, S.size()) {
+    if (S[i] == 'L') x--;
+    if (S[i] == 'R') x++;
+    if (S[i] == 'U') y++;
+    if (S[i] == 'D') y--;
+    if (S[i] == '?') free++;
+  }
+
+  if (T == 1) {
+    cout << abs(x) + abs(y) + free << "\n";
+  } else {
+    ll sum = abs(x) + abs(y);
+    if (free <= sum) {
+      cout << sum - free << "\n";
+    } else {
+      cout << (free - sum & 1 ? 1 : 0) << "\n";
+    }
+  }
 }
 
 signed main() {
