@@ -3,7 +3,7 @@
 using namespace atcoder;
 using mint = modint998244353;
 const ll mod = 998244353;
-typedef vector<mint> vmi;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> vvvmi;
 //------------------------------------------------------------------------------
 const int max_n = 1 << 20;
 mint fact[max_n], factinv[max_n];
