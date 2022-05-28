@@ -54,57 +54,49 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-#include <atcoder/string>
-using namespace atcoder;
+ll solve(ll N, vl a) {
+  ll ans = -1; return ans;
+}
 
-template <class T> struct D {
-  stack<pair<int, T>> st;
-  T tot;
-  D(T e = 0) { tot = e; }
-  void add(int h, T w) {
-    while (!st.empty() && st.top().fi <= h) {
-      auto [nh, nw] = st.top();
-      tot -= nw * nh;
-      w += nw;
-      st.pop();
+ll naive(ll N, vl a) {
+  ll ans = 1; return ans;
+}
+
+void compare() {
+  RandGen rg; ll c = 0, loop = 10;
+  while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 10;
+    vl a = rg.vecl(N, 1, 1e2);
+    auto s = solve(N, a); auto n = naive(N, a);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
+      cout << N << "\n"; coutarray(a);
+      cout << "solve: " << s << "\n";
+      cout << "naive: " << n << "\n";
+      break;
     }
-    tot += w * h;
-    st.emplace(h, w);
   }
-};
-
-
+}
 
 void solve() {
-  ll N; cin >> N;
-  string S; cin >> S;
-  vi sa = suffix_array(S);
-  vi lcpa = lcp_array(S, sa);
+  ll N, A, B; cin >> N >> A >> B;
+  ll x = N / A;
+  ll y = N / B;
 
-  D<ll> d, dr;
+  ll lc = lcm(A, B);
+  ll z = N / lc;
 
-  vl dp(N, 0);
-  rep(i, N - 1) {
-    d.add(-lcpa[i], 1);
-    dp[i + 1] -= d.tot;
-  }
-  rep_r(i, N - 1) {
-    dr.add(-lcpa[i], 1);
-    dp[i] -= dr.tot;
-  }
+  auto f = [&](ll x) {
+    return x * (x + 1) / 2;
+  };
 
-  vl ans(N, 0);
-  rep(i, N) {
-    ll id = sa[i];
-    ans[id] = (N - id) + dp[i];
-  }
-  coutarray(ans, 0, "\n");
+  cout <<  f(N) - A * f(x) - B * f(y) + lc * f(z) << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  int t = 1; // cin >> t;
   while (t--) solve();
+  // while (t--) compare();
 }

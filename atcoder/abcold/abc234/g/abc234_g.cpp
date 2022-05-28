@@ -92,17 +92,12 @@ S mine() { return LINF; }
 S maxop(S l, S r) { return max(l, r); }
 S maxe() { return 0; }
 
-struct R {
-  int h; mint w;
-  R(int h, mint w): h(h), w(w) {};
-};
-
-struct D {
-  stack<R> st;
-  mint tot;
-  D() {}
-  void add(int h, mint w) {
-    while (!st.empty() && st.top().h <= h) {
+template <class T> struct Hist {
+  stack<pair<int, T>> st;
+  T tot;
+  Hist(T e = 0) { tot = e; }
+  void add(int h, T w) {
+    while (!st.empty() && st.top().first <= h) {
       auto [nh, nw] = st.top();
       tot -= nw * nh;
       w += nw;
@@ -120,7 +115,7 @@ void solve() {
   // segtree<S, maxop, maxe> maxs(A);
 
   vmi dp(N + 1);
-  D dmax, dmin;
+  Hist<mint> dmax, dmin;
   dp[0] = 1;
   rep(i, N) {
     dmax.add(A[i], dp[i]);

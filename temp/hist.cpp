@@ -1,15 +1,9 @@
-
-struct R {
-  int h; mint w;
-  R(int h, mint w): h(h), w(w) {};
-};
-
-struct D {
-  stack<R> st;
-  mint tot;
-  D() {}
-  void add(int h, mint w) {
-    while (!st.empty() && st.top().h <= h) {
+template <class T> struct Hist {
+  stack<pair<int, T>> st;
+  T tot;
+  Hist(T e = 0) { tot = e; }
+  void add(int h, T w) {
+    while (!st.empty() && st.top().first <= h) {
       auto [nh, nw] = st.top();
       tot -= nw * nh;
       w += nw;

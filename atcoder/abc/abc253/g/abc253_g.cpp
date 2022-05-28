@@ -54,57 +54,81 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-#include <atcoder/string>
-using namespace atcoder;
+ll solve(ll N, vl a) {
+  ll ans = -1; return ans;
+}
 
-template <class T> struct D {
-  stack<pair<int, T>> st;
-  T tot;
-  D(T e = 0) { tot = e; }
-  void add(int h, T w) {
-    while (!st.empty() && st.top().fi <= h) {
-      auto [nh, nw] = st.top();
-      tot -= nw * nh;
-      w += nw;
-      st.pop();
+ll naive(ll N, vl a) {
+  ll ans = 1; return ans;
+}
+
+void compare() {
+  RandGen rg; ll c = 0, loop = 10;
+  while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 10;
+    vl a = rg.vecl(N, 1, 1e2);
+    auto s = solve(N, a); auto n = naive(N, a);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
+      cout << N << "\n"; coutarray(a);
+      cout << "solve: " << s << "\n";
+      cout << "naive: " << n << "\n";
+      break;
     }
-    tot += w * h;
-    st.emplace(h, w);
   }
+}
+
+// 1回O(1)で擬似回転するベクタ rotateの第二引数と同じ(右シフトならsize-1、左シフトなら1)
+template<typename T>
+struct RotateVector {
+  __uint128_t offset = 0; vector<T> vec;
+  RotateVector(vector<T> &v) { vec = v; }
+  void rotate(ll a) { offset += a; }
+  T &operator[](int k) { return vec[(k + offset) % vec.size()]; }
 };
 
-
-
 void solve() {
-  ll N; cin >> N;
-  string S; cin >> S;
-  vi sa = suffix_array(S);
-  vi lcpa = lcp_array(S, sa);
+  ll N, L, R; cin >> N >> L >> R;
 
-  D<ll> d, dr;
+  vl num(N);
+  rep(i, N) num[i] = N - i - 1;
+  vl numsum(N, 0);
+  rep(i, N - 1) numsum[i + 1] = numsum[i] + num[i];
 
-  vl dp(N, 0);
-  rep(i, N - 1) {
-    d.add(-lcpa[i], 1);
-    dp[i + 1] -= d.tot;
-  }
-  rep_r(i, N - 1) {
-    dr.add(-lcpa[i], 1);
-    dp[i] -= dr.tot;
+  ll li = lbs(numsum, L);
+  ll ri = lbs(numsum, R);
+
+  vl tmp(N); iota(all(tmp), 0);
+
+  ll from = li + L - numsum[li - 1];
+  if (li == ri) {
+    rep2(r, from, from + R - L + 1) {
+      swap(tmp[li - 1], tmp[r - 1]);
+    }
+    coutarray(tmp, 1);
+    return;
+  } else {
+    rep2(r, from, N + 1) {
+      swap(tmp[li - 1], tmp[r - 1]);
+    }
   }
 
-  vl ans(N, 0);
-  rep(i, N) {
-    ll id = sa[i];
-    ans[id] = (N - id) + dp[i];
+  vl t;
+  t.insert(t.end(), tmp.end() - (ri - li - 1), tmp.end());
+  reverse(all(t));
+  tmp.insert(tmp.begin() + li, t.begin(), t.end());
+  tmp.erase(tmp.begin() + N, tmp.end());
+
+  rep(r, R - numsum[ri - 1]) {
+    swap(tmp[ri - 1], tmp[ri + r]);
   }
-  coutarray(ans, 0, "\n");
+  coutarray(tmp, 1);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  int t = 1; // cin >> t;
   while (t--) solve();
+  // while (t--) compare();
 }

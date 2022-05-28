@@ -54,57 +54,101 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-#include <atcoder/string>
-using namespace atcoder;
+ll solve(ll N, vl a) {
+  ll ans = -1; return ans;
+}
 
-template <class T> struct D {
-  stack<pair<int, T>> st;
-  T tot;
-  D(T e = 0) { tot = e; }
-  void add(int h, T w) {
-    while (!st.empty() && st.top().fi <= h) {
-      auto [nh, nw] = st.top();
-      tot -= nw * nh;
-      w += nw;
-      st.pop();
+ll naive(ll N, vl a) {
+  ll ans = 1; return ans;
+}
+
+void compare() {
+  RandGen rg; ll c = 0, loop = 10;
+  while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 10;
+    vl a = rg.vecl(N, 1, 1e2);
+    auto s = solve(N, a); auto n = naive(N, a);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
+      cout << N << "\n"; coutarray(a);
+      cout << "solve: " << s << "\n";
+      cout << "naive: " << n << "\n";
+      break;
     }
-    tot += w * h;
-    st.emplace(h, w);
   }
+}
+
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
 };
-
-
+// ----------------------------------------------------------------------
 
 void solve() {
-  ll N; cin >> N;
-  string S; cin >> S;
-  vi sa = suffix_array(S);
-  vi lcpa = lcp_array(S, sa);
+  ll N, M, Q; cin >> N >> M >> Q;
 
-  D<ll> d, dr;
+  vector<LT4> query;
+  rep(_, Q) {
+    ll q; cin >> q;
+    if (q == 1) {
+      ll l, r, x; cin >> l >> r >> x;
+      query.pb({q, --l, --r, x});
+    } else if (q == 2) {
+      ll i, x; cin >> i >> x;
+      query.pb({q, --i, x, -1});
+    } else {
+      ll i, j; cin >> i >> j;
+      query.pb({q, --i, --j, -1});
+    }
+  }
 
-  vl dp(N, 0);
-  rep(i, N - 1) {
-    d.add(-lcpa[i], 1);
-    dp[i + 1] -= d.tot;
-  }
-  rep_r(i, N - 1) {
-    dr.add(-lcpa[i], 1);
-    dp[i] -= dr.tot;
+  vl ans;
+  BIT<ll> bt(M + 1);
+  reverse(all(query));
+  map<ll, vlp> m;
+  for (auto t: query) {
+    auto [q, i, j, k] = t;
+    if (q == 1) {
+      bt.add(i, k);
+      bt.add(++j, -k);
+    } else if (q == 2) {
+      for (auto [idx, jj]: m[i]) {
+        ans[idx] += bt.sum(jj + 1) + j;
+      }
+      m[i].clear();
+    } else {
+      ans.pb(-bt.sum(j + 1));
+      m[i].pb({ans.size() - 1, j});
+    }
   }
 
-  vl ans(N, 0);
-  rep(i, N) {
-    ll id = sa[i];
-    ans[id] = (N - id) + dp[i];
+  for (auto[i, mv]: m) {
+    for (auto [idx, jj]: mv) {
+      ans[idx] += bt.sum(jj + 1);
+    }
   }
+
+  reverse(all(ans));
   coutarray(ans, 0, "\n");
 }
 
 signed main() {
   ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  int t = 1; // cin >> t;
   while (t--) solve();
+  // while (t--) compare();
 }

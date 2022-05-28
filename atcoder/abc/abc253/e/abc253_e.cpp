@@ -54,57 +54,84 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-#include <atcoder/string>
-using namespace atcoder;
+ll solve(ll N, vl a) {
+  ll ans = -1; return ans;
+}
 
-template <class T> struct D {
-  stack<pair<int, T>> st;
-  T tot;
-  D(T e = 0) { tot = e; }
-  void add(int h, T w) {
-    while (!st.empty() && st.top().fi <= h) {
-      auto [nh, nw] = st.top();
-      tot -= nw * nh;
-      w += nw;
-      st.pop();
+ll naive(ll N, vl a) {
+  ll ans = 1; return ans;
+}
+
+void compare() {
+  RandGen rg; ll c = 0, loop = 10;
+  while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll N = 10;
+    vl a = rg.vecl(N, 1, 1e2);
+    auto s = solve(N, a); auto n = naive(N, a);
+    if (n != s) {
+      cout << c << "times tried" << "\n";
+      cout << N << "\n"; coutarray(a);
+      cout << "solve: " << s << "\n";
+      cout << "naive: " << n << "\n";
+      break;
     }
-    tot += w * h;
-    st.emplace(h, w);
   }
-};
+}
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> vvvmi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
 
 void solve() {
-  ll N; cin >> N;
-  string S; cin >> S;
-  vi sa = suffix_array(S);
-  vi lcpa = lcp_array(S, sa);
+  ll N, M, K; cin >> N >> M >> K;
 
-  D<ll> d, dr;
+  vvmi dp(N + 1, vmi(M + 1, 0));
+  vvmi dpsum(N + 1, vmi(M + 2, 0));
 
-  vl dp(N, 0);
-  rep(i, N - 1) {
-    d.add(-lcpa[i], 1);
-    dp[i + 1] -= d.tot;
-  }
-  rep_r(i, N - 1) {
-    dr.add(-lcpa[i], 1);
-    dp[i] -= dr.tot;
-  }
+  rep2(i, 1, M + 1) dp[1][i] = 1;
+  rep2(i, 1, M + 1) dpsum[1][i + 1] = dpsum[1][i] + dp[1][i];
 
-  vl ans(N, 0);
-  rep(i, N) {
-    ll id = sa[i];
-    ans[id] = (N - id) + dp[i];
+  rep2(i, 1, N) {
+    rep2(j, 1, M + 1) {
+      dp[i + 1][j] += dpsum[i][max<ll>(0, j - K + 1)] - dpsum[i][0] + dpsum[i][M + 1] - dpsum[i][min<ll>(M + 1, j + K)];
+      if (K == 0) dp[i + 1][j] -= dp[i][j];
+    }
+    rep2(j, 1, M + 1) dpsum[i + 1][j + 1] = dpsum[i + 1][j] + dp[i + 1][j];
   }
-  coutarray(ans, 0, "\n");
+  // if (N < 100) coutmatrix(dp);
+  cout << dpsum[N][M + 1] << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  int t = 1; // cin >> t;
   while (t--) solve();
+  // while (t--) compare();
 }

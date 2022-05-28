@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc253",
+    "title": "NOMURA Programming Contest 2022（AtCoder Beginner Contest 253）",
+    "url": "https://atcoder.jp/contests/abc253"
+  },
+  "tasks": [
+    {
+      "id": "abc253_a",
+      "label": "A",
+      "title": "Median?",
+      "url": "https://atcoder.jp/contests/abc253/tasks/abc253_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc253_a.cpp"
+      }
+    },
+    {
+      "id": "abc253_b",
+      "label": "B",
+      "title": "Distance Between Tokens",
+      "url": "https://atcoder.jp/contests/abc253/tasks/abc253_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc253_b.cpp"
+      }
+    },
+    {
+      "id": "abc253_c",
+      "label": "C",
+      "title": "Max - Min Query",
+      "url": "https://atcoder.jp/contests/abc253/tasks/abc253_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc253_c.cpp"
+      }
+    },
+    {
+      "id": "abc253_d",
+      "label": "D",
+      "title": "FizzBuzz Sum Hard",
+      "url": "https://atcoder.jp/contests/abc253/tasks/abc253_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc253_d.cpp"
+      }
+    },
+    {
+      "id": "abc253_e",
+      "label": "E",
+      "title": "Distance Sequence",
+      "url": "https://atcoder.jp/contests/abc253/tasks/abc253_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc253_e.cpp"
+      }
+    },
+    {
+      "id": "abc253_f",
+      "label": "F",
+      "title": "Operations on a Matrix",
+      "url": "https://atcoder.jp/contests/abc253/tasks/abc253_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc253_f.cpp"
+      }
+    },
+    {
+      "id": "abc253_g",
+      "label": "G",
+      "title": "Swap Many Times",
+      "url": "https://atcoder.jp/contests/abc253/tasks/abc253_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc253_g.cpp"
+      }
+    },
+    {
+      "id": "abc253_h",
+      "label": "Ex",
+      "title": "We Love Forest",
+      "url": "https://atcoder.jp/contests/abc253/tasks/abc253_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc253_h.cpp"
+      }
+    }
+  ]
+}
