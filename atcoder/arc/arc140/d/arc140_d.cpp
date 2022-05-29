@@ -85,9 +85,43 @@ void solve() {
   ll N; cin >> N;
   vlin(A, N); rep(i, N) if (A[i] > 0) A[i]--;
 
+  vl used(N, 0);
+  ll cycles = 0;
+  function<void(ll)> dfs = [&](ll v) {
+    used[v] = 1;
+    if (A[v] == -1) return;
+    if (used[A[v]]) { cycles++; return; }
+    dfs(A[v]);
+  };
   rep(i, N) {
-
+    if (A[i] != -1 && !used[i]) {
+      dfs(A[i]);
+    }
   }
+
+  ll free = 0;
+  rep(i, N) if (A[i] == -1) free++;
+
+  vvmi dp(free + 1, vmi(free + 1, 0)), dpsum(free + 1, vmi(free + 2, 0));
+  dp[0][0] = 1;
+
+  // dp[サイクル数][何個目まで見たか]
+  rep(i, free) {
+    rep(j, free + 1) {
+      dpsum[i][j + 1] = dpsum[i][j] + dp[i][j];
+    }
+
+    rep(j, free) {
+      dp[i + 1][j + 1] += dpsum[i][j + 1];
+    }
+  }
+  coutmatrix(dp);
+
+  mint ans = 0;
+  rep(i, free + 1) {
+    ans += dp[i][free] * (i + cycles);
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

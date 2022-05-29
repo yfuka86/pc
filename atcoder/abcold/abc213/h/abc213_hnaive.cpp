@@ -83,46 +83,36 @@ template< typename T = ll > struct Graph {
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-vlp es;
-vvmi ps, dp;
-
-void dfs(int l, int r) {
-  if (r - l <= 1) return;
-  ll c = (l + r) / 2;
-  dfs(l, c);
-  rep(ei, es.size()) {
-    auto [a, b] = es[ei];
-    rep(_, 2) {
-      vmi x(dp[a].begin() + l, dp[a].begin() + c);
-      vmi y(ps[ei].begin(), ps[ei].begin() + r - l);
-      auto z = convolution(x, y);
-      rep2(i, c, r) {
-        dp[b][i] += z[i - l];
-      }
-      swap(a, b);
-    }
-  }
-  dfs(c, r);
-}
 
 void solve() {
-  ll n, m, t;
-  cin >> n >> m >> t;
-  rep(i, m) {
-    ll a, b; cin >> a >> b;
-    --a; --b;
-    es.emplace_back(a, b);
-    vector<mint> p(t + 1);
-    rep(j, t) {
-      ll t; cin >> t; p[j + 1] = t;
+  ll N, M, T; cin >> N >> M >> T;
+  Graph<ll> G(N);
+  vvl p(M, vl(T));
+  rep(i, M) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G.add_edge(a, b);
+    rep(j, T) {
+      cin >> p[i][j];
     }
-    ps.pb(p);
   }
 
-  dp.resize(n, vector<mint>(t + 1));
-  dp[0][0] = 1;
-  dfs(0, t + 1);
-  cout << dp[0][t].val() << "\n";
+  vvmi dp(N, vmi(T + 1, 0)), dpt(N, vmi(T + 1, 0));
+  dp[0][0] = 1; dpt[0][0] = 1;
+
+  rep2(j, 1, T + 1) {
+    rep(i, N) {
+      for (auto &from: G[i]) {
+        rep2(k, 1, j + 1) {
+          dpt[i][j] += dp[from][j - k] * p[from.idx][k - 1];
+        }
+      }
+    }
+    dp = dpt;
+    // coutmatrix(dp);
+    // cout << "\n";
+  }
+
+  cout << dp[0][T].val() << "\n";
 }
 
 signed main() {
