@@ -5,7 +5,7 @@
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
-#define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]--;}
+#define vlin(name,sz) vl name(sz); rep(i,sz) cin>>name[i];
 #define pb push_back
 #define mp make_pair
 #define fi first
@@ -14,7 +14,7 @@
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
-typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
+typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> vvvl;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb;
 const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
@@ -26,15 +26,13 @@ struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
-  vl vecperm(ll l, ll from = 0) { vl perm(l); iota(all(perm), from); shuffle(perm); return perm; }
+  vl vecperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
   string str(ll l, vector<char> op) { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(op[fig[i]]); return s; }
   string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
-  void shuffle(vl &a) { std::shuffle(all(a), mt); }
 };
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
@@ -56,22 +54,92 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll N, vl a) {
-  ll ans = -1; return ans;
+void enum_check(ll N, ll from, ll to, function<bool(vl&)> check) { // size, [from, to)
+  to--; vl st(N, from);
+  while (1) {
+    assert(st.size() == N); if (!check(st)) break;
+    while (st.back() == to) st.pop_back(); if (st.size() == 0) break;
+    st.back()++; while (st.size() < N) st.pb(from);
+  }
 }
 
-ll naive(ll N, vl a) {
-  ll ans = 1; return ans;
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> vvvmi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+
+
+mint solve(ll N, ll M) {
+  mint ans = 0;
+  if (N > 62) return ans;
+
+  vvmi dp(N + 1, vmi(62, 0));
+  dp[0][0] = 1;
+
+  rep(i, N) {
+    rep2(j, 1, 62) {
+      ll cand = min(M, (1LL << j) - 1) - min(M, (1LL << j - 1) - 1);
+      if (cand == 0) continue;
+      for (ll k = 1; j - k >= 0; k++) {
+        dp[i + 1][j] += dp[i][j - k] * cand;
+      }
+    }
+  }
+  // coutmatrix(dp);
+
+  return accumulate(all(dp[N]), mint(0));
 }
 
-void compare() { RandGen rg; ll c = 0, loop = 10;
+mint naive(ll N, ll M) {
+  mint ans = 0;
+  enum_check(N, 1, M + 1, [&](vl& a) {
+    ll sum = 0;
+    bool valid = true;
+    rep(i, N - 1) {
+      if (a[i] >= a[i + 1]) { valid = false; break; }
+      sum ^= a[i];
+      if (sum >= (sum ^ a[i + 1])) { valid = false; break; }
+    }
+    if (valid) ans += 1;
+    return true;
+  });
+  return ans;
+}
+
+void compare() {
+  RandGen rg; ll c = 0, loop = 10;
   while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 10;
-    vl a = rg.vecl(N, 1, 1e2);
-    auto s = solve(N, a); auto n = naive(N, a);
+    ll N = 3;
+    ll M = rg.l(N, 15);
+    auto s = solve(N, M); auto n = naive(N, M);
     if (n != s) {
       cout << c << "times tried" << "\n";
-      cout << N << "\n"; coutarray(a);
+      cout << N << " " << M << "\n";
       cout << "solve: " << s << "\n";
       cout << "naive: " << n << "\n";
       break;
@@ -80,13 +148,14 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll N, M; cin >> N >> M;
+  cout << solve(N, M) << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

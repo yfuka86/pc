@@ -14,7 +14,7 @@
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
-typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
+typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> vvvl;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb;
 const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
@@ -64,7 +64,8 @@ ll naive(ll N, vl a) {
   ll ans = 1; return ans;
 }
 
-void compare() { RandGen rg; ll c = 0, loop = 10;
+void compare() {
+  RandGen rg; ll c = 0, loop = 10;
   while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll N = 10;
     vl a = rg.vecl(N, 1, 1e2);
@@ -78,15 +79,110 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
     }
   }
 }
+const ll mod = 10000;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> vvvmi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+ll M;
+vl p10(600, 0);
+
+void calcp10() {
+  p10[0] = 1;
+  rep(i, 600) {
+    p10[i + 1] = p10[i] * 10;
+    p10[i + 1] %= M;
+  }
+}
+
+mint zigzag(vl a) {
+  ll n = a.size();
+  vector<vvvmi> dp(M, vvvmi(10, vvmi(3, vmi(2, 0)))), dpt(M, vvvmi(10, vvmi(3, vmi(2, 0))));;
+  rep2(i, 1, a[0]) dp[i * p10[n - 1] % M][i][0][0] = 1;
+  dp[a[0] * p10[n - 1] % M][a[0]][0][1] = 1;
+
+  rep2(i, 1, n) {
+    rep2(d, 1, 10) dpt[d * p10[n - i - 1] % M][d][0][0] += 1;
+    rep(m, M) {
+      rep(d, 10) rep(nd, 10) {
+        if (d == nd) continue;
+        ll add = nd * p10[n - i - 1];
+
+        if (d > nd) {
+          dpt[(m + add) % M][nd][1][0] += dp[m][d][0][0];
+          dpt[(m + add) % M][nd][1][0] += dp[m][d][2][0];
+          if (nd <= a[i]) {
+            dpt[(m + add) % M][nd][1][nd == a[i]] += dp[m][d][0][1];
+            dpt[(m + add) % M][nd][1][nd == a[i]] += dp[m][d][2][1];
+          }
+        } else {
+          dpt[(m + add) % M][nd][2][0] += dp[m][d][0][0];
+          dpt[(m + add) % M][nd][2][0] += dp[m][d][1][0];
+          if (nd <= a[i]) {
+            dpt[(m + add) % M][nd][2][nd == a[i]] += dp[m][d][0][1];
+            dpt[(m + add) % M][nd][2][nd == a[i]] += dp[m][d][1][1];
+          }
+        }
+      }
+    }
+    dp = dpt;
+    dpt.assign(M, vvvmi(10, vvmi(3, vmi(2, 0))));
+  }
+
+  mint ans = 0;
+  rep(d, 10) rep(i, 3) rep(j, 2) ans += dp[0][d][i][j];
+
+  return ans;
+}
+
 
 void solve() {
-  ll n; cin >> n;
+  string A, B;
+  cin >> A >> B >> M;
+  calcp10();
+  vl a, b;
+  rep(i, A.size()) a.pb(A[i] - '0');
+  rep(i, B.size()) b.pb(B[i] - '0');
+
+  ll dsum = 0;
+  rep(i, a.size()) dsum += a[i] * p10[a.size() - i - 1];
+  bool valid = dsum % M == 0;
+  rep(i, a.size() - 2) {
+    if (a[i] < a[i + 1] && a[i + 1] > a[i + 2]) continue;
+    if (a[i] > a[i + 1] && a[i + 1] < a[i + 2]) continue;
+    valid = false; break;
+  }
+  cout << zigzag(b) - zigzag(a) + valid << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

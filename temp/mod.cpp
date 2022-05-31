@@ -16,7 +16,7 @@ template< int mod > struct ModInt {
   friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
   static int get_mod() { return mod; }
 };
-using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> vvvmi;
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<vvvmi> v4mi;
 //------------------------------------------------------------------------------
 const int max_n = 1 << 20;
 mint fact[max_n], factinv[max_n];

@@ -5,7 +5,7 @@
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
-#define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]--;}
+#define vlin(name,sz) vl name(sz); rep(i,sz) cin>>name[i];
 #define pb push_back
 #define mp make_pair
 #define fi first
@@ -14,7 +14,7 @@
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
-typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
+typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> vvvl;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb;
 const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
@@ -22,6 +22,7 @@ const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX 
 using A = ll;
 template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
+
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
@@ -32,9 +33,9 @@ struct RandGen {
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
   void shuffle(vl &a) { std::shuffle(all(a), mt); }
 };
+
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
@@ -61,13 +62,34 @@ ll solve(ll N, vl a) {
 }
 
 ll naive(ll N, vl a) {
-  ll ans = 1; return ans;
+  vl par;
+  rep(_, N / 2) { par.pb(1); par.pb(-1); }
+  RandGen().shuffle(par);
+
+  sort(all(a));
+  vl rev = a; reverse(all(rev));
+  vl mi = rev, ma = a;
+  do {
+    ll sum = 0;
+    bool valid = true;
+    rep(i, N) {
+      sum += par[a[i]];
+      if (sum < 0) valid = false;
+    }
+    if (valid) { chmin(mi, a); chmax(ma, a); }
+  } while (next_permutation(all(a)));
+
+  coutarray(par);
+  coutarray(mi,1);
+  coutarray(ma,1);
+  return 0;
 }
 
-void compare() { RandGen rg; ll c = 0, loop = 10;
+void compare() {
+  RandGen rg; ll c = 0, loop = 10;
   while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 10;
-    vl a = rg.vecl(N, 1, 1e2);
+    ll N = 6;
+    vl a = rg.vecperm(N);
     auto s = solve(N, a); auto n = naive(N, a);
     if (n != s) {
       cout << c << "times tried" << "\n";
@@ -79,14 +101,84 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+vl build(vl& a, bool minimum = true) {
+  priority_queue<ll, vl, greater<ll>> open, close;
+  vl ret;
+
+  rep(i, a.size()) {
+    if (a[i] == 1) open.push(minimum ? i : -i);
+    else close.push(minimum ? i : -i);
+  }
+
+  ll sum = 0;
+  while(open.size() || close.size()) {
+    if (open.size() == 0) {
+      ret.pb(close.top()); close.pop();
+    } else {
+      if (sum > 0 && close.top() < open.top()) {
+        ret.pb(close.top()); close.pop();
+        sum--;
+      } else {
+        ret.pb(open.top()); open.pop();
+        sum++;
+      }
+    }
+  }
+
+  if (!minimum) {
+    rep(i, ret.size()) ret[i] = -ret[i];
+  }
+  return ret;
+}
+
 void solve() {
-  ll n; cin >> n;
+  ll N; cin >> N;
+  vlin(p, N * 2);
+  vlin(q, N * 2);
+  rep(i, N * 2) {
+    p[i]--; q[i]--;
+  }
+
+  bool valid = true;
+
+  vl ans(N * 2, 0);
+  rep(i, N * 2 - 1) {
+    if (p[i] > p[i + 1]) {
+      if (ans[p[i]] == -1 || ans[p[i + 1]] == 1) valid = false;
+      ans[p[i]] = 1;
+      ans[p[i + 1]] = -1;
+    }
+    if (q[i] < q[i + 1]) {
+      if (ans[q[i]] == -1 || ans[q[i + 1]] == 1) valid = false;
+      ans[q[i]] = 1;
+      ans[q[i + 1]] = -1;
+    }
+  }
+  rep(i, N * 2) {
+    if (ans[i] == 0) valid = false;
+  }
+
+  ll sum1 = 0, sum2 = 0;
+  rep(i, N * 2) {
+    sum1 += ans[p[i]];
+    sum2 += ans[q[i]];
+    if (sum1 < 0 || sum2 < 0) valid = false;
+  }
+  if (sum1 != 0 || sum2 != 0) valid = false;
+
+  if (!valid || build(ans) != p || build(ans, false) != q) cout << -1 << "\n";
+  else {
+    rep(i, N * 2) {
+      if (ans[i] == 1) cout << "("; else cout << ")";
+    }
+    cout << "\n";
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
-  while (t--) solve();
-  // while (t--) compare();
+  int t = 1; // cin >> t;
+  // while (t--) solve();
+  while (t--) compare();
 }
