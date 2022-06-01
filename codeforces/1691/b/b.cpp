@@ -81,6 +81,20 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(a, n, 0);
+  map<ll, vl> m;
+  rep(i, n) {
+    m[a[i]].pb(i);
+  }
+
+  vl ans(n, -1);
+  for (auto [sz, v]: m) {
+    if (v.size() == 1) { cout << -1 << "\n"; return; }
+    rep(i, v.size()) {
+      ans[v[i]] = v[(i + 1) % v.size()];
+    }
+  }
+  coutarray(ans, 1);
 }
 
 signed main() {

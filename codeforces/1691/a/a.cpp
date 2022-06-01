@@ -81,6 +81,13 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(a, n, 0);
+  ll odd = 0, even = 0;
+  rep(i, n) {
+    if (a[i] & 1) odd++; else even++;
+  }
+
+  cout << min(odd, even) << "\n";
 }
 
 signed main() {

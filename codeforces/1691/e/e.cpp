@@ -5,7 +5,7 @@
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
-#define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]--;}
+#define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]-=offset;}
 #define pb push_back
 #define mp make_pair
 #define fi first
@@ -79,8 +79,74 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
+
 void solve() {
   ll n; cin >> n;
+  vector<LT> seg(n);
+
+  rep(i, n) {
+    ll c, l, r; cin >> c >> l >> r;
+    seg[i] = {r, l, c};
+  }
+  sort(all(seg));
+
+  vector<LT> ev;
+  rep(i, n) {
+    auto [r, l, c] = seg[i];
+    ev.pb({l, i, c});
+    ev.pb({r, i, c});
+  }
+  sort(all(ev));
+
+  vector<set<ll>> open(2);
+  UnionFind uf(n);
+
+  ll laste = -1;
+  vvl todelete(2);
+  for (auto [e,i,c]: ev) {
+    if (chmax(laste, e)) {
+      rep(i, 2) {
+        for (auto d: todelete[i]) {
+          open[i].erase(d);
+        }
+        todelete[i].clear();
+      }
+    }
+
+    if (open[c].find(i) != open[c].end()) {
+      todelete[c].pb(i);
+    } else {
+      open[c].insert(i);
+      set<ll> &ops = open[!c];
+      if (ops.size()) {
+        if (open[c].size() == 1) {
+          for (auto o: ops) {
+            uf.unite(i, o);
+          }
+        } else {
+          uf.unite(i, *prev(ops.end()));
+        }
+      }
+    }
+  }
+
+  set<ll> root;
+  rep(i, n) {
+    root.insert(uf.root(i));
+  }
+  cout << root.size() << "\n";
 }
 
 signed main() {

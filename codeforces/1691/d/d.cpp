@@ -5,7 +5,7 @@
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
-#define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]--;}
+#define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]-= offset;}
 #define pb push_back
 #define mp make_pair
 #define fi first
@@ -56,18 +56,86 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll N, vl a) {
-  ll ans = -1; return ans;
+
+//------------------------------------------------------------------------------
+template <class S, S (*op)(S, S), S (*e)()> struct segtree {
+  public:
+  segtree() : segtree(0) {}
+  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
+  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
+  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
+  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
+  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
+  S all_prod() const { return d[1]; }
+  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
+  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
+    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
+  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
+  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
+    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
+  private:
+  int _n, size, log; std::vector<S> d;
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+};
+//------------------------------------------------------------------------------
+
+using S = ll;
+// S op(S l, S r) { return l + r; }
+// S e() { return 0; }
+
+S op(S l, S r) { return max(l, r); }
+S e() { return -LINF; }
+
+bool solve(ll n, vl a) {
+  vlp b(n);
+
+  rep(i, n) b[i] = {a[i], i};
+  sort(all(b));
+  reverse(all(b));
+
+  vl csum(n + 1, 0), rcsum(n + 1, 0);
+  rep(i, n) csum[i + 1] = csum[i] + a[i];
+  rep_r(i, n) rcsum[n - i] = rcsum[n - 1 - i] + a[i];
+
+  segtree<S, op, e> seg(csum);
+  segtree<S, op, e> rseg(rcsum);
+  // coutarray(csum);
+  // coutarray(rcsum);
+
+  bool valid = true;
+  set<ll> found;
+  found.insert(-1); found.insert(n);
+  rep(i, n) {
+    auto [val, id] = b[i];
+    if (val <= 0) break;
+
+    ll r = *found.upper_bound(id);
+    ll l = *prev(found.upper_bound(id));
+
+    // cout << id << "\n";
+    // cout << csum[id + 1] << " " << seg.prod(id + 1, r + 1) << "\n";
+    // cout << rcsum[n - id] << " " <<  rseg.prod(n - id, n - l) << "\n";
+
+    if (csum[id + 1] < seg.prod(id + 1, r + 1)) { valid = false; break; }
+    if (rcsum[n - id] < rseg.prod(n - id, n - l)) { valid = false; break; }
+    found.insert(id);
+  }
+  return valid;
 }
 
-ll naive(ll N, vl a) {
-  ll ans = 1; return ans;
+bool naive(ll n, vl a) {
+  rep(i, n) {
+    rep2(j, i + 1, n) {
+      if (*max_element(a.begin() + i, a.begin() + j + 1) < accumulate(a.begin() + i, a.begin() + j + 1, 0ll)) return false;
+    }
+  }
+  return true;
 }
 
 void compare() { RandGen rg; ll c = 0, loop = 10;
   while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 10;
-    vl a = rg.vecl(N, 1, 1e2);
+    ll N = 3;
+    vl a = rg.vecl(N, -1e1, 1e1);
     auto s = solve(N, a); auto n = naive(N, a);
     if (n != s) {
       cout << c << "times tried" << "\n";
@@ -79,8 +147,11 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+
 void solve() {
   ll n; cin >> n;
+  vlin(a, n, 0);
+  if (solve(n, a)) cout << "YES" << "\n"; else cout << "NO" << "\n";
 }
 
 signed main() {

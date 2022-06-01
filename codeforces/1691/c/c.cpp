@@ -80,7 +80,26 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n, k; cin >> n >> k;
+  string s; cin >> s;
+
+  vl one;
+  rep(i, n) {
+    if (s[i] == '1') one.pb(i);
+  }
+  ll ans = one.size() * 11;
+
+  if (one.size()) {
+    ll need = n - 1 - one.back();
+    if (need <= k) { k -= need; ans -= 10; one.pop_back(); }
+  }
+
+  if (one.size()) {
+    ll need = one.front();
+    if (need <= k) { k -= need; ans -= 1; one.erase(one.begin()); }
+  }
+
+  cout << ans << "\n";
 }
 
 signed main() {
