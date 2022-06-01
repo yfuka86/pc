@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "nomura2020",
+    "title": "NOMURA Programming Competition 2020",
+    "url": "https://atcoder.jp/contests/nomura2020"
+  },
+  "tasks": [
+    {
+      "id": "nomura2020_a",
+      "label": "A",
+      "title": "Study Scheduling",
+      "url": "https://atcoder.jp/contests/nomura2020/tasks/nomura2020_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "nomura2020_a.cpp"
+      }
+    },
+    {
+      "id": "nomura2020_b",
+      "label": "B",
+      "title": "Postdocs",
+      "url": "https://atcoder.jp/contests/nomura2020/tasks/nomura2020_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "nomura2020_b.cpp"
+      }
+    },
+    {
+      "id": "nomura2020_c",
+      "label": "C",
+      "title": "Folia",
+      "url": "https://atcoder.jp/contests/nomura2020/tasks/nomura2020_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "nomura2020_c.cpp"
+      }
+    },
+    {
+      "id": "nomura2020_d",
+      "label": "D",
+      "title": "Urban Planning",
+      "url": "https://atcoder.jp/contests/nomura2020/tasks/nomura2020_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "nomura2020_d.cpp"
+      }
+    },
+    {
+      "id": "nomura2020_e",
+      "label": "E",
+      "title": "Binary Programming",
+      "url": "https://atcoder.jp/contests/nomura2020/tasks/nomura2020_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "nomura2020_e.cpp"
+      }
+    },
+    {
+      "id": "nomura2020_f",
+      "label": "F",
+      "title": "Sorting Game",
+      "url": "https://atcoder.jp/contests/nomura2020/tasks/nomura2020_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "nomura2020_f.cpp"
+      }
+    }
+  ]
+}

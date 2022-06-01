@@ -5,7 +5,7 @@
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
-#define vlin(name,sz) vl name(sz); rep(i,sz) cin>>name[i];
+#define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]-=offset;}
 #define pb push_back
 #define mp make_pair
 #define fi first
@@ -14,7 +14,7 @@
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
-typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> vvvl;
+typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb;
 const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
@@ -26,13 +26,15 @@ struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
-  vl vecperm(ll l) { vl perm(l); iota(all(perm), 1); random_shuffle(all(perm)); return perm; }
+  vl vecperm(ll l, ll from = 0) { vl perm(l); iota(all(perm), from); shuffle(perm); return perm; }
   string str(ll l, vector<char> op) { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(op[fig[i]]); return s; }
   string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
+  void shuffle(vl &a) { std::shuffle(all(a), mt); }
 };
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
+ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
@@ -54,51 +56,6 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-template <class T>
-struct UnionFindWithPotential {
-  vector<int> dat;
-  vector<T> pot;
-
-  UnionFindWithPotential(int N) : dat(N, -1), pot(N, T()) {}
-
-  int root(int x) {
-    if (dat[x] < 0) return x;
-    int r = root(dat[x]);
-    pot[x] += pot[dat[x]];
-    return dat[x] = r;
-  }
-
-  // return P(x) - P(root(x))
-  T potential(int x) {
-    root(x);
-    return pot[x];
-  }
-
-  bool same(int x, int y) { return root(x) == root(y); }
-
-  // return P(x) - P(y)
-  T diff(int x, int y) {
-    return potential(x) - potential(y);
-  }
-
-  // s.t. P(x) = P(y) + p
-  // return Satisfiablility
-  bool merge(int x, int y, T p) {
-    p += potential(y) - potential(x);
-    x = root(x), y = root(y);
-    if (x == y) return p == T();
-    if (dat[x] < dat[y]) swap(x, y), p = -p;
-    dat[y] += dat[x];
-    dat[x] = y;
-    pot[x] = p;
-    return true;
-  }
-
-  // return size of CC including x
-  int size(int x) { return -dat[root(x)]; }
-};
-
-
 ll solve(ll N, vl a) {
   ll ans = -1; return ans;
 }
@@ -107,8 +64,7 @@ ll naive(ll N, vl a) {
   ll ans = 1; return ans;
 }
 
-void compare() {
-  RandGen rg; ll c = 0, loop = 10;
+void compare() { RandGen rg; ll c = 0, loop = 10;
   while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll N = 10;
     vl a = rg.vecl(N, 1, 1e2);

@@ -5,7 +5,7 @@
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
-#define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]--;}
+#define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]-=offset;}
 #define pb push_back
 #define mp make_pair
 #define fi first

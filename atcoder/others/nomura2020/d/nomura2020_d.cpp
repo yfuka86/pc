@@ -51,7 +51,7 @@ template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-const ll mod = 998244353;
+const ll mod = 1000000007;
 //------------------------------------------------------------------------------
 template< int mod > struct ModInt {
   int x; ModInt() : x(0) {}
@@ -108,10 +108,10 @@ void solve() {
     }
   }
 
-  vl weights(N, 0);
-  rep(i, N) if (A[i] == -1) weights[i] = uf.size(i);
+  vl sz(N, 0);
+  rep(i, N) if (A[i] == -1) sz[i] = uf.size(i);
   vl free;
-  rep(i, N) if (weights[i]) free.pb(weights[i]);
+  rep(i, N) if (sz[i]) free.pb(sz[i]);
   ll n = free.size();
 
   vvmi dp(n + 1, vmi(n + 1, 0));
@@ -124,13 +124,20 @@ void solve() {
     }
   }
 
+  // coutmatrix(dp);
+
   init_f();
   mint ans = 0;
   rep2(i, 1, n + 1) {
-    ans += dp[n][i] * fact[i - 1] * mod_pow(N, n - i);
+    if (i == 1) ans += (dp[n][i] - n) * mod_pow(N - 1, n - i);
+    else ans += dp[n][i] * fact[i - 1] * mod_pow(N - 1, n - i);
   }
-  ans += mod_pow(N, n) * cycles.size();
-  cout << ans << "\n";
+  ans += mint(N - 1).pow(n) * cycles.size();
+
+  // cout << n << "\n";
+  // cout << ans << "\n";
+
+  cout << mint(N - 1).pow(n) * N - ans << "\n";
 }
 
 signed main() {
