@@ -25,6 +25,7 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
+  LP lp(ll a, ll b, bool rng = true) { ll x = l(a, b - 1), y = l(rng ? x + 1 : a, b - 1); return {x, y}; }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vecperm(ll l, ll from = 0) { vl perm(l); iota(all(perm), from); shuffle(perm); return perm; }
   string str(ll l, vector<char> op) { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(op[fig[i]]); return s; }
