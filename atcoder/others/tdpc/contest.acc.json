@@ -1,0 +1,229 @@
+{
+  "contest": {
+    "id": "tdpc",
+    "title": "Typical DP Contest",
+    "url": "https://atcoder.jp/contests/tdpc"
+  },
+  "tasks": [
+    {
+      "id": "tdpc_contest",
+      "label": "A",
+      "title": "コンテスト",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_contest",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "tdpc_contest.cpp"
+      }
+    },
+    {
+      "id": "tdpc_game",
+      "label": "B",
+      "title": "ゲーム",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_game",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "tdpc_game.cpp"
+      }
+    },
+    {
+      "id": "tdpc_tournament",
+      "label": "C",
+      "title": "トーナメント",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_tournament",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "tdpc_tournament.cpp"
+      }
+    },
+    {
+      "id": "tdpc_dice",
+      "label": "D",
+      "title": "サイコロ",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_dice",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "tdpc_dice.cpp"
+      }
+    },
+    {
+      "id": "tdpc_number",
+      "label": "E",
+      "title": "数",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_number",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "tdpc_number.cpp"
+      }
+    },
+    {
+      "id": "tdpc_semiexp",
+      "label": "F",
+      "title": "準急",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_semiexp",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "tdpc_semiexp.cpp"
+      }
+    },
+    {
+      "id": "tdpc_lexicographical",
+      "label": "G",
+      "title": "辞書順",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_lexicographical",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "tdpc_lexicographical.cpp"
+      }
+    },
+    {
+      "id": "tdpc_knapsack",
+      "label": "H",
+      "title": "ナップザック",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_knapsack",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "tdpc_knapsack.cpp"
+      }
+    },
+    {
+      "id": "tdpc_iwi",
+      "label": "I",
+      "title": "イウィ",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_iwi",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "tdpc_iwi.cpp"
+      }
+    },
+    {
+      "id": "tdpc_ball",
+      "label": "J",
+      "title": "ボール",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_ball",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "tdpc_ball.cpp"
+      }
+    },
+    {
+      "id": "tdpc_target",
+      "label": "K",
+      "title": "ターゲット",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_target",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "tdpc_target.cpp"
+      }
+    },
+    {
+      "id": "tdpc_cat",
+      "label": "L",
+      "title": "猫",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_cat",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "tdpc_cat.cpp"
+      }
+    },
+    {
+      "id": "tdpc_house",
+      "label": "M",
+      "title": "家",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_house",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "tdpc_house.cpp"
+      }
+    },
+    {
+      "id": "tdpc_tree",
+      "label": "N",
+      "title": "木",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_tree",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "tdpc_tree.cpp"
+      }
+    },
+    {
+      "id": "tdpc_string",
+      "label": "O",
+      "title": "文字列",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_string",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "tdpc_string.cpp"
+      }
+    },
+    {
+      "id": "tdpc_eel",
+      "label": "P",
+      "title": "うなぎ",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_eel",
+      "directory": {
+        "path": "p",
+        "testdir": "test",
+        "submit": "tdpc_eel.cpp"
+      }
+    },
+    {
+      "id": "tdpc_concatenation",
+      "label": "Q",
+      "title": "連結",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_concatenation",
+      "directory": {
+        "path": "q",
+        "testdir": "test",
+        "submit": "tdpc_concatenation.cpp"
+      }
+    },
+    {
+      "id": "tdpc_graph",
+      "label": "R",
+      "title": "グラフ",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_graph",
+      "directory": {
+        "path": "r",
+        "testdir": "test",
+        "submit": "tdpc_graph.cpp"
+      }
+    },
+    {
+      "id": "tdpc_grid",
+      "label": "S",
+      "title": "マス目",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_grid",
+      "directory": {
+        "path": "s",
+        "testdir": "test",
+        "submit": "tdpc_grid.cpp"
+      }
+    },
+    {
+      "id": "tdpc_fibonacci",
+      "label": "T",
+      "title": "フィボナッチ",
+      "url": "https://atcoder.jp/contests/tdpc/tasks/tdpc_fibonacci",
+      "directory": {
+        "path": "t",
+        "testdir": "test",
+        "submit": "tdpc_fibonacci.cpp"
+      }
+    }
+  ]
+}
