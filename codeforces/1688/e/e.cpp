@@ -79,31 +79,48 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
     }
   }
 }
-// 典型部分列DP
-vl subseq_num(vector<ll> &v, ll m = mod) {
-  ll n = v.size(); map<ll, ll> lasti;
-  vl dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
-  rep(i, n) {
-    dp[i] += sum[i] - sum[lasti[v[i]]]; if (dp[i] < 0) dp[i] += m;
-    sum[i + 1] = (sum[i] + dp[i]) % m;
-    lasti[v[i]] = i;
-  }
-  return dp;
-}
+
+using BS = bitset<500>;
 
 void solve() {
-  string s; cin >> s;
-  ll K; cin >> K;
+  ll n, m; cin >> n >> m;
 
-  map<char, ll> lasti;
+  BS q;
 
+  auto query = [&](BS q) {
+    string s = q.to_string();
+    reverse(all(s));
+    return iquery(s.substr(0, m));
+  };
 
+  vl weight(m, 0);
+  rep(i, m) {
+    q.set(i);
+    weight[i] = query(q);
+    q.reset(i);
+  }
+  vlp edges;
+  rep(i, m) edges.pb({weight[i], i});
+  sort(all(edges)); reverse(all(edges));
+
+  q.set();
+
+  ll cur = query(q);
+  rep(ei, m - 1) {
+    auto [cost, i] = edges[ei];
+    q.reset(i);
+    ll c = query(q);
+    if (cur - c == cost) q.set(i);
+    else cur = c;
+  }
+
+  ianswer(cur);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; // cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

@@ -79,31 +79,33 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
     }
   }
 }
-// 典型部分列DP
-vl subseq_num(vector<ll> &v, ll m = mod) {
-  ll n = v.size(); map<ll, ll> lasti;
-  vl dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
-  rep(i, n) {
-    dp[i] += sum[i] - sum[lasti[v[i]]]; if (dp[i] < 0) dp[i] += m;
-    sum[i + 1] = (sum[i] + dp[i]) % m;
-    lasti[v[i]] = i;
-  }
-  return dp;
-}
 
 void solve() {
-  string s; cin >> s;
-  ll K; cin >> K;
+  ll n; cin >> n;
+  // rep2(ans, 1, 100000) {
+  //   if ((n & ans) > 0 && (n ^ ans) > 0) { cout << ans << "\n"; return; }
+  // }
 
-  map<char, ll> lasti;
+  ll ans = 0;
+  rep(i, 32) {
+    if (n & 1 << i) {
+      ans |= 1 << i; break;
+    }
+  }
 
-
+  if ((n ^ ans) == 0) {
+    rep(i, 32) {
+      if (ans & 1 << i) continue;
+      ans |= 1 << i; break;
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

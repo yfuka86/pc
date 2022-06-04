@@ -79,31 +79,31 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
     }
   }
 }
-// 典型部分列DP
-vl subseq_num(vector<ll> &v, ll m = mod) {
-  ll n = v.size(); map<ll, ll> lasti;
-  vl dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
-  rep(i, n) {
-    dp[i] += sum[i] - sum[lasti[v[i]]]; if (dp[i] < 0) dp[i] += m;
-    sum[i + 1] = (sum[i] + dp[i]) % m;
-    lasti[v[i]] = i;
-  }
-  return dp;
-}
 
 void solve() {
-  string s; cin >> s;
-  ll K; cin >> K;
+  ll n, k; cin >> n >> k;
+  vlin(a, n, 0);
 
-  map<char, ll> lasti;
+  vl csum(n + 1, 0);
+  rep(i, n) csum[i + 1] = csum[i] + a[i];
 
-
+  if (n <= k) {
+    ll ans = csum[n] + ((k - 1) + (k - n)) * n / 2;
+    cout << ans << "\n";
+  } else {
+    ll ans = 0;
+    for (ll l = 0; l + k <= n; l++) {
+      chmax(ans, csum[l + k] - csum[l]);
+    }
+    ll grown = k * (k - 1) / 2;
+    cout << ans + grown << "\n";
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
