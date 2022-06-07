@@ -53,6 +53,7 @@ vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(
 
 template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
 template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
+template<typename T> void coutset(set<T> & s) { for (const auto& a : s) { cout << a << " "; } cout << "\n"; }
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first << " " << p.second << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
@@ -87,28 +88,16 @@ void solve() {
 
   vl c(n); rep(i, n) c[i] = a[i] - b[i];
   vl cs = csum(c);
-  vl csabs = cs;
-  rep(i, n + 1) csabs[i] = abs(cs[i]);
 
   vector<LP> rng(m);
   vector<set<ll>> rnginv(n + 1);
   queue<ll> rem;
-  vb used(m, false);
+  set<ll> idx;
+  rep(i, n + 1) idx.insert(i);
 
   auto op = [&](ll id) {
     auto [l, r] = rng[id];
-    // cout << id << "\n";
-    // cout << "l " << l << "\n";
-    // for (ll s: rnginv[l]) {
-    //   cout << s << "\n";
-    // }
-    // cout << "r " << r << "\n";
-    // for (ll s: rnginv[r]) {
-    //   cout << s << "\n";
-    // }
-    rnginv[l].erase(rnginv[l].find(id));
-    rnginv[r].erase(rnginv[r].find(id));
-    used[id] = true;
+    if (cs[l] != 0 || cs[r] != 0) return;
     rem.push(id);
   };
 
@@ -117,23 +106,22 @@ void solve() {
     rng[i] = {l, r};
     rnginv[l].insert(i);
     rnginv[r].insert(i);
-    if (cs[l] == 0 && cs[r] == 0) op(i);
+    op(i);
   }
 
+  rep(i, n + 1) if (cs[i] == 0) idx.erase(i);
 
   while(!rem.empty()) {
     auto id = rem.front(); rem.pop();
     auto [l, r] = rng[id];
 
-    for (ll i = l; i <= r; ++i) {
-      if (cs[i] == 0) continue;
-      cs[i] = 0; csabs[i] = 0;
-      for (auto rid: rnginv[i]) {
-        if (used[rid]) continue;
-        auto [ll, rr] = rng[rid];
-        if (cs[ll] == 0 && cs[rr] == 0) op(rid);
-      }
+    auto lt = idx.lower_bound(l);
+    auto rt = idx.upper_bound(r);
+    for (auto it = lt; it != rt; ++it) {
+      cs[*it] = 0;
+      for (auto rid: rnginv[*it]) op(rid);
     }
+    idx.erase(lt, rt);
   }
 
   rep(i, n + 1) if (cs[i] != 0) { cout << "NO" << "\n"; return; }
