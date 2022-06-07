@@ -38,8 +38,8 @@ int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long lon
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
-template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
-template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
+template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
+template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T> void uniq(vector<T>&a){ sort(all(a)); a.erase(unique(all(a)), a.end()); }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; uniq(b); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
@@ -47,8 +47,7 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
-template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
-template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
+template <class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 
 template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
@@ -57,6 +56,9 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T, typename S> void coutpair(pair<T, S> & p) { cout << p.first << " " << p.second << "\n"; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
+
+#include <atcoder/all>
+using namespace atcoder;
 
 ll solve(ll N, vl a) {
   ll ans = -1; return ans;
@@ -81,69 +83,39 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//-------------------
+
+using S = ll;
+S op(S l, S r) { return gcd(l, r); }
+S e() { return 0; }
+
 void solve() {
-  ll n, m; cin >> n >> m;
-  vlin(a, n, 0); vlin(b, n, 0);
+  ll N, Q; cin >> N >> Q;
+  vlin(a, N, 0); vlin(b, N, 0);
 
-  vl c(n); rep(i, n) c[i] = a[i] - b[i];
-  vl cs = csum(c);
-  vl csabs = cs;
-  rep(i, n + 1) csabs[i] = abs(cs[i]);
-
-  vector<LP> rng(m);
-  vector<set<ll>> rnginv(n + 1);
-  queue<ll> rem;
-  vb used(m, false);
-
-  auto op = [&](ll id) {
-    auto [l, r] = rng[id];
-    // cout << id << "\n";
-    // cout << "l " << l << "\n";
-    // for (ll s: rnginv[l]) {
-    //   cout << s << "\n";
-    // }
-    // cout << "r " << r << "\n";
-    // for (ll s: rnginv[r]) {
-    //   cout << s << "\n";
-    // }
-    rnginv[l].erase(rnginv[l].find(id));
-    rnginv[r].erase(rnginv[r].find(id));
-    used[id] = true;
-    rem.push(id);
-  };
-
-  rep(i, m) {
-    ll l, r; cin >> l >> r; l--;
-    rng[i] = {l, r};
-    rnginv[l].insert(i);
-    rnginv[r].insert(i);
-    if (cs[l] == 0 && cs[r] == 0) op(i);
+  vl diffa(N - 1), diffb(N - 1);
+  rep(i, N - 1) {
+    diffa[i] = a[i + 1] - a[i];
+    diffb[i] = b[i + 1] - b[i];
   }
 
+  segtree<S, op, e> sega(diffa);
+  segtree<S, op, e> segb(diffb);
 
-  while(!rem.empty()) {
-    auto id = rem.front(); rem.pop();
-    auto [l, r] = rng[id];
-
-    for (ll i = l; i <= r; ++i) {
-      if (cs[i] == 0) continue;
-      cs[i] = 0; csabs[i] = 0;
-      for (auto rid: rnginv[i]) {
-        if (used[rid]) continue;
-        auto [ll, rr] = rng[rid];
-        if (cs[ll] == 0 && cs[rr] == 0) op(rid);
-      }
-    }
+  rep(i, Q) {
+    ll h1, h2, w1, w2; cin >> h1 >> h2 >> w1 >> w2; h1--; w1--; h2--; w2--;
+    ll v = a[h1] + b[w1];
+    if (h1 != h2) v = gcd(v, sega.prod(h1, h2));
+    if (w1 != w2) v = gcd(v, segb.prod(w1, w2));
+    cout << v << "\n";
   }
 
-  rep(i, n + 1) if (cs[i] != 0) { cout << "NO" << "\n"; return; }
-  cout << "YES" << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

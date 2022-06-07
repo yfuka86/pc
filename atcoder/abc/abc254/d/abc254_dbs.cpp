@@ -38,8 +38,8 @@ int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long lon
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
-template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
-template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
+template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
+template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T> void uniq(vector<T>&a){ sort(all(a)); a.erase(unique(all(a)), a.end()); }
 template<typename T> void comp(vector<T>&a){ vector<T> b = a; uniq(b); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
@@ -47,8 +47,7 @@ template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} 
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
-template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
-template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
+template <class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 
 template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
@@ -81,69 +80,77 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  ll n, m; cin >> n >> m;
-  vlin(a, n, 0); vlin(b, n, 0);
-
-  vl c(n); rep(i, n) c[i] = a[i] - b[i];
-  vl cs = csum(c);
-  vl csabs = cs;
-  rep(i, n + 1) csabs[i] = abs(cs[i]);
-
-  vector<LP> rng(m);
-  vector<set<ll>> rnginv(n + 1);
-  queue<ll> rem;
-  vb used(m, false);
-
-  auto op = [&](ll id) {
-    auto [l, r] = rng[id];
-    // cout << id << "\n";
-    // cout << "l " << l << "\n";
-    // for (ll s: rnginv[l]) {
-    //   cout << s << "\n";
-    // }
-    // cout << "r " << r << "\n";
-    // for (ll s: rnginv[r]) {
-    //   cout << s << "\n";
-    // }
-    rnginv[l].erase(rnginv[l].find(id));
-    rnginv[r].erase(rnginv[r].find(id));
-    used[id] = true;
-    rem.push(id);
-  };
-
-  rep(i, m) {
-    ll l, r; cin >> l >> r; l--;
-    rng[i] = {l, r};
-    rnginv[l].insert(i);
-    rnginv[r].insert(i);
-    if (cs[l] == 0 && cs[r] == 0) op(i);
-  }
-
-
-  while(!rem.empty()) {
-    auto id = rem.front(); rem.pop();
-    auto [l, r] = rng[id];
-
-    for (ll i = l; i <= r; ++i) {
-      if (cs[i] == 0) continue;
-      cs[i] = 0; csabs[i] = 0;
-      for (auto rid: rnginv[i]) {
-        if (used[rid]) continue;
-        auto [ll, rr] = rng[rid];
-        if (cs[ll] == 0 && cs[rr] == 0) op(rid);
+//-------------------------------------------------------
+// https://atcoder.jp/contests/abc238/submissions/29086825
+// https://cp-algorithms.com/algebra/prime-sieve-linear.html
+struct PrimeSieve {
+  int n; vector<bool> is_prime; vector<int> pr, mu, pf;
+  // pr := primes, mu := moebius, pf[i] := smallest prime p s.t. p | i
+  PrimeSieve(int _n){
+    n = ++_n; is_prime.assign(n, true); mu.assign(n, 0); pf.assign(n, 0);
+    is_prime[0] = is_prime[1] = false; mu[1] = 1;
+    for (int i = 2; i < n; i++) {
+      if (is_prime[i]) { pr.emplace_back(i); pf[i] = i; mu[i] = -1; }
+      for (int p : pr) {
+        if (ll(i) * p >= n) break;
+        is_prime[i * p] = false; mu[i * p] = -mu[i]; pf[i * p] = p;
+        if (i % p == 0) { mu[i * p] = 0; break; }
       }
     }
   }
+  vector<pair<int, int>> factorize(int x) { assert(x < n); vector<pair<int, int>> res;
+    while (pf[x] > 1) { int d = pf[x], c = 0; while (x % d == 0) { x /= d; c++; } res.emplace_back(d, c); }
+    if (x != 1) res.emplace_back(x, 1); return res;
+  }
+  // not sorted [2..x]
+  vector<int> divisors(int x) { assert(x < n); auto f = factorize(x); vector<int> res = { 1 };
+    for (auto [p, c] : f) for (int i = res.size() - 1; i >= 0; --i) for (int pow = 1; pow <= c; ++pow) res.emplace_back(res[i] * POW(p, pow));
+    res.erase(res.begin()); return res;
+  }
+};
 
-  rep(i, n + 1) if (cs[i] != 0) { cout << "NO" << "\n"; return; }
-  cout << "YES" << "\n";
+vector<ll> primes_below(const ll N) {
+  vector<bool> is_prime(N + 1, true); for(ll i = 2; i * i <= N; i++) { if ((i > 2 && i % 2 == 0) || !is_prime[i]) continue; for(ll j = i * i; j <= N; j += i) is_prime[j] = false; }
+  vector<ll> ret; for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i); return ret; }
+
+using BS = bitset<10000>;
+void solve() {
+  ll N; cin >> N;
+  PrimeSieve ps(N);
+
+  map<ll, ll> pinv;
+  ll cur = 0;
+  rep(i, 100000) {
+    if (ps.is_prime[i]) {
+      pinv[i] = cur;
+      cur++;
+    }
+  }
+  // coutmap(pinv);
+
+  ll ans = 0;
+  map<string, ll> freq;
+  rep2(i, 1, N + 1) {
+    BS b;
+    bool valid = true;
+    for (auto [p, c] :ps.factorize(i)) {
+      if (c & 1) {
+        b.set(pinv[p]);
+        // if (p > 500) valid = false;
+      }
+    }
+    if (!valid) continue;
+    ans += freq[b.to_string()] * 2;
+    freq[b.to_string()]++;
+  }
+  // coutmap(freq);
+  cout << ans + N << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

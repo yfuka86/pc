@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc254",
+    "title": "AtCoder Beginner Contest 254",
+    "url": "https://atcoder.jp/contests/abc254"
+  },
+  "tasks": [
+    {
+      "id": "abc254_a",
+      "label": "A",
+      "title": "Last Two Digits",
+      "url": "https://atcoder.jp/contests/abc254/tasks/abc254_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc254_a.cpp"
+      }
+    },
+    {
+      "id": "abc254_b",
+      "label": "B",
+      "title": "Practical Computing",
+      "url": "https://atcoder.jp/contests/abc254/tasks/abc254_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc254_b.cpp"
+      }
+    },
+    {
+      "id": "abc254_c",
+      "label": "C",
+      "title": "K Swap",
+      "url": "https://atcoder.jp/contests/abc254/tasks/abc254_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc254_c.cpp"
+      }
+    },
+    {
+      "id": "abc254_d",
+      "label": "D",
+      "title": "Together Square",
+      "url": "https://atcoder.jp/contests/abc254/tasks/abc254_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc254_d.cpp"
+      }
+    },
+    {
+      "id": "abc254_e",
+      "label": "E",
+      "title": "Small d and k",
+      "url": "https://atcoder.jp/contests/abc254/tasks/abc254_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc254_e.cpp"
+      }
+    },
+    {
+      "id": "abc254_f",
+      "label": "F",
+      "title": "Rectangle GCD",
+      "url": "https://atcoder.jp/contests/abc254/tasks/abc254_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc254_f.cpp"
+      }
+    },
+    {
+      "id": "abc254_g",
+      "label": "G",
+      "title": "Elevators",
+      "url": "https://atcoder.jp/contests/abc254/tasks/abc254_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc254_g.cpp"
+      }
+    },
+    {
+      "id": "abc254_h",
+      "label": "Ex",
+      "title": "Multiply or Divide by 2",
+      "url": "https://atcoder.jp/contests/abc254/tasks/abc254_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc254_h.cpp"
+      }
+    }
+  ]
+}
