@@ -102,35 +102,32 @@ void solve() {
   ll n, m; cin >> n >> m;
   vlin(a, n, 0);
 
-  vlp s;
-  s.pb({-1, LINF});
-  rep(i, n) if (s.back().se > a[i]) s.pb({i, a[i]});
-  s.pb({LINF, -LINF});
+  set<LP> s;
+  s.insert({-1, LINF});
+  rep(i, n) if (s.rbegin()->se > a[i]) s.insert({i, a[i]});
+  s.insert({LINF, -LINF});
 
   rep(i, m) {
     ll k, d; cin >> k >> d; k--;
     a[k] -= d;
-    auto itr = lower_bound(all(s), mp(k, 0ll));
+    auto itr = s.lower_bound(mp(k, 0ll));
     bool changed = false;
-    if (itr == s.end() || itr->first > k) {
-      if (itr == s.begin() || prev(itr)->se > a[k]) { s.insert(itr, {k, a[k]}); changed = true; }
+    if (itr->first > k) {
+      if (prev(itr)->se > a[k]) { s.insert({k, a[k]}); changed = true; }
     } else {
-      itr->second = a[k];
+      LP nmp = mp(itr->fi, a[k]);
+      s.erase(itr);
+      s.insert(nmp);
       changed = true;
     }
 
     if (changed) {
-      ll from = lower_bound(all(s), mp(k, 0ll)) - s.begin();
-      ll toremove = binary_search([&](ll mid) {
-        return a[k] <= s[mid].se;
-      }, from, s.size());
-      // 境界値の関係でずらして削除
-      if (from < toremove) s.erase(s.begin() + from + 1, s.begin() + toremove + 1);
+      auto lt = s.lower_bound(mp(k, LINF));
+      auto rt = lt;
+      while (a[k] <= rt->se) rt++;
+      if (lt != rt) s.erase(lt, rt);
     }
     cout << s.size() - 2 << " ";
-    // rep(i, s.size()) {
-    //   cout << s[i].fi << ":" << s[i].se << " ";
-    // } cout << "\n";
   }
   cout << "\n";
 }
