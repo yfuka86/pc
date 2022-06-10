@@ -84,7 +84,34 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n, m, k; cin >> n >> m >> k;
+  string a, b; cin >> a >> b;
+  sort(all(a)); sort(all(b));
+  vector<queue<char>> qs(2);
+  rep(i, n) qs[0].push(a[i]);
+  rep(i, m) qs[1].push(b[i]);
+
+  string ans = "";
+  ll last = -1, cnt = 0;
+  while (!qs[0].empty() && !qs[1].empty()) {
+    if (last != -1 && cnt == k) {
+      last = !last; cnt = 1;
+      ans.pb(qs[last].front()); qs[last].pop();
+    } else {
+      if (qs[0].front() > qs[1].front()) {
+        ans.pb(qs[1].front());
+        qs[1].pop();
+        if (last == 1) cnt++; else cnt = 1;
+        last = 1;
+      } else {
+        ans.pb(qs[0].front());
+        qs[0].pop();
+        if (last == 0) cnt++; else cnt = 1;
+        last = 0;
+      }
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

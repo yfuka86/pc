@@ -85,6 +85,30 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(p, n, 1);
+  if (n == 1) { cout << -1 << "\n"; return; }
+
+  vl ans(n, -1);
+
+  set<ll> s;
+  rep(i, n) s.insert(i);
+
+  rep(i, n - 2) {
+    auto it = s.begin();
+    while (*it == p[i]) ++it;
+    ans[i] = *it;
+    s.erase(it);
+  }
+
+  if (*s.begin() == p[n - 2] || *s.rbegin() == p[n - 1]) {
+    ans[n - 1] = *s.begin();
+    ans[n - 2] = *s.rbegin();
+  } else {
+    ans[n - 2] = *s.begin();
+    ans[n - 1] = *s.rbegin();
+  }
+
+  coutarray(ans, 1);
 }
 
 signed main() {

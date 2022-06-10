@@ -82,9 +82,48 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
     }
   }
 }
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
 
 void solve() {
   ll n; cin >> n;
+
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    ll u, v; cin >> u >> v; u--; v--;
+    G.add_edge(u, v);
+  }
+
+  map<ll, ll> depm;
+  map<ll, set<ll>> parm;
+  function<void(ll, ll, ll)> dfs = [&](ll v, ll p, ll d) {
+    depm[d]++;
+    parm[d].insert(p);
+    for (auto &to: G[v]) {
+      if (to == p) continue;
+      dfs(to, v, d + 1);
+    }
+  };
+  dfs(0, -1, 0);
+
+  ll subt = 0;
+  for (auto [dep, s]: parm) {
+    if (dep == 0 || dep > 30) continue;
+    if (s.size() == POW(2, dep - 1)) {
+      if (depm[dep] == POW(2, dep)) subt += 2;
+      else subt++;
+    }
+  }
+
+  cout << n - 1 - subt << "\n";
 }
 
 signed main() {
