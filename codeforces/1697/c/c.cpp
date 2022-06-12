@@ -19,6 +19,9 @@ typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<string> vs; typ
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb;
 const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
 
+using A = ll;
+template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
@@ -36,8 +39,6 @@ template<typename T> void coutset(set<T> & s) { for (const auto& a : s) { cout <
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T, typename S> void coutpair(pair<T, S> & p, string sep = " ") { cout << p.first << ":" << p.second << sep; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
-template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); coutarray(v); cout.flush(); cin >> a; }
-template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 
 template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
 template<typename K, typename V> V safe_read(unordered_map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
@@ -60,35 +61,144 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll N, vl a) {
-  ll ans = -1; return ans;
+bool solve(string s, string t) {
+  ll n = s.size();
+  map<char, ll> sm, tm;
+  rep(i, n) {
+    sm[s[i]]++;
+    tm[t[i]]++;
+  }
+  if (sm != tm) return false;
+  rep(i, n) {
+    if (s[i] == 'a' && t[i] == 'c') return false;
+    if (t[i] == 'a' && s[i] == 'c') return false;
+  }
+
+  {
+    ll ssum = 0, tsum = 0;
+    rep(i, n) {
+      if (s[i] == 'c' || t[i] == 'c') {
+        if (ssum != tsum) return false;
+        ssum = 0; tsum = 0;
+      } else {
+        if (s[i] == 'a') ssum++;
+        if (t[i] == 'a') {
+          tsum++;
+          if (tsum > ssum) return false;
+        }
+      }
+    }
+  }
+
+  {
+    ll ssum = 0, tsum = 0;
+    rep_r(i, n) {
+      if (s[i] == 'a' || t[i] == 'a') {
+        if (ssum != tsum) return false;
+        ssum = 0; tsum = 0;
+      } else {
+        if (s[i] == 'c') ssum++;
+        if (t[i] == 'c') {
+          tsum++;
+          if (tsum > ssum) return false;
+        }
+      }
+    }
+  }
+
+  return true;
+
+
+  // ll scur = 0, tcur = 0, rema = 0, remc = 0;
+  // while (scur < n && tcur < n) {
+  //   // cout << scur << " " << tcur << " " << rema << " " << remc << "\n";
+  //   if (s[scur] == t[tcur]) {
+  //     scur++; tcur++; continue;
+  //   }
+
+  //   if (t[tcur] == 'a' && remc) return false;
+  //   if (t[tcur] == 'a') {
+  //     if (!rema) return false;
+  //     rema--; tcur++; continue;
+  //   }
+  //   if (s[scur] == 'c' && rema) return false;
+  //   if (s[scur] == 'c') {
+  //     if (!remc) return false;
+  //     remc--; scur++; continue;
+  //   }
+
+  //   if (s[scur] == 'a') {
+  //     if (scur < n - 1 && s[scur + 1] != 'c') {
+  //       rema++; scur++; continue;
+  //     } else return false;
+  //   }
+
+  //   if (t[tcur] == 'c') {
+  //     if (tcur < n - 1 && t[tcur + 1] != 'a') {
+  //       remc++; tcur++; continue;
+  //     } else return false;
+  //   }
+  // }
+  // // cout << scur << " " << tcur << "\n";
+  // if (scur + remc == n && tcur + rema == n) return true; else return false;
+
+
 }
 
-ll naive(ll N, vl a) {
-  ll ans = 1; return ans;
+bool naive(string s, string t) {
+  ll n = s.size();
+  rep(i, n) {
+    if (s[i] == t[i]) continue;
+    if (i == n - 1) return false;
+    if (s[i] == 'a' && t[i] == 'b') {
+      ll ti = i;
+      while (ti < n && s[ti] == 'a') ti++;
+      if (ti == n) return false;
+      if (s[ti] != 'b') return false;
+      swap(s[i], s[ti]);
+      continue;
+    }
+    if (s[i] == 'b' && t[i] == 'c') {
+      ll ti = i;
+      while (ti < n && s[ti] == 'b') ti++;
+      if (ti == n) return false;
+      if (s[ti] != 'c') return false;
+      swap(s[i], s[ti]);
+      continue;
+    }
+    return false;
+  }
+  return true;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll N = 10;
-    vl a = rg.vecl(N, 1, 1e2);
-    auto s = solve(N, a); auto n = naive(N, a);
-    if (!check || n != s) { cout << c << "times tried" << "\n";
-      cout << N << "\n"; coutarray(a);
-      cout << "solve: " << s << "\n";
+    vector<char> op =  {'a', 'b', 'c'};
+    string s = rg.str(N, op), t = s;
+    std::shuffle(all(t), rg.mt);
+    auto so = solve(s, t); auto n = naive(s, t);
+    if (!check || n != so) { cout << c << "times tried" << "\n";
+      cout << s << "\n";
+      cout << t << "\n";
+      cout << "solve: " << so << "\n";
       cout << "naive: " << n << "\n";
     if (check || (!check && c > loop)) break; }
   }
 }
 
-void solve() {
+
+
+bool solve() {
   ll n; cin >> n;
+  string s, t; cin >> s >> t;
+  return solve(s, t);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
   int t; cin >> t;
-  while (t--) solve();
+  while (t--) if (solve()) cout << "YES" << "\n"; else cout << "NO" << "\n";
   // while (t--) compare();
 }
