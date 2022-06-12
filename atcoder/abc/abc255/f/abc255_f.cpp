@@ -88,10 +88,8 @@ void solve() {
   vlin(I, n, 1);
   // coutarray(P);
 
-  unordered_map<ll, ll> ipos;
-  rep(i, n) {
-    ipos[I[i]] = i;
-  }
+  vl ipos(n);
+  rep(i, n) ipos[I[i]] = i;
 
   vlp ans(n);
 

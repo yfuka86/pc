@@ -40,6 +40,8 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T, typename S> void coutpair(pair<T, S> & p, string sep = " ") { cout << p.first << ":" << p.second << sep; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 
+template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
+template<typename K, typename V> V safe_read(unordered_map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
@@ -57,7 +59,6 @@ ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); wh
 template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
-
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 ll solve(ll N, vl a) {
@@ -68,18 +69,16 @@ ll naive(ll N, vl a) {
   ll ans = 1; return ans;
 }
 
-void compare() { RandGen rg; ll c = 0, loop = 10;
-  while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
+  while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll N = 10;
     vl a = rg.vecl(N, 1, 1e2);
     auto s = solve(N, a); auto n = naive(N, a);
-    if (n != s) {
-      cout << c << "times tried" << "\n";
+    if (!check || n != s) { cout << c << "times tried" << "\n";
       cout << N << "\n"; coutarray(a);
       cout << "solve: " << s << "\n";
       cout << "naive: " << n << "\n";
-      break;
-    }
+    if (check || (!check && c > loop)) break; }
   }
 }
 

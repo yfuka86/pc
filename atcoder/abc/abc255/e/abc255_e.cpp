@@ -40,6 +40,8 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T, typename S> void coutpair(pair<T, S> & p, string sep = " ") { cout << p.first << ":" << p.second << sep; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 
+template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
+template<typename K, typename V> V safe_read(unordered_map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
@@ -58,8 +60,6 @@ template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i,
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
-
-template<typename K, typename V> bool has(unordered_map<K, V> m, V v) { return m.find(v) != m.end(); }
 
 ll solve(ll N, vl a) {
   ll ans = -1; return ans;
@@ -109,11 +109,11 @@ void solve() {
 
     rep(jj, m) {
       if (i & 1) {
-        if (has(evenm, x[jj] - diff)) ans += evenm[x[jj] - diff];
-        if (oddm.find(x[jj] + diff) != oddm.end()) ans += oddm[x[jj] + diff];
+        ans += safe_read(evenm, x[jj] - diff);
+        ans += safe_read(oddm, x[jj] + diff);
       } else {
-        if (evenm.find(x[jj] + diff) != evenm.end()) ans += evenm[x[jj] + diff];
-        if (oddm.find(x[jj] - diff) != oddm.end()) ans += oddm[x[jj] - diff];
+        ans += safe_read(evenm, x[jj] + diff);
+        ans += safe_read(oddm, x[jj] - diff);
       }
     }
     chmax(aans, ans);
