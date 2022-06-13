@@ -107,63 +107,43 @@ bool solve(string s, string t) {
   }
 
   return true;
-
-
-  // ll scur = 0, tcur = 0, rema = 0, remc = 0;
-  // while (scur < n && tcur < n) {
-  //   // cout << scur << " " << tcur << " " << rema << " " << remc << "\n";
-  //   if (s[scur] == t[tcur]) {
-  //     scur++; tcur++; continue;
-  //   }
-
-  //   if (t[tcur] == 'a' && remc) return false;
-  //   if (t[tcur] == 'a') {
-  //     if (!rema) return false;
-  //     rema--; tcur++; continue;
-  //   }
-  //   if (s[scur] == 'c' && rema) return false;
-  //   if (s[scur] == 'c') {
-  //     if (!remc) return false;
-  //     remc--; scur++; continue;
-  //   }
-
-  //   if (s[scur] == 'a') {
-  //     if (scur < n - 1 && s[scur + 1] != 'c') {
-  //       rema++; scur++; continue;
-  //     } else return false;
-  //   }
-
-  //   if (t[tcur] == 'c') {
-  //     if (tcur < n - 1 && t[tcur + 1] != 'a') {
-  //       remc++; tcur++; continue;
-  //     } else return false;
-  //   }
-  // }
-  // // cout << scur << " " << tcur << "\n";
-  // if (scur + remc == n && tcur + rema == n) return true; else return false;
-
-
 }
 
 bool naive(string s, string t) {
   ll n = s.size();
+
+  map<char, set<ll>> S;
+  rep(i, n) S[s[i]].insert(i);
+
   rep(i, n) {
+    for (auto &[_, SS]: S) {
+      if (SS.size() == 0) continue;
+      while (*SS.begin() <= i) {
+        SS.erase(SS.begin());
+        if (SS.size() == 0) break;
+      }
+    }
+
     if (s[i] == t[i]) continue;
     if (i == n - 1) return false;
     if (s[i] == 'a' && t[i] == 'b') {
-      ll ti = i;
-      while (ti < n && s[ti] == 'a') ti++;
-      if (ti == n) return false;
-      if (s[ti] != 'b') return false;
-      swap(s[i], s[ti]);
+      if (!S['b'].size()) return false;
+      ll bi = *S['b'].begin();
+      if (S['c'].size() && *S['c'].begin() < bi) return false;
+
+      swap(s[i], s[bi]);
+      S['b'].erase(S['b'].begin());
+      S['a'].insert(bi);
       continue;
     }
     if (s[i] == 'b' && t[i] == 'c') {
-      ll ti = i;
-      while (ti < n && s[ti] == 'b') ti++;
-      if (ti == n) return false;
-      if (s[ti] != 'c') return false;
-      swap(s[i], s[ti]);
+      if (!S['c'].size()) return false;
+      ll ci = *S['c'].begin();
+      if (S['a'].size() && *S['a'].begin() < ci) return false;
+
+      swap(s[i], s[ci]);
+      S['c'].erase(S['c'].begin());
+      S['b'].insert(ci);
       continue;
     }
     return false;
@@ -173,7 +153,7 @@ bool naive(string s, string t) {
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 10;
+    ll N = 5;
     vector<char> op =  {'a', 'b', 'c'};
     string s = rg.str(N, op), t = s;
     std::shuffle(all(t), rg.mt);
@@ -192,7 +172,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 bool solve() {
   ll n; cin >> n;
   string s, t; cin >> s >> t;
-  return solve(s, t);
+  return naive(s, t);
 }
 
 signed main() {

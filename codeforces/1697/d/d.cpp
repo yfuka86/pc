@@ -37,6 +37,9 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T, typename S> void coutpair(pair<T, S> & p, string sep = " ") { cout << p.first << ":" << p.second << sep; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); coutarray(v); cout.flush(); cin >> a; }
+// template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q);
+//   a = query[0] ? A() : A();
+// }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 
 template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
@@ -118,11 +121,7 @@ void solve() {
   vector<pair<ll, char>> li(26);
   rep(i, 26) li[i] = {-1, 'a' + i};
 
-  iquery({1, 1}, ans[0]);
-  rep(i, 26) if (li[i].se == ans[0]) li[i].fi = 0;
-  sort(all(li));
-
-  rep2(i, 1, n) {
+  rep(i, n) {
     ll id = binary_search([&](ll mid) {
       auto [id, _] = li[mid];
       if (id == -1) return true;
