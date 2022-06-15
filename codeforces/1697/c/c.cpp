@@ -112,14 +112,14 @@ bool solve(string s, string t) {
 bool naive(string s, string t) {
   ll n = s.size();
 
-  map<char, set<ll>> S;
-  rep(i, n) S[s[i]].insert(i);
+  map<char, priority_queue<ll, vl, greater<ll>>> S;
+  rep(i, n) S[s[i]].push(i);
 
   rep(i, n) {
     for (auto &[_, SS]: S) {
       if (SS.size() == 0) continue;
-      while (*SS.begin() <= i) {
-        SS.erase(SS.begin());
+      while (SS.top() <= i) {
+        SS.pop();
         if (SS.size() == 0) break;
       }
     }
@@ -128,22 +128,22 @@ bool naive(string s, string t) {
     if (i == n - 1) return false;
     if (s[i] == 'a' && t[i] == 'b') {
       if (!S['b'].size()) return false;
-      ll bi = *S['b'].begin();
-      if (S['c'].size() && *S['c'].begin() < bi) return false;
+      ll bi = S['b'].top();
+      if (S['c'].size() && S['c'].top() < bi) return false;
 
       swap(s[i], s[bi]);
-      S['b'].erase(S['b'].begin());
-      S['a'].insert(bi);
+      S['b'].pop();
+      S['a'].push(bi);
       continue;
     }
     if (s[i] == 'b' && t[i] == 'c') {
       if (!S['c'].size()) return false;
-      ll ci = *S['c'].begin();
-      if (S['a'].size() && *S['a'].begin() < ci) return false;
+      ll ci = S['c'].top();
+      if (S['a'].size() && S['a'].top() < ci) return false;
 
       swap(s[i], s[ci]);
-      S['c'].erase(S['c'].begin());
-      S['b'].insert(ci);
+      S['c'].pop();
+      S['b'].push(ci);
       continue;
     }
     return false;
