@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc152",
+    "title": "AtCoder Beginner Contest 152",
+    "url": "https://atcoder.jp/contests/abc152"
+  },
+  "tasks": [
+    {
+      "id": "abc152_a",
+      "label": "A",
+      "title": "AC or WA",
+      "url": "https://atcoder.jp/contests/abc152/tasks/abc152_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc152_a.cpp"
+      }
+    },
+    {
+      "id": "abc152_b",
+      "label": "B",
+      "title": "Comparing Strings",
+      "url": "https://atcoder.jp/contests/abc152/tasks/abc152_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc152_b.cpp"
+      }
+    },
+    {
+      "id": "abc152_c",
+      "label": "C",
+      "title": "Low Elements",
+      "url": "https://atcoder.jp/contests/abc152/tasks/abc152_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc152_c.cpp"
+      }
+    },
+    {
+      "id": "abc152_d",
+      "label": "D",
+      "title": "Handstand 2",
+      "url": "https://atcoder.jp/contests/abc152/tasks/abc152_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc152_d.cpp"
+      }
+    },
+    {
+      "id": "abc152_e",
+      "label": "E",
+      "title": "Flatten",
+      "url": "https://atcoder.jp/contests/abc152/tasks/abc152_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc152_e.cpp"
+      }
+    },
+    {
+      "id": "abc152_f",
+      "label": "F",
+      "title": "Tree and Constraints",
+      "url": "https://atcoder.jp/contests/abc152/tasks/abc152_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc152_f.cpp"
+      }
+    }
+  ]
+}

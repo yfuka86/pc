@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc100",
+    "title": "AtCoder Beginner Contest 100",
+    "url": "https://atcoder.jp/contests/abc100"
+  },
+  "tasks": [
+    {
+      "id": "abc100_a",
+      "label": "A",
+      "title": "Happy Birthday!",
+      "url": "https://atcoder.jp/contests/abc100/tasks/abc100_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc100_a.cpp"
+      }
+    },
+    {
+      "id": "abc100_b",
+      "label": "B",
+      "title": "Ringo's Favorite Numbers",
+      "url": "https://atcoder.jp/contests/abc100/tasks/abc100_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc100_b.cpp"
+      }
+    },
+    {
+      "id": "abc100_c",
+      "label": "C",
+      "title": "*3 or /2",
+      "url": "https://atcoder.jp/contests/abc100/tasks/abc100_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc100_c.cpp"
+      }
+    },
+    {
+      "id": "abc100_d",
+      "label": "D",
+      "title": "Patisserie ABC",
+      "url": "https://atcoder.jp/contests/abc100/tasks/abc100_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc100_d.cpp"
+      }
+    }
+  ]
+}
