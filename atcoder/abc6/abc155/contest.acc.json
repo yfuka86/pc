@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc155",
+    "title": "AtCoder Beginner Contest 155",
+    "url": "https://atcoder.jp/contests/abc155"
+  },
+  "tasks": [
+    {
+      "id": "abc155_a",
+      "label": "A",
+      "title": "Poor",
+      "url": "https://atcoder.jp/contests/abc155/tasks/abc155_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc155_a.cpp"
+      }
+    },
+    {
+      "id": "abc155_b",
+      "label": "B",
+      "title": "Papers, Please",
+      "url": "https://atcoder.jp/contests/abc155/tasks/abc155_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc155_b.cpp"
+      }
+    },
+    {
+      "id": "abc155_c",
+      "label": "C",
+      "title": "Poll",
+      "url": "https://atcoder.jp/contests/abc155/tasks/abc155_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc155_c.cpp"
+      }
+    },
+    {
+      "id": "abc155_d",
+      "label": "D",
+      "title": "Pairs",
+      "url": "https://atcoder.jp/contests/abc155/tasks/abc155_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc155_d.cpp"
+      }
+    },
+    {
+      "id": "abc155_e",
+      "label": "E",
+      "title": "Payment",
+      "url": "https://atcoder.jp/contests/abc155/tasks/abc155_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc155_e.cpp"
+      }
+    },
+    {
+      "id": "abc155_f",
+      "label": "F",
+      "title": "Perils in Parallel",
+      "url": "https://atcoder.jp/contests/abc155/tasks/abc155_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc155_f.cpp"
+      }
+    }
+  ]
+}
