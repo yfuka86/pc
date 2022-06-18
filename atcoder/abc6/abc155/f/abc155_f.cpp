@@ -84,21 +84,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-//------------------------------------------------------------------------------
-struct UnionFind {
-  vector<ll> par, s, e;
-  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
-  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
-  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
-  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
-  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
-  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
-};
-//------------------------------------------------------------------------------
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
 
 void solve() {
   ll n, m; cin >> n >> m;
-  vlp bomb(n), code(m);
+  vlp bomb(n);
 
   rep(i, n) {
     ll a, b; cin >> a >> b;
@@ -109,14 +108,51 @@ void solve() {
   vl bo(n + 2); rep(i, n + 2) bo[i] = bomb[i].fi;
   vl diff(n + 1, 0);
   rep(i, n + 1) diff[i] = bomb[i + 1].se ^ bomb[i].se;
-  coutarray(diff);
+  // coutarray(diff);
 
+  set<LP> edges;
+  map<ll, ll> edgeidx;
+  Graph<ll> G(n + 1);
   rep(i, m) {
     ll l, r; cin >> l >> r;
     ll li = lbs(bo, l);
     ll ri = ubs(bo, r);
-    code[i] = {--li, --ri};
+    li--; ri--;
+    if (li != ri && edges.find({li, ri}) == edges.end()) {
+      G.add_edge(li, ri);
+      edgeidx[G[li].back().idx] = i;
+    }
+    // cout << li << " " << ri << "\n";
   }
+
+  vb used(n + 1, false);
+  vl dp(n + 1, 0);
+  set<ll> ans;
+  ll cnt;
+  function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    if (used[v]) return;
+    used[v] = true;
+
+    if (diff[v]) cnt++;
+    dp[v] = diff[v];
+    for(auto &to: G[v]) {
+      if (used[to]) continue;
+      dfs(to, v);
+      if (dp[to] & 1) {
+        ans.insert(edgeidx[to.idx] + 1);
+      }
+      dp[v] += dp[to];
+    }
+  };
+  rep(i, n + 1) {
+    if (!used[i]) {
+      cnt = 0;
+      dfs(i, -1);
+      if (cnt & 1) { cout << -1 << "\n"; return; }
+    }
+  }
+  cout << ans.size() << "\n";
+  coutset(ans);
 }
 
 signed main() {
