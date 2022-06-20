@@ -133,7 +133,7 @@ void compare() {
     ll l = rg.lint(1, N), r = rg.lint(l + 1, N + 1);
     mint n = naive(N, a, l, r);
     mint s = solve(N, a, l, r);
-    if (n != s) {
+    if (n == s) {
       cout << c << "times tried" << "\n";
       cout << N << "\n";
       cout << l << " " << r << "\n";

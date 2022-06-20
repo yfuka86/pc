@@ -42,6 +42,8 @@ template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string
 // }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 
+template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
+template<typename K, typename V> V safe_read(unordered_map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
@@ -83,13 +85,27 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  vlin(h, 3, 0); vlin(w, 3, 0);
+
+  ll ans = 0;
+  rep2(i, 1, 30) rep2(j, 1, 30) rep2(k, 1, 30) rep2(m, 1, 30) {
+    if (h[0] - i - j <= 0) continue;
+    if (h[1] - k - m <= 0) continue;
+    if (w[0] - i - k <= 0) continue;
+    if (w[1] - j - m <= 0) continue;
+    ll rem1 = w[2] - (h[0] - i - j) - (h[1] - k - m);
+    ll rem2 = h[2] - (w[0] - i - k) - (w[1] - j - m);
+    if (rem1 <= 0 || rem2 <= 0 || rem1 != rem2) continue;
+    // cout << i << " " << j << " " << k << " " << m << "\n";
+    ans++;
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

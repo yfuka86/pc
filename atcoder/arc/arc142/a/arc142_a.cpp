@@ -83,13 +83,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n, k; cin >> n >> k;
+  if (k % 10 == 0) { cout << 0 << "\n"; return; }
+  string s = to_string(k); reverse(all(s));
+  ll rk = stoll(s);
+  if (k > rk) { cout << 0 << "\n"; return; }
+  // cout << k << " " << rk << "\n";
+
+  set<ll> ans;
+
+  ll x = k;
+  while (x <= n) {
+    ans.insert(x);
+    x *= 10;
+  }
+
+  ll y = rk;
+  while (y <= n) {
+    ans.insert(y);
+    y *= 10;
+  }
+
+  cout << ans.size() << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

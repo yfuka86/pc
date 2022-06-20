@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc256",
+    "title": "Tokio Marine & Nichido Fire Insurance Programming Contest 2022（AtCoder Beginner Contest 256)",
+    "url": "https://atcoder.jp/contests/abc256"
+  },
+  "tasks": [
+    {
+      "id": "abc256_a",
+      "label": "A",
+      "title": "2^N",
+      "url": "https://atcoder.jp/contests/abc256/tasks/abc256_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc256_a.cpp"
+      }
+    },
+    {
+      "id": "abc256_b",
+      "label": "B",
+      "title": "Batters",
+      "url": "https://atcoder.jp/contests/abc256/tasks/abc256_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc256_b.cpp"
+      }
+    },
+    {
+      "id": "abc256_c",
+      "label": "C",
+      "title": "Filling 3x3 array",
+      "url": "https://atcoder.jp/contests/abc256/tasks/abc256_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc256_c.cpp"
+      }
+    },
+    {
+      "id": "abc256_d",
+      "label": "D",
+      "title": "Union of Interval",
+      "url": "https://atcoder.jp/contests/abc256/tasks/abc256_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc256_d.cpp"
+      }
+    },
+    {
+      "id": "abc256_e",
+      "label": "E",
+      "title": "Takahashi's Anguish",
+      "url": "https://atcoder.jp/contests/abc256/tasks/abc256_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc256_e.cpp"
+      }
+    },
+    {
+      "id": "abc256_f",
+      "label": "F",
+      "title": "Cumulative Cumulative Cumulative Sum",
+      "url": "https://atcoder.jp/contests/abc256/tasks/abc256_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc256_f.cpp"
+      }
+    },
+    {
+      "id": "abc256_g",
+      "label": "G",
+      "title": "Black and White Stones",
+      "url": "https://atcoder.jp/contests/abc256/tasks/abc256_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc256_g.cpp"
+      }
+    },
+    {
+      "id": "abc256_h",
+      "label": "Ex",
+      "title": "I like Query Problem",
+      "url": "https://atcoder.jp/contests/abc256/tasks/abc256_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc256_h.cpp"
+      }
+    }
+  ]
+}

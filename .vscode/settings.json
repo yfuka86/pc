@@ -110,7 +110,8 @@
     "scoped_allocator": "cpp",
     "semaphore": "cpp",
     "cuchar": "cpp",
-    "source_location": "cpp"
+    "source_location": "cpp",
+    "segtree": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",

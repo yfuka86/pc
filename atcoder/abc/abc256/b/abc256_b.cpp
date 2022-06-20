@@ -42,6 +42,8 @@ template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string
 // }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 
+template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
+template<typename K, typename V> V safe_read(unordered_map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
@@ -84,12 +86,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(a, n, 0);
+  multiset<ll> s;
+  ll ans = 0;
+  rep(i, n) {
+    s.insert(0);
+    multiset<ll> ns;
+    for(ll x: s) {
+      ll t = x + a[i];
+      if (t >= 4) ans++; else ns.insert(t);
+    }
+    s = ns;
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

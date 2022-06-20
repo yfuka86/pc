@@ -84,12 +84,21 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vvl ans(n, vl(n, 0));
+  ll c = 0;
+  rep(i, n) if (!(i & 1)) rep(j, n) {
+    ans[i][j] = ++c;
+  }
+  rep(i, n) if (i & 1) rep(j, n) {
+    ans[i][j] = ++c;
+  }
+  coutmatrix(ans);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

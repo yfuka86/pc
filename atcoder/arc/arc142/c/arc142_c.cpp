@@ -84,12 +84,31 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vl a(n - 2), b(n - 2);
+  rep(i, n - 2) {
+    iquery({1ll, i + 3}, a[i]);
+    iquery({2ll, i + 3}, b[i]);
+  }
+
+  vlp sum(n - 2);
+  rep(i, n - 2) sum[i] = { a[i] + b[i], i + 3 };
+  sort(all(sum));
+
+  if (sum.front().fi == 2) ianswer(2);
+  else if (sum.front().fi == 3) {
+    if (sum[1].fi != 3) ianswer(1);
+    else {
+      ll t; iquery({sum[0].se, sum[1].se}, t);
+      if (t == 1) ianswer(3);
+      else ianswer(1);
+    }
+  } else ianswer(sum.front().fi);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
