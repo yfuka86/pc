@@ -19,16 +19,13 @@ typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<string> vs; typ
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb;
 const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
 
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
-template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   LP lp(ll a, ll b, bool rng = true) { ll x = l(a, b - 1), y = l(rng ? x + 1 : a, b - 1); return {x, y}; }
   vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
   vl vecperm(ll l, ll from = 0) { vl perm(l); iota(all(perm), from); shuffle(perm); return perm; }
-  string str(ll l, vector<char> op) { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(op[fig[i]]); return s; }
+  string str(ll l, string op) { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(op[fig[i]]); return s; }
   string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
   string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
   void shuffle(vl &a) { std::shuffle(all(a), mt); }
@@ -39,6 +36,11 @@ template<typename T> void coutset(set<T> & s) { for (const auto& a : s) { cout <
 template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
 template<typename T, typename S> void coutpair(pair<T, S> & p, string sep = " ") { cout << p.first << ":" << p.second << sep; }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
+template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); coutarray(v); cout.flush(); cin >> a; }
+// template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
+//   a = query[0] ? A() : A();
+// }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
@@ -67,45 +69,42 @@ ll naive(ll N, vl a) {
   ll ans = 1; return ans;
 }
 
-void compare() { RandGen rg; ll c = 0, loop = 10;
-  while (true) { c++; if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
+  while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll N = 10;
     vl a = rg.vecl(N, 1, 1e2);
     auto s = solve(N, a); auto n = naive(N, a);
-    if (n != s) {
-      cout << c << "times tried" << "\n";
+    if (!check || n != s) { cout << c << "times tried" << "\n";
       cout << N << "\n"; coutarray(a);
       cout << "solve: " << s << "\n";
       cout << "naive: " << n << "\n";
-      break;
-    }
+    if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
   ll n, k; cin >> n >> k;
   vlin(a, k, 1);
-
   vl x(n), y(n);
-  rep(i, n) {
-    cin >> x[i] >> y[i];
+  rep(i, n) cin >> x[i] >> y[i];
+
+  vl dist(n, LINF);
+
+  rep(i, k) {
+    rep(j, n) {
+      chmin(dist[j], POW(x[a[i]] - x[j], 2) + POW(y[a[i]] - y[j], 2));
+    }
   }
 
-  ll ans = 0;
-  rep(i, n) {
-    ll dist = LINF;
-    rep(j, k) {
-      chmin(dist, POW(x[a[j]] - x[i], 2) + POW(y[a[j]] - y[i], 2));
-    }
-    chmax(ans, dist);
-  }
-  cout << sqrt(ans) << "\n";
+  ld ans = 0;
+  rep(i, n) chmax(ans, (ld)sqrt(dist[i]));
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

@@ -85,21 +85,16 @@ void compare() { RandGen rg; ll c = 0, loop = 10;
 void solve() {
   ll x, a, d, n; cin >> x >> a >> d >> n;
 
-  if (d == 0) {
-    cout << abs(x - a) << "\n";
-    return;
-  }
+  ll b = a + d * (n - 1);
+  if (b < a) { swap(a, b); d = abs(d); }
 
-  ll la = d * (n - 1) + a;
-
-  if (la < a) swap(la, a);
-  if (x >= la) {
-    cout << x - la << "\n";
-  } else if (x <= a) {
+  if (x <= a) {
     cout << a - x << "\n";
+  } else if (b <= x) {
+    cout << x - b << "\n";
   } else {
-    ll num = (x - a) / abs(d);
-    cout << min(abs(x - (a + abs(d) * num)), abs(x - (a + abs(d) * (num + 1)))) << "\n";
+    ll op = (x - a) % d;
+    cout << min(op, d - op) << "\n";
   }
 }
 
