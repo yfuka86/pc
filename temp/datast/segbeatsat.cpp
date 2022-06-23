@@ -26,43 +26,44 @@ struct lazy_segtree {
   void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
 
+// https://atcoder.jp/contests/abc256/tasks/abc256_h
 namespace Beats {
 using T = ll;
 struct S {
-  T sum, lval;
+  T sum, min, max;
   int sz;
   bool fail;
-  S(T x = 0): sum(x), lval(x), sz(0), fail(false) {}
 };
 
-S e() { return S(); }
-
-S op(S l, S r) { return { l.sum + r.sum, l.lval, l.sz + r.sz, l.fail || r.fail || l.lval != r.lval }; }
+S e() { return {0, -LINF, LINF, 0, false}; }
+S op(S l, S r) { return { l.sum + r.sum, min(l.min, r.min), max(l.max, r.max), l.sz + r.sz, false }; }
 
 struct F {
   int cmd = -1; T x;
 };
 
 F composition(F fnew, F fold) {
-  return (fnew.cmd == -1 ? fold : fnew);
+  if (fnew.cmd == -1) return fold;
+  if (fold.cmd == -1) return fnew;
+  // 両方ともコマンド
+  if (fnew.cmd == 2) return fnew;
+  if (fnew.cmd == 1) {
+    if (fold.cmd == 2) return {2, fold.x / fnew.x};
+    else {
+      int d; if (__builtin_mul_overflow(fold.x, fnew.x, &d) || d > 1e5) return {2, 0};
+      else return {1, fold.x * fnew.x};
+    }
+  }
 }
 
 F id() { return F(); }
 
-S mapping(F f, S x) {
-    if ((x.upper - x.lower) & (~f.bit_and | f.bit_or)) {
-        // 区間内で立っている要素と立っていない要素が混在するような bit で
-        // 変更が起きた場合のみ計算失敗（新たな最大値が不明なので）
-        x.fail = true;
-        return x;
-    }
-    x.upper = (x.upper & f.bit_and) | f.bit_or;
-    x.lower = (x.lower & f.bit_and) | f.bit_or;
-    x.max = (x.max & f.bit_and) | f.bit_or;
-    return x;
+S mapping(F f, S s) {
+  if (f.cmd == -1) return s;
+  if (f.cmd == 1) {
+    ll div = s.min / f.x;
+    return { div * s.sz, div, div, s.sz, s.min != s.max };
+  } else return { f.x * s.sz, f.x, f.x, s.sz, false };
 }
-using segtree = atcoder::lazy_segtree<S, op, e, F, mapping, composition, id>;
+using segtree = lazy_segtree<S, op, e, F, mapping, composition, id>;
 }
-
-vector<Beats::S> a(n);
-Beats::segtree seg(a);

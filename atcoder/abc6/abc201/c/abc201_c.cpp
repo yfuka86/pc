@@ -83,7 +83,35 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  string s; cin >> s;
+  set<ll> need, optional;
+  rep(i, 10) {
+    if (s[i] == 'o') { need.insert(i); optional.insert(i); }
+    if (s[i] == '?') { optional.insert(i);}
+  }
+
+  if (need.size() > 4) { cout << 0 << "\n"; return; }
+  if (optional.size() == 0) { cout << 0 << "\n"; return; }
+
+  ll ans = 0;
+  rep(i, 10000) {
+    ll t = i;
+    vl tt;
+    rep(_, 4) {
+      tt.pb(t % 10);
+      t /= 10;
+    }
+
+    bool valid = true;
+    for (auto j: need) {
+      if (find(all(tt), j) == tt.end()) valid = false;
+    }
+    for (auto j: tt) {
+      if (optional.find(j) == optional.end()) valid = false;
+    }
+    if (valid) ans++;
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

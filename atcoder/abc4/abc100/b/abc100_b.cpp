@@ -85,7 +85,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll d, n; cin >> d >> n;
+  cout << POW(100, d) * (n == 100 ? 101 : n) << "\n";
 }
 
 signed main() {
