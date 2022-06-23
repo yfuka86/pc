@@ -1,3 +1,4 @@
+// https://null-mn.hatenablog.com/entry/2021/08/22/064325
 using ll = long long;
 
 // 区間min & 区間max & 区間sum & 区間等差更新

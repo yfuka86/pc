@@ -47,7 +47,7 @@ S mapping(F f, S x) { return f != -1 ? f : x; }
 F composition(F f, F g) { return f != -1 ? f : g; }
 F id() { return -1; }
 
-// linear_functions sum seg
+// linear_functions sum seg from here
 struct S {
   mint a, b, x; int len;
   mint val() { return a * x + b; }
@@ -58,6 +58,7 @@ S e() { return {0, 0, 0, 0}; }
 S mapping(F f, S s) { return {s.a + f.a, s.b + f.b * s.len, s.x, s.len}; }
 F composition(F f, F g) { { return {f.a + g.a, f.b + g.b}; } }
 F id() { return {0, 0}; }
+// to here
 
 lazy_segtree<S, op, e, F, mapping, composition, id> seg(a);
 ll ans = seg.max_right<function<bool(S)>>(a,

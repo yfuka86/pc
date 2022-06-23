@@ -35,18 +35,3 @@ ll ans = seg.max_right<function<bool(S)>>(0,
     return x < b;
   }
 );
-
-namespace rq_is_c_min{
-  using S = ll;
-  S op(S l, S r){ return min(l, r); }
-  S e(){ return 1001001001001001001; }
-  struct pred { ll c; bool operator()(S x){ return c <= x; } };
-  using rq = atcoder::segtree<S, op, e>;
-}
-namespace rq_is_c_max{
-  using S = ll;
-  S op(S l, S r){ return max(l, r); }
-  S e(){ return -1001001001001001001; }
-  struct pred { ll c; bool operator()(S x){ return c >= x; } };
-  using rq = atcoder::segtree<S, op, e>;
-}

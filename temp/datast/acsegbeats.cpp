@@ -1,4 +1,4 @@
-//2021/12/22-ac----------------------------------------------------------------
+// https://rsm9.hatenablog.com/entry/2021/02/01/220408
 template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S), F (*composition)(F, F), F (*id)()>
 struct lazy_segtree {
   public:
@@ -37,10 +37,15 @@ struct S {
 
 S e() { return {0, -LINF, LINF, 0, false}; }
 S op(S l, S r) { return { l.sum + r.sum, min(l.min, r.min), max(l.max, r.max), l.sz + r.sz, false }; }
+struct F { int cmd = -1; T x; };
 
-struct F {
-  int cmd = -1; T x;
-};
+S mapping(F f, S s) {
+  if (f.cmd == -1) return s;
+  if (f.cmd == 1) {
+    ll div = s.min / f.x;
+    return { div * s.sz, div, div, s.sz, s.min != s.max };
+  } else return { f.x * s.sz, f.x, f.x, s.sz, false };
+}
 
 F composition(F fnew, F fold) {
   if (fnew.cmd == -1) return fold;
@@ -57,13 +62,5 @@ F composition(F fnew, F fold) {
 }
 
 F id() { return F(); }
-
-S mapping(F f, S s) {
-  if (f.cmd == -1) return s;
-  if (f.cmd == 1) {
-    ll div = s.min / f.x;
-    return { div * s.sz, div, div, s.sz, s.min != s.max };
-  } else return { f.x * s.sz, f.x, f.x, s.sz, false };
-}
 using segtree = lazy_segtree<S, op, e, F, mapping, composition, id>;
 }
