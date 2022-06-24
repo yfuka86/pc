@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc150",
+    "title": "AtCoder Beginner Contest 150",
+    "url": "https://atcoder.jp/contests/abc150"
+  },
+  "tasks": [
+    {
+      "id": "abc150_a",
+      "label": "A",
+      "title": "500 Yen Coins",
+      "url": "https://atcoder.jp/contests/abc150/tasks/abc150_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc150_a.cpp"
+      }
+    },
+    {
+      "id": "abc150_b",
+      "label": "B",
+      "title": "Count ABC",
+      "url": "https://atcoder.jp/contests/abc150/tasks/abc150_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc150_b.cpp"
+      }
+    },
+    {
+      "id": "abc150_c",
+      "label": "C",
+      "title": "Count Order",
+      "url": "https://atcoder.jp/contests/abc150/tasks/abc150_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc150_c.cpp"
+      }
+    },
+    {
+      "id": "abc150_d",
+      "label": "D",
+      "title": "Semi Common Multiple",
+      "url": "https://atcoder.jp/contests/abc150/tasks/abc150_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc150_d.cpp"
+      }
+    },
+    {
+      "id": "abc150_e",
+      "label": "E",
+      "title": "Change a Little Bit",
+      "url": "https://atcoder.jp/contests/abc150/tasks/abc150_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc150_e.cpp"
+      }
+    },
+    {
+      "id": "abc150_f",
+      "label": "F",
+      "title": "Xor Shift",
+      "url": "https://atcoder.jp/contests/abc150/tasks/abc150_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc150_f.cpp"
+      }
+    }
+  ]
+}

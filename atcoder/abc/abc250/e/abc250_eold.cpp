@@ -45,48 +45,48 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-struct CustomHash {
-  static uint64_t splitmix64(uint64_t x) {
-    // http://xorshift.di.unimi.it/splitmix64.c
-    x += 0x9e3779b97f4a7c15;
-    x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
-    x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
-    return x ^ (x >> 31);
-  }
-
-  size_t operator()(uint64_t x) const {
-    static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
-    return splitmix64(x + FIXED_RANDOM);
-  }
-} ch;
-
 void solve() {
   ll N; cin >> N;
   vl a(N), b(N); rep(i, N) cin >> a[i]; rep(i, N) cin >> b[i];
-
-  vector<ull> hasha(N), hashb(N);
-  set<ll> sa, sb;
-  rep(i, N) {
-    hasha[i] = i ? hasha[i - 1] : 0;
-    if (sa.find(a[i]) == sa.end()) {
-      sa.insert(a[i]);
-      hasha[i] ^= ch(a[i]);
-    }
-
-    hashb[i] = i ? hashb[i - 1] : 0;
-    if (sb.find(b[i]) == sb.end()) {
-      sb.insert(b[i]);
-      hashb[i] ^= ch(b[i]);
+  vl cntb(N, 0);
+  {
+    set<ll> s;
+    rep(i, N) {
+      s.insert(b[i]);
+      cntb[i] = s.size();
     }
   }
-  // coutarray(hasha);
-  // coutarray(hashb);
+
+  set<ll> sc, sa, sb;
+  ll bcur = 0, qcur = 0;
+  vlp ans(N, {-1, -1});
+
+  rep(i, N) {
+    if (sc.find(a[i]) == sc.end()) sa.insert(a[i]);
+    while (sb.size() < sa.size() && bcur < N) {
+      if (sc.find(b[bcur]) == sc.end()) sb.insert(b[bcur]);
+      bcur++;
+    }
+    {
+      // cout << "a"; for (auto a: sa) cout << a << " "; cout << "\n";
+      // cout << "b"; for (auto b: sb) cout << b << " "; cout << "\n";
+    }
+    if (sa == sb) {
+      for (auto a: sa) sc.insert(a);
+      sa.clear(); sb.clear();
+      ll l = lower_bound(all(cntb), sc.size()) - cntb.begin();
+      ll r = lower_bound(all(cntb), sc.size() + 1) - cntb.begin();
+      ans[i] = {l, r};
+    }
+  }
 
   ll Q; cin >> Q;
   rep(i, Q) {
     ll x, y; cin >> x >> y; x--; y--;
-    if (hasha[x] == hashb[y]) cout << "Yes" << "\n"; else cout << "No" << "\n";
+    auto [l, r] = ans[x];
+    if (l <= y && y < r) cout << "Yes" << "\n"; else cout << "No" << "\n";
   }
+
 }
 
 signed main() {
