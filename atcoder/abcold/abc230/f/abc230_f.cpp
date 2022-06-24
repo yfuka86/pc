@@ -127,15 +127,15 @@ void solve() {
   vlin(a, n, 0);
   vl as = csum(a);
   as.pop_back();
-  vl dp = subseq_num(as);
-  // map<ll, ll> lasti;
-  // vmi dp(n + 1, 0), dpsum(n + 2, 0);
-  // dp[0] = 1; dpsum[1] = 1;
-  // rep(i, n) {
-  //   dp[i + 1] += dpsum[i + 1] - dpsum[lasti[as[i]]];
-  //   dpsum[i + 2] += dpsum[i + 1] + dp[i + 1];
-  //   lasti[as[i]] = i;
-  // }
+  // vl dp = subseq_num(as);
+  map<ll, ll> lasti;
+  vmi dp(n + 1, 0), dpsum(n + 2, 0);
+  dp[0] = 1; dpsum[1] = 1;
+  rep(i, n) {
+    dp[i + 1] += dpsum[i + 1] - dpsum[lasti[as[i]]];
+    dpsum[i + 2] += dpsum[i + 1] + dp[i + 1];
+    lasti[as[i]] = i;
+  }
   // coutarray(dp);
   cout << accumulate(all(dp), mint(0)) << "\n";
 }
