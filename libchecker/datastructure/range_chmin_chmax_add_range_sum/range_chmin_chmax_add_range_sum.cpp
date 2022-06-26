@@ -42,8 +42,6 @@ template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string
 // }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 
-template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
-template<typename K, typename V> V safe_read(unordered_map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
@@ -84,7 +82,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-//2021/12/22-ac----------------------------------------------------------------
+// https://rsm9.hatenablog.com/entry/2021/02/01/220408
 template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S), F (*composition)(F, F), F (*id)()>
 struct lazy_segtree {
   public:
@@ -112,66 +110,80 @@ struct lazy_segtree {
   void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
 
+// https://atcoder.jp/contests/abc256/tasks/abc256_h
 namespace Beats {
 using T = ll;
+T secondmi(T a, T a2, T c, T c2) { return a == c ? min(a2, c2) : a2 <= c ? a2 : c2 <= a ? c2 : max(a, c); }
+T secondma(T a, T a2, T b, T b2) { return a == b ? max(a2, b2) : a2 >= b ? a2 : b2 >= a ? b2 : min(a, b); }
+
 struct S {
-  T sum, min, max;
-  int sz;
+  T sum, lo, lo2, hi, hi2;
+  int sz, nlo, nhi;
   bool fail;
+  S(): sum(0), lo(LINF), lo2(LINF), hi(-LINF), hi2(-LINF), sz(0), nlo(0), nhi(0), fail(0) {}
+  S(T x, unsigned sz_ = 1): sum(x * sz_), lo(x), hi(x), lo2(LINF), hi2(-LINF), sz(sz_), nlo(sz_), nhi(sz_), fail(0) {}
 };
-
-S e() { return {0, LINF, -LINF, 0, false}; }
-S op(S l, S r) { return { l.sum + r.sum, min(l.min, r.min), max(l.max, r.max), l.sz + r.sz, false }; }
-
+S e() { return S(); }
+S op(S l, S r) {
+  S ret; ret.sum = l.sum + r.sum;
+  ret.lo = min(l.lo, r.lo), ret.lo2 = secondmi(l.lo, l.lo2, r.lo, r.lo2), ret.hi = max(l.hi, r.hi), ret.hi2 = secondma(l.hi, l.hi2, r.hi, r.hi2);
+  ret.sz = l.sz + r.sz, ret.nlo = l.nlo * (l.lo <= r.lo) + r.nlo * (r.lo <= l.lo), ret.nhi = l.nhi * (l.hi >= r.hi) + r.nhi * (r.hi >= l.hi);
+  return ret;
+}
 struct F {
-  int cmd = -1; T x;
+  T lb, ub, bias;
+  static F noop() noexcept { return {-LINF, LINF, 0}; }
+  static F chmin(T x) noexcept { return {-LINF, x, 0}; }
+  static F chmax(T x) noexcept { return {x, LINF, 0}; }
+  static F add(T x) noexcept { return {-LINF, LINF, x}; }
 };
-
-F composition(F fnew, F fold) {
-  if (fnew.cmd == -1) return fold;
-  if (fold.cmd == -1) return fnew;
-  // 両方ともコマンド
-  if (fnew.cmd == 2) return fnew;
-  if (fnew.cmd == 1) {
-    if (fold.cmd == 2) return {2, fold.x / fnew.x};
-    else {
-      int d; if (__builtin_mul_overflow(fold.x, fnew.x, &d) || d > 1e5) return {2, 0};
-      else return {1, fold.x * fnew.x};
-    }
+S mapping(F f, S x) {
+  if (x.sz == 0) return e();
+  else if (x.lo == x.hi or f.lb == f.ub or f.lb >= x.hi or f.ub < x.lo) {
+    return S(min(max(x.lo, f.lb), f.ub) + f.bias, x.sz);
+  } else if (x.lo2 == x.hi) {
+    x.lo = x.hi2 = max(x.lo, f.lb) + f.bias;
+    x.hi = x.lo2 = min(x.hi, f.ub) + f.bias;
+    x.sum = x.lo * x.nlo + x.hi * x.nhi;
+    return x;
+  } else if (f.lb < x.lo2 and f.ub > x.hi2) {
+    T nxt_lo = max(x.lo, f.lb), nxt_hi = min(x.hi, f.ub);
+    x.sum += (nxt_lo - x.lo) * x.nlo - (x.hi - nxt_hi) * x.nhi + f.bias * x.sz;
+    x.lo = nxt_lo + f.bias, x.hi = nxt_hi + f.bias, x.lo2 += f.bias, x.hi2 += f.bias;
+    return x;
   }
+  x.fail = 1;
+  return x;
 }
-
-F id() { return F(); }
-
-S mapping(F f, S s) {
-  if (f.cmd == -1) return s;
-  if (f.cmd == 1) {
-    ll div = s.min / f.x;
-    return { div * s.sz, div, div, s.sz, s.min != s.max };
-  } else return { f.x * s.sz, f.x, f.x, s.sz, false };
+F composition(F fnew, F fold) {
+  return {
+    max(min(fold.lb + fold.bias, fnew.ub), fnew.lb) - fold.bias,
+    min(max(fold.ub + fold.bias, fnew.lb), fnew.ub) - fold.bias,
+    fold.bias + fnew.bias
+  };
 }
+F id() { return F::noop(); }
 using segtree = lazy_segtree<S, op, e, F, mapping, composition, id>;
 }
+
 
 void solve() {
   ll n, q; cin >> n >> q;
   vlin(a, n, 0);
-  vector<Beats::S> s(n);
-  rep(i, n) {
-    s[i] = Beats::S{a[i], a[i], a[i], 1, false};
-  }
 
+  vector<Beats::S> s(n);
+  rep(i, n) s[i] = Beats::S(a[i]);
   Beats::segtree seg(s);
 
-  rep(_, q) {
+  rep(i, q) {
     ll cmd, l, r; cin >> cmd >> l >> r;
-    l--;
-    if (cmd == 1) {
-      ll x; cin >> x;
-      seg.apply(l, r, {cmd, x});
+    ll b; if (cmd != 3) cin >> b;
+    if (cmd == 0) {
+      seg.apply(l, r, Beats::F::chmin(b));
+    } else if (cmd == 1) {
+      seg.apply(l, r, Beats::F::chmax(b));
     } else if (cmd == 2) {
-      ll y; cin >> y;
-      seg.apply(l, r, {cmd, y});
+      seg.apply(l, r, Beats::F::add(b));
     } else {
       cout << seg.prod(l, r).sum << "\n";
     }
