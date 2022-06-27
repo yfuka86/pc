@@ -82,61 +82,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); que.push(make_pair(0, start));
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (costs[v] <= c) continue; else costs[v] = c;
-    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (costs[to] > nc) que.push(make_pair(nc, to)); } }
-  return costs; }
-
 void solve() {
-  ll n, m; cin >> n >> m;
-  Graph<ll> G(n);
-  rep(i, m) {
-    ll u, v; cin >> u >> v;
-    G.add_directed_edge(u, v);
+  vlin(a, 3, 0);
+  ll ans = 0;
+  sort(all(a));
+  if (a[2] - a[0] > a[1]) cout << -1 << "\n";
+  else {
+    ll op = (a[2] - a[1]);
+    a[2] -= op;
+    a[0] -= op;
+    ans += op;
+    ans += a[0];
+    ans += a[1] - a[0];
+    cout << ans << "\n";
   }
-  vl used(n, false);
-  vlp dp(n, {-1, -1});
-  ll ansv = -1;
-  vl ans;
-
-  function<void(ll)> dfs = [&](ll v) {
-    used[v] = 1;
-    for (auto &to: G[v]) {
-      if (!used[to]) {
-        dp[to] = {to.idx, v};
-        dfs(to);
-      } else if (used[to] == 1) {
-        if (ans.size()) continue;
-        ans.pb(to.idx);
-        ll cur = v;
-        while (cur != to) {
-          auto [id, from] = dp[cur];
-          cur = from;
-          ans.pb(id);
-        }
-      }
-    }
-    used[v] = 2;
-  };
-  rep(i, n) if (!used[i] && !ans.size()) dfs(i);
-
-  if (ans.size()) {
-    reverse(all(ans));
-    cout << ans.size() << "\n";
-    coutarray(ans, 0, "\n");
-  } else cout << -1 << "\n";
 }
 
 signed main() {

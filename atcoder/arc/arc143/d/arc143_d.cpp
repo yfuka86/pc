@@ -92,51 +92,31 @@ template< typename T = ll > struct Graph {
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); que.push(make_pair(0, start));
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (costs[v] <= c) continue; else costs[v] = c;
-    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (costs[to] > nc) que.push(make_pair(nc, to)); } }
-  return costs; }
-
 void solve() {
   ll n, m; cin >> n >> m;
-  Graph<ll> G(n);
+  vlin(a, m, 1);
+  vlin(b, m, 1);
+  vector<vector<LT>> G(n);
   rep(i, m) {
-    ll u, v; cin >> u >> v;
-    G.add_directed_edge(u, v);
+    G[a[i]].pb({b[i], 0, i});
+    G[b[i]].pb({a[i], 1, i});
   }
-  vl used(n, false);
-  vlp dp(n, {-1, -1});
-  ll ansv = -1;
-  vl ans;
 
+  string ans = string(m, '$');
+  vl used(n, 0);
   function<void(ll)> dfs = [&](ll v) {
     used[v] = 1;
-    for (auto &to: G[v]) {
+    for (auto &[to, p, id]: G[v]) {
+      if (ans[id] == '$') ans[id] = '0' + p;
       if (!used[to]) {
-        dp[to] = {to.idx, v};
         dfs(to);
-      } else if (used[to] == 1) {
-        if (ans.size()) continue;
-        ans.pb(to.idx);
-        ll cur = v;
-        while (cur != to) {
-          auto [id, from] = dp[cur];
-          cur = from;
-          ans.pb(id);
-        }
       }
     }
-    used[v] = 2;
   };
-  rep(i, n) if (!used[i] && !ans.size()) dfs(i);
+  rep(i, n) if (!used[i]) dfs(i);
+  rep(i, m) if (ans[i] == '$') ans[i] = '0';
 
-  if (ans.size()) {
-    reverse(all(ans));
-    cout << ans.size() << "\n";
-    coutarray(ans, 0, "\n");
-  } else cout << -1 << "\n";
+  cout << ans << "\n";
 }
 
 signed main() {
