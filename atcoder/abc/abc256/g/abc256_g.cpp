@@ -42,8 +42,6 @@ template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string
 // }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 
-template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
-template<typename K, typename V> V safe_read(unordered_map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
@@ -130,18 +128,14 @@ template <typename T> T m_pow(T m, ll n) { T res = m; n--; for(; n; n >>= 1, m =
 void solve() {
   ll n, d; cin >> n >> d;
   init_f();
-
   mint ans = 0;
   rep(i, d + 2) {
-    vvmi t(2, vmi(2, 0));
-    t[0][0] = comb(d - 1, i);
-    if (i - 1 >= 0) t[0][1] = comb(d - 1, i - 1);
-    if (i - 1 >= 0) t[1][0] = comb(d - 1, i - 1);
-    if (i - 2 >= 0) t[1][1] = comb(d - 1, i - 2);
-    vvmi a = m_pow(t, n);
-    // coutmatrix(a);
-    // cout << "\n";
-    ans += a[0][0] + a[1][1];
+    vvmi mat(2, vmi(2, 0));
+    mat[0][0] = comb(d - 1, i - 2);
+    mat[0][1] = mat[1][0] = comb(d - 1, i - 1);
+    mat[1][1] = comb(d - 1, i);
+    vvmi t = m_pow(mat, n);
+    ans += t[0][0] + t[1][1];
   }
   cout << ans << "\n";
 }
