@@ -84,6 +84,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  cout << (n <= 125 ? 4 : (n <= 211 ? 6 : 8)) << "\n";
 }
 
 signed main() {

@@ -111,13 +111,13 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 //------------------------------------------------------------------------------
 
 // 典型部分列DP
-vl subseq_num(vector<ll> &v, ll m = mod) {
+vmi subseq_num(vector<ll> &v) {
   ll n = v.size(); map<ll, ll> lasti;
-  vl dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
+  vmi dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
   rep(i, n) {
-    dp[i] += sum[i] - sum[lasti[v[i]]]; if (dp[i] < 0) dp[i] += m;
-    sum[i + 1] = (sum[i] + dp[i]) % m;
-    lasti[v[i]] = i;
+    dp[i + 1] += sum[i + 1] - sum[lasti[v[i]]];
+    sum[i + 2] = sum[i + 1] + dp[i + 1];
+    lasti[v[i]] = i + 1;
   }
   return dp;
 }
@@ -126,16 +126,10 @@ void solve() {
   ll n; cin >> n;
   vlin(a, n, 0);
   vl as = csum(a);
+  as.erase(as.begin());
   as.pop_back();
-  // vl dp = subseq_num(as);
-  map<ll, ll> lasti;
-  vmi dp(n + 1, 0), dpsum(n + 2, 0);
-  dp[0] = 1; dpsum[1] = 1;
-  rep(i, n) {
-    dp[i + 1] += dpsum[i + 1] - dpsum[lasti[as[i]]];
-    dpsum[i + 2] += dpsum[i + 1] + dp[i + 1];
-    lasti[as[i]] = i;
-  }
+  // coutarray(as);
+  vmi dp = subseq_num(as);
   // coutarray(dp);
   cout << accumulate(all(dp), mint(0)) << "\n";
 }

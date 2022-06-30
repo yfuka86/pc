@@ -65,6 +65,7 @@ int main()
   rep2(i, 1, N) csum[i] = csum[i - 1] + a[i - 1];
 
   vl dp = subseq_num(csum, mod);
+  coutarray(dp);
   modint ans = accumulate(dp.begin(), dp.end() - 1, 0LL);
   cout << ans % mod << "\n";
 }

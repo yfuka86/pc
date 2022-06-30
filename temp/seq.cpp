@@ -7,13 +7,13 @@ ll get_lis(vl &a) {
 }
 
 // 典型部分列DP
-vl subseq_num(vector<ll> &v, ll m = mod) {
+vmi subseq_num(vector<ll> &v) {
   ll n = v.size(); map<ll, ll> lasti;
-  vl dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
+  vmi dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
   rep(i, n) {
-    dp[i] += sum[i] - sum[lasti[v[i]]]; if (dp[i] < 0) dp[i] += m;
-    sum[i + 1] = (sum[i] + dp[i]) % m;
-    lasti[v[i]] = i;
+    dp[i + 1] += sum[i + 1] - sum[lasti[v[i]]];
+    sum[i + 2] = sum[i + 1] + dp[i + 1];
+    lasti[v[i]] = i + 1;
   }
   return dp;
 }

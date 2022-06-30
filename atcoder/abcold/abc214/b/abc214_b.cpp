@@ -83,7 +83,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll s, t; cin >> s >> t;
+  ll ans = 0;
+  set<LT> S;
+  rep(a, 101) rep(b, 101) rep(c, 101) {
+    if (a + b + c <= s && a * b * c <= t) S.insert({a, b, c});
+  }
+
+  cout << S.size() << "\n";
 }
 
 signed main() {

@@ -61,21 +61,92 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll N, vl a) {
-  ll ans = -1; return ans;
+
+const ll mod = 1000000007;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+// 典型部分列DP
+vmi subseq_num(vector<ll> &v, ll m = mod) {
+  ll n = v.size(); map<ll, ll> lasti;
+  vmi dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
+  rep(i, n) {
+    dp[i + 1] += sum[i >= 1 ? i : i + 1] - sum[lasti[v[i]]];
+    if (lasti[v[i]] > 1) dp[i + 1] += dp[lasti[v[i]] - 1];
+    sum[i + 2] = sum[i + 1] + dp[i + 1];
+    lasti[v[i]] = i + 1;
+  }
+  return dp;
 }
 
-ll naive(ll N, vl a) {
-  ll ans = 1; return ans;
+
+mint solve(string s) {
+  ll n = s.size();
+
+  vl v(n);
+  rep(i, n) v[i] = s[i] - 'a';
+  // coutarray(v);
+
+  vmi ans = subseq_num(v);
+  // coutarray(ans);
+
+  mint sum = 0;
+  rep(i, n) sum += ans[i + 1];
+  return sum;
+}
+
+mint naive(string s) {
+  ll n = s.size();
+  set<string> ss;
+  rep(i, 1 << n) {
+    string t = "";
+    bool valid = true;
+    rep(j, n - 1) {
+      if ((i & 1 << j) && (i & 1 << j + 1)) { valid = false; break; }
+    }
+    if (!valid) continue;
+
+    rep(j, n) {
+      if (i & 1 << j) t.pb(s[j]);
+    }
+    if (t.size()) ss.insert(t);
+  }
+  coutset(ss);
+  return mint(ss.size());
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 10;
-    vl a = rg.vecl(N, 1, 1e2);
-    auto s = solve(N, a); auto n = naive(N, a);
+    ll N = 4;
+    string a = rg.straz(N);
+    auto s = solve(a); auto n = naive(a);
     if (!check || n != s) { cout << c << "times tried" << "\n";
-      cout << N << "\n"; coutarray(a);
+      cout << a << "\n";
       cout << "solve: " << s << "\n";
       cout << "naive: " << n << "\n";
     if (check || (!check && c > loop)) break; }
@@ -83,7 +154,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  string s; cin >> s;
+  cout << solve(s) << "\n";
 }
 
 signed main() {

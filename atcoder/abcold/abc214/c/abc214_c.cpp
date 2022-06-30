@@ -84,6 +84,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(s, n, 0);
+  vlin(t, n, 0);
+
+  vl ans(n, -1);
+
+  priority_queue<LP, vlp, greater<LP>> que;
+  rep(i, n) que.push({t[i], i});
+
+  while(!que.empty()) {
+    auto [tt, i] = que.top(); que.pop();
+    if (ans[i] == -1) {
+      ans[i] = tt;
+      if (ans[(i + 1) % n] == -1) {
+        que.push({tt + s[i], (i + 1) % n});
+      }
+    }
+  }
+  coutarray(ans, 0, "\n");
 }
 
 signed main() {

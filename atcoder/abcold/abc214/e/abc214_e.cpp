@@ -81,15 +81,76 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
 
 void solve() {
   ll n; cin >> n;
+  vl x(n * 2);
+  rep(i, n) {
+    ll l, r; cin >> l >> r; r++;
+    x[i * 2] = l; x[i * 2 + 1] = r;
+  }
+  vl cx = x;
+  comp(cx);
+
+  map<ll, ll> sz;
+  {
+    vl sx = x, scx = cx;
+    sort(all(sx));
+    sort(all(scx));
+
+    rep(i, n * 2 - 1) {
+      ll d = sx[i + 1] - sx[i];
+      if (d) sz[scx[i]] = d;
+    }
+  }
+  // coutmap(sz);
+
+  vlp rng(n);
+  rep(i, n) {
+    rng[i] = {cx[i * 2 + 1], cx[i * 2]};
+  }
+  sort(all(rng));
+
+  ll cn = sz.rbegin()->fi;
+  BIT<ll> bt(cn + 1);
+  vl cnt(cn + 1);
+
+  rep(i, n) {
+    auto [r, l] = rng[i];
+    // cout << r << " " << l << "\n";
+    if (bt.sum(l, r) == r - l) { cout << "No" << "\n"; return; }
+    ll idx = binary_search([&](ll mid) {
+      return bt.sum(l, mid) == mid - l;
+    }, l, r);
+    cnt[idx]++;
+    if (cnt[idx] == sz[idx]) bt.add(idx, 1);
+    // coutarray(cnt);
+  }
+  cout << "Yes" << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
