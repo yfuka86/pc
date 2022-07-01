@@ -82,43 +82,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template< typename T >
+struct SparseTable {
+  vector< vector< T > > st; vector< int > lookup;
+  SparseTable(const vector< T > &v) {
+    int b = 0; while((1 << b) <= v.size()) ++b; st.assign(b, vector< T >(1 << b));
+    for(int i = 0; i < v.size(); i++) st[0][i] = v[i];
+    for(int i = 1; i < b; i++) for(int j = 0; j + (1 << i) <= (1 << b); j++) st[i][j] = min(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
+    lookup.resize(v.size() + 1); for(int i = 2; i < lookup.size(); i++) lookup[i] = lookup[i >> 1] + 1; }
+  inline T rmq(int l, int r) { int b = lookup[r - l]; return min(st[b][l], st[b][r - (1 << b)]); } };
+
+
 void solve() {
-  string s; cin >> s;
-  ll k; cin >> k;
-
-  vl yidx;
-  rep(i, s.size()) if (s[i] == 'Y') yidx.pb(i);
-  ll n = yidx.size();
-  vl ysum = csum(yidx);
-
-  ll ans = binary_search([&](ll mid) {
-    ll num = LINF;
-    if (mid == 0) return true;
-    rep(i, n - mid + 1) {
-      ll center = i + mid / 2;
-      ll cent = yidx[center];
-
-      ll tmp = 0;
-      {
-        // 前方
-        ll len = (mid / 2);
-        tmp += cent * len - (ysum[center] - ysum[i]);
-        tmp -= len*(len + 1)/2;
-      }
-      {
-        // 後方
-        ll len = mid - (mid / 2);
-        tmp += (ysum[i + mid] - ysum[center]) - cent * len;
-        tmp -= len*(len - 1)/2;
-      }
-      // cout << "ans" << tmp << "\n";
-      chmin(num, tmp);
-      if (num <= k) break;
-    }
-    return num <= k;
-  }, 0, n + 1);
-
-  cout << ans << "\n";
+  ll n,q; cin >> n >> q;
+  vlin(a, n, 0);
+  SparseTable st(a);
+  rep(i, q) {
+    ll l, r; cin >> l >> r;
+    cout << st.rmq(l, r) << "\n";
+  }
 }
 
 signed main() {

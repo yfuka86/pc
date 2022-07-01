@@ -42,6 +42,8 @@ template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string
 // }
 template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 
+template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
+template<typename K, typename V> V safe_read(unordered_map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
@@ -82,42 +84,70 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
-  string s; cin >> s;
-  ll k; cin >> k;
+  ll n, m; cin >> n >> m;
+  Graph<ll> G(n);
+  vlp edges(m);
+  rep(i, m) {
+    ll a, b;
+    cin >> a >> b; a--; b--;
+    G.add_edge(a, b);
+    edges[i] = {a, b};
+  }
 
-  vl yidx;
-  rep(i, s.size()) if (s[i] == 'Y') yidx.pb(i);
-  ll n = yidx.size();
-  vl ysum = csum(yidx);
-
-  ll ans = binary_search([&](ll mid) {
-    ll num = LINF;
-    if (mid == 0) return true;
-    rep(i, n - mid + 1) {
-      ll center = i + mid / 2;
-      ll cent = yidx[center];
-
-      ll tmp = 0;
-      {
-        // 前方
-        ll len = (mid / 2);
-        tmp += cent * len - (ysum[center] - ysum[i]);
-        tmp -= len*(len + 1)/2;
-      }
-      {
-        // 後方
-        ll len = mid - (mid / 2);
-        tmp += (ysum[i + mid] - ysum[center]) - cent * len;
-        tmp -= len*(len - 1)/2;
-      }
-      // cout << "ans" << tmp << "\n";
-      chmin(num, tmp);
-      if (num <= k) break;
+  ll ans = 0;
+  rep(S, 1 << n) {
+    bool valid = true;
+    rep(i, m) {
+      if (S & 1 << edges[i].fi && S & 1 << edges[i].se) { valid = false; break; }
     }
-    return num <= k;
-  }, 0, n + 1);
+    if (!valid) continue;
 
+    ll sup = ~S;
+    UnionFind uf(n), ufbi(2 * n);
+    rep(i, m) {
+      auto [a, b] = edges[i];
+      if (sup & 1 << a && sup & 1 << b) {
+        uf.unite(a, b);
+        ufbi.unite(a, b + n);
+        ufbi.unite(a + n, b);
+      }
+    }
+
+    bool bivalid = true;
+    rep(i, n) {
+      if (sup & 1 << i && ufbi.same(i, i + n)) {
+        bivalid = false; break;
+      }
+    }
+    if (bivalid) {
+      set<ll> cc;
+      rep(i, n) if (sup & 1 << i) cc.insert(uf.root(i));
+      ans += POW(2, cc.size());
+    }
+  }
   cout << ans << "\n";
 }
 
