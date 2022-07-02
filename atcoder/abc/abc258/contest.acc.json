@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc258",
+    "title": "AtCoder Beginner Contest 258",
+    "url": "https://atcoder.jp/contests/abc258"
+  },
+  "tasks": [
+    {
+      "id": "abc258_a",
+      "label": "A",
+      "title": "When?",
+      "url": "https://atcoder.jp/contests/abc258/tasks/abc258_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc258_a.cpp"
+      }
+    },
+    {
+      "id": "abc258_b",
+      "label": "B",
+      "title": "Number Box",
+      "url": "https://atcoder.jp/contests/abc258/tasks/abc258_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc258_b.cpp"
+      }
+    },
+    {
+      "id": "abc258_c",
+      "label": "C",
+      "title": "Rotation",
+      "url": "https://atcoder.jp/contests/abc258/tasks/abc258_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc258_c.cpp"
+      }
+    },
+    {
+      "id": "abc258_d",
+      "label": "D",
+      "title": "Trophy",
+      "url": "https://atcoder.jp/contests/abc258/tasks/abc258_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc258_d.cpp"
+      }
+    },
+    {
+      "id": "abc258_e",
+      "label": "E",
+      "title": "Packing Potatoes",
+      "url": "https://atcoder.jp/contests/abc258/tasks/abc258_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc258_e.cpp"
+      }
+    },
+    {
+      "id": "abc258_f",
+      "label": "F",
+      "title": "Main Street",
+      "url": "https://atcoder.jp/contests/abc258/tasks/abc258_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc258_f.cpp"
+      }
+    },
+    {
+      "id": "abc258_g",
+      "label": "G",
+      "title": "Triangle",
+      "url": "https://atcoder.jp/contests/abc258/tasks/abc258_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc258_g.cpp"
+      }
+    },
+    {
+      "id": "abc258_h",
+      "label": "Ex",
+      "title": "Odd Steps",
+      "url": "https://atcoder.jp/contests/abc258/tasks/abc258_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc258_h.cpp"
+      }
+    }
+  ]
+}
