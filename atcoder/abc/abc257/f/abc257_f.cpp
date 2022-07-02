@@ -81,6 +81,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+
 template< typename T = ll > struct Edge {
   int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
   operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
@@ -100,27 +101,27 @@ vector<ll> dijkstra(Graph<ll> &G, ll start) {
 
 void solve() {
   ll n, m; cin >> n >> m;
-  Graph<ll> G(n + 1);
+  Graph<ll> g(n + 1);
   rep(i, m) {
     ll u, v; cin >> u >> v; u--; v--;
-    if (u < 0) G.add_edge(n, v); else G.add_edge(u, v);
+    if (u == -1) g.add_edge(n, v);
+    else g.add_edge(u, v);
   }
-  vl ct = dijkstra(G, n - 1);
-  vl cs = dijkstra(G, 0);
+
+  vl sc = dijkstra(g, 0), tc = dijkstra(g, n - 1);
 
   vl ans(n, LINF);
 
-  ans[0] = min(ct[n], cs[n - 1]);
-  rep2(i, 1, n - 1) {
-    ans[i] = min(cs[n - 1], min(ct[i] + cs[n], ct[n] + cs[i]));
+  rep(i, n) {
+    chmin(ans[i], sc[n - 1]);
+    chmin(ans[i], min(sc[i] + tc[n], sc[n] + tc[i]));
   }
-  ans[n - 1] = min(cs[n], ct[0]);
 
   rep(i, n) {
     if (ans[i] == LINF) cout << -1 << " ";
     else cout << ans[i] << " ";
-  }
-  cout << "\n";
+  } cout << "\n";
+
 }
 
 signed main() {

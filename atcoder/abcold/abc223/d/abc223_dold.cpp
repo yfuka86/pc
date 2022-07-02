@@ -10,16 +10,14 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max() / 2 - 10; const ll LINF = LLONG_MAX / 2 - 10; const double DINF = numeric_limits<double>::infinity();
+typedef pair<int, int> P; typedef pair<ll, ll> LP;
+typedef vector<int> vi; typedef vector<ll> vl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
+const int INF = numeric_limits<int>::max();
+const ll LINF = LLONG_MAX;
+const double DINF = numeric_limits<double>::infinity();
 
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
-template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template <class T> T POW(T x, int n) { assert(n >= 0); T res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
@@ -30,34 +28,43 @@ template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& 
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+vl topo_sort(Graph<ll> G) {
+  ll n = G.size(); vl deg(n), ret; priority_queue<ll> que;
+  rep(i, n) for (Edge e: G[i]) deg[e.to]++;
+  rep(i, n) if (deg[i] == 0) que.push(-i);
+  while (!que.empty()) {
+    ll v = -que.top(); que.pop(); ret.pb(v);
+    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(-next); } G[v].clear();
+  }
+  if (accumulate(all(deg), 0LL) != 0) return {}; else return ret;
+}
+
 
 void solve() {
-  ll n, k; cin >> n >> k;
-  vl a(n); rep(i, n) cin >> a[i];
-
-  sort(all(a));
-  vvl dp(n + 1, vl(36, LINF));
-  dp[0][0] = 0;
-
-  rep(i, n) {
-    ll idx = upper_bound(all(a), a[i] / 2) - a.begin();
-    rep(j, 35) {
-      // 青木くんが抜くケース
-      chmin(dp[i + 1][j], dp[i][j] + 1);
-      chmin(dp[i + 1][j + 1], dp[idx][j]);
-    }
+  ll N, M; cin >> N >> M;
+  Graph G(N);
+  rep(i, M) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G.add_directed_edge(a, b);
   }
-
-  ll takahashi = 0;
-  while (dp[n][takahashi] > k) takahashi++;
-  cout << takahashi << " " << dp[n][takahashi] << "\n";
+  vl sorted = topo_sort(G);
+  if (sorted.size() == 0) cout << -1 << "\n"; else coutarray(sorted, 1);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
 }
