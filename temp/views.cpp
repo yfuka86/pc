@@ -10,7 +10,7 @@ struct RotateVector {
 
 // ビット列を反転のインデックスのみで保持したいもの
 struct Bitseq {
-  vector<ll> ranges;
+  vl ranges;
   Bitseq() : ranges(0) {}
 
   void invert(ll l, ll r) {
@@ -27,14 +27,14 @@ struct Bitseq {
 
   void on(ll l, ll r) {
     assert(l < r);
-    auto litr = lower_bound(all(ranges), l); if (litr == ranges.end()) { ranges.pb(l); ranges.pb(r); return; }
+    ll li = lbs(ranges, l);
+    ll ri = ubs(ranges, r);
+    if (!(ri & 1)) ranges.insert(ranges.begin() + ri, r);
+    if (!(li & 1)) { ranges.insert(ranges.begin() + li, l); ri++; li++; }
 
-    if ((litr - ranges.begin()) % 2 == 0) { litr = ranges.insert(litr, l); litr++; }
-    auto ritr = upper_bound(all(ranges), r); ranges.insert(ritr, r);
-
-    if (litr == ranges.end()) return;
-    auto itr = ranges.erase(litr, ritr);
-    if (ranges.size() % 2 == 1) ranges.erase(itr);
+    if (li != ri) ranges.erase(ranges.begin() + li, ranges.begin() + ri);
+    // coutarray(ranges);
+    assert(!(ranges.size() & 1));
   }
 
   bool include(ll at) {

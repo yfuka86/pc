@@ -120,7 +120,7 @@
   "clang.cxxflags": [ "-std=c++17"],
   "code-runner.executorMap": {
     "javascript": "node",
-    "cpp": "cd $dir && g++ -std=c++17 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
-    // "cpp": "cd $dir && g++ -std=c++17 -g -O0 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
+    // "cpp": "cd $dir && g++ -std=c++17 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
+    "cpp": "cd $dir && g++ -std=c++17 -g -O0 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
   }
 }

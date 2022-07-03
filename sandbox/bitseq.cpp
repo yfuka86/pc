@@ -67,9 +67,9 @@ struct BitSeq {
 
 void solve() {
   BitSeq bs;
-  bs.on(6, 8);
+  bs.on(5, 8);
   // coutarray(bs.ranges);
-  bs.on(5, 7);
+  bs.on(7, 10);
   coutarray(bs.ranges);
   bs.on(3, 6);
   coutarray(bs.ranges);

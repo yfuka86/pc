@@ -85,39 +85,6 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 
-// ビット列を反転のインデックスのみで保持したいもの
-struct RNGSET {
-  map<ll, ll> ranges;
-  Bitseq() : ranges() {}
-
-  void invert(ll l, ll r) {
-  //   assert(l < r);
-  //   auto litr = lower_bound(all(ranges), l);
-  //   if (litr == ranges.end()) { ranges.pb(l); } else {
-  //     if (*litr == l) ranges.erase(litr); else ranges.insert(litr, l);
-  //   }
-  //   auto ritr = lower_bound(all(ranges), r);
-  //   if (ritr == ranges.end()) { ranges.pb(r); } else {
-  //     if (*ritr == r) ranges.erase(ritr); else ranges.insert(ritr, r);
-  //   }
-  }
-
-  void on(ll l, ll r) {
-    assert(l < r);
-    auto lt = ranges.lower_bound(l);
-    auto rt = ranges.upper_bound(r);
-    if (lt != ranges.begin() && l <= prev(lt)->se) { l = prev(lt)->fi; lt--; }
-    if (rt != ranges.begin() && r <= prev(rt)->se) { r = prev(rt)->se; }
-    while(lt != rt) { lt = ranges.erase(lt); }
-    ranges[l] = r;
-  }
-
-  // bool include(ll at) {
-  //   auto itr = upper_bound(all(ranges), at);
-  //   if (itr == ranges.end()) return false;
-  //   return (itr - ranges.begin()) % 2 == 1;
-  // }
-};
 
 void solve() {
   ll n; cin >> n;
@@ -126,11 +93,23 @@ void solve() {
     ll l, r; cin >> l >> r;
     rng[i] = {l, r};
   }
+  sort(all(rng));
 
-  Bitseq bs;
-  rep(i, n) bs.on(rng[i].fi, rng[i].se);
+  ll cur = 0;
+  vlp ans;
 
-  for (auto[l,r] :bs.ranges) {
+  while(cur < n) {
+    auto [l, r] = rng[cur];
+
+    while (cur < n - 1 && rng[cur + 1].fi <= r) {
+      cur++;
+      chmax(r, rng[cur].se);
+    }
+    ans.pb({l, r});
+    cur++;
+  }
+
+  for (auto [l, r]: ans) {
     cout << l << " " << r << "\n";
   }
 }
