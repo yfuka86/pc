@@ -85,22 +85,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 
-// ビット列を反転のインデックスのみで保持したいもの
-struct RNGSET {
+struct Rngset {
   map<ll, ll> ranges;
-  Bitseq() : ranges() {}
-
-  void invert(ll l, ll r) {
-  //   assert(l < r);
-  //   auto litr = lower_bound(all(ranges), l);
-  //   if (litr == ranges.end()) { ranges.pb(l); } else {
-  //     if (*litr == l) ranges.erase(litr); else ranges.insert(litr, l);
-  //   }
-  //   auto ritr = lower_bound(all(ranges), r);
-  //   if (ritr == ranges.end()) { ranges.pb(r); } else {
-  //     if (*ritr == r) ranges.erase(ritr); else ranges.insert(ritr, r);
-  //   }
-  }
+  Rngset() : ranges() {}
 
   void on(ll l, ll r) {
     assert(l < r);
@@ -111,12 +98,6 @@ struct RNGSET {
     while(lt != rt) { lt = ranges.erase(lt); }
     ranges[l] = r;
   }
-
-  // bool include(ll at) {
-  //   auto itr = upper_bound(all(ranges), at);
-  //   if (itr == ranges.end()) return false;
-  //   return (itr - ranges.begin()) % 2 == 1;
-  // }
 };
 
 void solve() {
@@ -127,7 +108,7 @@ void solve() {
     rng[i] = {l, r};
   }
 
-  Bitseq bs;
+  Rngset bs;
   rep(i, n) bs.on(rng[i].fi, rng[i].se);
 
   for (auto[l,r] :bs.ranges) {

@@ -1,4 +1,3 @@
-
 // 1回O(1)で擬似回転するベクタ rotateの第二引数と同じ(右シフトならsize-1、左シフトなら1)
 template<typename T>
 struct RotateVector {
@@ -41,5 +40,20 @@ struct Bitseq {
     auto itr = upper_bound(all(ranges), at);
     if (itr == ranges.end()) return false;
     return (itr - ranges.begin()) % 2 == 1;
+  }
+};
+
+struct Rngset {
+  map<ll, ll> ranges;
+  Rngset() : ranges() {}
+
+  void on(ll l, ll r) {
+    assert(l < r);
+    auto lt = ranges.lower_bound(l);
+    auto rt = ranges.upper_bound(r);
+    if (lt != ranges.begin() && l <= prev(lt)->se) { l = prev(lt)->fi; lt--; }
+    if (rt != ranges.begin() && r <= prev(rt)->se) { r = prev(rt)->se; }
+    while(lt != rt) { lt = ranges.erase(lt); }
+    ranges[l] = r;
   }
 };
