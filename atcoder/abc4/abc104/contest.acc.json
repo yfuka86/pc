@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc104",
+    "title": "AtCoder Beginner Contest 104",
+    "url": "https://atcoder.jp/contests/abc104"
+  },
+  "tasks": [
+    {
+      "id": "abc104_a",
+      "label": "A",
+      "title": "Rated for Me",
+      "url": "https://atcoder.jp/contests/abc104/tasks/abc104_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc104_a.cpp"
+      }
+    },
+    {
+      "id": "abc104_b",
+      "label": "B",
+      "title": "AcCepted",
+      "url": "https://atcoder.jp/contests/abc104/tasks/abc104_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc104_b.cpp"
+      }
+    },
+    {
+      "id": "abc104_c",
+      "label": "C",
+      "title": "All Green",
+      "url": "https://atcoder.jp/contests/abc104/tasks/abc104_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc104_c.cpp"
+      }
+    },
+    {
+      "id": "abc104_d",
+      "label": "D",
+      "title": "We Love ABC",
+      "url": "https://atcoder.jp/contests/abc104/tasks/abc104_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc104_d.cpp"
+      }
+    }
+  ]
+}
