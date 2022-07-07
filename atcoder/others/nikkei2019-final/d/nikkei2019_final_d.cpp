@@ -16,7 +16,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<int>::val; const ld DINF = infinity<ld>::val;
@@ -100,13 +100,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n, m; cin >> n >> m;
+
+  ll sz = max(sqrt_ceil(n) / 2, 1ll);
+  vl a(n, 0);
+  vl b(ceil(n, sz), 0);
+
+  rep(i, m) {
+    ll t,l,r; cin >> t >> l >> r; --l; --r;
+    if (l / sz < r / sz - 1) {
+      while (l % sz != 0) { a[l] = t; l++; }
+      while (r - l + 1 >= sz) { b[l / sz] = t; l += sz; }
+    }
+    while (l <= r) { a[l] = t; l++; }
+  }
+  debug(a);
+  debug(b);
+
+  ll ans = 0;
+  rep(i, n) {
+    ans += max(a[i], b[i / sz]);
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

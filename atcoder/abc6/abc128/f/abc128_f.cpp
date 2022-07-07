@@ -92,9 +92,8 @@ void solve() {
     ll sum = 0;
     rep(i, n) {
       if (n - 1 - a * i < a) break;
-      if (used[a * i] || used[n - 1 - a * i]) break;
-      if (a * i == n - 1 - a * i) break;
-      used[a * i] = 1; used[n - 1 - a * i] = 1;
+      if (used[a * i]) break; else used[a * i] = 1;
+      if (used[n - 1 - a * i]) break; else used[n - 1 - a * i] = 1;
       sum += s[a * i];
       sum += s[n - 1 - a * i];
       chmax(ans, sum);
