@@ -84,6 +84,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  map<ll, string> m;
+  rep(i, n) {
+    string s; ll t;
+    cin >> s >> t;
+    m[t] = s;
+  }
+  auto it = m.end();
+  it--; it--;
+  cout << it->se << "\n";
+
 }
 
 signed main() {

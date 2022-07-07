@@ -84,6 +84,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(h, n, 0);
+  vl a(n, 0);
+
+  ll ans = 0;
+  rep(i, 100) {
+    bool last = false;
+    rep(j, n) {
+      if (a[j] < h[j]) {
+        if (!last) {
+          last = true;
+          ans++;
+        }
+        a[j]++;
+      } else {
+        last = false;
+      }
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

@@ -4,6 +4,13 @@ template<class T> void flip(vector<vector<T>> &a) {
     swap(a[i][j], a[j][i]);
   }
 }
+template<class T> vector<vector<T>> rotate(vector<vector<T>> &a) {
+  assert(a.size() == a[0].size());
+  ll n = a.size();
+  vector<vector<T>> ret(n, vector<T>(n, 0));
+  rep(i, n) rep(j, n) ret[j][n - 1 - i] = a[i][j];
+  return ret;
+}
 
 template<typename T> vector<T> m_map(vector<vector<T>>& l, vector<T>& r) {
   assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size()); vector<T> ans(l.size(), 0);

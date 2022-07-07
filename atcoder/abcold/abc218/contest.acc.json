@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc218",
+    "title": "AtCoder Beginner Contest 218",
+    "url": "https://atcoder.jp/contests/abc218"
+  },
+  "tasks": [
+    {
+      "id": "abc218_a",
+      "label": "A",
+      "title": "Weather Forecast",
+      "url": "https://atcoder.jp/contests/abc218/tasks/abc218_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc218_a.cpp"
+      }
+    },
+    {
+      "id": "abc218_b",
+      "label": "B",
+      "title": "qwerty",
+      "url": "https://atcoder.jp/contests/abc218/tasks/abc218_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc218_b.cpp"
+      }
+    },
+    {
+      "id": "abc218_c",
+      "label": "C",
+      "title": "Shapes",
+      "url": "https://atcoder.jp/contests/abc218/tasks/abc218_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc218_c.cpp"
+      }
+    },
+    {
+      "id": "abc218_d",
+      "label": "D",
+      "title": "Rectangles",
+      "url": "https://atcoder.jp/contests/abc218/tasks/abc218_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc218_d.cpp"
+      }
+    },
+    {
+      "id": "abc218_e",
+      "label": "E",
+      "title": "Destruction",
+      "url": "https://atcoder.jp/contests/abc218/tasks/abc218_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc218_e.cpp"
+      }
+    },
+    {
+      "id": "abc218_f",
+      "label": "F",
+      "title": "Blocked Roads",
+      "url": "https://atcoder.jp/contests/abc218/tasks/abc218_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc218_f.cpp"
+      }
+    },
+    {
+      "id": "abc218_g",
+      "label": "G",
+      "title": "Game on Tree 2",
+      "url": "https://atcoder.jp/contests/abc218/tasks/abc218_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc218_g.cpp"
+      }
+    },
+    {
+      "id": "abc218_h",
+      "label": "H",
+      "title": "Red and Blue Lamps",
+      "url": "https://atcoder.jp/contests/abc218/tasks/abc218_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "abc218_h.cpp"
+      }
+    }
+  ]
+}

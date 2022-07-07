@@ -99,8 +99,21 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-vl a;
-int B;
+template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S), F (*id)()> struct SquareRootDecomposition {
+  int n, sz;
+  vector<T> a;
+  SquareRootDecomposition(vector<T>) {
+
+  }
+
+
+}
+
+struct S { ll a; }; struct F {};
+S op(S l, S r) { return S{max(l.a, r.a)}; }
+S e() { return S{-1}; }
+S mapping(F f, S x) { return S{r.a}; }
+F id() { return F{}; }
 
 
 void solve() {
