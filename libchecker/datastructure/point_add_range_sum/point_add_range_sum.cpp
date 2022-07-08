@@ -100,39 +100,57 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S), F (*id)()> struct SquareRootDecomposition {
-  int n, sz;
-  vector<T> a;
-  SquareRootDecomposition(vector<T>) {
-
+  int n, sz, bn; vector<S> v, vblock;
+  SquareRootDecomposition(vector<S> a) {
+    v = a; n = a.size(); sz = max(1, (int)sqrt_ceil(n) / 2);
+    bn = ceil(n, sz); vblock.assign(bn, e());
+    rep(i, bn) build_block(i);
   }
 
+  void build_block(int bid) {
+    vblock[bid] = e();
+    rep2(i, bid * sz, min(n + 1, (bid + 1) * sz)) {
+      vblock[bid] = op(vblock[bid], v[i]);
+    }
+  }
 
-}
+  void update(int p, F f) {
+    v[p] = mapping(f, v[p]);
+    vblock[p / sz] = mapping(f, vblock[p / sz]);
+  }
 
-struct S { ll a; }; struct F {};
-S op(S l, S r) { return S{max(l.a, r.a)}; }
-S e() { return S{-1}; }
-S mapping(F f, S x) { return S{r.a}; }
-F id() { return F{}; }
+  S query(int l, int r) {
+    assert(0 <= l && r <= n && l < r);
+    S ret = e();
+    if (l / sz < (r - 1) / sz - 1) {
+      while (l % sz) { ret = op(ret, v[l]); l++; }
+      while (r == n || sz <= r - l) { ret = op(ret, vblock[l / sz]); l += sz; if (r <= l) break; }
+    }
+    while (l < r) { ret = op(ret, v[l]); l++; }
+    return ret;
+  }
+};
+
+using S = ll; using F = ll;
+S op(S l, S r) { return l + r; }
+S e() { return 0; }
+S mapping(F f, S x) { return x + f; }
+F id() { return 0; }
 
 
 void solve() {
   ll n, q; cin >> n >> q;
-  rep(i, n) cin >> a[i];
+  vlin(a, n, 0);
 
-  auto merge = [](ll a, ll b) {
-    return a + b;
-  };
-  B = sqrt_ceil(n);
-  SquareRootDecomposition<decltype(merge), block, B> sq(n);
-
+  SquareRootDecomposition<S, op, e, F, mapping, id> sq(a);
   rep(i, q) {
     ll t, l, r; cin >> t >> l >> r;
     if (t == 0) {
-      sq.update(l, l + 1, r);
+      sq.update(l, r);
     } else {
       cout << sq.query(l, r) << "\n";
     }
+    // debug(sq.v, sq.vblock);
   }
 }
 

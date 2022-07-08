@@ -12,17 +12,19 @@ template<class T> vector<vector<T>> rotate(vector<vector<T>> &a) {
   return ret;
 }
 
-template<typename T> vector<T> m_map(vector<vector<T>>& l, vector<T>& r) {
+template<typename T> vector<vector<T>> m_e(ll sz) { assert(sz > 0); vector<vector<T>> ret(sz, vector<T>(sz, T())); rep(i, sz) ret[i][i] = 1; return ret; }
+template<typename T> vector<T> m_map(vector<vector<T>> l, vector<T> r) {
   assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size()); vector<T> ans(l.size(), 0);
   for(int i = 0; i < l.size(); i++) for (int j = 0; j < r.size(); j++) ans[i] += l[i][j] * r[j]; return ans; }
-template<typename T> vector<vector<T>> m_product(vector<vector<T>>& l, vector<vector<T>>& r) {
+template<typename T> vector<vector<T>> m_product(vector<vector<T>> l, vector<vector<T>> r) {
   assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size());
   vector<vector<T>> ans(l.size(), vector<T>(r[0].size(), 0));
   for(int i = 0; i < l.size(); i++) { assert(l[i].size() == l[0].size());
     for(int j = 0; j < r[0].size(); j++) for(int k = 0; k < l[0].size(); k++) { assert(r[k].size() == r[0].size()); ans[i][j] += l[i][k] * r[k][j]; }
   }
   return ans; }
-template <typename T> T m_pow(T m, ll n) { T res = m; n--; for(; n; n >>= 1, m = m_product(m, m)) if(n & 1) res = m_product(res, m); return res; }
+template <typename T> vector<vector<T>> m_pow(vector<vector<T>> m, ll n) { assert(n >= 0); if (!n) return m_e<T>((ll)m.size()); vector<vector<T>> res = m; n--; for(; n; n >>= 1, m = m_product(m, m)) if(n & 1) res = m_product(res, m); return res; }
+
 
 // https://judge.yosupo.jp/submission/91018
 template<class T>

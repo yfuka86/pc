@@ -104,15 +104,15 @@ void solve() {
   vlin(a, n, 0);
 
   {
-    ld ok = 0, ng = *max_element(all(a)) + 1;
-    rep(_, 100) {
+    ld ok = *min_element(all(a)), ng = *max_element(all(a)) + 1;
+    rep(_, 50) {
       ld mid = (ok + ng) / 2;
 
-      vvd dp(n + 1, vd(2, -DINF));
+      vvd dp(n + 1, vd(2, -LINF));
       dp[0][0] = 0;
       rep(i, n) {
-        chmax(dp[i + 1][0], max(dp[i][0], dp[i][1]) + ((ld)a[i] - mid));
-        chmax(dp[i + 1][1], dp[i][0]);
+        dp[i + 1][0] = max(dp[i][0], dp[i][1]) + ((ld)a[i] - mid);
+        dp[i + 1][1] = dp[i][0];
       }
       if (max(dp[n][0], dp[n][1]) >= 0) ok = mid; else ng = mid;
     }
