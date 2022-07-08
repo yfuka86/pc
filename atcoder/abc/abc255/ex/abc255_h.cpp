@@ -5,6 +5,7 @@
 #define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
 #define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
 #define all(v) (v).begin(),(v).end()
+#define rall(v) (v).rbegin(),(v).rend()
 #define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]-=offset;}
 #define pb push_back
 #define mp make_pair
@@ -15,33 +16,49 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<string> vs; typedef vector<vs> vvs;
-typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb;
-const int INF = numeric_limits<int>::max() / 2 - 1e6; const ll LINF = LLONG_MAX / 2 - 1e6; const double DINF = numeric_limits<double>::infinity();
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
+template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
+const int INF = infinity<int>::val; const ll LINF = infinity<int>::val; const ld DINF = infinity<ld>::val;
 
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
-template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
   LP lp(ll a, ll b, bool rng = true) { ll x = l(a, b - 1), y = l(rng ? x + 1 : a, b - 1); return {x, y}; }
-  vl vecl(ll l, ll a, ll b) { ud d(a, b - 1); vl ret(l); rep(i, l) ret[i] = d(mt); return ret; }
-  vl vecperm(ll l, ll from = 0) { vl perm(l); iota(all(perm), from); shuffle(perm); return perm; }
-  string str(ll l, vector<char> op) { vl fig = vecl(l, 0, op.size()); string s; rep(i, l) s.pb(op[fig[i]]); return s; }
-  string straz(ll l, ll a = 0, ll z = 26) { vl az = vecl(l, a, z); string s; rep(i, l) s.pb('a' + az[i]); return s; }
-  string strnum(ll l, ll zero = 0, ll ten = 10) { vl zt = vecl(l, zero, ten); string s; rep(i, l) s.pb('0' + zt[i]); return s; }
+  vl vecl(ll n, ll a, ll b) { ud d(a, b - 1); vl ret(n); rep(i, n) ret[i] = d(mt); return ret; }
+  vl vecperm(ll n, ll from = 0) { vl perm(n); iota(all(perm), from); shuffle(perm); return perm; }
+  string str(ll n, string op) { vl fig = vecl(n, 0, op.size()); string s; rep(i, n) s.pb(op[fig[i]]); return s; }
+  string straz(ll n, ll a = 0, ll z = 26) { vl az = vecl(n, a, z); string s; rep(i, n) s.pb('a' + az[i]); return s; }
+  string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   void shuffle(vl &a) { std::shuffle(all(a), mt); }
 };
-template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
-template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
-template<typename T> void coutset(set<T> & s) { for (const auto& a : s) { cout << a << " "; } cout << "\n"; }
-template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T, typename S> void coutpair(pair<T, S> & p, string sep = " ") { cout << p.first << ":" << p.second << sep; }
-template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 
-template<typename K, typename V> V safe_read(map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
-template<typename K, typename V> V safe_read(unordered_map<K, V> &m, K key) { return m.find(key) != m.end() ? m[key] : V(); }
+#define dout cout
+template<typename T, typename=void> struct is_specialize:false_type{};
+template<typename T> struct is_specialize<T, typename conditional<false,typename T::iterator, void>::type>:true_type{};
+template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
+template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
+void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
+template <typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout<<t; }
+template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
+template<typename T,typename U> void dump(const pair<T,U>&);
+template<typename T> void dump(const T&t, enable_if_t<!is_void<typename T::iterator>::value>* =nullptr) { dout << "{ "; for(auto it=t.begin();it!=t.end();){ dump(*it); dout << (++it==t.end() ? "" : " "); } dout<<" }"; }
+template<typename T,typename U> void dump(const pair<T,U>&t) { dout<<"("; dump(t.first); dout<<" "; dump(t.second); dout << ")"; }
+void trace() { dout << "\n"; } template<typename Head, typename... Tail> void trace(Head&&head, Tail&&... tail) { dump(head); if(sizeof...(tail)) dout<<", "; trace(forward<Tail>(tail)...); }
+#ifdef ONLINE_JUDGE
+#define debug(...) (void(0))
+#else
+#define debug(...) do {dout<<#__VA_ARGS__<<" = ";trace(__VA_ARGS__); } while(0)
+#endif
+template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
+template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { xcoutarray(v[i], offset); } }
+template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
+template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); coutarray(v); cout.flush(); cin >> a; }
+// template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
+//   a = query[0] ? A() : A();
+// }
+template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
+
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
 ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
@@ -49,8 +66,8 @@ ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
-template<typename T> void uniq(vector<T>&a){ sort(all(a)); a.erase(unique(all(a)), a.end()); }
-template<typename T> void comp(vector<T>&a){ vector<T> b = a; uniq(b); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
+template<typename T> void uniq(vector<T>&a) { sort(all(a)); a.erase(unique(all(a)), a.end()); }
+template<typename T> void comp(vector<T>&a) { vector<T> b = a; uniq(b); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
@@ -73,11 +90,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll N = 10;
     vl a = rg.vecl(N, 1, 1e2);
-    auto s = solve(N, a); auto n = naive(N, a);
-    if (!check || n != s) { cout << c << "times tried" << "\n";
-      cout << N << "\n"; coutarray(a);
-      cout << "solve: " << s << "\n";
-      cout << "naive: " << n << "\n";
+    auto so = solve(N, a); auto na = naive(N, a);
+    if (!check || na != so) { cout << c << "times tried" << "\n";
+      dump(N); dump(a);
+      cout << "solve: "; dump(so);
+      cout << "naive: "; dump(na);
     if (check || (!check && c > loop)) break; }
   }
 }
@@ -111,7 +128,6 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
-
 //2021/12/22-ac----------------------------------------------------------------
 template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S), F (*composition)(F, F), F (*id)()>
 struct lazy_segtree {
@@ -140,9 +156,10 @@ struct lazy_segtree {
   void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
 
-struct S { mint l, sz, subt; }; using F = ll;
+struct S { mint l, sz, subt; };
+using F = ll;
 S op(S l, S r) { return S{l.l, l.sz + r.sz, l.subt + r.subt}; }
-S e() { return S{-1}; }
+S e() { return {0, 0, 0}; }
 S mapping(F d, S x) {
   if (d == -1) return x;
   return { x.l, x.sz, (x.l + x.l + x.sz - 1) * x.sz / 2 * d };
@@ -150,51 +167,43 @@ S mapping(F d, S x) {
 F composition(F f, F g) { { return f != -1 ? f : g; } }
 F id() { return -1; }
 
+
 void solve() {
   ll n, q; cin >> n >> q;
-  vector<LT> queries(q);
 
-  vl ends;
+  vl co;
+  vlt query(q);
   rep(i, q) {
-    ll d, l, r; cin >> d >> l >> r;
-    r++;
-    queries[i] = { d, l, r };
-    ends.pb(l);
-    ends.pb(r);
-    // cout << mint(d) * (l + r) * (r - l + 1) / 2 << "\n";
+    ll d, l, r; cin >> d >> l >> r; l--;
+    query[i] = {d, l, r};
+    co.pb(l); co.pb(r);
   }
-  vl cends = ends;
-  comp(cends);
+  vl comped = co; comp(comped);
   map<ll, ll> mp;
-  rep(i, q * 2) mp[cends[i]] = ends[i];
+  rep(i, co.size()) mp[co[i]] = comped[i];
 
-  vector<S> v;
-  for (auto it = mp.begin(); it != mp.end(); it++) {
-    auto nt = it; nt++;
-    if (nt == mp.end()) break;
-    auto [_, x1] = *it;
-    auto [__, x2] = *nt;
-
-    v.pb({mint(x1), mint(x2 - x1), mint(0)});
+  vector<S> s;
+  for (auto it = mp.begin(); it != prev(mp.end()); ++it) {
+    auto [ori, comp] = *it;
+    auto [ori2, comp2] = *next(it);
+    s.pb({ ori + 1, ori2 - ori, 0 });
   }
-
-  lazy_segtree<S, op, e, F, mapping, composition, id> seg(v);
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(s);
 
   rep(i, q) {
-    ll d = get<0>(queries[i]);
-    ll l = ends[i * 2], r = ends[i * 2 + 1];
-    ll cl = cends[i * 2], cr = cends[i * 2 + 1];
-    cout << mint(l + r - 1) * (r - l) * d / 2 - seg.prod(cl, cr).subt << "\n";
-    seg.apply(cl, cr, d);
+    auto [d, _, __] = query[i];
+    ll l = comped[i * 2], r = comped[i * 2 + 1];
+    mint y = seg.prod(l, r).subt;
+    seg.apply(l, r, d);
+    mint ny = seg.prod(l, r).subt;
+    cout << ny - y << "\n";
   }
 }
-
-
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; // cin >> t;
+  int t = 1; //cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
