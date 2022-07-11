@@ -22,7 +22,7 @@ struct EulerTour : Graph<T> {
 public:
   using Graph<T>::Graph; using Graph<T>::g; vector<int> in, out, par, dep, node, edge; vector<ll> edgec; SparseTable<LP> st;
   void build() {
-    ll n = g.size(), len = n * 2; in.assign(n, -1); out.assign(n, -1); par.assign(n, -1); dep.assign(len, -1); node.assign(len - 1, -1); edge.assign(len, 0); edgec.assign(len, 0);
+    ll n = g.size(), len = n * 2; in.assign(n, -1); out.assign(n, -1); par.assign(n, -1); dep.assign(len, -1); node.assign(len, -1); edge.assign(len, 0); edgec.assign(len, 0);
     int t = 0; dfs(Edge<T>(-1, 0, 0), 0, t);
     vector<LP> tmp(len); rep(i, len) tmp[i] = mp(dep[i], i); st.build(tmp);
   }
