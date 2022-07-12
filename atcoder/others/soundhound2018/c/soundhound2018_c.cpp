@@ -99,85 +99,42 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
-//------------------------------------------------------------------------------
-const int max_n = 1 << 20;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
-
-
+#include <atcoder/maxflow>
+using namespace atcoder;
 
 void solve() {
-  ll n; cin >> n;
-  vvl grid(n, vl(n, 0));
-  rep(i, n) rep(j, n) cin >> grid[i][j];
-  // RandGen rg;
-  // rep(i, n) grid[i] = rg.vecl(n, 0, 10);
-
-  map<ll, vlp> freq;
-  rep(i, n) rep(j, n) freq[grid[i][j]].pb({i, j});
-
-  function<mint(ll)> dp = [&](ll a) {
-    vvmi dp(n, vmi(n, 0));
-    mint ret = 0;
-    rep(i, n) rep(j, n) {
-      if (grid[i][j] == a) dp[i][j] += 1;
-      if (i > 0) dp[i][j] += dp[i - 1][j];
-      if (j > 0) dp[i][j] += dp[i][j - 1];
-      if (grid[i][j] == a) ret += dp[i][j];
-    }
-    return ret;
-  };
-  function<mint(vlp)> enumall = [&](vlp p) {
-    debug(p);
-    mint ret = 0;
-    rep(i, p.size()) rep(j, p.size()) {
-      if (i == j) continue;
-      auto [x1, y1] = p[i];
-      auto [x2, y2] = p[j];
-      if (x1 > x2 || y1 > y2) continue;
-      ll a = x2 - x1;
-      ll b = y2 - y1;
-      ret += comb(a + b, a);
-    }
-    ret += p.size();
-    debug(ret);
-    return ret;
-  };
-
-  init_f();
-  mint ans = 0;
-  for (auto &[a, v] :freq) {
-    if (v.size() > n) {
-      ans += dp(a);
-    } else {
-      ans += enumall(v);
+  ll r, c; cin >> r >> c;
+  vvl grid(r, vl(c, 0));
+  rep(i, r) {
+    string s; cin >> s;
+    rep(j, c) {
+      if (s[j] == '*') grid[i][j] = 1;
     }
   }
-  cout << ans << "\n";
+  mf_graph<ll> g(r * c + 2);
+  ll s = r * c, t = r * c + 1;
+
+  rep(i, r) rep(j, c) {
+    if (grid[i][j]) continue;
+    ll id = i * c + j;
+    if (i + j & 1) {
+      g.add_edge(s, id, 1);
+      rep(d, 4) {
+        ll di = i + dx[d], dj = j + dy[d];
+        if (0 <= di && di < r && 0 <= dj && dj < c && !grid[di][dj]) {
+          debug(i, j, di, dj);
+          g.add_edge(id, di * c + dj, 1);
+        }
+      }
+    } else {
+      g.add_edge(id, t, 1);
+    }
+  }
+  ll matching = g.flow(s, t);
+  ll all = 0;
+  rep(i, r) rep(j, c) if (!grid[i][j]) all++;
+
+  cout << all - matching << "\n";
 }
 
 signed main() {

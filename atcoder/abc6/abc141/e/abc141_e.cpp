@@ -99,83 +99,96 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static int get_mod() { return mod; }
+/**
+ * @brief Rolling-Hash(ローリングハッシュ)
+ * @see https://qiita.com/keymoon/items/11fac5627672a6d6a9f6
+ * @docs docs/rolling-hash.md
+ */
+struct RollingHash {
+  static const uint64_t mod = (1ull << 61ull) - 1;
+  using uint128_t = __uint128_t;
+  vector< uint64_t > power;
+  const uint64_t base;
+
+  static inline uint64_t add(uint64_t a, uint64_t b) {
+    if((a += b) >= mod) a -= mod;
+    return a;
+  }
+
+  static inline uint64_t mul(uint64_t a, uint64_t b) {
+    uint128_t c = (uint128_t) a * b;
+    return add(c >> 61, c & mod);
+  }
+
+  static inline uint64_t generate_base() {
+    mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
+    uniform_int_distribution< uint64_t > rand(1, RollingHash::mod - 1);
+    return rand(mt);
+  }
+
+  inline void expand(size_t sz) {
+    if(power.size() < sz + 1) {
+      int pre_sz = (int) power.size();
+      power.resize(sz + 1);
+      for(int i = pre_sz - 1; i < sz; i++) {
+        power[i + 1] = mul(power[i], base);
+      }
+    }
+  }
+
+  explicit RollingHash(uint64_t base = generate_base()) : base(base), power{1} {}
+
+  vector< uint64_t > build(const string &s) const {
+    int sz = s.size();
+    vector< uint64_t > hashed(sz + 1);
+    for(int i = 0; i < sz; i++) {
+      hashed[i + 1] = add(mul(hashed[i], base), s[i]);
+    }
+    return hashed;
+  }
+
+  template< typename T >
+  vector< uint64_t > build(const vector< T > &s) const {
+    int sz = s.size();
+    vector< uint64_t > hashed(sz + 1);
+    for(int i = 0; i < sz; i++) {
+      hashed[i + 1] = add(mul(hashed[i], base), s[i]);
+    }
+    return hashed;
+  }
+
+  uint64_t query(const vector< uint64_t > &s, int l, int r) {
+    expand(r - l);
+    return add(s[r], mod - mul(s[l], power[r - l]));
+  }
+
+  uint64_t combine(uint64_t h1, uint64_t h2, size_t h2len) {
+    expand(h2len);
+    return add(mul(h1, power[h2len]), h2);
+  }
+
+  int lcp(const vector< uint64_t > &a, int l1, int r1, const vector< uint64_t > &b, int l2, int r2) {
+    int len = min(r1 - l1, r2 - l2);
+    int low = 0, high = len + 1;
+    while(high - low > 1) {
+      int mid = (low + high) / 2;
+      if(query(a, l1, l1 + mid) == query(b, l2, l2 + mid)) low = mid;
+      else high = mid;
+    }
+    return low;
+  }
 };
-using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
-//------------------------------------------------------------------------------
-const int max_n = 1 << 20;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
-
-
 
 void solve() {
   ll n; cin >> n;
-  vvl grid(n, vl(n, 0));
-  rep(i, n) rep(j, n) cin >> grid[i][j];
-  // RandGen rg;
-  // rep(i, n) grid[i] = rg.vecl(n, 0, 10);
+  string s; cin >> s;
+  RollingHash rh;
+  vector<uint64_t> h = rh.build(s);
 
-  map<ll, vlp> freq;
-  rep(i, n) rep(j, n) freq[grid[i][j]].pb({i, j});
-
-  function<mint(ll)> dp = [&](ll a) {
-    vvmi dp(n, vmi(n, 0));
-    mint ret = 0;
-    rep(i, n) rep(j, n) {
-      if (grid[i][j] == a) dp[i][j] += 1;
-      if (i > 0) dp[i][j] += dp[i - 1][j];
-      if (j > 0) dp[i][j] += dp[i][j - 1];
-      if (grid[i][j] == a) ret += dp[i][j];
-    }
-    return ret;
-  };
-  function<mint(vlp)> enumall = [&](vlp p) {
-    debug(p);
-    mint ret = 0;
-    rep(i, p.size()) rep(j, p.size()) {
-      if (i == j) continue;
-      auto [x1, y1] = p[i];
-      auto [x2, y2] = p[j];
-      if (x1 > x2 || y1 > y2) continue;
-      ll a = x2 - x1;
-      ll b = y2 - y1;
-      ret += comb(a + b, a);
-    }
-    ret += p.size();
-    debug(ret);
-    return ret;
-  };
-
-  init_f();
-  mint ans = 0;
-  for (auto &[a, v] :freq) {
-    if (v.size() > n) {
-      ans += dp(a);
-    } else {
-      ans += enumall(v);
-    }
+  int ans = 0;
+  rep(i, n) rep2(j, i + 1, n) {
+    if (s[i] != s[j]) continue;
+    chmax(ans, rh.lcp(h, i, j, h, j, n));
   }
   cout << ans << "\n";
 }

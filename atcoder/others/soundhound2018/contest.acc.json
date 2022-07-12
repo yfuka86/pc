@@ -1,0 +1,64 @@
+{
+  "contest": {
+    "id": "soundhound2018",
+    "title": "SoundHound Inc. Programming Contest 2018 (春)",
+    "url": "https://atcoder.jp/contests/soundhound2018"
+  },
+  "tasks": [
+    {
+      "id": "soundhound2018_a",
+      "label": "A",
+      "title": "SoundHound",
+      "url": "https://atcoder.jp/contests/soundhound2018/tasks/soundhound2018_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "soundhound2018_a.cpp"
+      }
+    },
+    {
+      "id": "soundhound2018_b",
+      "label": "B",
+      "title": "音量",
+      "url": "https://atcoder.jp/contests/soundhound2018/tasks/soundhound2018_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "soundhound2018_b.cpp"
+      }
+    },
+    {
+      "id": "soundhound2018_c",
+      "label": "C",
+      "title": "広告",
+      "url": "https://atcoder.jp/contests/soundhound2018/tasks/soundhound2018_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "soundhound2018_c.cpp"
+      }
+    },
+    {
+      "id": "soundhound2018_d",
+      "label": "D",
+      "title": "建物",
+      "url": "https://atcoder.jp/contests/soundhound2018/tasks/soundhound2018_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "soundhound2018_d.cpp"
+      }
+    },
+    {
+      "id": "soundhound2018_e",
+      "label": "E",
+      "title": "カッコ列",
+      "url": "https://atcoder.jp/contests/soundhound2018/tasks/soundhound2018_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "soundhound2018_e.cpp"
+      }
+    }
+  ]
+}

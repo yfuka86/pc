@@ -1,0 +1,64 @@
+{
+  "contest": {
+    "id": "yahoo-procon2017-qual",
+    "title": "「みんなのプロコン」",
+    "url": "https://atcoder.jp/contests/yahoo-procon2017-qual"
+  },
+  "tasks": [
+    {
+      "id": "yahoo_procon2017_qual_a",
+      "label": "A",
+      "title": "Yahoo",
+      "url": "https://atcoder.jp/contests/yahoo-procon2017-qual/tasks/yahoo_procon2017_qual_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "yahoo_procon2017_qual_a.cpp"
+      }
+    },
+    {
+      "id": "yahoo_procon2017_qual_b",
+      "label": "B",
+      "title": "オークション",
+      "url": "https://atcoder.jp/contests/yahoo-procon2017-qual/tasks/yahoo_procon2017_qual_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "yahoo_procon2017_qual_b.cpp"
+      }
+    },
+    {
+      "id": "yahoo_procon2017_qual_c",
+      "label": "C",
+      "title": "検索",
+      "url": "https://atcoder.jp/contests/yahoo-procon2017-qual/tasks/yahoo_procon2017_qual_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "yahoo_procon2017_qual_c.cpp"
+      }
+    },
+    {
+      "id": "yahoo_procon2017_qual_d",
+      "label": "D",
+      "title": "工場",
+      "url": "https://atcoder.jp/contests/yahoo-procon2017-qual/tasks/yahoo_procon2017_qual_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "yahoo_procon2017_qual_d.cpp"
+      }
+    },
+    {
+      "id": "yahoo_procon2017_qual_e",
+      "label": "E",
+      "title": "遊園地",
+      "url": "https://atcoder.jp/contests/yahoo-procon2017-qual/tasks/yahoo_procon2017_qual_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "yahoo_procon2017_qual_e.cpp"
+      }
+    }
+  ]
+}

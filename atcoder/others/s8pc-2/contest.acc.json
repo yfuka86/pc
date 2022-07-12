@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "s8pc-2",
+    "title": "square869120Contest #2",
+    "url": "https://atcoder.jp/contests/s8pc-2"
+  },
+  "tasks": [
+    {
+      "id": "s8pc_2_a",
+      "label": "A",
+      "title": "IOI列車で行こう2",
+      "url": "https://atcoder.jp/contests/s8pc-2/tasks/s8pc_2_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "s8pc_2_a.cpp"
+      }
+    },
+    {
+      "id": "s8pc_2_b",
+      "label": "B",
+      "title": "Division 2",
+      "url": "https://atcoder.jp/contests/s8pc-2/tasks/s8pc_2_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "s8pc_2_b.cpp"
+      }
+    },
+    {
+      "id": "s8pc_2_c",
+      "label": "C",
+      "title": "何通りの分割方法がある？",
+      "url": "https://atcoder.jp/contests/s8pc-2/tasks/s8pc_2_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "s8pc_2_c.cpp"
+      }
+    },
+    {
+      "id": "s8pc_2_d",
+      "label": "D",
+      "title": "2016",
+      "url": "https://atcoder.jp/contests/s8pc-2/tasks/s8pc_2_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "s8pc_2_d.cpp"
+      }
+    },
+    {
+      "id": "s8pc_2_e",
+      "label": "E",
+      "title": "部分文字列",
+      "url": "https://atcoder.jp/contests/s8pc-2/tasks/s8pc_2_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "s8pc_2_e.cpp"
+      }
+    },
+    {
+      "id": "s8pc_2_f",
+      "label": "F",
+      "title": "Range Sum Queries",
+      "url": "https://atcoder.jp/contests/s8pc-2/tasks/s8pc_2_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "s8pc_2_f.cpp"
+      }
+    },
+    {
+      "id": "s8pc_2_g",
+      "label": "G",
+      "title": "道とN個のAtCoder社",
+      "url": "https://atcoder.jp/contests/s8pc-2/tasks/s8pc_2_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "s8pc_2_g.cpp"
+      }
+    },
+    {
+      "id": "s8pc_2_h",
+      "label": "H",
+      "title": "Counting 1's",
+      "url": "https://atcoder.jp/contests/s8pc-2/tasks/s8pc_2_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "s8pc_2_h.cpp"
+      }
+    }
+  ]
+}

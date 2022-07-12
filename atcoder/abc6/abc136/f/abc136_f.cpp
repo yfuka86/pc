@@ -98,7 +98,6 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
-
 const ll mod = 998244353;
 //------------------------------------------------------------------------------
 template< int mod > struct ModInt {
@@ -127,55 +126,66 @@ mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) re
 ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
-
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
 
 
 void solve() {
   ll n; cin >> n;
-  vvl grid(n, vl(n, 0));
-  rep(i, n) rep(j, n) cin >> grid[i][j];
-  // RandGen rg;
-  // rep(i, n) grid[i] = rg.vecl(n, 0, 10);
+  vl x(n), y(n);
+  rep(i, n) cin >> x[i] >> y[i];
+  comp(x); comp(y);
 
-  map<ll, vlp> freq;
-  rep(i, n) rep(j, n) freq[grid[i][j]].pb({i, j});
+  vlt p(n);
+  rep(i, n) p[i] = {x[i], y[i], i};
+  sort(all(p));
+  vl llower(n, 0), rlower(n, 0), lupper(n, 0), rupper(n, 0);
 
-  function<mint(ll)> dp = [&](ll a) {
-    vvmi dp(n, vmi(n, 0));
-    mint ret = 0;
-    rep(i, n) rep(j, n) {
-      if (grid[i][j] == a) dp[i][j] += 1;
-      if (i > 0) dp[i][j] += dp[i - 1][j];
-      if (j > 0) dp[i][j] += dp[i][j - 1];
-      if (grid[i][j] == a) ret += dp[i][j];
+  {
+    BIT<ll> bt(n);
+    rep(i, n) {
+      auto [x, y, id] = p[i];
+      llower[id] = bt.sum(0, y);
+      rlower[id] = bt.sum(y, n);
+      bt.add(y, 1);
     }
-    return ret;
-  };
-  function<mint(vlp)> enumall = [&](vlp p) {
-    debug(p);
-    mint ret = 0;
-    rep(i, p.size()) rep(j, p.size()) {
-      if (i == j) continue;
-      auto [x1, y1] = p[i];
-      auto [x2, y2] = p[j];
-      if (x1 > x2 || y1 > y2) continue;
-      ll a = x2 - x1;
-      ll b = y2 - y1;
-      ret += comb(a + b, a);
+  }
+  reverse(all(p));
+  {
+    BIT<ll> bt(n);
+    rep(i, n) {
+      auto [x, y, id] = p[i];
+      lupper[id] = bt.sum(0, y);
+      rupper[id] = bt.sum(y, n);
+      bt.add(y, 1);
     }
-    ret += p.size();
-    debug(ret);
-    return ret;
-  };
+  }
 
-  init_f();
   mint ans = 0;
-  for (auto &[a, v] :freq) {
-    if (v.size() > n) {
-      ans += dp(a);
-    } else {
-      ans += enumall(v);
-    }
+  mint all = mint(2).pow(n);
+  rep(i, n) {
+    // それ自身を含む
+    ans += all / 2;
+    // 含まないもので含まれるものの選び方を包除
+    ans += (mint(2).pow(llower[i]) - 1) * (mint(2).pow(rupper[i]) - 1) * mint(2).pow(rlower[i] + lupper[i]);
+    ans += (mint(2).pow(rlower[i]) - 1) * (mint(2).pow(lupper[i]) - 1) * mint(2).pow(llower[i] + rupper[i]);
+    ans -= (mint(2).pow(llower[i]) - 1) * (mint(2).pow(rupper[i]) - 1) * (mint(2).pow(rlower[i]) - 1) * (mint(2).pow(lupper[i]) - 1);
   }
   cout << ans << "\n";
 }
