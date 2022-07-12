@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "arc033",
+    "title": "AtCoder Regular Contest 033",
+    "url": "https://atcoder.jp/contests/arc033"
+  },
+  "tasks": [
+    {
+      "id": "arc033_1",
+      "label": "A",
+      "title": "隠れた言葉",
+      "url": "https://atcoder.jp/contests/arc033/tasks/arc033_1",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc033_1.cpp"
+      }
+    },
+    {
+      "id": "arc033_2",
+      "label": "B",
+      "title": "メタ構文変数",
+      "url": "https://atcoder.jp/contests/arc033/tasks/arc033_2",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc033_2.cpp"
+      }
+    },
+    {
+      "id": "arc033_3",
+      "label": "C",
+      "title": "データ構造",
+      "url": "https://atcoder.jp/contests/arc033/tasks/arc033_3",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc033_3.cpp"
+      }
+    },
+    {
+      "id": "arc033_4",
+      "label": "D",
+      "title": "見たことのない多項式",
+      "url": "https://atcoder.jp/contests/arc033/tasks/arc033_4",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc033_4.cpp"
+      }
+    }
+  ]
+}

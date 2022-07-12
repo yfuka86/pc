@@ -19,7 +19,7 @@ typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef v
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
-const int INF = infinity<int>::val; const ll LINF = infinity<int>::val; const ld DINF = infinity<ld>::val;
+const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
 
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
@@ -79,11 +79,11 @@ vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 ll solve(ll N, vl a) {
-  ll ans = -1; return ans;
+  ll ans = N - a[0]; return ans;
 }
 
 ll naive(ll N, vl a) {
-  ll ans = 1; return ans;
+  ll ans = N + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
@@ -98,7 +98,6 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
-
 const ll mod = 998244353;
 //------------------------------------------------------------------------------
 template< int mod > struct ModInt {
@@ -128,6 +127,7 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
+
 template<typename T> vector<vector<T>> m_e(ll sz) { assert(sz > 0); vector<vector<T>> ret(sz, vector<T>(sz, T())); rep(i, sz) ret[i][i] = 1; return ret; }
 template<typename T> vector<T> m_map(vector<vector<T>> l, vector<T> r) {
   assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size()); vector<T> ans(l.size(), 0);
@@ -146,18 +146,17 @@ void solve() {
   ll n, s; cin >> n >> s;
   vlin(a, n, 0);
 
-  vvmi A = {{1, 1}, {1, 0}};
-  vvmi B = {{0, 1}, {1, 0}};
-  vvmi ans = {{1, 0}, {0, 1}};
-
+  vvmi t1 = {{1,1}, {1,0}}, t2 = {{0,1}, {1,0}};
   ll cur = 0;
+
+  vvmi ans = {{1,0}, {0,1}};
   rep(i, n) {
-    ans = m_product(ans, m_pow(A, a[i] - cur - 1));
-    ans = m_product(ans, B);
+    ans = m_product(ans, m_pow(t1, a[i] - 1 - cur));
+    ans = m_product(ans, t2);
     cur = a[i];
   }
-  ans = m_product(ans, m_pow(A, s - a[n - 1] - 1));
-  cout << m_map(ans, {1, 0})[0] << "\n";
+  ans = m_product(ans, m_pow(t1, s - cur));
+  cout << ans[0][1] << "\n";
 }
 
 signed main() {

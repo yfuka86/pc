@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc082",
+    "title": "AtCoder Beginner Contest 082",
+    "url": "https://atcoder.jp/contests/abc082"
+  },
+  "tasks": [
+    {
+      "id": "abc082_a",
+      "label": "A",
+      "title": "Round Up the Mean",
+      "url": "https://atcoder.jp/contests/abc082/tasks/abc082_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc082_a.cpp"
+      }
+    },
+    {
+      "id": "abc082_b",
+      "label": "B",
+      "title": "Two Anagrams",
+      "url": "https://atcoder.jp/contests/abc082/tasks/abc082_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc082_b.cpp"
+      }
+    },
+    {
+      "id": "arc087_a",
+      "label": "C",
+      "title": "Good Sequence",
+      "url": "https://atcoder.jp/contests/abc082/tasks/arc087_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc087_a.cpp"
+      }
+    },
+    {
+      "id": "arc087_b",
+      "label": "D",
+      "title": "FT Robot",
+      "url": "https://atcoder.jp/contests/abc082/tasks/arc087_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc087_b.cpp"
+      }
+    }
+  ]
+}

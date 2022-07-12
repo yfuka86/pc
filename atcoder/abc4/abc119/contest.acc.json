@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc119",
+    "title": "AtCoder Beginner Contest 119",
+    "url": "https://atcoder.jp/contests/abc119"
+  },
+  "tasks": [
+    {
+      "id": "abc119_a",
+      "label": "A",
+      "title": "Still TBD",
+      "url": "https://atcoder.jp/contests/abc119/tasks/abc119_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc119_a.cpp"
+      }
+    },
+    {
+      "id": "abc119_b",
+      "label": "B",
+      "title": "Digital Gifts",
+      "url": "https://atcoder.jp/contests/abc119/tasks/abc119_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc119_b.cpp"
+      }
+    },
+    {
+      "id": "abc119_c",
+      "label": "C",
+      "title": "Synthetic Kadomatsu",
+      "url": "https://atcoder.jp/contests/abc119/tasks/abc119_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc119_c.cpp"
+      }
+    },
+    {
+      "id": "abc119_d",
+      "label": "D",
+      "title": "Lazy Faith",
+      "url": "https://atcoder.jp/contests/abc119/tasks/abc119_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc119_d.cpp"
+      }
+    }
+  ]
+}
