@@ -14,7 +14,7 @@
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4; typedef tuple<ll, ll, ll, ll, ll> LT5;
+typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
@@ -79,11 +79,11 @@ vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 ll solve(ll N, vl a) {
-  ll ans = N - a[0]; return ans;
+  ll ans = -1; return ans;
 }
 
 ll naive(ll N, vl a) {
-  ll ans = N + a[0]; return ans;
+  ll ans = 1; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
@@ -100,47 +100,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n, m; cin >> n >> m;
-
-  ll n1 = min(23ll, n * 3 / 5), n2 = n - n1;
-  vl filter(n, (1 << n1) - 1), filter2(n, (1 << n2) - 1);
-  rep(i, m) {
-    ll a, b; cin >> a >> b; a--; b--;
-    if (b < n1) filter[a] ^= 1 << b; else filter2[a] ^= 1 << (b - n1);
-    if (a < n1) filter[b] ^= 1 << a; else filter2[b] ^= 1 << (a - n1);
-  }
-
-  vl validS(1 << n2, 0);
-  vl valid2(1 << n2, 0);
-  rep(S, 1 << n2) {
-    ll t = S;
-    rep(j, n2) {
-      if (S & 1 << j) t &= filter2[n1 + j];
-    }
-    validS[S] = t;
-  }
-  rep(S, 1 << n2) {
-    for (ll s = S; s; s = (s - 1) & S) {
-      if (valid2[S] >= __builtin_popcount(s)) continue;
-      chmax(valid2[S], (ll)__builtin_popcount(validS[s]));
+  ll n; cin >> n;
+  vlin(a, n, 0);
+  rep(i, n) a[i] += 10000;
+  rep(i, n) {
+    ll b; cin >> b;
+    string s; cin >> s;
+    rep(j, b) {
+      if (s[j] == 'D') a[i]++; else a[i]--;
     }
   }
-
-  ll ans = 0;
-  rep(S, 1 << n1) {
-    ll t = S, v = (1 << n2) - 1;
-    rep(j, n1) {
-      if (S & 1 << j) { t &= filter[j]; v &= filter2[j]; }
-    }
-    chmax(ans, __builtin_popcount(t) + valid2[v]);
-  }
-  cout << ans << "\n";
+  rep(i, n) a[i] %= 10;
+  coutarray(a, 0);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
