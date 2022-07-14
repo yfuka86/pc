@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "arc060",
+    "title": "AtCoder Regular Contest 060",
+    "url": "https://atcoder.jp/contests/arc060"
+  },
+  "tasks": [
+    {
+      "id": "arc060_a",
+      "label": "C",
+      "title": "Tak and Cards",
+      "url": "https://atcoder.jp/contests/arc060/tasks/arc060_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc060_a.cpp"
+      }
+    },
+    {
+      "id": "arc060_b",
+      "label": "D",
+      "title": "Digit Sum",
+      "url": "https://atcoder.jp/contests/arc060/tasks/arc060_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc060_b.cpp"
+      }
+    },
+    {
+      "id": "arc060_c",
+      "label": "E",
+      "title": "Tak and Hotels",
+      "url": "https://atcoder.jp/contests/arc060/tasks/arc060_c",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc060_c.cpp"
+      }
+    },
+    {
+      "id": "arc060_d",
+      "label": "F",
+      "title": "Best Representation",
+      "url": "https://atcoder.jp/contests/arc060/tasks/arc060_d",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc060_d.cpp"
+      }
+    }
+  ]
+}

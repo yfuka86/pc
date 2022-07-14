@@ -45,6 +45,24 @@ vvl cumsum2d(vvl &a) {
   return sum;
 }
 
+// 三次元imos
+struct imos3d {
+  using tu = tuple<ll, ll, ll>; tu sz; v3l data;
+  imos3d(tu s) { sz = s; auto [x, y, z] = sz; data.assign(x + 1, vvl(y + 1, vl(z + 1, 0))); }
+  void add(int x, int y, int z, ll a) { data[x][y][z] += a; }
+  void imos_add(tu p1, tu p2, ll a) {
+    auto [x1, y1, z1] = p1; auto [x2, y2, z2] = p2;
+    add(x1, y1, z1, a); add(x2, y1, z1, -a); add(x1, y2, z1, -a); add(x2, y2, z1, a);
+    add(x1, y1, z2, -a); add(x2, y1, z2, a); add(x1, y2, z2, a); add(x2, y2, z2, -a);
+  }
+  void build() {
+    auto [x, y, z] = sz;
+    rep(i, x) rep(j, y) rep(k, z) data[i + 1][j][k] += data[i][j][k];
+    rep(i, x) rep(j, y) rep(k, z) data[i][j + 1][k] += data[i][j][k];
+    rep(i, x) rep(j, y) rep(k, z) data[i][j][k + 1] += data[i][j][k];
+  }
+};
+
 // Reference:
 // D. Gusfield,
 // Algorithms on Strings, Trees, and Sequences: Computer Science and
