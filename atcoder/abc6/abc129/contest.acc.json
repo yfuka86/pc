@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc129",
+    "title": "AtCoder Beginner Contest 129",
+    "url": "https://atcoder.jp/contests/abc129"
+  },
+  "tasks": [
+    {
+      "id": "abc129_a",
+      "label": "A",
+      "title": "Airplane",
+      "url": "https://atcoder.jp/contests/abc129/tasks/abc129_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc129_a.cpp"
+      }
+    },
+    {
+      "id": "abc129_b",
+      "label": "B",
+      "title": "Balance",
+      "url": "https://atcoder.jp/contests/abc129/tasks/abc129_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc129_b.cpp"
+      }
+    },
+    {
+      "id": "abc129_c",
+      "label": "C",
+      "title": "Typical Stairs",
+      "url": "https://atcoder.jp/contests/abc129/tasks/abc129_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc129_c.cpp"
+      }
+    },
+    {
+      "id": "abc129_d",
+      "label": "D",
+      "title": "Lamp",
+      "url": "https://atcoder.jp/contests/abc129/tasks/abc129_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc129_d.cpp"
+      }
+    },
+    {
+      "id": "abc129_e",
+      "label": "E",
+      "title": "Sum Equals Xor",
+      "url": "https://atcoder.jp/contests/abc129/tasks/abc129_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc129_e.cpp"
+      }
+    },
+    {
+      "id": "abc129_f",
+      "label": "F",
+      "title": "Takahashi's Basics in Education and Learning",
+      "url": "https://atcoder.jp/contests/abc129/tasks/abc129_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc129_f.cpp"
+      }
+    }
+  ]
+}

@@ -99,8 +99,33 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+#include <atcoder/maxflow>
+using namespace atcoder;
+
 void solve() {
-  ll n; cin >> n;
+  ll h, w; cin >> h >> w;
+  vvl a(h, vl(w));
+  rep(i, h) rep(j, w) cin >> a[i][j];
+
+  vl hpsum(h, 0), hnsum(h, 0), wpsum(w, 0), wnsum(w, 0);
+  rep(i, h) rep(j, w) {
+    if (a[i][j] > 0) hpsum[i] += a[i][j], wpsum[j] += a[i][j];
+    if (a[i][j] < 0) hnsum[i] += a[i][j], wnsum[j] += a[i][j];
+  }
+
+  mf_graph<ll> mf(h + w + 2);
+  ll s = h + w, t = s + 1;
+  rep(i, h) {
+    mf.add_edge(s, i, -hnsum[i]);
+  }
+  rep(j, w) {
+    mf.add_edge(h + j, t, -wnsum[j]);
+  }
+  rep(i, h) rep(j, w) {
+    if (a[i][j] >= 0) mf.add_edge(i, h + j, a[i][j]);
+    else mf.add_edge(h + j, i, LINF);
+  }
+  cout << accumulate(all(hpsum), 0LL) - mf.flow(s, t) << "\n";
 }
 
 signed main() {

@@ -84,20 +84,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
-  vs s(n); rep(i, n) cin >> s[i];
+  vlin(s, n, 0);
+  vlin(t, n, 0);
 
-  vvl dp(n + 1, vl(2));
-  dp[0][0] = 1; dp[0][1] = 1;
-  rep(i, n) {
-    if (s[i] == "AND") {
-      dp[i + 1][0] = dp[i][0] * 2 + dp[i][1];
-      dp[i + 1][1] = dp[i][1];
-    } else {
-      dp[i + 1][0] = dp[i][0];
-      dp[i + 1][1] = dp[i][0] + dp[i][1] * 2;
+  vl ans(n, -1);
+
+  priority_queue<LP, vlp, greater<LP>> que;
+  rep(i, n) que.push({t[i], i});
+
+  while(!que.empty()) {
+    auto [tt, i] = que.top(); que.pop();
+    if (ans[i] == -1) {
+      ans[i] = tt;
+      if (ans[(i + 1) % n] == -1) {
+        que.push({tt + s[i], (i + 1) % n});
+      }
     }
   }
-  cout << dp[n][1] << "\n";a
+  coutarray(ans, 0, "\n");
 }
 
 signed main() {

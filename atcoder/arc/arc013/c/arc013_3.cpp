@@ -101,6 +101,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+
+  ll ans = 0;
+
+  rep(i, n) {
+    vlin(sz, 3, 0);
+    ll m; cin >> m;
+    vl ma(3, 0), mi(3, LINF);
+    rep(j, m) {
+      rep(k, 3) {
+        ll v; cin >> v;
+        chmax(ma[k], v); chmin(mi[k], v);
+      }
+    }
+
+    rep(j, 3) {
+      ans ^= (sz[j] - 1 - ma[j]) ^ mi[j];
+    }
+  }
+  if (ans) cout << "WIN" << "\n"; else cout << "LOSE" << "\n";
 }
 
 signed main() {

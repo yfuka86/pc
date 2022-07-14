@@ -7,7 +7,7 @@ struct Edmonds {
 		n = _n; g.clear(); g.resize(n);
 		mt.assign(n, -1); used.assign(n, 0); par.assign(n, -1); dsu.assign(n, -1); tm.assign(n, 0); T = 1;
 	}
-	void addEdge(int v, int u) { g[v].push_back(u); g[u].push_back(v); }
+	void add_edge(int v, int u) { g[v].push_back(u); g[u].push_back(v); }
 	void clear() { mt.assign(n, -1); }
 	int blossom(int v) { return (dsu[v] == -1 ? v : dsu[v] = blossom(dsu[v])); }
 	void unite(int v, int u) {
@@ -26,7 +26,7 @@ struct Edmonds {
 			if (mt[v] != -1) v = par[mt[v]]; else v = -1;
 		}
 	}
-	void shrinkBlossom(int v, int p) {
+	void shrink_blossom(int v, int p) {
 		while(v != p) {
 			int u = mt[v]; int w = par[u];
 			if (blossom(w) != p) par[w] = u;
@@ -36,7 +36,7 @@ struct Edmonds {
 			v = w;
 		}
 	}
-	void alternateUp(int u) {
+	void alternate_up(int u) {
 		while(u != -1) {
 			int v = par[u]; int w = mt[v];
 			mt[v] = u; mt[u] = v; u = w;
@@ -54,16 +54,16 @@ struct Edmonds {
 					if (base == -1) {
 						int pv = mt[v], pu = mt[u];
 						mt[v] = u; mt[u] = v;
-						alternateUp(pv); alternateUp(pu);
+						alternate_up(pv); alternate_up(pu);
 						return 1;
 					}
 					if (blossom(v) != base) par[v] = u;
 					if (blossom(u) != base) par[u] = v;
-					shrinkBlossom(v, base);
-					shrinkBlossom(u, base);
+					shrink_blossom(v, base);
+					shrink_blossom(u, base);
 				} else if (mt[u] == -1) {
 					par[u] = v;
-					alternateUp(u);
+					alternate_up(u);
 					return 1;
 				} else {
 					par[u] = v; used[u] = 2;
@@ -74,7 +74,7 @@ struct Edmonds {
 		}
 		return 0;
 	}
-	int tryIncrease() {
+	int try_increase() {
 		Q.clear();
 		for (int i = 0; i < n; i++) {
 			used[i] = 0; par[i] = -1; dsu[i] = -1;
@@ -95,13 +95,23 @@ struct Edmonds {
 		}
 		return RES + BFS();
 	}
-	int increaseMatching() {
+	int increase_matching() {
 		int res = 0;
 		while(true) {
-			int cur = tryIncrease();
+			int cur = try_increase();
 			if (cur == 0) break;
 			res += cur;
 		}
 		return res;
 	}
 } E;
+
+
+Edmonds E(n);
+while(m--) {
+	ll u, v; cin >> u >> v;
+	E.add_edge(u, v);
+}
+cout << E.increase_matching() << "\n";
+for (int v = 0; v < n; v++)
+	if (E.mt[v] > v) cout << v << " " << E.mt[v] << "\n";

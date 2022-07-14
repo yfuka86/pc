@@ -99,26 +99,234 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+struct Edmonds {
+	vector<vector<int>> g; int n, T;
+	vector<int> mt, used, par, dsu, tm, Q;
+
+	Edmonds() : g(), n(0), mt(), used(), par(), dsu(), tm(), T() {}
+	Edmonds(int _n) {
+		n = _n; g.clear(); g.resize(n);
+		mt.assign(n, -1); used.assign(n, 0); par.assign(n, -1); dsu.assign(n, -1); tm.assign(n, 0); T = 1;
+	}
+	void add_edge(int v, int u) { g[v].push_back(u); g[u].push_back(v); }
+	void clear() { mt.assign(n, -1); }
+	int blossom(int v) { return (dsu[v] == -1 ? v : dsu[v] = blossom(dsu[v])); }
+	void unite(int v, int u) {
+		v = blossom(v); u = blossom(u);
+		if (v == u) return; dsu[v] = u;
+	}
+	int lca(int v, int u) {
+		T++;
+		while(true) {
+			if (v == -1 && u == -1) return -1;
+			swap(v, u);
+			if (v == -1) continue;
+			v = blossom(v);
+			if (tm[v] == T) return v;
+			tm[v] = T;
+			if (mt[v] != -1) v = par[mt[v]]; else v = -1;
+		}
+	}
+	void shrink_blossom(int v, int p) {
+		while(v != p) {
+			int u = mt[v]; int w = par[u];
+			if (blossom(w) != p) par[w] = u;
+			if (used[u] == 2) { used[u] = 1; Q.push_back(u); }
+			if (used[w] == 2) { used[w] = 1; Q.push_back(w); }
+			unite(v, u); unite(v, w);
+			v = w;
+		}
+	}
+	void alternate_up(int u) {
+		while(u != -1) {
+			int v = par[u]; int w = mt[v];
+			mt[v] = u; mt[u] = v; u = w;
+		}
+	}
+	int BFS() {
+		for (int it = 0; it < (int)Q.size(); it++) {
+			int v = Q[it];
+			for (int u : g[v]) {
+				if (mt[v] == u) continue;
+				if (blossom(v) == blossom(u)) continue;
+				if (used[u] == 2) continue;
+				if (used[u] == 1) {
+					int base = lca(v, u);
+					if (base == -1) {
+						int pv = mt[v], pu = mt[u];
+						mt[v] = u; mt[u] = v;
+						alternate_up(pv); alternate_up(pu);
+						return 1;
+					}
+					if (blossom(v) != base) par[v] = u;
+					if (blossom(u) != base) par[u] = v;
+					shrink_blossom(v, base);
+					shrink_blossom(u, base);
+				} else if (mt[u] == -1) {
+					par[u] = v;
+					alternate_up(u);
+					return 1;
+				} else {
+					par[u] = v; used[u] = 2;
+					u = mt[u]; used[u] = 1;
+					Q.push_back(u);
+				}
+			}
+		}
+		return 0;
+	}
+	int try_increase() {
+		Q.clear();
+		for (int i = 0; i < n; i++) {
+			used[i] = 0; par[i] = -1; dsu[i] = -1;
+		}
+		int RES = 0;
+		for (int v = 0; v < n; v++) {
+			if (mt[v] != -1) continue;
+			bool fnd = false;
+			for (int u : g[v]) {
+				if (mt[u] == -1) {
+					fnd = true; RES++;
+					mt[v] = u; mt[u] = v;
+					break;
+				}
+			}
+			if (fnd) continue;
+			used[v] = 1; Q.push_back(v);
+		}
+		return RES + BFS();
+	}
+	int increase_matching() {
+		int res = 0;
+		while(true) {
+			int cur = try_increase();
+			if (cur == 0) break;
+			res += cur;
+		}
+		return res;
+	}
+} E;
+
+struct BipartiteMatching {
+  vector< vector< int > > graph;
+  vector< int > alive, used, match;
+  int timestamp;
+
+  explicit BipartiteMatching(int n) : graph(n), alive(n, 1), used(n, 0), match(n, -1), timestamp(0) {}
+
+  void add_edge(int u, int v) {
+    graph[u].push_back(v);
+    graph[v].push_back(u);
+  }
+
+  bool augment(int idx) {
+    used[idx] = timestamp;
+    for(auto &to : graph[idx]) {
+      int to_match = match[to];
+      if(alive[to] == 0) continue;
+      if(to_match == -1 || (used[to_match] != timestamp && augment(to_match))) {
+        match[idx] = to;
+        match[to] = idx;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  int bipartite_matching() {
+    int ret = 0;
+    for(int i = 0; i < (int) graph.size(); i++) {
+      if(alive[i] == 0) continue;
+      if(match[i] == -1) {
+        ++timestamp;
+        ret += augment(i);
+      }
+    }
+    return ret;
+  }
+
+  int add_vertex(int idx) {
+    alive[idx] = 1;
+    ++timestamp;
+    return augment(idx);
+  }
+
+  int erase_vertex(int idx) {
+    alive[idx] = 0;
+    if(match[idx] == -1) {
+      return 0;
+    }
+    match[match[idx]] = -1;
+    ++timestamp;
+    int ret = augment(match[idx]);
+    match[idx] = -1;
+    return ret - 1;
+  }
+
+  void output() const {
+    for(int i = 0; i < (int) graph.size(); i++) {
+      if(i < match[i]) {
+        cout << i << "-" << match[i] << endl;
+      }
+    }
+  }
+};
+
 #include <atcoder/maxflow>
 using namespace atcoder;
 
 void solve() {
   ll n; cin >> n;
-  set<ll> S;
+  vl S;
   vl sz(n);
   vector<set<LP>> cand(n);
   rep(i, n) {
     vlin(len, 3, 0);
     sz[i] = len[0] * len[1] * len[2];
 
-    rep(i, 3) {
-      rep(dl, 1, len[i]) {
-        ll s = sz[i] / len[i] * dl;
-        if (s * 2 <= sz[i]) cand[i].insert({s, sz[i] - s});
+    rep(j, 3) {
+      rep2(dl, 1, len[j]) {
+        ll s = sz[i] / len[j] * dl;
+        if (s * 2 <= sz[i]) {
+          cand[i].insert({s, sz[i] - s});
+          S.pb(s); S.pb(sz[i] - s);
+        }
       }
     }
   }
-  rep(i, n) for(auto &c: cand[i]) S.insert(c);
+  sort(all(S)); S.erase(unique(all(S)), S.end());
+  debug(S);
+
+  ll nn = S.size();
+  map<ll, ll> mp;
+  rep(i, nn) mp[S[i]] = i;
+
+  // BipartiteMatching bm(2 * nn);
+  // mf_graph<ll> mf(2 * nn + 2);
+  // ll s = 2 * nn, t = s + 1;
+
+  // rep(i, nn) {
+  //   mf.add_edge(s, i, 1);
+  //   mf.add_edge(i + nn, t, 1);
+  // }
+
+  // rep(i, n) for (auto[a, b]: cand[i]) {
+  //   mf.add_edge(mp[a], mp[b] + nn, 1);
+  //   mf.add_edge(mp[b], mp[a] + nn, 1);
+  // }
+  // ll temp = mf.flow(s, t);
+  // debug(temp);
+  // cout << nn * 2 - temp << "\n";
+
+  Edmonds E(nn * 2);
+  rep(i, n) for (auto[a, b]: cand[i]) {
+    E.add_edge(mp[a], mp[b] + nn);
+    E.add_edge(mp[a] + nn, mp[b]);
+  }
+  ll msz = E.increase_matching();
+  ll ans = nn * 2 - msz;
+  // debug(E.mt);
+  cout << ans << "\n";
 }
 
 signed main() {
