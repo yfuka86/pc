@@ -51,7 +51,7 @@ void trace() { dout << "\n"; } template<typename Head, typename... Tail> void tr
 #define debug(...) do {dout<<#__VA_ARGS__<<" = ";trace(__VA_ARGS__); } while(0)
 #endif
 template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
-template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { xcoutarray(v[i], offset); } }
+template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); coutarray(v); cout.flush(); cin >> a; }
 // template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
@@ -61,9 +61,9 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
+ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
-template<typename T> ll digits(T n) { assert(n >= 0); ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T> void uniq(vector<T>&a) { sort(all(a)); a.erase(unique(all(a)), a.end()); }
@@ -99,28 +99,74 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-ll calc_d(ll a, ll b, ll n) {
-  return digits((__uint128_t)a + (__uint128_t)b * n);
-}
+//------------------------------------------------------------------------------
+template <class S, S (*op)(S, S), S (*e)()> struct segtree {
+  public:
+  segtree() : segtree(0) {}
+  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
+  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
+  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
+  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
+  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
+  S all_prod() const { return d[1]; }
+  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
+  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
+    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
+  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
+  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
+    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
+  private:
+  int _n, size, log; std::vector<S> d;
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+};
+//------------------------------------------------------------------------------
+
+using S = ll;
+S op(S l, S r) { return max(l, r); }
+S e() { return -LINF; }
 
 void solve() {
-  ll l, a, b, m; cin >> l >> a >> b >> m;
+  ll n, d; cin >> n >> d;
+  vl x(n), y(n);
+  rep(i, n) cin >> x[i] >> y[i];
 
-  ll dmax = calc_d(a, b, l - 1);
-  vl digits(dmax + 1);
-  rep2(i, calc_d(a, b, 0), dmax + 1) {
-    digits[i] = binary_search([&](ll mid) {
-      return i >= calc_d(a, b, mid);
-    }, 0, l) + 1;
+  ll n1 = n / 2, n2 = n - n1;
+
+  vlp h1, h2;
+  rep(S, 1 << n1) {
+    ll xd = 0, yd = 0;
+    rep(j, n1) { if (!(S & 1 << j)) xd += x[j], yd += y[j]; }
+    for (ll s = S;; s = (s - 1) & S) {
+      ll txd = xd, tyd = yd;
+      rep(j, n1) if (s & 1 << j) txd -= x[j], tyd -= y[j];
+      h1.pb({txd, tyd});
+      if (!s) break;
+    }
   }
-  debug(digits);
-
-
-  ll cur = 0;
-  rep(i, dmax + 1) {
-    digits[i] - cur
-    cur = digits[i];
+  rep(S, 1 << n2) {
+    ll xd = 0, yd = 0;
+    rep(j, n2) { if (!(S & 1 << j)) xd += x[j + n1], yd += y[j + n1]; }
+    for (ll s = S; ; s = (s - 1) & S) {
+      ll txd = xd, tyd = yd;
+      rep(j, n2) if (s & 1 << j) txd -= x[j + n1], tyd -= y[j + n1];
+      h2.pb({txd, tyd});
+      if (!s) break;
+    }
   }
+  sort(all(h2));
+  vl h2v;
+  for (auto[k,v]:h2) h2v.pb(v);
+  segtree<S, op, e> seg(h2v);
+  // debug(h1, h2);
+
+  ll ans = -LINF;
+  for (auto &[xd, yd]: h1) {
+    ll l = lbs(h2, mp(-d - xd, -LINF));
+    ll r = ubs(h2, mp(d - xd, LINF));
+    // debug(l, r, yd, seg.prod(l, r));
+    chmax(ans, yd + seg.prod(l, r));
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
