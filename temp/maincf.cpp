@@ -78,23 +78,21 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll N, vl a) {
-  ll ans = -1; return ans;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll N, vl a) {
-  ll ans = 1; return ans;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 10;
-    vl a = rg.vecl(N, 1, 1e2);
-    auto so = solve(N, a); auto na = naive(N, a);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      dump(N); dump(a);
-      cout << "solve: "; dump(so);
-      cout << "naive: "; dump(na);
+      debug(N, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
