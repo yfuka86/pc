@@ -19,7 +19,7 @@ typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef v
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
-const int INF = infinity<int>::val; const ll LINF = infinity<int>::val; const ld DINF = infinity<ld>::val;
+const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
 
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
@@ -99,9 +99,93 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  ll n; cin >> n;
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+vector<ll> dijkstra(Graph<ll> &G, ll start) {
+  priority_queue<LP, vector<LP>, greater<LP>> que;
+  vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push(make_pair(0, start));
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop();
+    if (costs[v] < c) continue;
+    for(auto &to: G[v]) {
+      ll nc = costs[v] + to.cost;
+      if (chmin(costs[to], nc)) que.push(make_pair(nc, to));
+    }
+  }
+  return costs;
+}
 
+void solve() {
+  ll n, m; cin >> n >> m;
+  Graph<ll> G(n), rG(n);
+  vvl warshall(n, vl(n, LINF));
+  rep(i, n) warshall[i][i] = 0;
+  rep(i, m) {
+    ll s, t; cin >> s >> t; s--; t--;
+    G.add_directed_edge(s, t);
+    rG.add_directed_edge(t, s);
+    warshall[s][t] = 1;
+  }
+
+  vl cost(n, LINF); vlp from(n, {-1, -1});
+  priority_queue<LP, vector<LP>, greater<LP>> que;
+  cost[0] = 0; que.push(make_pair(0, 0));
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop();
+    if (cost[v] < c) continue; else chmin(cost[v], c);
+    for(auto &to: G[v]) {
+      ll nc = cost[v] + to.cost;
+      if (chmin(cost[to], nc)) {
+        from[to] = {v, to.idx};
+        que.push(make_pair(nc, to));
+      }
+    }
+  }
+  vl rcost = dijkstra(rG, n - 1);
+
+  if (cost[n - 1] == LINF) {
+    rep(i, m) cout << -1 << "\n";
+    return;
+  }
+  vl ans(m, cost[n - 1]);
+
+
+  vlt route;
+  ll cur = n - 1;
+  while (cur > 0) {
+    auto [v, e] = from[cur];
+    ans[e] = LINF;
+    route.pb({v, cur, e});
+    cur = v;
+  }
+  reverse(all(route));
+  for (auto[s, t, e]: route) {
+    warshall[s][t] = LINF;
+  }
+  rep(k, n) rep(i, n) rep(j, n) { if (warshall[i][k] == LINF || warshall[k][j] == LINF) continue; warshall[i][j] = min(warshall[i][j], warshall[i][k] + warshall[k][j]); }
+
+  {
+    ll n = route.size();
+    rep(i, n) rep2(j, i + 1, n + 1) {
+      ll s = get<0>(route[i]), t = get<1>(route[j - 1]);
+      if (warshall[s][t] != LINF) {
+        rep2(k, i, j) {
+          chmin(ans[get<2>(route[k])], cost[s] + rcost[t] + warshall[s][t]);
+        }
+      }
+    }
+  }
+  rep(i, m) {
+    if (ans[i] == LINF) cout << -1 << "\n";
+    else cout << ans[i] << "\n";
+  }
 }
 
 signed main() {

@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "arc074",
+    "title": "AtCoder Regular Contest 074",
+    "url": "https://atcoder.jp/contests/arc074"
+  },
+  "tasks": [
+    {
+      "id": "arc074_a",
+      "label": "C",
+      "title": "Chocolate Bar",
+      "url": "https://atcoder.jp/contests/arc074/tasks/arc074_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc074_a.cpp"
+      }
+    },
+    {
+      "id": "arc074_b",
+      "label": "D",
+      "title": "3N Numbers",
+      "url": "https://atcoder.jp/contests/arc074/tasks/arc074_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc074_b.cpp"
+      }
+    },
+    {
+      "id": "arc074_c",
+      "label": "E",
+      "title": "RGB Sequence",
+      "url": "https://atcoder.jp/contests/arc074/tasks/arc074_c",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc074_c.cpp"
+      }
+    },
+    {
+      "id": "arc074_d",
+      "label": "F",
+      "title": "Lotus Leaves",
+      "url": "https://atcoder.jp/contests/arc074/tasks/arc074_d",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc074_d.cpp"
+      }
+    }
+  ]
+}

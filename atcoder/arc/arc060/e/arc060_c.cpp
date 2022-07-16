@@ -101,6 +101,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(x, n, 0);
+  ll l, q; cin >> l >> q;
+  rep(i, q) {
+    ll a, b; cin >> a >> b;
+  }
 }
 
 signed main() {

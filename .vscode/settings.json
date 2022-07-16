@@ -121,6 +121,6 @@
   "code-runner.executorMap": {
     "javascript": "node",
     // "cpp": "cd $dir && g++ -std=c++17 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
-    "cpp": "cd $dir && g++ -std=c++17 -Wall -Wextra -g2 -D_GLIBCXX_DEBUG -O0 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
+    "cpp": "cd $dir && g++ -std=c++17 -Wall -Wextra -ftrapv -g2 -D_GLIBCXX_DEBUG -O0 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
   }
 }

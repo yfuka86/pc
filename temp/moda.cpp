@@ -139,4 +139,4 @@ struct ArbitraryModInt {
 };
 
 using mint = ArbitraryModInt;
-using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<vvvmi> v4mi;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
