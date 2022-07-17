@@ -78,27 +78,107 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
+string solve(ll n, ll q, vl a) {
+  // map<ll, ll> freq;
+  // rep(i, n) freq[a[i]]++;
+
+  // vl t; for (auto [d, cnt]: freq) t.pb(d);
+  // vl ct = t; comp(ct);
+  // BIT<ll> bt(t.size());
+  // rep(i, t.size()) bt.add(ct[i], freq[t[i]]);
+  // map<ll, ll> dict;
+  // rep(i, t.size()) dict[t[i]] = ct[i];
+
+  // string ans = "";
+  // rep(i, n) {
+  //   if (q == 0) { ans.pb('0'); continue; }
+
+  //   if (a[i] <= q) ans.pb('1');
+  //   else {
+  //     if (freq[q] && bt.sum(dict[q - freq[q] + 1], t.size()) > q) ans.pb('0');
+  //     else { ans.pb('1'); q--; }
+  //   }
+  //   freq[a[i]]--;
+  //   bt.add(dict[a[i]], -1);
+  // }
+  // return ans;
+  ll cur = 0;
+  string ans = "";
+  rep_r(i, n) {
+    if (cur == q) {
+      if (a[i] <= q) ans.pb('1'); else ans.pb('0');
+    } else {
+      ans.pb('1');
+      if (a[i] >= cur + 1) cur++;
+    }
+
+  }
+  reverse(all(ans));
+  return ans;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+string naive(ll n, ll q, vl a) {
+  ll cnt = 0;
+  string ans = "";
+  rep(S, 1 << n) {
+    bool valid = true;
+    ll qt = q;
+    rep(j, n) {
+      if (S & 1 << j) {
+        if (qt == 0) { valid = false; break; }
+        if (a[j] > qt) qt--;
+      }
+    }
+    if (valid) if (chmax<ll>(cnt, __builtin_popcount(S))) {
+      string t = "";
+      rep(i, n) if (S & 1 << i) t.pb('1'); else t.pb('0');
+      ans = t;
+    }
+  }
+  return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
-    if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+    ll q = rg.l(1, 15);
+    vl a = rg.vecl(n, 1, 1e1);
+    auto so = solve(n, q, a); auto na = naive(n, q, a);
+    ll cnt1 = 0, cnt2 = 0;
+    rep(i, n) {
+      if (so[i] == '1') cnt1++;
+      if (na[i] == '1') cnt2++;
+    }
+    if (!check || cnt1 != cnt2) { cout << c << "times tried" << "\n";
+      debug(n, q, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n, q; cin >> n >> q;
+  vlin(a, n, 0);
+
+  cout << solve(n, q, a) << "\n";
 }
 
 signed main() {

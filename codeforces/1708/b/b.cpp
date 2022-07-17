@@ -98,7 +98,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n, l, r; cin >> n >> l >> r;
+  vl ans(n);
+  rep2(i, 1, n + 1) {
+    if (r / i * i >= l) ans[i - 1] = r / i * i;
+    else { cout << "NO" << "\n"; return; }
+  }
+  cout << "YES" << "\n";
+  coutarray(ans);
 }
 
 signed main() {

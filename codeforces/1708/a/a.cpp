@@ -99,6 +99,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(a, n, 0);
+  rep2(i, 1, n) {
+    if (a[i] % a[0]) { cout << "NO" << "\n"; return; }
+  }
+  cout << "YES" << "\n";
 }
 
 signed main() {

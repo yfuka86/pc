@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "code-festival-2017-qualb",
+    "title": "CODE FESTIVAL 2017 qual B",
+    "url": "https://atcoder.jp/contests/code-festival-2017-qualb"
+  },
+  "tasks": [
+    {
+      "id": "code_festival_2017_qualb_a",
+      "label": "A",
+      "title": "XXFESTIVAL",
+      "url": "https://atcoder.jp/contests/code-festival-2017-qualb/tasks/code_festival_2017_qualb_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "code_festival_2017_qualb_a.cpp"
+      }
+    },
+    {
+      "id": "code_festival_2017_qualb_b",
+      "label": "B",
+      "title": "Problem Set",
+      "url": "https://atcoder.jp/contests/code-festival-2017-qualb/tasks/code_festival_2017_qualb_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "code_festival_2017_qualb_b.cpp"
+      }
+    },
+    {
+      "id": "code_festival_2017_qualb_c",
+      "label": "C",
+      "title": "3 Steps",
+      "url": "https://atcoder.jp/contests/code-festival-2017-qualb/tasks/code_festival_2017_qualb_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "code_festival_2017_qualb_c.cpp"
+      }
+    },
+    {
+      "id": "code_festival_2017_qualb_d",
+      "label": "D",
+      "title": "101 to 010",
+      "url": "https://atcoder.jp/contests/code-festival-2017-qualb/tasks/code_festival_2017_qualb_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "code_festival_2017_qualb_d.cpp"
+      }
+    },
+    {
+      "id": "code_festival_2017_qualb_e",
+      "label": "E",
+      "title": "Popping Balls",
+      "url": "https://atcoder.jp/contests/code-festival-2017-qualb/tasks/code_festival_2017_qualb_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "code_festival_2017_qualb_e.cpp"
+      }
+    },
+    {
+      "id": "code_festival_2017_qualb_f",
+      "label": "F",
+      "title": "Largest Smallest Cyclic Shift",
+      "url": "https://atcoder.jp/contests/code-festival-2017-qualb/tasks/code_festival_2017_qualb_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "code_festival_2017_qualb_f.cpp"
+      }
+    }
+  ]
+}

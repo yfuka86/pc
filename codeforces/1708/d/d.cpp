@@ -99,6 +99,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(a, n, 0);
+
+  map<ll, ll> freq, freqt;
+  rep(i, n) freq[a[i]]++;
+
+  rep(i, n - 1) {
+    for (auto it = freq.begin(); it != freq.end(); ++it) {
+      if (it != prev(freq.end())) freqt[next(it)->fi - it->fi]++;
+      if (it->se > 1) freqt[0] += it->se - 1;
+    }
+    freq = freqt;
+    freqt.clear();
+  }
+  cout << freq.rbegin()->fi << "\n";
+
+
+  // RandGen rg;
+  // ll n = 10; vl a = rg.vecl(n, 1, 1e2);
+
+  // while (a.size() > 0) {
+  //   sort(all(a));
+  //   debug(a);
+  //   vl t;
+  //   rep(i, a.size() - 1) {
+  //     t.pb(a[i + 1] - a[i]);
+  //   }
+  //   a = t;
+  // }
 }
 
 signed main() {
