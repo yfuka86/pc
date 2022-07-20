@@ -61,7 +61,7 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template<typename T> ll digits(T n) { assert(n >= 0); ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
@@ -98,29 +98,213 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+struct Barrett {
+  using u32 = unsigned int;
+  using i64 = long long;
+  using u64 = unsigned long long;
+  u32 m;
+  u64 im;
+  Barrett() : m(), im() {}
+  Barrett(int n) : m(n), im(u64(-1) / m + 1) {}
+  constexpr inline i64 quo(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? x - 1 : x;
+  }
+  constexpr inline i64 rem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? r + m : r;
+  }
+  constexpr inline pair<i64, int> quorem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    if (m <= r) return {x - 1, r + m};
+    return {x, r};
+  }
+  constexpr inline i64 pow(u64 n, i64 p) {
+    u32 a = rem(n), r = m == 1 ? 0 : 1;
+    while (p) {
+      if (p & 1) r = rem(u64(r) * a);
+      a = rem(u64(a) * a);
+      p >>= 1;
+    }
+    return r;
+  }
+};
 
-ll calc_d(ll a, ll b, ll n) {
-  return digits((__uint128_t)a + (__uint128_t)b * n);
+struct ArbitraryModInt {
+  int x;
+
+  ArbitraryModInt() : x(0) {}
+
+  ArbitraryModInt(int64_t y) {
+    int z = y % get_mod();
+    if (z < 0) z += get_mod();
+    x = z;
+  }
+
+  ArbitraryModInt &operator+=(const ArbitraryModInt &p) {
+    if ((x += p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator-=(const ArbitraryModInt &p) {
+    if ((x += get_mod() - p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator*=(const ArbitraryModInt &p) {
+    x = rem((unsigned long long)x * p.x);
+    return *this;
+  }
+
+  ArbitraryModInt &operator/=(const ArbitraryModInt &p) {
+    *this *= p.inverse();
+    return *this;
+  }
+
+  ArbitraryModInt operator-() const { return ArbitraryModInt(-x); }
+
+  ArbitraryModInt operator+(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) += p;
+  }
+
+  ArbitraryModInt operator-(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) -= p;
+  }
+
+  ArbitraryModInt operator*(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) *= p;
+  }
+
+  ArbitraryModInt operator/(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) /= p;
+  }
+
+  bool operator==(const ArbitraryModInt &p) const { return x == p.x; }
+
+  bool operator!=(const ArbitraryModInt &p) const { return x != p.x; }
+
+  ArbitraryModInt inverse() const {
+    int a = x, b = get_mod(), u = 1, v = 0, t;
+    while (b > 0) {
+      t = a / b;
+      swap(a -= t * b, b);
+      swap(u -= t * v, v);
+    }
+    return ArbitraryModInt(u);
+  }
+
+  ArbitraryModInt pow(__uint128_t n) const {
+    ArbitraryModInt ret(1), mul(x);
+    while (n > 0) {
+      if (n & 1) ret *= mul;
+      mul *= mul;
+      n >>= 1;
+    }
+    return ret;
+  }
+
+  friend ostream &operator<<(ostream &os, const ArbitraryModInt &p) {
+    return os << p.x;
+  }
+
+  friend istream &operator>>(istream &is, ArbitraryModInt &a) {
+    int64_t t;
+    is >> t;
+    a = ArbitraryModInt(t);
+    return (is);
+  }
+
+  int get() const { return x; }
+
+  inline unsigned int rem(unsigned long long p) { return barrett().rem(p); }
+
+  static inline Barrett &barrett() {
+    static Barrett b;
+    return b;
+  }
+
+  static inline int &get_mod() {
+    static int mod = 0;
+    return mod;
+  }
+
+  static void set_mod(int md) {
+    assert(0 < md && md <= (1LL << 30) - 1);
+    get_mod() = md;
+    barrett() = Barrett(md);
+  }
+};
+
+using mint = ArbitraryModInt;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+
+
+mint geo_sum(mint a, mint r, ll sz) {
+  if (sz == 0) return mint(0);
+  if (sz == 1) return a;
+
+  mint ret = 0;
+  if (sz & 1) { ret += a; a *= r; }
+  mint s = geo_sum(a, r, sz / 2);
+  ret += s + r.pow(sz / 2) * s;
+  return ret;
+}
+
+mint geo_lin_sum(mint a, int i, mint r, ll sz) {
+  if (sz == 0) return mint(0);
+  if (sz == 1) return a * i;
+
+  mint ret = 0;
+  if (sz & 1) { ret += a * i; a *= r; i++; }
+  mint s = geo_lin_sum(a, i, r, sz / 2);
+  ret += s + r.pow(sz / 2) * (s + geo_sum(a, r, sz / 2) * (sz / 2));
+  return ret;
 }
 
 void solve() {
   ll l, a, b, m; cin >> l >> a >> b >> m;
+  mint::set_mod(m);
+  vl rng(19, 0);
 
-  ll dmax = calc_d(a, b, l - 1);
-  vl digits(dmax + 1);
-  rep2(i, calc_d(a, b, 0), dmax + 1) {
-    digits[i] = binary_search([&](ll mid) {
-      return i >= calc_d(a, b, mid);
-    }, 0, l) + 1;
+  rep(i, 19) {
+    ll base = POW(10, i);
+    if (base <= a) rng[i] = 0;
+    else rng[i] = min(ceil(base - a, b), l);
   }
-  debug(digits);
+  debug(rng);
 
+  vmi dp(18, 0);
+  vector<__uint128_t> digits(18, 0);
+  rep(i, 18) {
+    mint p10 = mint(10).pow(i + 1);
+    ll sz = rng[i + 1] - rng[i];
 
-  ll cur = 0;
-  rep(i, dmax + 1) {
-    digits[i] - cur
-    cur = digits[i];
+    mint c = (mint(a) + mint(b) * (rng[i + 1] - 1)) * geo_sum(1, p10, sz);
+    mint d = b;
+    // d *= p10.pow(sz) * (p10 * (sz - 1) - sz) + p10;
+    // d /= (p10 - 1) * (p10 - 1);
+    d *= geo_lin_sum(1, 0, p10, sz);
+    // debug(i, c, d);
+
+    dp[i] = c - d;
   }
+  rep(i, 18) {
+    digits[i] = (__uint128_t)(i + 1) * (rng[i + 1] - rng[i]);
+  }
+
+  // debug(dp);
+  // debug(digits);
+
+  mint ans = 0;
+  __uint128_t dsum = 0;
+  rep_r(i, 18) {
+    ans += dp[i] * mint(10).pow(dsum);
+    dsum += digits[i];
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

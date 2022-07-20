@@ -1,0 +1,185 @@
+{
+  "contest": {
+    "id": "joisc2008",
+    "title": "2008年 日本情報オリンピック春合宿OJ",
+    "url": "https://atcoder.jp/contests/joisc2008"
+  },
+  "tasks": [
+    {
+      "id": "joisc2008_committee",
+      "label": "committee",
+      "title": "委員会 (Committee)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_committee",
+      "directory": {
+        "path": "committee",
+        "testdir": "test",
+        "submit": "joisc2008_committee.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_sheet",
+      "label": "sheet",
+      "title": "色紙 (Sheet)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_sheet",
+      "directory": {
+        "path": "sheet",
+        "testdir": "test",
+        "submit": "joisc2008_sheet.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_flu",
+      "label": "flu",
+      "title": "インフルエンザ (Flu)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_flu",
+      "directory": {
+        "path": "flu",
+        "testdir": "test",
+        "submit": "joisc2008_flu.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_nile",
+      "label": "nile",
+      "title": "ナイルドットコム (Nile.Com)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_nile",
+      "directory": {
+        "path": "nile",
+        "testdir": "test",
+        "submit": "joisc2008_nile.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_cheating",
+      "label": "cheating",
+      "title": "カンニング対策 (Cheating)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_cheating",
+      "directory": {
+        "path": "cheating",
+        "testdir": "test",
+        "submit": "joisc2008_cheating.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_belt",
+      "label": "belt",
+      "title": "ベルト (Belt)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_belt",
+      "directory": {
+        "path": "belt",
+        "testdir": "test",
+        "submit": "joisc2008_belt.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_origami",
+      "label": "origami",
+      "title": "折り紙 (Origami)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_origami",
+      "directory": {
+        "path": "origami",
+        "testdir": "test",
+        "submit": "joisc2008_origami.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_fraction",
+      "label": "fraction",
+      "title": "分数 (Fraction)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_fraction",
+      "directory": {
+        "path": "fraction",
+        "testdir": "test",
+        "submit": "joisc2008_fraction.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_nightman",
+      "label": "nightman",
+      "title": "夜警 (Nightman)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_nightman",
+      "directory": {
+        "path": "nightman",
+        "testdir": "test",
+        "submit": "joisc2008_nightman.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_ruins",
+      "label": "ruins",
+      "title": "最古の遺跡2 (Ruins)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_ruins",
+      "directory": {
+        "path": "ruins",
+        "testdir": "test",
+        "submit": "joisc2008_ruins.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_typhoon",
+      "label": "typhoon",
+      "title": "台風 (Typhoon)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_typhoon",
+      "directory": {
+        "path": "typhoon",
+        "testdir": "test",
+        "submit": "joisc2008_typhoon.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_election1",
+      "label": "election1",
+      "title": "選挙 (Election)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_election1",
+      "directory": {
+        "path": "election1",
+        "testdir": "test",
+        "submit": "joisc2008_election1.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_election2",
+      "label": "election2",
+      "title": "選挙 (Election)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_election2",
+      "directory": {
+        "path": "election2",
+        "testdir": "test",
+        "submit": "joisc2008_election2.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_election3",
+      "label": "election3",
+      "title": "選挙 (Election)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_election3",
+      "directory": {
+        "path": "election3",
+        "testdir": "test",
+        "submit": "joisc2008_election3.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_election4",
+      "label": "election4",
+      "title": "選挙 (Election)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_election4",
+      "directory": {
+        "path": "election4",
+        "testdir": "test",
+        "submit": "joisc2008_election4.cpp"
+      }
+    },
+    {
+      "id": "joisc2008_election5",
+      "label": "election5",
+      "title": "選挙 (Election)",
+      "url": "https://atcoder.jp/contests/joisc2008/tasks/joisc2008_election5",
+      "directory": {
+        "path": "election5",
+        "testdir": "test",
+        "submit": "joisc2008_election5.cpp"
+      }
+    }
+  ]
+}

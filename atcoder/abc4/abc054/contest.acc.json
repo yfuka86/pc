@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc054",
+    "title": "AtCoder Beginner Contest 054",
+    "url": "https://atcoder.jp/contests/abc054"
+  },
+  "tasks": [
+    {
+      "id": "abc054_a",
+      "label": "A",
+      "title": "One Card Poker",
+      "url": "https://atcoder.jp/contests/abc054/tasks/abc054_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc054_a.cpp"
+      }
+    },
+    {
+      "id": "abc054_b",
+      "label": "B",
+      "title": "Template Matching",
+      "url": "https://atcoder.jp/contests/abc054/tasks/abc054_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc054_b.cpp"
+      }
+    },
+    {
+      "id": "abc054_c",
+      "label": "C",
+      "title": "One-stroke Path",
+      "url": "https://atcoder.jp/contests/abc054/tasks/abc054_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc054_c.cpp"
+      }
+    },
+    {
+      "id": "abc054_d",
+      "label": "D",
+      "title": "Mixing Experiment",
+      "url": "https://atcoder.jp/contests/abc054/tasks/abc054_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc054_d.cpp"
+      }
+    }
+  ]
+}

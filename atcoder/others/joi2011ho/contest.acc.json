@@ -1,0 +1,64 @@
+{
+  "contest": {
+    "id": "joi2011ho",
+    "title": "第１０回日本情報オリンピック 本選（過去問）",
+    "url": "https://atcoder.jp/contests/joi2011ho"
+  },
+  "tasks": [
+    {
+      "id": "joi2011ho1",
+      "label": "A",
+      "title": "惑星探査 (Planetary Exploration)",
+      "url": "https://atcoder.jp/contests/joi2011ho/tasks/joi2011ho1",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "joi2011ho1.cpp"
+      }
+    },
+    {
+      "id": "joi2011ho2",
+      "label": "B",
+      "title": "古本屋 (Books)",
+      "url": "https://atcoder.jp/contests/joi2011ho/tasks/joi2011ho2",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "joi2011ho2.cpp"
+      }
+    },
+    {
+      "id": "joi2011ho3",
+      "label": "C",
+      "title": "JOI 国の買い物事情 (Shopping in JOI Kingdom)",
+      "url": "https://atcoder.jp/contests/joi2011ho/tasks/joi2011ho3",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "joi2011ho3.cpp"
+      }
+    },
+    {
+      "id": "joi2011ho4",
+      "label": "D",
+      "title": "歩くサンタクロース (Walking Santa)",
+      "url": "https://atcoder.jp/contests/joi2011ho/tasks/joi2011ho4",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "joi2011ho4.cpp"
+      }
+    },
+    {
+      "id": "joi2011ho5",
+      "label": "E",
+      "title": "微生物実験 (Bug Party)",
+      "url": "https://atcoder.jp/contests/joi2011ho/tasks/joi2011ho5",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "joi2011ho5.cpp"
+      }
+    }
+  ]
+}

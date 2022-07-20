@@ -103,8 +103,37 @@ void solve() {
   ll n; cin >> n;
   vlin(x, n, 0);
   ll l, q; cin >> l >> q;
+
+  vvl dp(n, vl(20));
+
+  ll cur = n - 1;
+  rep_r(i, n) {
+    while (x[cur] - x[i] > l) cur--;
+    dp[i][0] = cur;
+  }
+  rep2(i, 1, 20) {
+    rep_r(j, n) {
+      dp[j][i] = dp[dp[j][i - 1]][i - 1];
+    }
+  }
+  debug(dp);
+
   rep(i, q) {
-    ll a, b; cin >> a >> b;
+    ll a, b; cin >> a >> b; a--; b--;
+    if (a > b) swap(a, b);
+
+    ll ans = 0;
+    while(a < b) {
+      ll lid = lbs(dp[a], b);
+      if (lid--) {
+        ans += POW(2, lid);
+        a = dp[a][lid];
+      } else {
+        ans++;
+        break;
+      }
+    }
+    cout << ans << "\n";
   }
 }
 

@@ -79,3 +79,26 @@ vl fib(ll n) {
   for (int i = 2; i < n; i++) f[i] = f[i - 1] + f[i - 2];
   return f;
 }
+
+// 等比数列などの和
+mint geo_sum(mint a, mint r, ll sz) {
+  if (sz == 0) return mint(0);
+  if (sz == 1) return a;
+
+  mint ret = 0;
+  if (sz & 1) { ret += a; a *= r; }
+  mint s = geo_sum(a, r, sz / 2);
+  ret += s + r.pow(sz / 2) * s;
+  return ret;
+}
+
+mint geo_lin_sum(mint a, int i, mint r, ll sz) {
+  if (sz == 0) return mint(0);
+  if (sz == 1) return a * i;
+
+  mint ret = 0;
+  if (sz & 1) { ret += a * i; a *= r; i++; }
+  mint s = geo_lin_sum(a, i, r, sz / 2);
+  ret += s + r.pow(sz / 2) * (s + geo_sum(a, r, sz / 2) * (sz / 2));
+  return ret;
+}
