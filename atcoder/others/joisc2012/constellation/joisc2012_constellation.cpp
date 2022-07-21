@@ -97,67 +97,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// ----------------------------------------------------------------------
-template<typename T>
-struct BIT {
-  int n; vector<T> bit;
-  BIT(int _n = 0) : n(_n), bit(n + 1) {}
-  // sum of [0, i), 0 <= i <= n
-  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
-  // 0 <= i < n
-  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
-  //[l, r) 0 <= l < r < n
-  T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, sum(i) >= w, none -> n
-  int lower_bound(T w) {
-    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
-    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
-    return x; }
-};
-// ----------------------------------------------------------------------
-
 void solve() {
-  ll n, m, k; cin >> n >> m >> k;
-
-  vlp typ(n);
-  rep(i, n) {
-    ll a, b; cin >> a >> b; a--; b--;
-    typ[i] = {a, b};
-  }
-
-  vl point(m);
-  map<ll, vlp> que1, que2;
-  rep(i, m) {
-    ll p, q, r; cin >> p >> q >> r; p--; q--; r--;
-    point[i] = p;
-    que1[q].pb({p, i});
-    que2[r].pb({p, i});
-  }
-
-  sort(all(point));
-  vl cp = point; comp(cp);
-  map<ll, ll> pmap;
-  rep(i, m) pmap[point[i]] = cp[i];
-
-  debug(pmap);
-
-  BIT<ll> bt(m + 1);
-  vl ans(m);
-
-  rep(i, n) {
-    for (auto [p, id] :que1[i]) {
-      ans[id] -= bt.sum(0, pmap[p] + 1);
-    }
-    auto [a, b] = typ[i];
-    bt.add(pmap.lower_bound(a)->se, 1);
-    auto it = pmap.upper_bound(b);
-    bt.add(it == pmap.end() ? m : it->se, -1);
-
-    for (auto [p, id] :que2[i]) {
-      ans[id] += bt.sum(0, pmap[p] + 1);
-    }
-  }
-  coutarray(ans, 0, "\n");
+  ll n; cin >> n;
 }
 
 signed main() {

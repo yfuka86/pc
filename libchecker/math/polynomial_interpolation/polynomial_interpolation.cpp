@@ -97,67 +97,66 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// ----------------------------------------------------------------------
-template<typename T>
-struct BIT {
-  int n; vector<T> bit;
-  BIT(int _n = 0) : n(_n), bit(n + 1) {}
-  // sum of [0, i), 0 <= i <= n
-  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
-  // 0 <= i < n
-  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
-  //[l, r) 0 <= l < r < n
-  T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, sum(i) >= w, none -> n
-  int lower_bound(T w) {
-    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
-    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
-    return x; }
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
 };
-// ----------------------------------------------------------------------
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+
+struct Interpolation {
+  int n; vmi a;
+  Interpolation() {}
+  Interpolation(const vmi& p) {
+    // 階乗の逆元求める
+    n = p.size(); a.resize(n);
+    vmi invf(n, 1); mint f = 1;
+    rep2_r(i, 1, n) f *= i;
+    invf[n - 1] = mint(1) / f;
+    rep2_r(i, 1, n) invf[i - 1] = invf[i] * i;
+    // 本体
+    rep(i, n) {
+      mint b = invf[i] * invf[n-1-i];
+      a[i] = p[i] * ((n-1-i)&1 ? -b : b);
+    }
+  }
+  mint operator()(mint x) const {
+    vmi r(n, 1);
+    rep2_r(i, 1, n) r[i - 1] = r[i] * (x-i);
+    mint l = 1, res;
+    rep(i, n) {
+      res += a[i] * l * r[i];
+      l *= x-i;
+    }
+    return res;
+  }
+};
 
 void solve() {
-  ll n, m, k; cin >> n >> m >> k;
-
-  vlp typ(n);
-  rep(i, n) {
-    ll a, b; cin >> a >> b; a--; b--;
-    typ[i] = {a, b};
-  }
-
-  vl point(m);
-  map<ll, vlp> que1, que2;
-  rep(i, m) {
-    ll p, q, r; cin >> p >> q >> r; p--; q--; r--;
-    point[i] = p;
-    que1[q].pb({p, i});
-    que2[r].pb({p, i});
-  }
-
-  sort(all(point));
-  vl cp = point; comp(cp);
-  map<ll, ll> pmap;
-  rep(i, m) pmap[point[i]] = cp[i];
-
-  debug(pmap);
-
-  BIT<ll> bt(m + 1);
-  vl ans(m);
-
-  rep(i, n) {
-    for (auto [p, id] :que1[i]) {
-      ans[id] -= bt.sum(0, pmap[p] + 1);
-    }
-    auto [a, b] = typ[i];
-    bt.add(pmap.lower_bound(a)->se, 1);
-    auto it = pmap.upper_bound(b);
-    bt.add(it == pmap.end() ? m : it->se, -1);
-
-    for (auto [p, id] :que2[i]) {
-      ans[id] += bt.sum(0, pmap[p] + 1);
-    }
-  }
-  coutarray(ans, 0, "\n");
+  ll n; cin >> n;
 }
 
 signed main() {

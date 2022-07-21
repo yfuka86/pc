@@ -1,0 +1,185 @@
+{
+  "contest": {
+    "id": "joisc2012",
+    "title": "2012年 日本情報オリンピック春合宿OJ",
+    "url": "https://atcoder.jp/contests/joisc2012"
+  },
+  "tasks": [
+    {
+      "id": "joisc2012_building2",
+      "label": "building2",
+      "title": "ビルの飾り付け 2",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_building2",
+      "directory": {
+        "path": "building2",
+        "testdir": "test",
+        "submit": "joisc2012_building2.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_fish",
+      "label": "fish",
+      "title": "魚",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_fish",
+      "directory": {
+        "path": "fish",
+        "testdir": "test",
+        "submit": "joisc2012_fish.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_joi_flag",
+      "label": "joi_flag",
+      "title": "日本情報オリンピック旗",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_joi_flag",
+      "directory": {
+        "path": "joi_flag",
+        "testdir": "test",
+        "submit": "joisc2012_joi_flag.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_broadcasting1",
+      "label": "broadcasting1",
+      "title": "テレビ放送",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_broadcasting1",
+      "directory": {
+        "path": "broadcasting1",
+        "testdir": "test",
+        "submit": "joisc2012_broadcasting1.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_broadcasting2",
+      "label": "broadcasting2",
+      "title": "テレビ放送",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_broadcasting2",
+      "directory": {
+        "path": "broadcasting2",
+        "testdir": "test",
+        "submit": "joisc2012_broadcasting2.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_broadcasting3",
+      "label": "broadcasting3",
+      "title": "テレビ放送",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_broadcasting3",
+      "directory": {
+        "path": "broadcasting3",
+        "testdir": "test",
+        "submit": "joisc2012_broadcasting3.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_broadcasting4",
+      "label": "broadcasting4",
+      "title": "テレビ放送",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_broadcasting4",
+      "directory": {
+        "path": "broadcasting4",
+        "testdir": "test",
+        "submit": "joisc2012_broadcasting4.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_broadcasting5",
+      "label": "broadcasting5",
+      "title": "テレビ放送",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_broadcasting5",
+      "directory": {
+        "path": "broadcasting5",
+        "testdir": "test",
+        "submit": "joisc2012_broadcasting5.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_constellation",
+      "label": "constellation",
+      "title": "星座",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_constellation",
+      "directory": {
+        "path": "constellation",
+        "testdir": "test",
+        "submit": "joisc2012_constellation.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_rotate",
+      "label": "rotate",
+      "title": "回転",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_rotate",
+      "directory": {
+        "path": "rotate",
+        "testdir": "test",
+        "submit": "joisc2012_rotate.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_fortune_telling",
+      "label": "fortune_telling",
+      "title": "占い",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_fortune_telling",
+      "directory": {
+        "path": "fortune_telling",
+        "testdir": "test",
+        "submit": "joisc2012_fortune_telling.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_kangaroo",
+      "label": "kangaroo",
+      "title": "カンガルー",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_kangaroo",
+      "directory": {
+        "path": "kangaroo",
+        "testdir": "test",
+        "submit": "joisc2012_kangaroo.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_sokoban",
+      "label": "sokoban",
+      "title": "倉庫番",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_sokoban",
+      "directory": {
+        "path": "sokoban",
+        "testdir": "test",
+        "submit": "joisc2012_sokoban.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_chinese",
+      "label": "chinese",
+      "title": "中華料理",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_chinese",
+      "directory": {
+        "path": "chinese",
+        "testdir": "test",
+        "submit": "joisc2012_chinese.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_copypaste",
+      "label": "copypaste",
+      "title": "コピー＆ペースト",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_copypaste",
+      "directory": {
+        "path": "copypaste",
+        "testdir": "test",
+        "submit": "joisc2012_copypaste.cpp"
+      }
+    },
+    {
+      "id": "joisc2012_invitation",
+      "label": "invitation",
+      "title": "招待",
+      "url": "https://atcoder.jp/contests/joisc2012/tasks/joisc2012_invitation",
+      "directory": {
+        "path": "invitation",
+        "testdir": "test",
+        "submit": "joisc2012_invitation.cpp"
+      }
+    }
+  ]
+}
