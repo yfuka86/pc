@@ -61,7 +61,7 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template<typename T> ll digits(T n) { assert(n >= 0); ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
@@ -97,48 +97,33 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// 二次元累積和（一応）
-vvl cumsum2d(vvl &a) {
-  ll H = a.size(), W = a[0].size(); vvl sum(H + 1, vl(W + 1, 0));
-  rep(i, H) rep(j, W) sum[i + 1][j + 1] += sum[i + 1][j] + sum[i][j + 1] + a[i][j] - sum[i][j];
-  return sum;
-}
+vl divisor(ll n) {
+  vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } }
+  sort(all(ret)); return ret; }
+
 
 void solve() {
-  ll n, m; cin >> n >> m;
-  vvl g(n * 3, vl(n * 5, 0));
-  vvl sg = g;
+  ll n; cin >> n;
 
-  rep(i, n) {
-    string s; cin >> s;
-    rep(j, n) {
-      if (s[j] == 'O') {
-        g[i][j]++;
-        g[i + m][j]--;
-        sg[i][j + 2 * m]--;
-        sg[i + m][j]++;
-      }
-    }
-  }
+  vl one = {1, 3, 4, 5, 7, 8};
+  for (auto i: one) if (i == n) { cout << 1 << "\n"; return; }
+  cout << 2 << "\n";
 
-  rep(i, n * 3 - 1) rep(j, n * 5) g[i + 1][j] += g[i][j];
-  rep(i, n * 3 - 1) rep(j, n * 5 - 2) sg[i + 1][j] += sg[i][j + 2];
-  rep(i, n * 3) rep(j, n * 5) g[i][j] += sg[i][j];
-
-  rep(i, n * 3) rep(j, n * 5 - 1) g[i][j + 1] += g[i][j];
-  // coutmatrix(g);
-
-  ll q; cin >> q;
-  rep(i, q) {
-    ll x, y; cin >> x >> y; x--; y--;
-    cout << g[x][y] << "\n";
-  }
+  // vl exp(1000);
+  // rep2(i, 1, 1000) {
+  //   ll t = i;
+  //   while (t) {
+  //     if (t == divisor(t).size()) exp[i] = t;
+  //     t -= divisor(t).size();
+  //   }
+  // }
+  // debug(exp);
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

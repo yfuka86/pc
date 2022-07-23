@@ -61,7 +61,7 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template<typename T> ll digits(T n) { assert(n >= 0); ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
@@ -97,42 +97,64 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// 二次元累積和（一応）
-vvl cumsum2d(vvl &a) {
-  ll H = a.size(), W = a[0].size(); vvl sum(H + 1, vl(W + 1, 0));
-  rep(i, H) rep(j, W) sum[i + 1][j + 1] += sum[i + 1][j] + sum[i][j + 1] + a[i][j] - sum[i][j];
-  return sum;
-}
+const ll mod = 1000000007;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
 void solve() {
-  ll n, m; cin >> n >> m;
-  vvl g(n * 3, vl(n * 5, 0));
-  vvl sg = g;
+  ll k; cin >> k;
+  vl d(k), l(k);
+  rep(i, k) {
+    cin >> d[i] >> l[i];
+  }
 
-  rep(i, n) {
-    string s; cin >> s;
-    rep(j, n) {
-      if (s[j] == 'O') {
-        g[i][j]++;
-        g[i + m][j]--;
-        sg[i][j + 2 * m]--;
-        sg[i + m][j]++;
-      }
+  vvmi dp(k + 1, vmi(7, 0));
+  dp[0][0] = 1;
+
+  rep(i, k) {
+    ll coef = POW(10, l[i] % 6);
+    ll add = 0;
+    if (d[i] % 7) rep(j, l[i] % 6) {
+      add *= 10;
+      add += d[i];
+    }
+    rep(j, 7) {
+      dp[i + 1][j] += dp[i][j];
+      dp[i + 1][(coef * j + add) % 7] += dp[i][j];
     }
   }
+  // debug(dp);
 
-  rep(i, n * 3 - 1) rep(j, n * 5) g[i + 1][j] += g[i][j];
-  rep(i, n * 3 - 1) rep(j, n * 5 - 2) sg[i + 1][j] += sg[i][j + 2];
-  rep(i, n * 3) rep(j, n * 5) g[i][j] += sg[i][j];
-
-  rep(i, n * 3) rep(j, n * 5 - 1) g[i][j + 1] += g[i][j];
-  // coutmatrix(g);
-
-  ll q; cin >> q;
-  rep(i, q) {
-    ll x, y; cin >> x >> y; x--; y--;
-    cout << g[x][y] << "\n";
+  mint ans = 0;
+  rep(i, 7) {
+    ans += dp[k][i] * i;
   }
+  cout << ans << "\n";
 }
 
 signed main() {
