@@ -118,42 +118,6 @@ void solve() {
     sccg.add_edge(a, b);
     G.add_directed_edge(a, b, c);
   }
-  auto scc = sccg.scc();
-  reverse(all(scc));
-
-  vvl dp(n, vl(2, 0));
-  rep(i, n) { dp[i][0] = -LINF; dp[i][1] = LINF; }
-
-  vl cnt(n, 0);
-
-  for (auto vv: scc) {
-    for (auto v: vv) {
-      ll mi = LINF, ma = -LINF;
-      if (G[v].size() == 0) { dp[v][0] = 0; dp[v][1] = 0; }
-      for (auto to: G[v]) {
-        chmin(mi, min(LINF, dp[to][0] + to.cost));
-        chmax(ma, min(LINF, dp[to][1] + to.cost));
-      }
-      // debug(v, mi, ma);
-      chmax(dp[v][0], ma);
-      chmin(dp[v][1], mi);
-    }
-    for (auto v: vv) {
-      ll mi = LINF, ma = -LINF;
-      for (auto to: G[v]) {
-        chmin(mi, min(LINF, dp[to][0] + to.cost));
-        chmax(ma, min(LINF, dp[to][1] + to.cost));
-      }
-      // debug(v, mi, ma);
-      chmin(dp[v][1], mi);
-      if (chmax(dp[v][0], ma)) dp[v][0] = LINF;
-    }
-  }
-
-  // coutmatrix(dp);
-
-  if (dp[V][1] == LINF) cout << "INFINITY" << "\n";
-  else cout << dp[V][1] << "\n";
 
 
 }

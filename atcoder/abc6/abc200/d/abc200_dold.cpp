@@ -36,32 +36,29 @@ void solve() {
   ll N; cin >> N;
   vl a(N); rep(i, N) cin >> a[i];
 
-  vvl dp(200);
+  vl dp(200, 0);
 
-  rep(i, N) {
-    if (dp[0].size() > 0) {
-      cout << "Yes" << "\n";
-      dp[0].pb(i);
-      cout << dp[0].size() << " "; coutarray(dp[0], 1);
-      cout << 1 << " " << i + 1 << "\n";
-      return;
+  rep(S, 1 << min<ll>(N, 8)) {
+    if (S == 0) continue;
+    ll tmp = 0;
+    rep(i, 8) {
+      if (S & 1 << i) tmp += a[i];
     }
-    rep(j, 200) {
-      // 余りが0でない空配列は存在しない
-      if (j != 0 && dp[j].size() == 0) continue;
-      vl t = dp[j];
-      // 重複末尾追加しない
-      if (t.size() > 0 && t.back() == i) continue;
-      t.pb(i);
-      ll next = (j + a[i]) % 200;
-      if (dp[next].size() > 0) {
-        cout << "Yes" << "\n";
-        cout << t.size() << " "; coutarray(t, 1);
-        cout << dp[next].size() << " "; coutarray(dp[next], 1);
-        return;
-      } else {
-        dp[next] = t;
+    if (dp[tmp % 200]) {
+      cout << "Yes" << "\n";
+      cout << __builtin_popcount(dp[tmp % 200]) << " ";
+      rep(i, 8) {
+        if (dp[tmp % 200] & 1 << i) cout << i + 1 << " ";
       }
+      cout << "\n";
+      cout << __builtin_popcount(S) << " ";
+      rep(i, 8) {
+        if (S & 1 << i) cout << i + 1 << " ";
+      }
+      cout << "\n";
+      return;
+    } else {
+      dp[tmp % 200] = S;
     }
   }
 

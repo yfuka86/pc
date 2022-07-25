@@ -21,7 +21,7 @@ struct HeavyLightDecomposition {
     }
   }
   void dfs_hld(int cur) {
-    down[cur] = id++;
+    down[cur] = id++; drev[down[cur]] = cur;
     for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
     up[cur] = id;
   }
@@ -40,8 +40,8 @@ struct HeavyLightDecomposition {
     return res;
   }
  public:
-  G& g; int id; vector<int> size, depth, down, up, nxt, par;
-  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
+  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
+  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
   void build(int root) { dfs_sz(root); dfs_hld(root); }
   pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
   template <typename F>
@@ -61,5 +61,6 @@ struct HeavyLightDecomposition {
   template <typename F>
   void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
   int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
+  int la(int a, int d) { assert(depth[a] >= d); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
   int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
