@@ -1,3 +1,4 @@
+
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
 #define rep(i,n) for(ll i=0;i<(ll)(n);i++)
@@ -78,56 +79,92 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+ll inv_num(vl& v) {
+  BIT<int> bs(v.size()); ll ans = 0;
+  rep(i, v.size()) { ans += i - bs.sum(v[i]); bs.add(v[i], 1); } return ans; }
+// ----------------------------------------------------------------------
+
+ll solve(ll n, ll k, vl a) {
+  ll ans = -1; return ans;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+ll naive(ll n, ll k, vl a) {
+  vl t = a; sort(all(t));
+  ll cnt = 0;
+  debug(inv_num(a));
+
+  ll loop = 0;
+  while (a != t) {
+    loop++;
+    BIT<ll> bt(n);
+    priority_queue<LP> inv;
+
+    ll cur = 0;
+    rep(i, k) { cur += i - bt.sum(a[i]); bt.add(a[i], 1); }
+    rep2(i, k, n) {
+      inv.push({cur, i - k});
+      cur -= bt.sum(a[i - k]);
+      bt.add(a[i - k], -1);
+      cur += k - 1 - bt.sum(a[i]);
+      bt.add(a[i], 1);
+    }
+    inv.push({cur, n - k});
+
+    BIT<ll> rngbt(n);
+    while(!inv.empty()) {
+      auto [cur, idx] = inv.top(); inv.pop();
+      // debug(cur, idx);
+      if (cur > 0 && rngbt.sum(idx, idx + k) == 0) {
+        sort(a.begin() + idx, a.begin() + idx + k);
+        // debug(idx, a);
+        cnt++;
+        rngbt.add(idx, 1);
+        rngbt.add(idx + k - 1, 1);
+      }
+    }
+  }
+  debug(loop);
+  return cnt;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = 500;
+    ll k = 5;
+    vl a = rg.vecperm(n);
+    auto so = solve(n, k, a); auto na = naive(n, k, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
       debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
-#include <atcoder/scc>
-using namespace atcoder;
 
 void solve() {
-  ll n, m, V; cin >> n >> m >> V; V--;
-  scc_graph sccg(n);
-  Graph<ll> G(n);
-  rep(i, m) {
-    ll a, b, c; cin >> a >> b >> c; a--; b--;
-    sccg.add_edge(a, b);
-    G.add_directed_edge(a, b, c);
-  }
-
-
-
-
+  ll n; cin >> n;
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
   int t = 1; //cin >> t;
-  while (t--) solve();
-  // while (t--) compare();
+  // while (t--) solve();
+  while (t--) compare();
 }
