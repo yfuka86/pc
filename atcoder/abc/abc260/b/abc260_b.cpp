@@ -61,7 +61,7 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template<typename T> ll digits(T n) { assert(n >= 0); ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
@@ -102,27 +102,25 @@ void solve() {
   vlin(a, n, 0);
   vlin(b, n, 0);
 
-  vlt st(n);
-  rep(i, n) st[i] = {a[i], -i, b[i]};
+  set<ll> S;
+
+  vlp st(n);
+  rep(i, n) st[i] = {a[i], -i};
   sort(rall(st));
+  rep(i, x) S.insert(-st[i].se);
 
-  set<ll> passed;
+  vlp st2;
+  rep(i, n) if (S.find(i) == S.end()) st2.pb({b[i], -i});
+  sort(rall(st2));
+  rep(i, y) S.insert(-st2[i].se);
 
-  rep(i, x) passed.insert(-get<1>(st[i]));
+  vlp st3;
+  rep(i, n) if (S.find(i) == S.end()) st3.pb({a[i] + b[i], -i});
+  sort(rall(st3));
+  rep(i, z) S.insert(-st3[i].se);
 
-  vlt rem;
-  rep2(i, x, n) rem.pb({get<2>(st[i]), get<1>(st[i]), get<0>(st[i])});
-  sort(rall(rem));
-
-  vlp rem2;
-  rep(i, y) passed.insert(-get<1>(rem[i]));
-  rep2(i, y, rem.size()) rem2.pb({get<0>(rem[i]) + get<2>(rem[i]), get<1>(rem[i])});
-  sort(rall(rem2));
-
-  rep(i, z) passed.insert(-get<1>(rem2[i]));
-
-  for (auto i: passed) {
-    cout << i + 1 << "\n";
+  for (auto s: S) {
+    cout << s + 1 << "\n";
   }
 }
 

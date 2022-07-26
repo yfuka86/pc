@@ -102,11 +102,47 @@ ll inv_num(vl& v) {
   rep(i, v.size()) { ans += i - bs.sum(v[i]); bs.add(v[i], 1); } return ans; }
 // ----------------------------------------------------------------------
 
-ll solve(ll n, ll k, vl a) {
-  ll ans = -1; return ans;
-}
+// ll solve(ll n, ll k, vl a) {
+//   vl t = a; sort(all(t));
+//   ll cnt = 0;
+//   debug(inv_num(a));
 
-ll naive(ll n, ll k, vl a) {
+//   ll loop = 0;
+//   while (a != t) {
+//     loop++;
+//     BIT<ll> bt(n);
+//     priority_queue<LP> inv;
+
+//     ll cur = 0;
+//     rep(i, k) { cur += i - bt.sum(a[i]); bt.add(a[i], 1); }
+//     rep2(i, k, n) {
+//       inv.push({cur, i - k});
+//       cur -= bt.sum(a[i - k]);
+//       bt.add(a[i - k], -1);
+//       cur += k - 1 - bt.sum(a[i]);
+//       bt.add(a[i], 1);
+//     }
+//     inv.push({cur, n - k});
+
+//     BIT<ll> rngbt(n);
+//     while(!inv.empty()) {
+//       auto [cur, idx] = inv.top(); inv.pop();
+//       // debug(cur, idx);
+//       if (cur > 0 && rngbt.sum(idx, idx + k) == 0) {
+//         sort(a.begin() + idx, a.begin() + idx + k);
+//         // debug(idx, a);
+//         cnt++;
+//         rngbt.add(idx, 1);
+//         rngbt.add(idx + k - 1, 1);
+//       }
+//     }
+//     debug(a);
+//   }
+//   debug(loop);
+//   return cnt;
+// }
+
+ll solve(ll n, ll k, vl a) {
   vl t = a; sort(all(t));
   ll cnt = 0;
   debug(inv_num(a));
@@ -114,41 +150,69 @@ ll naive(ll n, ll k, vl a) {
   ll loop = 0;
   while (a != t) {
     loop++;
-    BIT<ll> bt(n);
-    priority_queue<LP> inv;
+    vl idx(n), diff(n);
+    rep(i, n) idx[a[i]] = i;
+    rep(i, n) diff[i] = i - a[i];
+    debug(diff);
 
-    ll cur = 0;
-    rep(i, k) { cur += i - bt.sum(a[i]); bt.add(a[i], 1); }
-    rep2(i, k, n) {
-      inv.push({cur, i - k});
-      cur -= bt.sum(a[i - k]);
-      bt.add(a[i - k], -1);
-      cur += k - 1 - bt.sum(a[i]);
-      bt.add(a[i], 1);
+    priority_queue<LP> inv;
+    ll sum = 0;
+    set<ll> S;
+    rep(i, n) {
+      sum += abs(a[i] - idx[a[i]]);
+      S.insert(a[i]);
+      if (i >= k) { sum -= abs(a[i - k] - idx[a[i - k]]); S.erase(a[i - k]); }
+      // 集計
+      if (i >= k - 1) {
+        ll cur = i - k + 1, nsum = 0;
+        for (auto s: S) {
+          nsum += abs(cur - s);
+          cur++;
+        }
+        inv.push({sum - nsum, i - k + 1});
+      }
     }
-    inv.push({cur, n - k});
 
     BIT<ll> rngbt(n);
     while(!inv.empty()) {
       auto [cur, idx] = inv.top(); inv.pop();
-      // debug(cur, idx);
       if (cur > 0 && rngbt.sum(idx, idx + k) == 0) {
         sort(a.begin() + idx, a.begin() + idx + k);
-        // debug(idx, a);
         cnt++;
         rngbt.add(idx, 1);
         rngbt.add(idx + k - 1, 1);
       }
     }
+    debug(a);
   }
+
   debug(loop);
   return cnt;
 }
 
+ll naive(ll n, ll k, vl a) {
+  vl sorted = a;
+  sort(all(sorted));
+  map<vl, ll> mp;
+  mp[sorted] = 0;
+
+  vl t = sorted;
+  do {
+    rep(i, n - k + 1) {
+      vl tt = t;
+      sort(tt.begin() + i, tt.begin() + i + k);
+      if (tt >= t) continue;
+      if (mp.find(t) == mp.end()) mp[t] = mp[tt] + 1;
+      else chmin(mp[t], mp[tt] + 1);
+    }
+  } while (next_permutation(all(t)));
+  return mp[a];
+}
+
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 500;
-    ll k = 5;
+    ll n = 7;
+    ll k = 4;
     vl a = rg.vecperm(n);
     auto so = solve(n, k, a); auto na = naive(n, k, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";

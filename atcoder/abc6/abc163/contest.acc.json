@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc163",
+    "title": "AtCoder Beginner Contest 163",
+    "url": "https://atcoder.jp/contests/abc163"
+  },
+  "tasks": [
+    {
+      "id": "abc163_a",
+      "label": "A",
+      "title": "Circle Pond",
+      "url": "https://atcoder.jp/contests/abc163/tasks/abc163_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc163_a.cpp"
+      }
+    },
+    {
+      "id": "abc163_b",
+      "label": "B",
+      "title": "Homework",
+      "url": "https://atcoder.jp/contests/abc163/tasks/abc163_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc163_b.cpp"
+      }
+    },
+    {
+      "id": "abc163_c",
+      "label": "C",
+      "title": "management",
+      "url": "https://atcoder.jp/contests/abc163/tasks/abc163_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc163_c.cpp"
+      }
+    },
+    {
+      "id": "abc163_d",
+      "label": "D",
+      "title": "Sum of Large Numbers",
+      "url": "https://atcoder.jp/contests/abc163/tasks/abc163_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc163_d.cpp"
+      }
+    },
+    {
+      "id": "abc163_e",
+      "label": "E",
+      "title": "Active Infants",
+      "url": "https://atcoder.jp/contests/abc163/tasks/abc163_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc163_e.cpp"
+      }
+    },
+    {
+      "id": "abc163_f",
+      "label": "F",
+      "title": "path pass i",
+      "url": "https://atcoder.jp/contests/abc163/tasks/abc163_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc163_f.cpp"
+      }
+    }
+  ]
+}
