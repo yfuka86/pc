@@ -1,0 +1,130 @@
+{
+  "contest": {
+    "id": "iroha2019-day2",
+    "title": "いろはちゃんコンテスト Day2",
+    "url": "https://atcoder.jp/contests/iroha2019-day2"
+  },
+  "tasks": [
+    {
+      "id": "iroha2019_day2_a",
+      "label": "A",
+      "title": "わたのはら",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "iroha2019_day2_a.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_b",
+      "label": "B",
+      "title": "河川敷の変態仮面",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "iroha2019_day2_b.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_c",
+      "label": "C",
+      "title": "陽気な妖姫",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "iroha2019_day2_c.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_d",
+      "label": "D",
+      "title": "楽しすぎる家庭菜園",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "iroha2019_day2_d.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_e",
+      "label": "E",
+      "title": "連呼",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "iroha2019_day2_e.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_f",
+      "label": "F",
+      "title": "総入れ替え",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "iroha2019_day2_f.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_g",
+      "label": "G",
+      "title": "通学路",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "iroha2019_day2_g.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_h",
+      "label": "H",
+      "title": "根室の巫女",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "iroha2019_day2_h.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_i",
+      "label": "I",
+      "title": "南極",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "iroha2019_day2_i.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_j",
+      "label": "J",
+      "title": "ライ麦畑で待ちながら",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "iroha2019_day2_j.cpp"
+      }
+    },
+    {
+      "id": "iroha2019_day2_k",
+      "label": "K",
+      "title": "虫取り",
+      "url": "https://atcoder.jp/contests/iroha2019-day2/tasks/iroha2019_day2_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "iroha2019_day2_k.cpp"
+      }
+    }
+  ]
+}

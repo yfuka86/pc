@@ -16,7 +16,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
@@ -97,61 +97,31 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-//------------------------------------------------------------------------------
-template <class S, S (*op)(S, S), S (*e)()> struct segtree {
-  public:
-  segtree() : segtree(0) {}
-  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
-  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
-  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
-  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
-  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
-  S all_prod() const { return d[1]; }
-  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
-  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
-    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
-  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
-  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
-    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
-  private:
-  int _n, size, log; std::vector<S> d;
-  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
-};
-//------------------------------------------------------------------------------
-
-using S = ll;
-S maop(S l, S r) { return max(l, r); }
-S mae() { return -LINF; }
-S miop(S l, S r) { return min(l, r); }
-S mie() { return LINF; }
-
 void solve() {
   ll n, x, y; cin >> n >> x >> y;
   vlin(a, n, 0);
-  segtree<S, maop, mae> maseg(a);
-  segtree<S, miop, mie> miseg(a);
 
   ll ans = 0;
+
   ll cur = 0;
-  ll mi = LINF, ma = -LINF;
-  rep(i, n) {
-    chmin(mi, a[i]); chmax(ma, a[i]);
-    if (ma == x && mi == y) {
+  ll l = 0;
+  ll micnt = 0;
+  ll macnt = 0;
+  rep(r, n) {
+    if (a[r] < y || x < a[r]) { cur = r + 1; l = r + 1; micnt = 0; macnt = 0; continue; }
 
-      ll i1 = binary_search([&](ll mid) {
-        return maseg.prod(mid, i + 1) == x;
-      }, cur, i + 1);
-      ll i2 = binary_search([&](ll mid) {
-        return miseg.prod(mid, i + 1) == y;
-      }, cur, i + 1);
-      // debug(i, i1, i2);
-      ans += min(i1, i2) - cur + 1;
+    if (a[r] == y) micnt++;
+    if (a[r] == x) macnt++;
+    while (micnt && macnt) {
+      if (a[l] == x && macnt == 1) break;
+      if (a[l] == y && micnt == 1) break;
+
+      if (a[l] == x) macnt--;
+      if (a[l] == y) micnt--;
+      l++;
     }
-    if (ma > x || mi < y) {
-      cur = i + 1; mi = LINF; ma = -LINF;
-    }
+    if (micnt && macnt) ans += l - cur + 1;
   }
-
   cout << ans << "\n";
 }
 
