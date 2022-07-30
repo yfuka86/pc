@@ -129,15 +129,26 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 void solve() {
   ll l, r; cin >> l >> r;
 
-  ll cnt = 0;
-  rep2(i, l, r + 1) {
-    vl t;
-    rep2(j, i + 1, r + 1) {
-      if (j % i == (j ^ i)) { t.pb(j); cnt++; }
+  // ll cnt = 0;
+  // rep2(i, l, r + 1) {
+  //   vl t;
+  //   rep2(j, i + 1, r + 1) {
+  //     if (j % i == (j ^ i)) { t.pb(j); cnt++; }
+  //   }
+  //   debug(i, t);
+  // }
+  // cout << cnt << "\n";
+
+  ll D = 61;
+  rep2(n, 1, D) {
+    v3mi dp(n + 1, vvmi(3, vmi(2)));
+
+    ll ma = min((1 << n) - 1, R);
+    ll mi = max(1 << n - 1, L);
+    rep(i, n) {
+
     }
-    debug(i, t);
   }
-  cout << cnt << "\n";
 }
 
 signed main() {

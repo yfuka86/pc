@@ -3,10 +3,6 @@ using ll = long long;
 
 // 区間min & 区間max & 区間sum & 区間等差更新
 namespace arithmetic {
-
-const ll LINF = ll(4e18);
-const int INF = int(1e9) + 10;
-
 struct S {
   ll min, max, sum;
   int l, r;
@@ -31,8 +27,7 @@ S mapping(F f, S s) {
 F composition(F f, F g) { return f.a == LINF ? g : f; }
 F id() { return {LINF, LINF}; }
 
-using lazy_segtype =
-    atcoder::lazy_segtree<S, op, e, F, mapping, composition, id>;
+using lazy_segtype = lazy_segtree<S, op, e, F, mapping, composition, id>;
 
 struct lazy_segtree_arithmetic : lazy_segtype {
   using lazy_segtype::lazy_segtype;
