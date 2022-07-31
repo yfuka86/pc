@@ -106,22 +106,55 @@ template< typename T = ll > struct Graph {
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-#include <atcoder/scc>
-using namespace atcoder;
-
 void solve() {
   ll n, m, V; cin >> n >> m >> V; V--;
-  scc_graph sccg(n);
-  Graph<ll> G(n);
+  Graph<ll> G(n), rG(n);
+  vl deg(n, 0);
   rep(i, m) {
     ll a, b, c; cin >> a >> b >> c; a--; b--;
-    sccg.add_edge(a, b);
     G.add_directed_edge(a, b, c);
+    rG.add_directed_edge(b, a, c);
+    deg[a]++;
   }
 
 
+  vvl dp(n, vl(2, LINF));
+  rep(i, n) dp[i][1] = -LINF;
+  vb used(m);
 
+  priority_queue<LT, vlt, greater<LT>> que;
+  rep(i, n) if (!deg[i]) {
+    dp[i][0] = 0; dp[i][1] = 0;
+    que.push({0, i, 0});
+    que.push({-1, i, 1});
+  }
 
+  while(!que.empty()) {
+    auto [c, v, t] = que.top(); que.pop();
+    if (t == 0 && dp[v][0] < c) continue;
+
+    if (t == 1) {
+      for (auto to: G[v]) {
+        chmax(dp[v][1], dp[to][0] + to.cost);
+      }
+      for (auto from: rG[v]) {
+        ll nc = dp[v][1] + from.cost;
+        if (chmin(dp[from][0], nc)) que.push({nc, from, 0});
+      }
+    } else {
+      for (auto from: rG[v]) {
+        if (!used[from.idx]) {
+          used[from.idx] = 1;
+          deg[from]--;
+          if (deg[from] == 0) que.push({-1, from, 1});
+        }
+      }
+    }
+  }
+  debug(dp);
+
+  if (dp[V][0] == LINF) { cout << "INFINITY" << "\n"; }
+  else cout << dp[V][0] << "\n";
 }
 
 signed main() {

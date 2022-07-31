@@ -16,7 +16,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
@@ -127,38 +127,34 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 //------------------------------------------------------------------------------
 
 void solve() {
-  ll l, r; cin >> l >> r;
+  ll n; cin >> n;
 
-  // ll cnt = 0;
-  // rep2(i, l, r + 1) {
-  //   vl t;
-  //   rep2(j, i + 1, r + 1) {
-  //     if (j % i == (j ^ i)) { t.pb(j); cnt++; }
+  // ll n = 6;
+  // vl p(n); iota(all(p), 1);
+  // map<ll, ll> freq;
+
+  // do {
+  //   ll ma = 0;
+  //   rep(S, 1 << n) {
+  //     if (__builtin_popcount(S) != n / 2) continue;
+  //     ll sum = 0;
+  //     vl t1, t2;
+  //     rep(j, n) {
+  //       if (S & 1 << j) t1.pb(p[j]); else t2.pb(p[j]);
+  //     }
+  //     rep(i, n / 2) sum += t1[i] * t2[i];
+  //     chmax(ma, sum);
   //   }
-  //   debug(i, t);
-  // }
-  // cout << cnt << "\n";
+  //   freq[ma]++;
 
-  ll D = 61;
-  vmi tmp(D, 0);
-  rep2(n, 1, D) {
-    ll ma = min((1ll << n) - 1, r);
-    ll mi = max(1ll << n - 1, l);
-    if (mi > ma) continue;
+  // } while (next_permutation(all(p)));
+  // debug(freq);
 
-    v3mi dp(n + 1, vvmi(2, vmi(2)));
-    dp[0][1][1] = 1;
-
-    rep(i, n) {
-    }
-
-    rep(i, 2) rep(j, 2) tmp[n] += dp[n][i][j];
-  }
-
-  debug(tmp);
-  mint ans = accumulate(all(tmp), mint(0));
-  cout << ans << "\n";
+  init_f();
+  // cout << mint(2).pow(n) * fact[2 * n] / fact[n + 1] << "\n";
+  cout << mint(2).pow(n) * fact[n] * (comb(2 * n, n) - comb(2 * n, n - 1)) << "\n";
 }
+
 
 signed main() {
   ios::sync_with_stdio(false);

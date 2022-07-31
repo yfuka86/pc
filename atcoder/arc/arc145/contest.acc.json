@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc145",
+    "title": "AtCoder Regular Contest 145",
+    "url": "https://atcoder.jp/contests/arc145"
+  },
+  "tasks": [
+    {
+      "id": "arc145_a",
+      "label": "A",
+      "title": "AB Palindrome",
+      "url": "https://atcoder.jp/contests/arc145/tasks/arc145_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc145_a.cpp"
+      }
+    },
+    {
+      "id": "arc145_b",
+      "label": "B",
+      "title": "AB Game",
+      "url": "https://atcoder.jp/contests/arc145/tasks/arc145_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc145_b.cpp"
+      }
+    },
+    {
+      "id": "arc145_c",
+      "label": "C",
+      "title": "Split and Maximize",
+      "url": "https://atcoder.jp/contests/arc145/tasks/arc145_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc145_c.cpp"
+      }
+    },
+    {
+      "id": "arc145_d",
+      "label": "D",
+      "title": "Non Arithmetic Progression Set",
+      "url": "https://atcoder.jp/contests/arc145/tasks/arc145_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc145_d.cpp"
+      }
+    },
+    {
+      "id": "arc145_e",
+      "label": "E",
+      "title": "Adjacent XOR",
+      "url": "https://atcoder.jp/contests/arc145/tasks/arc145_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc145_e.cpp"
+      }
+    },
+    {
+      "id": "arc145_f",
+      "label": "F",
+      "title": "Modulo Sum of Increasing Sequences",
+      "url": "https://atcoder.jp/contests/arc145/tasks/arc145_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc145_f.cpp"
+      }
+    }
+  ]
+}
