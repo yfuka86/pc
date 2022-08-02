@@ -163,7 +163,7 @@ void solve() {
       vl t; t.pb(i);
       ll tk = k - (n - idx);
       while (1) {
-        if (idx == n- 1) break;
+        if (idx == n - 1) break;
         ll mi = seg.prod(idx + 1, n);
         if (mi == LINF) break;
         t.pb(mi);

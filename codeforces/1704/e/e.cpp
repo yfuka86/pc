@@ -16,7 +16,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
@@ -78,7 +78,26 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-const ll mod = 1000000007;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
+}
+
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
+}
+
+void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
+  while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
+    if (!check || na != so) { cout << c << "times tried" << "\n";
+      debug(n, a); debug(so); debug(na);
+    if (check || (!check && c > loop)) break; }
+  }
+}
+
+const ll mod = 998244353;
 //------------------------------------------------------------------------------
 template< int mod > struct ModInt {
   int x; ModInt() : x(0) {}
@@ -107,103 +126,105 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-mint solve(ll l, ll r) {
-  ll D = 62;
-  vmi tmp(D, 0);
-  rep2(n, 1, D) {
-    ll ma = min((1ll << n) - 1, r);
-    ll mi = max(1ll << n - 1, l);
-    if (mi > ma) continue;
-
-    // debug(ma, mi);
-
-    v3mi dp(n, vvmi(2, vmi(2)));
-    dp[0][1][1] = 1;
-
-    rep(i, n - 1) {
-      ll rbit = ma & (1ll << n - 2 - i), lbit = mi & (1ll << n - 2 - i);
-      rep(mif, 2) rep(maf, 2) {
-        if (mif && maf) {
-          if (rbit < lbit) continue;
-          if (rbit > lbit) {
-            dp[i + 1][1][1] += dp[i][mif][maf];
-            dp[i + 1][0][1] += dp[i][mif][maf];
-            dp[i + 1][1][0] += dp[i][mif][maf];
-          } else dp[i + 1][1][1] += dp[i][mif][maf];
-        }
-        if (mif && !maf) {
-          dp[i + 1][1][0] += dp[i][mif][maf];
-          if (!lbit) {
-            dp[i + 1][1][0] += dp[i][mif][maf];
-            dp[i + 1][0][0] += dp[i][mif][maf];
-          }
-        }
-        if (!mif && maf) {
-          dp[i + 1][0][1] += dp[i][mif][maf];
-          if (rbit) {
-            dp[i + 1][0][1] += dp[i][mif][maf];
-            dp[i + 1][0][0] += dp[i][mif][maf];
-          }
-        }
-        if (!mif && !maf) {
-          dp[i + 1][0][0] += dp[i][mif][maf] * 3;
-        }
-      }
-    }
-    // debug(dp);
-
-    rep(i, 2) rep(j, 2) tmp[n - 1] += dp[n - 1][i][j];
-  }
-
-  // debug(tmp);
-  mint ans = accumulate(all(tmp), mint(0));
-  return ans;
-}
-
-mint naive(ll l, ll r) {
-  ll ans = 0;
-  rep2(x, l, r + 1) {
-    rep2(y, x, r + 1) {
-      if (y % x == (x ^ y)) {
-        //debug(x, y);
-        ans++;
-      }
-    }
-  }
-  return mint(ans);
-}
-
-void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
-  while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll l = rg.l(1, 100), r = rg.l(l, 100);
-    auto so = solve(l, r); auto na = naive(l, r);
-    if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(l, r); debug(so); debug(na);
-    if (check || (!check && c > loop)) break; }
-  }
-}
+vl topo_sort(Graph<ll> G) {
+  ll n = G.size(); vl deg(n), ret; priority_queue<ll, vl, greater<ll>> que;
+  rep(i, n) for (Edge e: G[i]) deg[e.to]++; rep(i, n) if (deg[i] == 0) que.push(i);
+  while (!que.empty()) { ll v = que.top(); que.pop(); ret.pb(v);
+    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); } G[v].clear(); }
+  if (accumulate(all(deg), 0LL) != 0) return {}; else return ret; }
 
 void solve() {
-  ll l, r; cin >> l >> r;
+  ll n, m; cin >> n >> m;
+  vlin(a, n, 0);
 
-  // ll cnt = 0;
-  // rep2(i, l, r + 1) {
-  //   vl t;
-  //   rep2(j, i + 1, r + 1) {
-  //     if (j % i == (j ^ i)) { t.pb(j); cnt++; }
-  //   }
-  //   debug(i, t);
-  // }
-  // cout << cnt << "\n";
+  Graph G(n), revG(n);
+  rep(i, m) {
+    ll x, y; cin >> x >> y; x--; y--;
+    G.add_directed_edge(x, y);
+    revG.add_directed_edge(y, x);
+  }
+  vl vs = topo_sort(G);
 
-  cout << solve(l, r) << "\n";
+  vvl dp(n, vl(n + 1, 0));
+  vvb exist(n, vb(n + 1));
+  vvmi mdp(n, vmi(n + 1, 0));
+  rep(i, n) {
+    if (a[i] < 10000) {
+      dp[i][0] = a[i];
+    } else {
+      exist[i][0] = 1;
+      mdp[i][0] = a[i];
+    }
+  }
+
+  rep(i, n) {
+    ll v = vs[i];
+    for (auto from: revG[v]) {
+      rep(j, n) {
+        if (exist[from][j] && exist[v][j + 1]) {
+          mdp[v][j + 1] += mdp[from][j];
+        } else if (exist[from][j] && !exist[v][j + 1]) {
+          exist[v][j + 1] = 1;
+          mdp[v][j + 1] += mdp[from][j] + dp[v][j + 1];
+          dp[v][j + 1] = 0;
+        } else if (!exist[from][j] && exist[v][j + 1]) {
+          mdp[v][j + 1] += dp[from][j];
+        } else {
+          dp[v][j + 1] += dp[from][j];
+          if (10000 <= dp[v][j + 1]) {
+            exist[v][j + 1] = 1;
+            mdp[v][j + 1] = dp[v][j + 1];
+            dp[v][j + 1] = 0;
+          }
+        }
+      }
+    }
+  }
+
+  ll t = vs.back();
+  ll cur = 0;
+  bool big = false;
+  mint ans = 0;
+  rep(i, n) {
+    if (dp[t][i] == 0 && !exist[t][i]) continue;
+    if (big) {
+      ans += mdp[t][i];
+      ans += dp[t][i];
+    } else {
+      if (exist[t][i]) {
+        big = true;
+        if (cur < i) cur = i;
+        ans += mdp[t][i];
+      } else {
+        if (dp[t][i] == 0) continue;
+        if (cur > i) {
+          cur += dp[t][i];
+        } else {
+          cur = i + dp[t][i];
+        }
+      }
+    }
+  }
+  // debug(dp);
+  // debug(mdp);
+  cout << ans + cur << "\n";
+
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

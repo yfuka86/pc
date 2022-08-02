@@ -16,7 +16,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
@@ -78,132 +78,56 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-const ll mod = 1000000007;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
-//------------------------------------------------------------------------------
-const int max_n = 1 << 20;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
-
-
-mint solve(ll l, ll r) {
-  ll D = 62;
-  vmi tmp(D, 0);
-  rep2(n, 1, D) {
-    ll ma = min((1ll << n) - 1, r);
-    ll mi = max(1ll << n - 1, l);
-    if (mi > ma) continue;
-
-    // debug(ma, mi);
-
-    v3mi dp(n, vvmi(2, vmi(2)));
-    dp[0][1][1] = 1;
-
-    rep(i, n - 1) {
-      ll rbit = ma & (1ll << n - 2 - i), lbit = mi & (1ll << n - 2 - i);
-      rep(mif, 2) rep(maf, 2) {
-        if (mif && maf) {
-          if (rbit < lbit) continue;
-          if (rbit > lbit) {
-            dp[i + 1][1][1] += dp[i][mif][maf];
-            dp[i + 1][0][1] += dp[i][mif][maf];
-            dp[i + 1][1][0] += dp[i][mif][maf];
-          } else dp[i + 1][1][1] += dp[i][mif][maf];
-        }
-        if (mif && !maf) {
-          dp[i + 1][1][0] += dp[i][mif][maf];
-          if (!lbit) {
-            dp[i + 1][1][0] += dp[i][mif][maf];
-            dp[i + 1][0][0] += dp[i][mif][maf];
-          }
-        }
-        if (!mif && maf) {
-          dp[i + 1][0][1] += dp[i][mif][maf];
-          if (rbit) {
-            dp[i + 1][0][1] += dp[i][mif][maf];
-            dp[i + 1][0][0] += dp[i][mif][maf];
-          }
-        }
-        if (!mif && !maf) {
-          dp[i + 1][0][0] += dp[i][mif][maf] * 3;
-        }
-      }
-    }
-    // debug(dp);
-
-    rep(i, 2) rep(j, 2) tmp[n - 1] += dp[n - 1][i][j];
-  }
-
-  // debug(tmp);
-  mint ans = accumulate(all(tmp), mint(0));
-  return ans;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-mint naive(ll l, ll r) {
-  ll ans = 0;
-  rep2(x, l, r + 1) {
-    rep2(y, x, r + 1) {
-      if (y % x == (x ^ y)) {
-        //debug(x, y);
-        ans++;
-      }
-    }
-  }
-  return mint(ans);
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll l = rg.l(1, 100), r = rg.l(l, 100);
-    auto so = solve(l, r); auto na = naive(l, r);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(l, r); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  ll l, r; cin >> l >> r;
+  ll n, m; cin >> n >> m;
+  vlin(a, m, 1);
+  sort(all(a));
 
-  // ll cnt = 0;
-  // rep2(i, l, r + 1) {
-  //   vl t;
-  //   rep2(j, i + 1, r + 1) {
-  //     if (j % i == (j ^ i)) { t.pb(j); cnt++; }
-  //   }
-  //   debug(i, t);
-  // }
-  // cout << cnt << "\n";
 
-  cout << solve(l, r) << "\n";
+  vl rng;
+  rep(i, m) {
+    if (i == m - 1) rng.pb(a[0] + n - a[i] - 1);
+    else rng.pb(a[i + 1] - a[i] - 1);
+  }
+
+  ll ans = 0;
+  ll cur = 0;
+  sort(rall(rng));
+
+  rep(i, rng.size()) {
+    ll t = rng[i] - cur * 4;
+    if (t <= 0) break;
+    if (t > 1) ans += t - 1;
+    else ans++;
+    cur++;
+  }
+
+  cout << n - ans << "\n";
 }
 
 signed main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

@@ -104,7 +104,6 @@ vmi subseq_num(vector<ll> &v, ll m = mod) {
   return dp;
 }
 
-
 mint solve(string s) {
   ll n = s.size();
 
