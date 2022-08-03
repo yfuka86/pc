@@ -83,7 +83,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  string s; cin >> s;
+  if (s[0] != 'A') { cout << "WA" << "\n"; return; }
+
+  bool c = false;
+  ll upperc = 0;
+  rep2(i, 2, s.size() - 1) {
+    if (isupper(s[i])) upperc++;
+    if (s[i] == 'C') c = true;
+  }
+  if (isupper(s[1]) || isupper(s.back())) { cout << "WA" << "\n"; return; }
+  if (c && upperc == 1) cout << "AC" << "\n"; else cout << "WA" << "\n";
 }
 
 signed main() {

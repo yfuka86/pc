@@ -136,29 +136,48 @@ void enum_check(ll N, ll from, ll to, function<bool(vl&)> check) { // size, [fro
   }
 }
 
-
-void solve() {
-  ll n, k; cin >> n >> k;
-
+void exp() {
   ll cnt = 0;
+  map<vl, ll> freq;
 
-  n = 8, k = 3;
+  ll n = 8, k = 4;
   enum_check(n, 0, k + 1, [&](vl &p) {
     bool valid = true;
     rep(i, n) rep2(j, i + 1, n) {
       if (p[i] + p[j] != p[i & j] + p[i | j]) { valid = false; break; }
     }
-    if (valid) { debug(p); cnt++; }
+    if (valid) {
+      vl t; rep(i, ceil_pow2(n) + 1) t.pb(p[POW(2, i) - 1]);
+      freq[t]++;
+      debug(p);
+      cnt++;
+    }
     return true;
   });
-
-  map<LP, ll> freq;
-  rep(i, k + 1) rep(j, k + 1) {
-    freq[{i, j}]++;
-  }
   debug(freq);
 
+  map<ll, ll> freqinv;
+  for (auto [k, v] :freq) freqinv[v]++;
+  debug(freqinv);
+
   cout << cnt << "\n";
+}
+
+
+void solve() {
+  ll n, k; cin >> n >> k;
+  exp();
+  init_f();
+
+  vmi dp(k + 1, 0);
+  rep(i, k) {
+    // 差がk以内のものを数え上げる (k - i + 1) 個ずつある
+    dp[i + 1] = mint(i + 1).pow(n) - dp[i] * 2;
+  }
+
+  mint ans = 0;
+  rep(i, k) ans += dp[i] * (k - i + 1);
+  cout << ans << "\n";
 }
 
 signed main() {
