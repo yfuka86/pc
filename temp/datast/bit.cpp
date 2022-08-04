@@ -21,51 +21,11 @@ ll inv_num(vl& v) {
   rep(i, v.size()) { ans += i - bs.sum(v[i]); bs.add(v[i], 1); } return ans; }
 // ----------------------------------------------------------------------
 
-template<class t>
-struct BIT{
-	vector<t> buf;
-	int s;
-	BIT(int n=0){init(n);}
-	void init(int n){buf.clear();buf.resize(s=n,0);}
-	void init(const vector<t>&a){
-		s=si(a);
-		buf.resize(s);
-		rep(i,s)buf[i]=a[i];
-		rep(i,s){
-			int j=i+((i+1)&(-i-1));
-			if(j<s)buf[j]+=buf[i];
-		}
-	}
-	void add(int i,t v){
-		for(;i<s;i+=(i+1)&(-i-1))
-			buf[i]+=v;
-	}
-	t get(int i){
-		t res=0;
-		for(;i>=0;i-=(i+1)&(-i-1))
-			res+=buf[i];
-		return res;
-	}
-	t sum(int b,int e){
-		return get(e-1)-get(b-1);
-	}
-	void add_range(int b,int e,t v){
-		add(b,v);
-		add(e,-v);
-	}
-	int kth(int k){
-		int res=0;
-		for(int i=topbit(s);i>=0;i--){
-			int w=res+(1<<i);
-			if(w<=s&&buf[w-1]<=k){
-				k-=buf[w-1];
-				res=w;
-			}
-		}
-		return res;
-	}
-	//yukicoder No.1024
-	int kth_helper(int k,int i){
-		return kth(k+get(i-1));
-	}
+template<typename T = ll>
+struct RangeAdd: BIT<T> {
+  RangeAdd(int _n = 0) : BIT<T>(_n) {}
+  T get(int i) { return this.sum(i); }
+  void range_add(int l, int r, T x) {
+    this->add(l, x); this->add(r, -x);
+  }
 };

@@ -11,6 +11,7 @@
 #define mp make_pair
 #define fi first
 #define se second
+#define getchar() (p1==p2&&(p2=(p1=buf)+fread(buf,1,1<<21,stdin),p1==p2)?EOF:*p1++)
 
 using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
@@ -98,75 +99,69 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n, m; cin >> n >> m;
-  vl x(n), y(n);
+  int n, m; cin >> n >> m;
+  int x[n], y[n];
   rep(i, n) cin >> x[i] >> y[i];
-
-  ll thres = sqrt_ceil(n) * 3 / 2;
-
-  vvl dp(thres + 1);
-  vl dpcnt(thres + 1, 0);
-  set<ll> dplist;
-  rep(i, thres + 1) dp[i] = vl(i, 0);
-
-  vl added(n, -1);
-  vb live(n);
-  vl opcnt(n, 0);
-  vvlt op(m);
-
-  ll cnt = 0;
+  vector<P> q(m);
   rep(i, m) {
-    for (auto [p, idx, ocnt]: op[i]) {
-      // debug(p, idx);
-      if (added[idx] == -1 || opcnt[idx] != ocnt) continue;
-      if (p == 1) {
-        live[idx] = true; cnt++;
-        if (i + y[idx] < m) op[i + y[idx]].pb({-1, idx, ocnt});
-      } else {
-        live[idx] = false; cnt--;
-        if (i + x[idx] < m) op[i + x[idx]].pb({1, idx, ocnt});
+    int t, id; cin >> t >> id; id--;
+    q[i] = {t, id};
+  }
+
+  int thres = sqrt_ceil(m) / 2;
+
+  vi imos(m + 1, 0);
+  {
+    vvl dict(n);
+    rep(i, m) {
+      ll id = q[i].se;
+      if (x[id] + y[id] > thres) dict[q[i].se].pb(i);
+    }
+    rep(i, n) {
+      for (int j = 0; j * 2 + 1 <= dict[i].size(); j++) {
+        int from = dict[i][j * 2], to = INF; if (j * 2 + 1 < dict[i].size()) to = dict[i][j * 2 + 1];
+        int a = x[i], b = y[i], c = a + b;
+        while (from + a < to && from + a < m) {
+          imos[from + a]++;
+          imos[min(m, min(from + c, to))]--;
+          from += c;
+        }
       }
     }
-    op[i].clear();
-    op[i].shrink_to_fit();
+  }
+  rep(i, m) imos[i+1] += imos[i];
 
-    ll t, id; cin >> t >> id; id--;
+  vvi dp(thres + 1, vi(thres + 1, 0));
+  vi added(n, 0);
+  vi sum(m, 0);
+  rep(i, m) {
+    auto [t, id] = q[i];
     ll a = x[id], b = y[id], c = a + b;
-    opcnt[id]++;
     if (t == 1) {
       added[id] = i;
       if (c <= thres) {
-        rep2(j, i + a, i + c) {
-          dp[c][j % c]++;
-        }
-        if (++dpcnt[c] == 1) dplist.insert(c);
-      } else {
-        if (i + a < m) op[i + a].pb({1, id, opcnt[id]});
+        rep2(j, i + a, i + c) dp[c][j % c]++;
       }
     } else {
       if (c <= thres) {
-        rep2(j, added[id] + a, added[id] + c) {
-          dp[c][j % c]--;
-        }
-        if (--dpcnt[c] == 0) dplist.erase(c);
-      } else {
-        if (live[id]) { live[id] = false; cnt--; }
+        rep2(j, added[id] + a, added[id] + c) dp[c][j % c]--;
       }
       added[id] = -1;
     }
-
-    ll sum = 0;
-    // rep2(j, 2, thres + 1) {
-    for (auto j: dplist) {
-      sum += dp[j][i % j];
+    rep2(j, 2, thres + 1) {
+      sum[i] += dp[j][i % j];
     }
-    cout << cnt + sum << "\n";
+  }
+
+  rep(i, m) {
+    cout << sum[i] + imos[i] << "\n";
   }
 }
 
 signed main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  ios::sync_with_stdio(0);
+	cin.tie(0);
+  cout.tie(nullptr); cout << fixed << setprecision(15);
   int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();

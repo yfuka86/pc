@@ -98,7 +98,23 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n, m; cin >> n >> m;
+
+  ll acc = 0, wac = 0;
+  vb ac(n);
+  map<ll, ll> freq;
+  rep(i, m) {
+    ll p; string s; cin >> p >> s; p--;
+    if (s == "WA") {
+      freq[p]++;
+    } else {
+      if (!ac[p]) {
+        ac[p] = true;
+        acc++; wac += freq[p];
+      }
+    }
+  }
+  cout << acc << " " << wac << "\n";
 }
 
 signed main() {

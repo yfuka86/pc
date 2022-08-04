@@ -102,8 +102,7 @@ void solve() {
 }
 
 signed main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
   int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();

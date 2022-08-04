@@ -16,7 +16,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
@@ -129,54 +129,27 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 void solve() {
   ll n, m; cin >> n >> m;
 
-  vmi ans(n, 0);
-  vvmi dp(n + 1, vmi(n + 1, 0));
-  dp[0][0] = 1;
+  // dp[そこまでの和][ソートした差の列を後ろから見た時の0連続数]
+  // n + m用意して後ろからずらしながらdp
+  vvmi dp(n + 1, vmi(n + m, 0));
+  vvmi dps(n + 1, vmi(n + m + 1, 0));
 
-  rep2(i, 1, n + 1) {
-    rep(j, n) {
-      if (j + i > n) break;
-      rep(k, n) {
-        dp[j + i][k + 1] += dp[j][k];
+  dp[0][n] += 1; dps[0][n] += 1;
+  rep2(k, 1, n + 1) {
+    ll offset = n - k, l = offset + 1;
+    rep_r(i, n + 1) {
+
+      for (ll d = i / k; d > 0; d--) {
+        dp[i][offset] += dps[i - d * k][l] - dps[i - d * k][l + m];
       }
+      dps[i][offset] += dps[i][offset + 1] + dp[i][offset];
     }
+    cout << dp[n][offset] << "\n";
   }
-  rep(i, n) {
-    ans[i] = dp[n][i + 1];
-  }
-  debug(dp);
-
-  // sdp[j][k] = j種のものが最低m+1個以上でk占められている通り数
-  // vvmi sdp(n + 1, vmi(n + 1, 0));
-  // sdp[0][0] = 1;
-  // rep2(i, 1, n) {
-  //   ll inc = i * (m + 1);
-  //   if (inc > n) break;
-  //   rep_r(j, n) {
-  //     rep(k, n) {
-  //       if (k + inc > n) break;
-  //       sdp[j + 1][k + inc] += sdp[j][k];
-  //     }
-  //   }
-  // }
-  // debug(sdp);
-
-  // rep(i, n) {
-  //   rep2(j, 1, n) {
-  //     if ((m + 1) * j > i + 1) continue;
-  //     rep(k, n) {
-  //       if (sdp[j][k] == 0) continue;
-  //       ans[i] += dp[n - k][i + 1 - (m + 1) * j] * (j & 1 ? -sdp[j][k] : sdp[j][k]);
-  //     }
-  //   }
-  // }
-
-  coutarray(ans, 0, "\n");
 }
 
 signed main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
   int t = 1; //cin >> t;
   while (t--) solve();
   // while (t--) compare();

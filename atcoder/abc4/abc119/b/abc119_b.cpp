@@ -101,6 +101,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  ld ans = 0;
+  rep(i, n) {
+    ld x; string u; cin >> x >> u;
+    if (u == "JPY") {
+      ans += x;
+    } else {
+      ans += 380000.0 * x;
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
