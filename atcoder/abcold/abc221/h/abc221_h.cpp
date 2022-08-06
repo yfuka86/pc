@@ -137,13 +137,19 @@ void solve() {
   dp[0][n] += 1; dps[0][n] += 1;
   rep2(k, 1, n + 1) {
     ll offset = n - k, l = offset + 1;
-    rep_r(i, n + 1) {
-
-      for (ll d = i / k; d > 0; d--) {
-        dp[i][offset] += dps[i - d * k][l] - dps[i - d * k][l + m];
+    rep(j, k) {
+      for (ll i = j; i + k <= n; i += k) {
+        dp[i + k][offset] += dp[i][offset] + dps[i][l] - dps[i][l + m];
       }
-      dps[i][offset] += dps[i][offset + 1] + dp[i][offset];
     }
+    rep(i, n + 1) dps[i][offset] += dps[i][offset + 1] + dp[i][offset];
+    // 以下通らないやつO(n^2logn)、上のはmodk高速化でO(n^2)になっている
+    // rep_r(i, n + 1) {
+    //   for (ll d = i / k; d > 0; d--) {
+    //     dp[i][offset] += dps[i - d * k][l] - dps[i - d * k][l + m];
+    //   }
+    //   dps[i][offset] += dps[i][offset + 1] + dp[i][offset];
+    // }
     cout << dp[n][offset] << "\n";
   }
 }

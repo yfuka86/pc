@@ -1,5 +1,5 @@
 // https://atcoder.jp/contests/abc223/tasks/abc223_h
-// D次元の基底をとって更新していく
+// 動画解説: D次元の基底をとって更新していく
 template<typename T = ll>
 struct MaxBasis {
   static const int D = 60; using BS = bitset<D>;
@@ -40,3 +40,19 @@ struct MaxBasis {
   }
   void dump() { rep(i, D) debug(b[i], s[i]); debug(w); }
 };
+
+
+// XOR 基底を求める
+//   - O(B (N + logB))   B はビット長
+//   - 掃き出し法と同じように MSB の降順にする（不要なら消す）
+template<class T>
+vector<T> xor_basis(const vector<T>& A) {
+  vector<T> basis;
+  for (T a : A) {
+    for (const T& b : basis) { a = min(a, a ^ b); }
+    if (a) { basis.push_back(a); }
+  }
+  // MSB の降順にソートしておく
+  sort(basis.rbegin(), basis.rend());
+  return basis;
+}

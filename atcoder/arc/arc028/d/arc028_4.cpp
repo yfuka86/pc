@@ -523,7 +523,6 @@ auto mul_simple(FPS &f, mint a, mint b, int n){
 
 // fからa + b * x^nを割る
 auto div_simple(FPS &f, mint a, mint b, int n){
-  int n = f.size()
   for(int i = 0 ; i < (int)f.size(); i++){
     f[i] /= a;
     if (i + n < (int)f.size()) f[i + n] -= f[i] * b;

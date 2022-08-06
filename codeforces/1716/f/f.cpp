@@ -98,14 +98,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n, m; cin >> n >> m;
-  vl u(m), v(m);
-  rep(i, m) cin >> u[i] >> v[i];
+  ll n; cin >> n;
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

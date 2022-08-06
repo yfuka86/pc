@@ -68,3 +68,16 @@ ll ans = seg.max_right<function<bool(S)>>(a,
   }
 );
 //------------------------------------------------------------------------------
+
+// linear_functions sum seg from here
+struct S {
+  mint a, b, x; int len;
+  mint val() { return a * x + b; }
+};
+struct F { mint a, b; };
+S op(S l, S r) { return {0, l.val() + r.val(), l.x + r.x, l.len + r.len}; }
+S e() { return {0, 0, 0, 0}; }
+S mapping(F f, S s) { return {s.a + f.a, s.b + f.b * s.len, s.x, s.len}; }
+F composition(F f, F g) { { return {f.a + g.a, f.b + g.b}; } }
+F id() { return {0, 0}; }
+// to here

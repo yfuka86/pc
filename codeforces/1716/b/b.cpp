@@ -98,14 +98,28 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n, m; cin >> n >> m;
-  vl u(m), v(m);
-  rep(i, m) cin >> u[i] >> v[i];
+  ll n; cin >> n;
+  vl p(n); iota(all(p), 1);
+
+  ll cur = 0;
+  cout << n << "\n";
+  coutarray(p);
+  rep2(i, 1, n) {
+    swap(p[n - 1], p[n - 1 - i]);
+    coutarray(p);
+    // {
+    //   ll sum = 0;
+    //   rep(i, n) {
+    //     if (p[i] == i + 1) sum++;
+    //   }
+    //   cout << sum << "\n";
+    // }
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

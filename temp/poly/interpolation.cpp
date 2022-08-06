@@ -1,4 +1,3 @@
-
 struct Interpolation {
   int n; vmi a;
   Interpolation() {}
