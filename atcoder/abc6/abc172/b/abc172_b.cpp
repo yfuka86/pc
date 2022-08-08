@@ -98,7 +98,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  string s, t; cin >> s >> t;
+  ll ans = 0;
+  rep(i, s.size()) {
+    if (s[i] != t[i]) ans++;
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc178",
+    "title": "AtCoder Beginner Contest 178",
+    "url": "https://atcoder.jp/contests/abc178"
+  },
+  "tasks": [
+    {
+      "id": "abc178_a",
+      "label": "A",
+      "title": "Not",
+      "url": "https://atcoder.jp/contests/abc178/tasks/abc178_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc178_a.cpp"
+      }
+    },
+    {
+      "id": "abc178_b",
+      "label": "B",
+      "title": "Product Max",
+      "url": "https://atcoder.jp/contests/abc178/tasks/abc178_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc178_b.cpp"
+      }
+    },
+    {
+      "id": "abc178_c",
+      "label": "C",
+      "title": "Ubiquity",
+      "url": "https://atcoder.jp/contests/abc178/tasks/abc178_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc178_c.cpp"
+      }
+    },
+    {
+      "id": "abc178_d",
+      "label": "D",
+      "title": "Redistribution",
+      "url": "https://atcoder.jp/contests/abc178/tasks/abc178_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc178_d.cpp"
+      }
+    },
+    {
+      "id": "abc178_e",
+      "label": "E",
+      "title": "Dist Max",
+      "url": "https://atcoder.jp/contests/abc178/tasks/abc178_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc178_e.cpp"
+      }
+    },
+    {
+      "id": "abc178_f",
+      "label": "F",
+      "title": "Contrast",
+      "url": "https://atcoder.jp/contests/abc178/tasks/abc178_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc178_f.cpp"
+      }
+    }
+  ]
+}

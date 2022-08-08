@@ -269,12 +269,25 @@ struct Interpolation {
   }
 };
 
+
+// fにa + b * x^nを掛ける
+template<typename T>
+auto mul_simple(T &f, mint a, mint b, int n){
+  rep_r(i, f.size()) {
+    f[i] *= a;
+    if (i >= n) f[i] += f[i - n] * b;
+  }
+};
+
 // fからa + b * x^nを割る
-auto div_simple(vmi &f, mint a, mint b, int n){
-  int sz = f.size();
-  rep(i, sz) {
-    if (a != 0) f[i] /= a;
-    if (i + n < sz) f[i + n] -= f[i] * b;
+template<typename T>
+auto div_simple(T &f, mint a, mint b, int n){
+  if (a == 0) { f.erase(f.begin()); f.pb(0); rep(i, f.size()) f[i] /= b; }
+  else {
+    rep(i, f.size()) {
+      f[i] /= a;
+      if (i + n < f.size()) f[i + n] -= f[i] * b;
+    }
   }
 };
 
@@ -287,35 +300,15 @@ void solve() {
   Interpolation ip(a);
 
   vmi ans(p, 0);
-
-  // vector<FPS> prod, rprod;
-  // prod.pb(FPS{1}); rprod.pb(FPS{1});
-  // rep(i, p) prod.pb(prod.back() * FPS{-i, 1});
-  // rep_r(i, p) rprod.pb(rprod.back() * FPS{-i, 1});
-
-  vvmi prod(p + 1, vmi(p + 1)), rprod(p + 1, vmi(p + 1));
-  prod[0][0] = 1; rprod[0][0] = 1;
-
-  rep(i, p) {
-    rep(j, p + 1) {
-      prod[i + 1][j] += prod[i][j] * -i;
-      if (j < p) prod[i + 1][j + 1] += prod[i][j];
-    }
-  }
-  rep_r(i, p) {
-    rep(j, p) {
-      ll ii = p - 1 - i;
-      rprod[ii + 1][j] += rprod[ii][j] * -i;
-      rprod[ii + 1][j + 1] += rprod[ii][j];
-    }
-  }
+  vmi prod(p + 1); prod[0] = 1;
+  rep(i, p) mul_simple(prod, -i, 1, 1);
 
   // debug(ip.a);
   // debug(prod[p]);
   rep(i, p) {
-    vmi tmp = prod[p];
+    vmi tmp = prod;
     div_simple(tmp, -i, 1, 1);
-    debug(tmp);
+    // debug(tmp);
     rep(j, p) {
       ans[j] += ip.a[i] * tmp[j];
     }

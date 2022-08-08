@@ -44,6 +44,9 @@ void solve() {
   vl ys(n + 1, 0);
   rep(i, n) ys[i + 1] = ys[i] + y[i];
 
+  coutarray(y);
+  coutarray(ys);
+
   ll ok = 0, ng = n + 1;
   while (ng > ok + 1) {
     ll mid = (ng + ok) / 2;
