@@ -148,54 +148,50 @@ void solve() {
   priority_queue<LT, vlt, greater<LT>> edges;
 
   while (uf.size(0) != k) {
+    vvl cost(n, vl(2, LINF));
+    vvl from(n, vl(2, -1));
     priority_queue<LT4, vlt4, greater<LT4>> que;
-    vvlp cost(n, vlp(2, {LINF, -1}));
-    rep(i, k) { cost[i][0] = {0, uf.root(i)}; que.push({0, i, 0, uf.root(i)}); }
+    rep(i, k) {
+      ll r = uf.root(i);
+      cost[i][0] = 0; from[i][0] = r;
+      que.push({0, i, 0, r});
+    }
 
-    vl ucost(k, LINF), ut(k, -1);
-    // rep(i, k) {
-    //   cout << uf.root(i) << " ";
-    // }cout << "\n";
-    while (!que.empty()) {
+    vl ucost(k, LINF), ufrom(k, -1);
+    while(!que.empty()) {
       auto [co, v, v2, p] = que.top(); que.pop();
-      if (cost[v][v2].fi < co) continue;
+      if (cost[v][v2] < co) continue;
 
       for (auto &to: G[v]) {
         ll nc = co + to.cost;
-        if (chmin(cost[to][0].fi, nc)) {
-          cost[to][0].se = p;
+        if (chmin(cost[to][0], nc)) {
+          from[to][0] = p;
           que.push({nc, to, 0, p});
-        } else if (cost[to][0].se != p && chmin(cost[to][1].fi, nc)) {
-          cost[to][1].se = p;
+        } else if (from[to][0] != p && chmin(cost[to][1], nc)) {
+          from[to][1] = p;
           que.push({nc, to, 1, p});
-        } else {
-          if (cost[to][0].se != p) {
-            ll f = cost[to][0].se;
-            if (chmin(ucost[p], cost[to][0].fi + nc)) ut[p] = f;
-            if (chmin(ucost[f], cost[to][0].fi + nc)) ut[f] = p;
-          } else if (cost[to][1].se != p) {
-            ll f = cost[to][1].se;
-            if (f == -1) {
-              // debug(co, v, v2, p, cost[to][1]);
-              continue;
-            }
-            if (chmin(ucost[p], cost[to][1].fi + nc)) ut[p] = f;
-            if (chmin(ucost[f], cost[to][1].fi + nc)) ut[f] = p;
-          }
         }
+        if (cost[to][0] != LINF && from[to][0] != p) {
+          ll f = from[to][0];
+          if (chmin(ucost[p], cost[to][0] + nc)) ufrom[p] = f;
+          if (chmin(ucost[f], cost[to][0] + nc)) ufrom[f] = p;
+        }
+        if (cost[to][1] != LINF && from[to][1] != p) {
+          ll f = from[to][1];
+          if (chmin(ucost[p], cost[to][1] + nc)) ufrom[p] = f;
+          if (chmin(ucost[f], cost[to][1] + nc)) ufrom[f] = p;
+        }
+
       }
     }
 
     // debug(cost);
     rep(i, k) {
-      ll a = cost[i][0].se, b = cost[i][1].se;
-      ll co = cost[i][1].fi;
-      if (chmin(ucost[i], co)) ut[i] = b;
+      if (chmin(ucost[i], cost[i][1])) ufrom[i] = from[i][1];
     }
     rep(i, k) {
-      uf.unite(i, ut[i]);
-      edges.push({ucost[i], i, ut[i]});
-      // debug(ucost[i], i, ut[i]);
+      uf.unite(i, ufrom[i]);
+      edges.push({ucost[i], i, ufrom[i]});
     }
   }
 
@@ -208,6 +204,9 @@ void solve() {
       uf2.unite(a, b);
     }
     // debug(x, y, uf2.root(x), uf2.root(y));
+    // map<ll, vl> ufmap;
+    // rep(i, k) ufmap[uf2.root(i)].pb(i);
+    // debug(ufmap);
     if (uf2.same(x, y)) ans[i] = true;
   }
 
