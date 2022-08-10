@@ -16,7 +16,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
@@ -51,7 +51,7 @@ void trace() { dout << "\n"; } template<typename Head, typename... Tail> void tr
 #define debug(...) do {dout<<#__VA_ARGS__<<" = ";trace(__VA_ARGS__); } while(0)
 #endif
 template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
-template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { xcoutarray(v[i], offset); } }
+template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); coutarray(v); cout.flush(); cin >> a; }
 // template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
@@ -61,9 +61,9 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
-ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
+template<typename T> ll digits(T n) { assert(n >= 0); ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T> void uniq(vector<T>&a) { sort(all(a)); a.erase(unique(all(a)), a.end()); }
@@ -78,23 +78,21 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll N, vl a) {
-  ll ans = -1; return ans;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll N, vl a) {
-  ll ans = 1; return ans;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 10;
-    vl a = rg.vecl(N, 1, 1e2);
-    auto so = solve(N, a); auto na = naive(N, a);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      dump(N); dump(a);
-      cout << "solve: "; dump(so);
-      cout << "naive: "; dump(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
@@ -108,89 +106,68 @@ template< typename T = ll > struct Graph {
   void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
 vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> que;
-  vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push(make_pair(0, start));
+  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
   while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop();
-    if (costs[v] < c) continue;
-    for(auto &to: G[v]) {
-      ll nc = costs[v] + to.cost;
-      if (chmin(costs[to], nc)) que.push(make_pair(nc, to));
-    }
-  }
-  return costs;
-}
+    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (chmin(costs[to], nc)) que.push({nc, to}); } }
+  return costs; }
 
 void solve() {
   ll n, m; cin >> n >> m;
-  Graph<ll> G(n), rG(n);
-  vvl warshall(n, vl(n, LINF));
-  rep(i, n) warshall[i][i] = 0;
+  Graph<ll> G(n);
   rep(i, m) {
     ll s, t; cin >> s >> t; s--; t--;
     G.add_directed_edge(s, t);
-    rG.add_directed_edge(t, s);
-    warshall[s][t] = 1;
   }
-
-  vl cost(n, LINF); vlp from(n, {-1, -1});
-  priority_queue<LP, vector<LP>, greater<LP>> que;
-  cost[0] = 0; que.push(make_pair(0, 0));
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop();
-    if (cost[v] < c) continue; else chmin(cost[v], c);
-    for(auto &to: G[v]) {
-      ll nc = cost[v] + to.cost;
-      if (chmin(cost[to], nc)) {
+  vl cost(n, LINF); cost[0] = 0;
+  vlp from(n, {-1, -1});
+  queue<ll> que; que.push(0);
+  while (!que.empty()) {
+    ll v = que.front(); que.pop();
+    for (auto &to: G[v]) {
+      if (chmin(cost[to], cost[v] + 1)) {
         from[to] = {v, to.idx};
-        que.push(make_pair(nc, to));
+        que.push(to);
       }
     }
   }
-  vl rcost = dijkstra(rG, n - 1);
 
   if (cost[n - 1] == LINF) {
     rep(i, m) cout << -1 << "\n";
     return;
   }
-  vl ans(m, cost[n - 1]);
 
-
-  vlt route;
+  // debug(cost); debug(from);
   ll cur = n - 1;
-  while (cur > 0) {
-    auto [v, e] = from[cur];
-    ans[e] = LINF;
-    route.pb({v, cur, e});
-    cur = v;
+  set<ll> edge;
+  while (cur != -1) {
+    edge.insert(from[cur].se);
+    cur = from[cur].fi;
   }
-  reverse(all(route));
-  for (auto[s, t, e]: route) {
-    warshall[s][t] = LINF;
-  }
-  rep(k, n) rep(i, n) rep(j, n) { if (warshall[i][k] == LINF || warshall[k][j] == LINF) continue; warshall[i][j] = min(warshall[i][j], warshall[i][k] + warshall[k][j]); }
 
-  {
-    ll n = route.size();
-    rep(i, n) rep2(j, i + 1, n + 1) {
-      ll s = get<0>(route[i]), t = get<1>(route[j - 1]);
-      if (warshall[s][t] != LINF) {
-        rep2(k, i, j) {
-          chmin(ans[get<2>(route[k])], cost[s] + rcost[t] + warshall[s][t]);
+  rep(i, m) {
+    if (edge.find(i) != edge.end()) {
+      vl cost(n, LINF); cost[0] = 0;
+      queue<ll> que; que.push(0);
+      while (!que.empty()) {
+        ll v = que.front(); que.pop();
+        for (auto &to: G[v]) {
+          if (to.idx == i) continue;
+          if (chmin(cost[to], cost[v] + 1)) {
+            que.push(to);
+          }
         }
       }
-    }
+      if (cost[n - 1] == LINF) cout << -1 << "\n"; else cout << cost[n - 1] << "\n";
+    } else cout << cost[n - 1] << "\n";
   }
-  rep(i, m) {
-    if (ans[i] == LINF) cout << -1 << "\n";
-    else cout << ans[i] << "\n";
-  }
+
 }
 
 signed main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
   int t = 1; //cin >> t;
   while (t--) solve();
   // while (t--) compare();

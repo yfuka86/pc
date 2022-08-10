@@ -100,7 +100,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n; string s; cin >> n >> s;
+  if (s[n - 1] == 'o') cout << "Yes" << "\n"; else cout << "No" << "\n";
 
 }
 

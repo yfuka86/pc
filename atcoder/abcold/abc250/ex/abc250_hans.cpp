@@ -97,12 +97,93 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  vlin(p, 26, 0);
-  rep(i, 26) {
-    cout << (char)('a' + p[i] - 1);
-  } cout << "\n";
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+pair<vector<ll>, vector<ll>> dijkstra(Graph<ll> &G, ll start) {
+  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> from(G.size(), -1), costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (chmin(costs[to], nc)) { from[to] = v; que.push({nc, to}); } }
+  }
+  return mp(costs, from); }
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
 
+
+void solve() {
+  ll n,m,k; cin >> n >> m >> k;
+  Graph<ll> G(n);
+  rep(i, m) {
+    ll a, b, c; cin >> a >> b >> c; a--; b--;
+    G.add_edge(a, b, c);
+  }
+  ll q; cin >> q;
+  vlt4 query(q);
+  rep(i, q) {
+    ll x, y, t; cin >> x >> y >> t; x--; y--;
+    query[i] = {t, x, y, i};
+  }
+  sort(all(query));
+  vb ans(q);
+
+//////////////////////////////////////////////////////////
+
+  vl cost(n, LINF), sv(n, -1);
+  priority_queue<LP, vlp, greater<LP>> que;
+  auto push = [&](ll v, ll d, ll s) {
+    if (cost[v] <= d) return;
+    cost[v] = d;
+    sv[v] = s;
+    que.emplace(d, v);
+  };
+  rep(i, k) push(i, 0, i);
+  while (!que.empty()) {
+    auto [d,v] = que.top(); que.pop();
+    if (cost[v] < d) continue;
+    for (auto &to: G[v]) {
+      push(to, d + to.cost, sv[v]);
+    }
+  }
+  priority_queue<LT, vlt, greater<LT>> edges;
+  rep(v, n) {
+    for (auto to: G[v]) {
+      ll a = sv[v], b = sv[to];
+      ll d = cost[v] + cost[to] + to.cost;
+      edges.push({d, a, b});
+    }
+  }
+
+  UnionFind uf2(k);
+  rep(qi, q) {
+    auto [t, x, y, i] = query[qi];
+    while (!edges.empty() && get<0>(edges.top()) <= t) {
+      auto [_, a, b] = edges.top(); edges.pop();
+      // debug(_, a, b);
+      uf2.unite(a, b);
+    }
+    // debug(x, y, uf2.root(x), uf2.root(y));
+    if (uf2.same(x, y)) ans[i] = true;
+  }
+
+  rep(i, q) {
+    if (ans[i]) cout << "Yes" << "\n"; else cout << "No" << "\n";
+  }
 }
 
 signed main() {

@@ -100,8 +100,39 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n, r; cin >> n >> r;
+  vlin(a, n - 1, 0);
+  if (n / 2 == r || n / 2 == n - r) { cout << accumulate(all(a), 0ll) << "\n"; return; }
 
+  priority_queue<LT> que;
+  set<ll> S;
+
+  rep(i, n - 1) S.insert(i);
+
+  rep(i, n - 2) {
+    que.push({a[i] + a[i + 1], i, i + 1});
+  }
+
+  ll ru = min(r, n - r);
+
+  ll ans = 0;
+  ll cur = 0;
+  while (!que.empty() && cur < ru) {
+    auto [c, i, j] = que.top(); que.pop();
+    auto it = S.lower_bound(i);
+
+    if (it == S.end() || *it != i || next(it) == S.end() || *next(it) != j) continue;
+    else {
+      ans += c;
+      it = S.erase(it);
+      it = S.erase(it);
+      if (it != S.end() && it != S.begin()) {
+        que.push({ a[*prev(it)] + a[*it], *prev(it), *it});
+      }
+      cur++;
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

@@ -16,10 +16,10 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
-const int INF = infinity<int>::val; const ll LINF = infinity<int>::val; const ld DINF = infinity<ld>::val;
+const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
 
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
@@ -61,9 +61,9 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
-ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
+template<typename T> ll digits(T n) { assert(n >= 0); ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T> void uniq(vector<T>&a) { sort(all(a)); a.erase(unique(all(a)), a.end()); }
@@ -78,30 +78,22 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll N, vl a) {
-  ll ans = -1; return ans;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll N, vl a) {
-  ll ans = 1; return ans;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 10;
-    vl a = rg.vecl(N, 1, 1e2);
-    auto so = solve(N, a); auto na = naive(N, a);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      dump(N); dump(a);
-      cout << "solve: "; dump(so);
-      cout << "naive: "; dump(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
-  }
-}
-template<class T> void flip(vector<vector<T>> &a) {
-  assert(a.size() == a[0].size());
-  rep(i, a.size()) rep(j, i) {
-    swap(a[i][j], a[j][i]);
   }
 }
 
@@ -113,68 +105,42 @@ template<class T> vector<vector<T>> rotate(vector<vector<T>> &a) {
   return ret;
 }
 
-LP offset(vvl &s) {
-  ll offx = -1, offy = -1, n = s.size();
-  rep(i, n) {
-    if (offx != -1 || offy != -1) break;
-    rep(j, n) {
-      if (s[i][j]) { offx = i; offy = j; break; }
-    }
-  }
-  return mp(offx, offy);
-}
-
-bool check(vvl &s, vvl &t) {
-  ll n = s.size();
-  bool valid = true;
-  auto [sx, sy] = offset(s);
-  auto [tx, ty] = offset(t);
-  rep(i, n) {
-    if (!valid) break;
-    rep(j, n) {
-      ll ss = 0, tt = 0;
-      if (i + sx < n && j + sy < n) ss = s[i + sx][j + sy];
-      if (i + tx < n && j + ty < n) tt = t[i + tx][j + ty];
-      if (ss != tt) { valid = false; break; }
-    }
-  }
-  return valid;
-}
-
 void solve() {
   ll n; cin >> n;
-  vvl s(n, vl(n,0));
-  vvl t(n, vl(n,0));
+  vvl s(n, vl(n, 0)), t(n, vl(n, 0));
   rep(i, n) {
-    string ts; cin >> ts;
-    rep(j, n) {
-      if (ts[j] == '#') s[i][j] = 1;
-    }
+    string ss; cin >> ss;
+    rep(j, n) if (ss[j] == '#') s[i][j] = 1;
+  }
+  rep(i, n) {
+    string s; cin >> s;
+    rep(j, n) if (s[j] == '#') t[i][j] = 1;
   }
 
-  rep(i, n) {
-    string ts; cin >> ts;
-    rep(j, n) {
-      if (ts[j] == '#') t[i][j] = 1;
+  auto check = [&](vvl &s, vvl &t) {
+    rep(i, n) rep(j, n) if (s[i][j]) rep(ii, n) rep(jj, n) if (t[ii][jj]) {
+      rep(x, n) rep2(y, -n, n) {
+        bool sin = i + x < n && 0 <= j + y && j + y < n;
+        bool tin = ii + x < n && 0 <= jj + y && jj + y < n;
+        if (sin && tin) {
+          if (s[i + x][j + y] != t[ii + x][jj + y]) return false;
+        } else {
+          if (sin && s[i + x][j + y]) return false;
+          if (tin && t[ii + x][jj + y]) return false;
+        }
+      }
+      return true;
     }
-  }
-
+  };
   rep(_, 4) {
-    bool valid = true;
-    rep(_, 4) {
-      if (!check(s, t)) { valid = false; break; }
-      s = rotate(s);
-      t = rotate(t);
-    }
-    if (valid) { cout << "Yes" << "\n"; return; }
+    if (check(s, t)) { cout << "Yes" << "\n"; return; }
     s = rotate(s);
   }
   cout << "No" << "\n";
 }
 
 signed main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
   int t = 1; //cin >> t;
   while (t--) solve();
   // while (t--) compare();

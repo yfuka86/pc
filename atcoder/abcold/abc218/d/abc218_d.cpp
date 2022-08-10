@@ -102,6 +102,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 void solve() {
   ll n; cin >> n;
 
+  map<ll, vl> mpx;
+
+  rep(i, n) {
+    ll x, y; cin >> x >> y;
+    mpx[x].pb(y);
+  }
+  for (auto&[_, v]: mpx) sort(all(v));
+
+  map<LP, ll> mp;
+  for (auto&[x, v]: mpx) {
+    rep(i, v.size()) rep2(j, i + 1, v.size()) {
+      mp[{v[i], v[j]}]++;
+    }
+  }
+  ll ans = 0;
+  for (auto [_, v]: mp) {
+    ans += v * (v - 1) / 2;
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
