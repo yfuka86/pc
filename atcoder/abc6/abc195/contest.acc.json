@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc195",
+    "title": "Panasonic Programming Contest (AtCoder Beginner Contest 195)",
+    "url": "https://atcoder.jp/contests/abc195"
+  },
+  "tasks": [
+    {
+      "id": "abc195_a",
+      "label": "A",
+      "title": "Health M Death",
+      "url": "https://atcoder.jp/contests/abc195/tasks/abc195_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc195_a.cpp"
+      }
+    },
+    {
+      "id": "abc195_b",
+      "label": "B",
+      "title": "Many Oranges",
+      "url": "https://atcoder.jp/contests/abc195/tasks/abc195_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc195_b.cpp"
+      }
+    },
+    {
+      "id": "abc195_c",
+      "label": "C",
+      "title": "Comma",
+      "url": "https://atcoder.jp/contests/abc195/tasks/abc195_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc195_c.cpp"
+      }
+    },
+    {
+      "id": "abc195_d",
+      "label": "D",
+      "title": "Shipping Center",
+      "url": "https://atcoder.jp/contests/abc195/tasks/abc195_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc195_d.cpp"
+      }
+    },
+    {
+      "id": "abc195_e",
+      "label": "E",
+      "title": "Lucky 7 Battle",
+      "url": "https://atcoder.jp/contests/abc195/tasks/abc195_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc195_e.cpp"
+      }
+    },
+    {
+      "id": "abc195_f",
+      "label": "F",
+      "title": "Coprime Present",
+      "url": "https://atcoder.jp/contests/abc195/tasks/abc195_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc195_f.cpp"
+      }
+    }
+  ]
+}
