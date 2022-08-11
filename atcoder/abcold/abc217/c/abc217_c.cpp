@@ -99,6 +99,13 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(p, n, 1);
+  vl q(n, -1);
+
+  rep(i, n) {
+    q[p[i]] = i;
+  }
+  coutarray(q, 1);
 }
 
 signed main() {

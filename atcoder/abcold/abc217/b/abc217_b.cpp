@@ -98,7 +98,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  set<string> S{"ABC", "ARC", "AGC", "AHC"};
+  rep(i, 3) {
+    string s; cin >> s;
+    S.erase(s);
+  }
+  cout << *S.begin() << "\n";
 }
 
 signed main() {

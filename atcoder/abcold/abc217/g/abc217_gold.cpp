@@ -16,7 +16,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
@@ -126,8 +126,6 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
-
-
 void solve() {
   ll n, m; cin >> n >> m;
   init_f();
@@ -136,8 +134,7 @@ void solve() {
   dp[0][0] = 1;
   rep(i, n) {
     rep(j, n) {
-      dp[i + 1][j + 1] += dp[i][j];
-      dp[i + 1][j] += dp[i][j] * (j - i / m);
+      dp[i + 1][j + 1] = dp[i][j] + dp[i][j + 1] * (j + 1 - i / m);
     }
   }
   dp[n].erase(dp[n].begin());
@@ -145,7 +142,8 @@ void solve() {
 }
 
 signed main() {
-  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
   int t = 1; //cin >> t;
   while (t--) solve();
   // while (t--) compare();

@@ -98,7 +98,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll l, q; cin >> l >> q;
+  set<ll> cut;
+  cut.insert(0); cut.insert(l);
+  rep(i, q) {
+    ll c, x; cin >> c >> x;
+    if (c == 1) {
+      cut.insert(x);
+    } else {
+      auto it = cut.upper_bound(x);
+      cout << *it - *prev(it) << "\n";
+    }
+  }
 }
 
 signed main() {

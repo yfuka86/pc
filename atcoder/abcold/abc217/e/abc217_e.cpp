@@ -98,7 +98,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll q; cin >> q;
+
+  multiset<ll> sorted;
+  queue<ll> unsorted;
+  rep(i, q) {
+    ll t; cin >> t;
+    if (t == 1) {
+      ll x; cin >> x;
+      unsorted.push(x);
+    } else if (t == 2) {
+      if (sorted.size()) { cout << *sorted.begin() << "\n"; sorted.erase(sorted.begin()); }
+      else { cout << unsorted.front() << "\n"; unsorted.pop(); }
+    } else {
+      while (!unsorted.empty()) {
+        sorted.insert(unsorted.front());
+        unsorted.pop();
+      }
+    }
+  }
 }
 
 signed main() {
