@@ -83,7 +83,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll h, n; cin >> h >> n;
+
+  vl dp(h + 1, LINF); dp[0] = 0;
+
+  rep(i, n) {
+    ll a, b; cin >> a >> b;
+    rep(j, h) {
+      chmin(dp[min(j + a, h)], dp[j] + b);
+    }
+  }
+
+  cout << dp[h] << "\n";
 }
 
 signed main() {

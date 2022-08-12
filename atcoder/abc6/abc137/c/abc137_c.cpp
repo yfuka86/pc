@@ -99,6 +99,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  map<string, ll> f;
+  rep(i, n) {
+    string s; cin >> s;
+    sort(all(s));
+    f[s]++;
+  }
+
+  ll ans = 0;
+  for (auto [_, cnt]: f) {
+    ans += cnt * (cnt - 1) / 2;
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

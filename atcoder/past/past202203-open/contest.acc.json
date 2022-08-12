@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "past202203-open",
+    "title": "第10回 アルゴリズム実技検定 過去問",
+    "url": "https://atcoder.jp/contests/past202203-open"
+  },
+  "tasks": [
+    {
+      "id": "past202203_a",
+      "label": "A",
+      "title": "Three cards",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "past202203_a.cpp"
+      }
+    },
+    {
+      "id": "past202203_b",
+      "label": "B",
+      "title": "Flowers",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "past202203_b.cpp"
+      }
+    },
+    {
+      "id": "past202203_c",
+      "label": "C",
+      "title": "Go Further",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "past202203_c.cpp"
+      }
+    },
+    {
+      "id": "past202203_d",
+      "label": "D",
+      "title": "High Score",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "past202203_d.cpp"
+      }
+    },
+    {
+      "id": "past202203_e",
+      "label": "E",
+      "title": "Only 2 kinds",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "past202203_e.cpp"
+      }
+    },
+    {
+      "id": "past202203_f",
+      "label": "F",
+      "title": "Coloring map",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "past202203_f.cpp"
+      }
+    },
+    {
+      "id": "past202203_g",
+      "label": "G",
+      "title": "Equations",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "past202203_g.cpp"
+      }
+    },
+    {
+      "id": "past202203_h",
+      "label": "H",
+      "title": "Connected Components",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "past202203_h.cpp"
+      }
+    },
+    {
+      "id": "past202203_i",
+      "label": "I",
+      "title": "Symmetric Transformation",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "past202203_i.cpp"
+      }
+    },
+    {
+      "id": "past202203_j",
+      "label": "J",
+      "title": "Expected Range",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "past202203_j.cpp"
+      }
+    },
+    {
+      "id": "past202203_k",
+      "label": "K",
+      "title": "Planning",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "past202203_k.cpp"
+      }
+    },
+    {
+      "id": "past202203_l",
+      "label": "L",
+      "title": "N mod M",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "past202203_l.cpp"
+      }
+    },
+    {
+      "id": "past202203_m",
+      "label": "M",
+      "title": "Ranking",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "past202203_m.cpp"
+      }
+    },
+    {
+      "id": "past202203_n",
+      "label": "N",
+      "title": "40B of calculations",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "past202203_n.cpp"
+      }
+    },
+    {
+      "id": "past202203_o",
+      "label": "O",
+      "title": "3-Permutation",
+      "url": "https://atcoder.jp/contests/past202203-open/tasks/past202203_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "past202203_o.cpp"
+      }
+    }
+  ]
+}

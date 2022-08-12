@@ -139,6 +139,7 @@ void enum_check(ll N, ll from, ll to, function<bool(vl&)> check) { // size, [fro
 void exp() {
   ll cnt = 0;
   map<vl, ll> freq;
+  map<ll, vvl> cmp;
 
   ll n = 8, k = 4;
   enum_check(n, 0, k + 1, [&](vl &p) {
@@ -148,13 +149,20 @@ void exp() {
     }
     if (valid) {
       vl t; rep(i, ceil_pow2(n) + 1) t.pb(p[POW(2, i) - 1]);
+      rep2_r(i, 1, ceil_pow2(n) + 1) t[i] -= t[i - 1];
       freq[t]++;
-      debug(p);
+      cmp[t[0]].pb(vector(t.begin() + 1, t.end()));
+      // debug(p);
       cnt++;
     }
     return true;
   });
   debug(freq);
+  debug(freq.size());
+  debug(cmp);
+  for (auto [k, v] :cmp) {
+    debug(k, v.size());
+  }
 
   map<ll, ll> freqinv;
   for (auto [k, v] :freq) freqinv[v]++;
@@ -163,20 +171,19 @@ void exp() {
   cout << cnt << "\n";
 }
 
-
 void solve() {
   ll n, k; cin >> n >> k;
-  exp();
+  // exp();
   init_f();
 
-  vmi dp(k + 1, 0);
-  rep(i, k) {
-    // 差がk以内のものを数え上げる (k - i + 1) 個ずつある
-    dp[i + 1] = mint(i + 1).pow(n) - dp[i] * 2;
-  }
-
   mint ans = 0;
-  rep(i, k) ans += dp[i] * (k - i + 1);
+
+  // i=0でないものの数について数え上げる
+  mint com = 1;
+  rep(i, n + 1) {
+    com = com * (k + 1 - i) / (i + 1);
+    ans += comb(n, i) * mint(2).pow(i) * com;//=comb(k + 1, i + 1);
+  }
   cout << ans << "\n";
 }
 

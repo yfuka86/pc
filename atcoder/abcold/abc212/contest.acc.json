@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc212",
+    "title": "AtCoder Beginner Contest 212",
+    "url": "https://atcoder.jp/contests/abc212"
+  },
+  "tasks": [
+    {
+      "id": "abc212_a",
+      "label": "A",
+      "title": "Alloy",
+      "url": "https://atcoder.jp/contests/abc212/tasks/abc212_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc212_a.cpp"
+      }
+    },
+    {
+      "id": "abc212_b",
+      "label": "B",
+      "title": "Weak Password",
+      "url": "https://atcoder.jp/contests/abc212/tasks/abc212_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc212_b.cpp"
+      }
+    },
+    {
+      "id": "abc212_c",
+      "label": "C",
+      "title": "Min Difference",
+      "url": "https://atcoder.jp/contests/abc212/tasks/abc212_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc212_c.cpp"
+      }
+    },
+    {
+      "id": "abc212_d",
+      "label": "D",
+      "title": "Querying Multiset ",
+      "url": "https://atcoder.jp/contests/abc212/tasks/abc212_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc212_d.cpp"
+      }
+    },
+    {
+      "id": "abc212_e",
+      "label": "E",
+      "title": "Safety Journey",
+      "url": "https://atcoder.jp/contests/abc212/tasks/abc212_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc212_e.cpp"
+      }
+    },
+    {
+      "id": "abc212_f",
+      "label": "F",
+      "title": "Greedy Takahashi",
+      "url": "https://atcoder.jp/contests/abc212/tasks/abc212_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc212_f.cpp"
+      }
+    },
+    {
+      "id": "abc212_g",
+      "label": "G",
+      "title": "Power Pair",
+      "url": "https://atcoder.jp/contests/abc212/tasks/abc212_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc212_g.cpp"
+      }
+    },
+    {
+      "id": "abc212_h",
+      "label": "H",
+      "title": "Nim Counting",
+      "url": "https://atcoder.jp/contests/abc212/tasks/abc212_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "abc212_h.cpp"
+      }
+    }
+  ]
+}
