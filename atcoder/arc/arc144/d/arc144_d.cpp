@@ -177,7 +177,6 @@ void solve() {
   init_f();
 
   mint ans = 0;
-
   // i=0でないものの数について数え上げる
   mint com = 1;
   rep(i, n + 1) {

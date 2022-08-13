@@ -126,31 +126,35 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
-// 典型部分列DP
-vmi subseq_num(vector<ll> &v) {
-  ll n = v.size(); map<ll, ll> lasti;
-  vmi dp(n + 1, 0), sum(n + 2, 0); dp[0] = 1; sum[1] = 1;
-  rep(i, n) {
-    dp[i + 1] += sum[i ? i : 1] - sum[lasti[v[i]]];
-    if (lasti[v[i]] > 1) dp[i + 1] += dp[lasti[v[i]] - 1];
-    sum[i + 2] = sum[i + 1] + dp[i + 1];
-    lasti[v[i]] = i + 1;
-  }
-  return dp;
-}
-
 void solve() {
   string s; cin >> s;
-  vl v;
-  rep(i, s.size()) v.pb(s[i] - 'a');
+  ll n = s.size();
 
-  vmi ss = subseq_num(v);
-  cout << accumulate(all(ss), mint(0)) - 1 << "\n";
+  vl lasti(26, -1);
+  vmi dp(n + 1, 0), dpsum(n + 2, 0);
+  dp[0] = 1, dpsum[1] = 1;
+
+  rep(i, n) {
+    ll li = lasti[s[i] - 'a'];
+    mint subt = 0;
+    if (li != -1) {
+      subt += dpsum[li + 1];
+      if (li > 0) subt -= dp[li];
+    }
+    debug((i ? dpsum[i] : 1), subt);
+    dp[i + 1] = (i ? dpsum[i] : 1) - subt;
+
+    lasti[s[i] - 'a'] = i;
+    dpsum[i + 2] += dpsum[i + 1] + dp[i + 1];
+  }
+  debug(dp);
+  debug(dpsum);
+
+  cout << dpsum.back() - 1 << "\n";
 }
 
 signed main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
+  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
   int t = 1; //cin >> t;
   while (t--) solve();
   // while (t--) compare();
