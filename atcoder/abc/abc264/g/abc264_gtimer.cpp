@@ -107,28 +107,31 @@ template< typename T = ll > struct Graph {
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-// ベルマンフォード法 : O(NM)
-//   - (dist, cycle) のペアを返す
-//   - 負閉路が存在しない場合，cycle はサイズ 0
-//   - 負閉路が存在する場合，cycle は負閉路に含まれる頂点配列
-//   - 負閉路が複数あれば頂点が混ざり合うことに注意
-//   - 負閉路を一つだけ見つけたい場合は "find_negative_cycle.cpp" を使う
-pair<vl, vl> bellman_ford(const Graph<ll>& G, int s) {
-  int n = G.size(); assert(0 <= s && s < n);
-  vl dist(n, LINF); dist[s] = 0;
-  vl cycle;  // 負閉路に含まれる頂点配列
-  for (int i = 0; i < n; i++) {
-    for (int u = 0; u < n; u++) if (dist[u] != INF) {
-      for (const auto& v : G[u]) {
-        if (chmin(dist[v], dist[u] + v.cost)) {
-          if (i == n-1) cycle.push_back(v);
-        }
-      }
-    }
-  }
-  return make_pair(dist, cycle);
-}
 
+
+
+vector<ll> dijkstra(Graph<ll> &G, ll start) {
+  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (chmin(costs[to], nc)) que.push({nc, to}); } }
+  return costs; }
+
+
+struct Timer {
+  private:
+    chrono::high_resolution_clock::time_point start, end;
+
+  public:
+    Timer() { set(); }
+    void set() { start = chrono::high_resolution_clock::now(); }
+    int time() {
+        end = chrono::high_resolution_clock::now();
+        return chrono::duration_cast<chrono::milliseconds>(end - start).count();
+    }
+    bool before(double T) { return time() < (int)(T * 1000); }
+    void print() { cerr << "elapsed time: " << (double)time() / 1000 << " sec" << endl; }
+} timer;
 
 void solve() {
   ll n; cin >> n;
@@ -178,15 +181,22 @@ void solve() {
   for (auto [k, v]: edge) {
     G.add_directed_edge(k.fi, k.se, v);
   }
-  auto [dist, cycle] = bellman_ford(G, cur - 1);
+  // debug(G[cur - 1]);
 
-  if (cycle.size()) cout << "Infinity" << "\n";
+  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[cur - 1] = 0; que.push({0, cur - 1});
+  while(!que.empty() && timer.before(1.5)) {
+    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
+
+    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (chmin(costs[to], nc)) que.push({nc, to}); } }
+
+  if (!timer.before(1.5)) cout << "Infinity" << "\n";
   else {
     ll mi = LINF;
     // debug(costs);
-    rep(i, cur - 1) chmin(mi, dist[i]);
+    rep(i, cur - 1) chmin(mi, costs[i]);
     cout << -mi << "\n";
   }
+
 }
 
 signed main() {

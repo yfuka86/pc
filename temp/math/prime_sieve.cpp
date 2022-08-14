@@ -22,7 +22,10 @@ struct PrimeSieve {
   }
   // not sorted [2..x]
   vector<int> divisors(int x) { assert(x < n); auto f = factorize(x); vector<int> res = { 1 };
-    for (auto [p, c] : f) for (int i = res.size() - 1; i >= 0; --i) for (int pow = 1; pow <= c; ++pow) res.emplace_back(res[i] * POW(p, pow));
+    for (auto [p, c] : f) {
+      vector<int> powp; powp.emplace_back(p); rep(i, c - 1) powp.emplace_back(powp.back() * p);
+      for (int i = res.size() - 1; i >= 0; --i) for (int j = 0; j < c; ++j) res.emplace_back(res[i] * powp[j]);
+    }
     res.erase(res.begin()); return res;
   }
 };

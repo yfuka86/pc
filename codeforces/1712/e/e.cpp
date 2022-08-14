@@ -97,101 +97,103 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
-// ベルマンフォード法 : O(NM)
-//   - (dist, cycle) のペアを返す
-//   - 負閉路が存在しない場合，cycle はサイズ 0
-//   - 負閉路が存在する場合，cycle は負閉路に含まれる頂点配列
-//   - 負閉路が複数あれば頂点が混ざり合うことに注意
-//   - 負閉路を一つだけ見つけたい場合は "find_negative_cycle.cpp" を使う
-pair<vl, vl> bellman_ford(const Graph<ll>& G, int s) {
-  int n = G.size(); assert(0 <= s && s < n);
-  vl dist(n, LINF); dist[s] = 0;
-  vl cycle;  // 負閉路に含まれる頂点配列
-  for (int i = 0; i < n; i++) {
-    for (int u = 0; u < n; u++) if (dist[u] != INF) {
-      for (const auto& v : G[u]) {
-        if (chmin(dist[v], dist[u] + v.cost)) {
-          if (i == n-1) cycle.push_back(v);
-        }
+//-------------------------------------------------------
+// https://atcoder.jp/contests/abc238/submissions/29086825
+// https://cp-algorithms.com/algebra/prime-sieve-linear.html
+struct PrimeSieve {
+  int n; vector<bool> is_prime; vector<int> pr, mu, pf;
+  // pr := primes, mu := moebius, pf[i] := smallest prime p s.t. p | i
+  PrimeSieve(int _n){
+    n = ++_n; is_prime.assign(n, true); mu.assign(n, 0); pf.assign(n, 0);
+    is_prime[0] = is_prime[1] = false; mu[1] = 1;
+    for (int i = 2; i < n; i++) {
+      if (is_prime[i]) { pr.emplace_back(i); pf[i] = i; mu[i] = -1; }
+      for (int p : pr) {
+        if (ll(i) * p >= n) break;
+        is_prime[i * p] = false; mu[i * p] = -mu[i]; pf[i * p] = p;
+        if (i % p == 0) { mu[i * p] = 0; break; }
       }
     }
   }
-  return make_pair(dist, cycle);
-}
+  vector<pair<int, int>> factorize(int x) { assert(x < n); vector<pair<int, int>> res;
+    while (pf[x] > 1) { int d = pf[x], c = 0; while (x % d == 0) { x /= d; c++; } res.emplace_back(d, c); }
+    if (x != 1) res.emplace_back(x, 1); return res;
+  }
+  // not sorted [1..x]
+  vector<int> divisors(int x) { assert(x < n); auto f = factorize(x); vector<int> res = { 1 };
+    for (auto [p, c] : f) {
+      vector<int> powp; powp.emplace_back(p); rep(i, c - 1) powp.emplace_back(powp.back() * p);
+      for (int i = res.size() - 1; i >= 0; --i) for (int j = 0; j < c; ++j) res.emplace_back(res[i] * powp[j]);
+    }
+    // res.erase(res.begin()); [2..x]
+    return res;
+  }
+};
 
 
 void solve() {
-  ll n; cin >> n;
+  ll l, r; cin >> l >> r;
 
-  map<string, ll> mp;
-
-  ll cur = 0;
-  rep(i, 27) rep(j, 27) {
-    string s = "";
-    if (i == 26) s.pb('$'); else s.pb('a' + i);
-    if (j == 26) s.pb('$'); else s.pb('a' + j);
-    mp[s] = cur;
-    cur++;
+  PrimeSieve ps(200001);
+  r++;
+  {
+    // ll ans = 0;
+    // rep2(i, l, r) rep2(j, i + 1, r) rep2(k, j + 1, r) {
+    //   if (lcm(lcm(i, j),k) < i + j + k) {
+    //     if (lcm(lcm(i, j),k) == k * 2) {
+    //       debug(i, j, k);
+    //       ans++;
+    //     }
+    //   }
+    // }
+    // cout << ans << "\n";
   }
 
-  map<LP, ll> edge;
+  ll subt = 0;
+  rep2(k, l + 2, r) {
+    vi div = ps.divisors(k);
+    sort(all(div));
+    if (div.front() < l) div.erase(div.begin(), lower_bound(all(div), l));
+    div.pop_back();
+    // div = l以上k未満のkの約数
 
-  for (auto[k, v]: mp) {
-    rep(i, 26) {
-      string t = k.substr(1, 1);
-      t.pb('a' + i);
-      // debug(k, v, t, mp[t]);
-      edge[{v, mp[t]}] += 0;
-    }
-  }
-  rep(i, n) {
-    string t; ll p; cin >> t >> p;
-    if (t.size() == 1) {
-      for (auto[k, v]: mp) {
-        // debug(k, v, k.substr(1, 0) + t, p);
-        edge[{v, mp[k.substr(1, 1) + t]}] -= p;
-      }
-    } else if (t.size() == 2) {
-      for (auto[k, v]: mp) {
-        if (k[1] == t[0]) {
-          // debug(k, v, mp[t], p);
-          edge[{v, mp[t]}] -= p;
+    subt += div.size() * (div.size() - 1) / 2;
+
+    ll p2 = 0;
+    auto pf = ps.factorize(k);
+    for (auto [p, cnt]: pf) if (p == 2) p2 = cnt;
+
+    vi div2 = ps.divisors(k / POW(2, p2));
+    ll coef2 = POW(2, p2 + 1);
+
+    rep(i, div2.size()) div2[i] *= coef2;
+    div.insert(div.end(), div2.begin(), div2.end());
+    // uniq(div);
+    // debug(div2);
+
+    set<LP> s;
+    for (auto j: div2) {
+      if (j < l || k <= j) continue;
+      for (auto i: div) {
+        if (i != j && l <= i && i < k && i + j > k) {
+          if (i > j) s.insert({j, i}); else s.insert({i, j});
         }
       }
-    } else {
-      edge[{mp[t.substr(0, 2)], mp[t.substr(1, 2)]}] -= p;
     }
-  }
-  // debug(edge);
 
-  Graph<ll> G(cur);
-  for (auto [k, v]: edge) {
-    G.add_directed_edge(k.fi, k.se, v);
+    subt += s.size();
+    // debug(subt, sum);
   }
-  auto [dist, cycle] = bellman_ford(G, cur - 1);
+  // debug(subt);
 
-  if (cycle.size()) cout << "Infinity" << "\n";
-  else {
-    ll mi = LINF;
-    // debug(costs);
-    rep(i, cur - 1) chmin(mi, dist[i]);
-    cout << -mi << "\n";
-  }
+  ll n = (r - l);
+  ll ans = n * (n - 1) * (n - 2) / 6;
+  cout << ans - subt << "\n";
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

@@ -97,101 +97,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
-// ベルマンフォード法 : O(NM)
-//   - (dist, cycle) のペアを返す
-//   - 負閉路が存在しない場合，cycle はサイズ 0
-//   - 負閉路が存在する場合，cycle は負閉路に含まれる頂点配列
-//   - 負閉路が複数あれば頂点が混ざり合うことに注意
-//   - 負閉路を一つだけ見つけたい場合は "find_negative_cycle.cpp" を使う
-pair<vl, vl> bellman_ford(const Graph<ll>& G, int s) {
-  int n = G.size(); assert(0 <= s && s < n);
-  vl dist(n, LINF); dist[s] = 0;
-  vl cycle;  // 負閉路に含まれる頂点配列
-  for (int i = 0; i < n; i++) {
-    for (int u = 0; u < n; u++) if (dist[u] != INF) {
-      for (const auto& v : G[u]) {
-        if (chmin(dist[v], dist[u] + v.cost)) {
-          if (i == n-1) cycle.push_back(v);
-        }
-      }
-    }
-  }
-  return make_pair(dist, cycle);
-}
-
-
 void solve() {
-  ll n; cin >> n;
+  ll n, k; cin >> n >> k;
+  vlin(p, n, 1);
 
-  map<string, ll> mp;
-
-  ll cur = 0;
-  rep(i, 27) rep(j, 27) {
-    string s = "";
-    if (i == 26) s.pb('$'); else s.pb('a' + i);
-    if (j == 26) s.pb('$'); else s.pb('a' + j);
-    mp[s] = cur;
-    cur++;
+  ll ans = 0;
+  rep(i, k) {
+    if (p[i] >= k) ans++;
   }
-
-  map<LP, ll> edge;
-
-  for (auto[k, v]: mp) {
-    rep(i, 26) {
-      string t = k.substr(1, 1);
-      t.pb('a' + i);
-      // debug(k, v, t, mp[t]);
-      edge[{v, mp[t]}] += 0;
-    }
-  }
-  rep(i, n) {
-    string t; ll p; cin >> t >> p;
-    if (t.size() == 1) {
-      for (auto[k, v]: mp) {
-        // debug(k, v, k.substr(1, 0) + t, p);
-        edge[{v, mp[k.substr(1, 1) + t]}] -= p;
-      }
-    } else if (t.size() == 2) {
-      for (auto[k, v]: mp) {
-        if (k[1] == t[0]) {
-          // debug(k, v, mp[t], p);
-          edge[{v, mp[t]}] -= p;
-        }
-      }
-    } else {
-      edge[{mp[t.substr(0, 2)], mp[t.substr(1, 2)]}] -= p;
-    }
-  }
-  // debug(edge);
-
-  Graph<ll> G(cur);
-  for (auto [k, v]: edge) {
-    G.add_directed_edge(k.fi, k.se, v);
-  }
-  auto [dist, cycle] = bellman_ford(G, cur - 1);
-
-  if (cycle.size()) cout << "Infinity" << "\n";
-  else {
-    ll mi = LINF;
-    // debug(costs);
-    rep(i, cur - 1) chmin(mi, dist[i]);
-    cout << -mi << "\n";
-  }
+  cout << ans << "\n";
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
