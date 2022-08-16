@@ -20,12 +20,13 @@ struct PrimeSieve {
     while (pf[x] > 1) { int d = pf[x], c = 0; while (x % d == 0) { x /= d; c++; } res.emplace_back(d, c); }
     if (x != 1) res.emplace_back(x, 1); return res;
   }
-  // not sorted [2..x]
+  // not sorted [1..x]
   vector<int> divisors(int x) { assert(x < n); auto f = factorize(x); vector<int> res = { 1 };
     for (auto [p, c] : f) {
       vector<int> powp; powp.emplace_back(p); rep(i, c - 1) powp.emplace_back(powp.back() * p);
       for (int i = res.size() - 1; i >= 0; --i) for (int j = 0; j < c; ++j) res.emplace_back(res[i] * powp[j]);
     }
-    res.erase(res.begin()); return res;
+    // res.erase(res.begin()); [2..x]
+    return res;
   }
 };

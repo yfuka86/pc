@@ -80,7 +80,7 @@ vector<ll> primes_below(const ll N) {
   vector<ll> ret; for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i); return ret; }
 
 
-const ll M = 202;
+const ll M = 100002;
 void solve() {
   ll N; cin >> N;
   vl a(N); rep(i, N) cin >> a[i];
@@ -92,10 +92,8 @@ void solve() {
 
   //約数ごとのidx列挙----------------------------------------------------------------
   vl ps = primes_below(M);
-  vvl is(M);
+  vvl is(M + 1);
   rep(i, N) is[a[i]].pb(i);
-  // rep(i, M) for(auto j: is[i]) cout << j << " ";
-  cout << "\n";
   for (auto p: ps) {
     for (ll i = M / p; i >= 1; --i) {
       is[i].insert(is[i].end(), is[i*p].begin(), is[i*p].end());
@@ -131,16 +129,14 @@ void solve() {
     for (auto v: vv) { available[v] = false; used[v] = false; }
   }
 
-  coutarray(f);
+  // coutarray(f);
+
   //約数メビウス変換（GCDごとの計算）----------------------------------------------------
   for (auto p: ps) {
     for (ll i = 1; i * p < M; i++) {
       f[i] -= f[i*p];
-      if (f[i*p] != 0) cout << i << ":" << i * p << "\n";
     }
   }
-  coutarray(f);
-
   mint ans = 0;
   rep2(x, 1, M) ans += f[x] * x;
   cout << ans << "\n";

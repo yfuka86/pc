@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "agc058",
+    "title": "AtCoder Grand Contest 058",
+    "url": "https://atcoder.jp/contests/agc058"
+  },
+  "tasks": [
+    {
+      "id": "agc058_a",
+      "label": "A",
+      "title": "Make it Zigzag",
+      "url": "https://atcoder.jp/contests/agc058/tasks/agc058_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "agc058_a.cpp"
+      }
+    },
+    {
+      "id": "agc058_b",
+      "label": "B",
+      "title": "Adjacent Chmax",
+      "url": "https://atcoder.jp/contests/agc058/tasks/agc058_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "agc058_b.cpp"
+      }
+    },
+    {
+      "id": "agc058_c",
+      "label": "C",
+      "title": "Planar Tree",
+      "url": "https://atcoder.jp/contests/agc058/tasks/agc058_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "agc058_c.cpp"
+      }
+    },
+    {
+      "id": "agc058_d",
+      "label": "D",
+      "title": "Yet Another ABC String",
+      "url": "https://atcoder.jp/contests/agc058/tasks/agc058_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "agc058_d.cpp"
+      }
+    },
+    {
+      "id": "agc058_e",
+      "label": "E",
+      "title": "Nearer Permutation",
+      "url": "https://atcoder.jp/contests/agc058/tasks/agc058_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "agc058_e.cpp"
+      }
+    },
+    {
+      "id": "agc058_f",
+      "label": "F",
+      "title": "Authentic Tree DP",
+      "url": "https://atcoder.jp/contests/agc058/tasks/agc058_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "agc058_f.cpp"
+      }
+    }
+  ]
+}

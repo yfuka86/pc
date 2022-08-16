@@ -99,6 +99,29 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vector<queue<ll>> a(n);
+  rep(i, n) rep(_, n - 1) {
+    ll t; cin >> t; --t;
+    a[i].push(t);
+  }
+
+  ll cnt = 0, ans = 0;
+  while (cnt < n * (n - 1) / 2) {
+    ans++;
+    set<ll> today;
+    rep(i, n) {
+      if (today.find(i) != today.end() || a[i].empty()) continue;
+      ll j = a[i].front();
+      if (a[j].front() == i && today.find(j) == today.end()) {
+        a[i].pop(); a[j].pop();
+        today.insert(i); today.insert(j);
+        cnt++;
+      }
+    }
+    if (today.size() == 0) { cout << -1 << "\n"; return; }
+    today.clear();
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

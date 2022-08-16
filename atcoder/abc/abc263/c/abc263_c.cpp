@@ -106,17 +106,19 @@ void enum_check(ll N, ll from, ll to, function<bool(vl&)> check) { // size, [fro
   }
 }
 
-
 void solve() {
   ll n, m; cin >> n >> m;
-  enum_check(n, 1, m + 1, [&](vl& v) {
-    bool valid = true;
-    rep(i, n - 1) {
-      if (v[i] >= v[i + 1]) {valid = false; break;}
-    }
-    if (valid) coutarray(v);
-    return true;
-  });
+  vl ans;
+  rep(i, n) ans.pb(0);
+  rep(i, m - n) ans.pb(1);
+
+  do {
+    rep(i, m) {
+      if (ans[i] == 0) cout << i + 1 << " ";
+    }cout << "\n";
+  } while (next_permutation(all(ans)));
+
+
 }
 
 signed main() {
