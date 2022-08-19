@@ -97,8 +97,36 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+void enum_check(ll N, ll from, ll to, function<bool(vl&)> check, bool inc = false) { // size, [from, to)
+  to--; vl st(N, from);
+  while (1) {
+    assert(st.size() == N); if (!check(st)) break;
+    while (st.size() && st.back() == to) st.pop_back(); if (st.size() == 0) break;
+    st.back()++;
+    while (st.size() < N) if (inc) st.pb(st.back()); else st.pb(from);
+  }
+}
+
 void solve() {
-  ll n; cin >> n;
+  ll n, m, q; cin >> n >> m >> q;
+
+  vlt4 query(q);
+  rep(i, q) {
+    ll a, b, c, d; cin >> a >> b >> c >> d; a--; b--;
+    query[i] = {a, b, c, d};
+  }
+
+  ll ans = 0;
+  enum_check(n, 1, m + 1, [&](vl p) {
+    ll sum = 0;
+    rep(i, q) {
+      auto &[a, b, c, d] = query[i];
+      if (p[b] - p[a] == c) sum += d;
+    }
+    chmax(ans, sum);
+    return true;
+  }, true);
+  cout << ans << "\n";
 }
 
 signed main() {

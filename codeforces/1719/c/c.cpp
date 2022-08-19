@@ -97,59 +97,54 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 1000000007;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
-//------------------------------------------------------------------------------
-const int max_n = 1 << 20;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
-
-
-
 void solve() {
-  ll h, w, k; cin >> h >> w >> k;
+  ll n, q; cin >> n >> q;
+  vlin(a, n, 0);
 
-  vvmi dp(h + 1, vmi(w, 0));
-  dp[0][0] = 1;
+  priority_queue<LT, vlt, greater<LT>> query;
+  rep(qi, q) {
+    ll i, k; cin >> i >> k; i--;
+    query.push({k, i, qi});
+  }
 
-  rep(i, h) {
-    rep(S, 1 << w - 1) {
-      if (S << 1 & S) continue;
-      rep(j, w) {
-        if (j < w - 1 && S & 1 << j) dp[i + 1][j + 1] += dp[i][j];
-        else if (0 < j && S & (1 << j - 1)) dp[i + 1][j - 1] += dp[i][j];
-        else dp[i + 1][j] += dp[i][j];
-      }
+  vl ans(q);
+  stack<LP> st;
+  rep_r(i, n) {
+    st.push({a[i], i});
+  }
+
+  vl cnt(n, 0);
+  ll cur = 0;
+  while (st.size() > 1) {
+    auto [a1, id1] = st.top(); st.pop();
+    auto [a2, id2] = st.top(); st.pop();
+    if (a1 > a2) {
+      cnt[id1]++;
+      st.push({a1, id1});
+    } else {
+      cnt[id2]++;
+      st.push({a2, id2});
+    }
+    cur++;
+    while (!query.empty() && cur == get<0>(query.top())) {
+      auto [k, i, qi] = query.top(); query.pop();
+      ans[qi] = cnt[i];
     }
   }
-  cout << dp[h][--k] << "\n";
+  ll winner = st.top().se;
+
+  while (!query.empty()) {
+    auto [k, i, qi] = query.top(); query.pop();
+    ans[qi] = cnt[i];
+    if (i == winner) ans[qi] += k - (n - 1);
+  }
+
+  coutarray(ans, 0, "\n");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

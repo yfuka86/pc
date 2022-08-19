@@ -97,54 +97,66 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 1000000007;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
-//------------------------------------------------------------------------------
-const int max_n = 1 << 20;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 
-
-void solve() {
-  ll h, w, k; cin >> h >> w >> k;
-
-  vvmi dp(h + 1, vmi(w, 0));
-  dp[0][0] = 1;
-
-  rep(i, h) {
-    rep(S, 1 << w - 1) {
-      if (S << 1 & S) continue;
-      rep(j, w) {
-        if (j < w - 1 && S & 1 << j) dp[i + 1][j + 1] += dp[i][j];
-        else if (0 < j && S & (1 << j - 1)) dp[i + 1][j - 1] += dp[i][j];
-        else dp[i + 1][j] += dp[i][j];
+// ベルマンフォード法 : O(NM)
+//   - (dist, cycle) のペアを返す
+//   - 負閉路が存在しない場合，cycle はサイズ 0
+//   - 負閉路が存在する場合，cycle は負閉路に含まれる頂点配列
+//   - 負閉路が複数あれば頂点が混ざり合うことに注意
+//   - 負閉路を一つだけ見つけたい場合は "find_negative_cycle.cpp" を使う
+pair<vl, vl> bellman_ford(const Graph<ll>& G, int s) {
+  int n = G.size(); assert(0 <= s && s < n);
+  vl dist(n, LINF); dist[s] = 0;
+  vl cycle;  // 負閉路に含まれる頂点配列
+  for (int i = 0; i < n; i++) {
+    for (int u = 0; u < n; u++) if (dist[u] != INF) {
+      for (const auto& v : G[u]) {
+        if (chmin(dist[v], dist[u] + v.cost)) {
+          if (i == n-1) cycle.push_back(v);
+        }
       }
     }
   }
-  cout << dp[h][--k] << "\n";
+  return make_pair(dist, cycle);
+}
+
+
+void solve() {
+  ll n, m; cin >> n >> m;
+  Graph<ll> G(n);
+  rep(i, m) {
+    ll a, b, c; cin >> a >> b >> c; --a; --b;
+    G.add_directed_edge(a, b, -c);
+  }
+  auto [dist, cycle] = bellman_ford(G, 0);
+
+  if (cycle.size() == 0) {
+    cout << -dist[n - 1] << "\n";
+  } else {
+    vb vis(n);
+    function<void(ll)> dfs = [&](ll v) {
+      for (auto &to: G[v]) {
+        if (vis[to]) continue;
+        vis[to] = true;
+        dfs(to);
+      }
+    };
+    for (auto s: cycle) {
+      if (!vis[s]) dfs(s);
+    }
+    if (vis[n - 1]) cout << "inf" << "\n";
+    else cout << -dist[n - 1] << "\n";
+  }
 }
 
 signed main() {

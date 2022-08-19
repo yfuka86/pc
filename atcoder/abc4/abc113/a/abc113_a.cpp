@@ -83,7 +83,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll x, y; cin >> x >> y;
+  cout << x + y / 2 << "\n";
 }
 
 signed main() {
