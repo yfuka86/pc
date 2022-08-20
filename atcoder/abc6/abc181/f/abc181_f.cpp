@@ -97,8 +97,40 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
 
+
+void solve() {
+  ll n; cin >> n;
+  vd x(n), y(n);
+  rep(i, n) cin >> x[i] >> y[i];
+
+  ld ok = 0, ng = 200;
+  rep(_, 50) {
+    ld mid = (ok + ng) / 2;
+    UnionFind uf(n + 2);
+    rep(i, n) {
+      if (100 - y[i] < mid) uf.unite(i, n);
+      if (y[i] + 100 < mid) uf.unite(i, n + 1);
+    }
+    rep(i, n) rep2(j, i+1, n) {
+      ld dx = abs(x[j] - x[i]);
+      ld dy = abs(y[j] - y[i]);
+      if (sqrt(dx * dx + dy * dy) < mid) uf.unite(i, j);
+    }
+    if (uf.same(n, n + 1)) ng = mid; else ok = mid;
+  }
+  cout << ok / 2 << "\n";
 }
 
 signed main() {

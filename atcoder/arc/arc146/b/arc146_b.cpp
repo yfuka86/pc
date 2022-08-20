@@ -98,7 +98,53 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
+  ll n, m, k; cin >> n >> m >> k;
+  vlin(a, n, 0);
+  sort(rall(a));
 
+  ll ans = 0;
+  rep_r(b, 31) {
+    ll op = 0;
+    rep(i, k) {
+      if (!(a[i] & 1 << b)) {
+        op += (1 << b) - a[i];
+      }
+    }
+    // debug(a, b, op, m);
+
+    if (op == 0) {
+      ans |= 1 << b;
+
+      vl na;
+      rep(i, a.size()) {
+        if (a[i] & 1 << b) {
+          na.pb(a[i] ^ 1 << b);
+        } else {
+          break;
+        }
+      }
+      a = na;
+    } else if (op <= m) {
+      ans |= 1 << b;
+      m -= op;
+
+      vl na;
+      rep(i, k) {
+        if (a[i] & 1 << b) {
+          na.pb(a[i] ^ (1 << b));
+        } else {
+          na.pb(0);
+        }
+      }
+      a = na;
+    } else {
+      rep(i, a.size()) {
+        if (a[i] & 1 << b) a[i] ^= 1 << b;
+      }
+    }
+    sort(rall(a));
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

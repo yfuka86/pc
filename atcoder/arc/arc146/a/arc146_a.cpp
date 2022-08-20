@@ -98,7 +98,23 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
+  ll n; cin >> n;
+  vector<pair<ll, string>> a(n);
+  rep(i, n) {
+    string s; ll sz; cin >> s;
+    sz = s.size();
+    a[i] = {sz, s};
+  }
+  sort(rall(a));
 
+  string ans = "0";
+  vs cand(3);
+  rep(i, 3) cand[i] = a[i].se;
+  sort(all(cand));
+  do {
+    chmax(ans, cand[0] + cand[1] + cand[2]);
+  } while(next_permutation(all(cand)));
+  cout << ans << "\n";
 }
 
 signed main() {
