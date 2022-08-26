@@ -97,22 +97,6 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-
-// XOR 基底を求める
-//   - O(B (N + logB))   B はビット長
-//   - 掃き出し法と同じように MSB の降順にする（不要なら消す）
-template<class T>
-vector<T> xor_basis(const vector<T>& A) {
-  vector<T> basis;
-  for (T a : A) {
-    for (const T& b : basis) { a = min(a, a ^ b); }
-    if (a) { basis.push_back(a); }
-  }
-  // MSB の降順にソートしておく
-  sort(basis.rbegin(), basis.rend());
-  return basis;
-}
-
 void solve() {
   ll n; cin >> n;
   vlin(a, n, 0);

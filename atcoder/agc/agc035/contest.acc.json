@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "agc035",
+    "title": "AtCoder Grand Contest 035",
+    "url": "https://atcoder.jp/contests/agc035"
+  },
+  "tasks": [
+    {
+      "id": "agc035_a",
+      "label": "A",
+      "title": "XOR Circle",
+      "url": "https://atcoder.jp/contests/agc035/tasks/agc035_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "agc035_a.cpp"
+      }
+    },
+    {
+      "id": "agc035_b",
+      "label": "B",
+      "title": "Even Degrees",
+      "url": "https://atcoder.jp/contests/agc035/tasks/agc035_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "agc035_b.cpp"
+      }
+    },
+    {
+      "id": "agc035_c",
+      "label": "C",
+      "title": "Skolem XOR Tree",
+      "url": "https://atcoder.jp/contests/agc035/tasks/agc035_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "agc035_c.cpp"
+      }
+    },
+    {
+      "id": "agc035_d",
+      "label": "D",
+      "title": "Add and Remove",
+      "url": "https://atcoder.jp/contests/agc035/tasks/agc035_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "agc035_d.cpp"
+      }
+    },
+    {
+      "id": "agc035_e",
+      "label": "E",
+      "title": "Develop",
+      "url": "https://atcoder.jp/contests/agc035/tasks/agc035_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "agc035_e.cpp"
+      }
+    },
+    {
+      "id": "agc035_f",
+      "label": "F",
+      "title": "Two Histograms",
+      "url": "https://atcoder.jp/contests/agc035/tasks/agc035_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "agc035_f.cpp"
+      }
+    }
+  ]
+}
