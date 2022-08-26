@@ -100,8 +100,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll x, y, a, b; cin >> x >> y >> a >> b;
 
+  ll ans = 0;
+  while (x <= b && x * (a - 1) <= b) {
+    x *= a;
+    if (x < y) ans++;
+  }
+
+  ans += max((y - 1 - x), 0ll) / b;
+  cout << ans << "\n";
 }
 
 signed main() {

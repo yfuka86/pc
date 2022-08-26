@@ -125,19 +125,63 @@ struct lazy_segtree {
   void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
 
-struct S { ll a; }; struct F {};
-S op(S l, S r) { return S{max(l.a, r.a)}; }
-S e() { return S{-1}; }
-S mapping(F f, S x) { return S{r.a}; }
-F composition(F f, F g) { { return F{}; } }
-F id() { return F{}; }
+struct S { ll cnt[3], pcnt[3]; }; using F = vl;
+S e() { return {{0, 0, 0}, {0, 0, 0}}; }
+S op(S l, S r) {
+  S ret = e();
+  rep(i, 3) {
+    ret.cnt[i] = l.cnt[i] + r.cnt[i];
+    ret.pcnt[i] = l.pcnt[i] + r.pcnt[i];
+  }
+  ret.pcnt[0] += l.cnt[1] * r.cnt[0];
+  ret.pcnt[1] += l.cnt[2] * r.cnt[0];
+  ret.pcnt[2] += l.cnt[2] * r.cnt[1];
+  return ret;
+}
+S mapping(F f, S x) {
+  S ret = e();
+  rep(d, 3) {
+    ret.cnt[f[d]] += x.cnt[d];
+  }
+  auto pc = [&](ll i, ll j) {
+    if (i == 1 && j == 0) return x.pcnt[0];
+    if (i == 2 && j == 0) return x.pcnt[1];
+    if (i == 2 && j == 1) return x.pcnt[2];
+    if (i == 0 && j == 1) return x.cnt[1] * x.cnt[0] - x.pcnt[0];
+    if (i == 0 && j == 2) return x.cnt[2] * x.cnt[0] - x.pcnt[1];
+    if (i == 1 && j == 2) return x.cnt[2] * x.cnt[1] - x.pcnt[2];
+  };
+  rep(i, 3) rep(j, 3) {
+    if (f[i] == 1 && f[j] == 0) ret.pcnt[0] += pc(i, j);
+    if (f[i] == 2 && f[j] == 0) ret.pcnt[1] += pc(i, j);
+    if (f[i] == 2 && f[j] == 1) ret.pcnt[2] += pc(i, j);
+  }
+  return ret;
+}
+F composition(F f, F g) { return { f[g[0]], f[g[1]], f[g[2]] }; }
+F id() { return {0, 1, 2}; }
 
 void solve() {
   ll n, q; cin >> n >> q;
   vlin(a, n, 0);
 
+  vector<S> v(n);
   rep(i, n) {
+    v[i] = {{a[i]==0, a[i]==1, a[i]==2}, {0, 0, 0}};
+  }
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(v);
 
+  rep(i, q) {
+    ll t; cin >> t;
+    if (t == 1) {
+      ll l, r; cin >> l >> r; l--;
+      S ret = seg.prod(l, r);
+      // debug(ret.cnt[0], ret.pcnt[0]);
+      cout << ret.pcnt[0] + ret.pcnt[1] + ret.pcnt[2] << "\n";
+    } else {
+      ll l, r, s, t, u; cin >> l >> r >> s >> t >> u; l--;
+      seg.apply(l, r, {s, t, u});
+    }
   }
 }
 

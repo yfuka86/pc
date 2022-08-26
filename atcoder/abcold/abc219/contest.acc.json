@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc219",
+    "title": "Sciseed Programming Contest 2021（AtCoder Beginner Contest 219）",
+    "url": "https://atcoder.jp/contests/abc219"
+  },
+  "tasks": [
+    {
+      "id": "abc219_a",
+      "label": "A",
+      "title": "AtCoder Quiz 2",
+      "url": "https://atcoder.jp/contests/abc219/tasks/abc219_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc219_a.cpp"
+      }
+    },
+    {
+      "id": "abc219_b",
+      "label": "B",
+      "title": "Maritozzo",
+      "url": "https://atcoder.jp/contests/abc219/tasks/abc219_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc219_b.cpp"
+      }
+    },
+    {
+      "id": "abc219_c",
+      "label": "C",
+      "title": "Neo-lexicographic Ordering",
+      "url": "https://atcoder.jp/contests/abc219/tasks/abc219_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc219_c.cpp"
+      }
+    },
+    {
+      "id": "abc219_d",
+      "label": "D",
+      "title": "Strange Lunchbox",
+      "url": "https://atcoder.jp/contests/abc219/tasks/abc219_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc219_d.cpp"
+      }
+    },
+    {
+      "id": "abc219_e",
+      "label": "E",
+      "title": "Moat",
+      "url": "https://atcoder.jp/contests/abc219/tasks/abc219_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc219_e.cpp"
+      }
+    },
+    {
+      "id": "abc219_f",
+      "label": "F",
+      "title": "Cleaning Robot",
+      "url": "https://atcoder.jp/contests/abc219/tasks/abc219_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc219_f.cpp"
+      }
+    },
+    {
+      "id": "abc219_g",
+      "label": "G",
+      "title": "Propagation",
+      "url": "https://atcoder.jp/contests/abc219/tasks/abc219_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc219_g.cpp"
+      }
+    },
+    {
+      "id": "abc219_h",
+      "label": "H",
+      "title": "Candles",
+      "url": "https://atcoder.jp/contests/abc219/tasks/abc219_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "abc219_h.cpp"
+      }
+    }
+  ]
+}

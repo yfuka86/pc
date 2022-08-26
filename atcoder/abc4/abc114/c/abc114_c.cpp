@@ -99,6 +99,38 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+
+  vl ma;
+  ll tn = n;
+  while(tn > 0) {
+    ma.pb(tn % 10);
+    tn /= 10;
+  }
+  reverse(all(ma));
+  ll N = ma.size();
+
+  v3l dp(N + 1, vvl(2, vl(8, 0)));
+  vl t = {3,5,7};
+
+  rep(i, N) {
+    rep(d, 3) {
+      if (i == 0 && t[d] > ma[i]) continue;
+      dp[i + 1][i == 0 && t[d] == ma[i]][1 << d] += 1;
+
+      rep(j, 2) {
+        rep(S, 8) {
+          if (j) {
+            if (t[d] > ma[i]) continue; else dp[i + 1][t[d] == ma[i]][S | 1 << d] += dp[i][j][S];
+          } else {
+            dp[i + 1][j][S | 1 << d] += dp[i][j][S];
+          }
+        }
+      }
+    }
+  }
+  // debug(dp);
+
+  cout << dp[N][1][7] + dp[N][0][7] << "\n";
 }
 
 signed main() {
