@@ -78,94 +78,6 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-template <typename T, bool isMin>
-struct ConvexHullTrick {
-#define F first
-#define S second
-  using P = pair<T, T>;
-  deque<P> H;
-
-  ConvexHullTrick() = default;
-
-  bool empty() const { return H.empty(); }
-
-  void clear() { H.clear(); }
-
-  inline int sgn(T x) { return x == 0 ? 0 : (x < 0 ? -1 : 1); }
-
-  using D = long double;
-
-  inline bool check(const P &a, const P &b, const P &c) {
-    if (b.S == a.S || c.S == b.S)
-      return sgn(b.F - a.F) * sgn(c.S - b.S) >= sgn(c.F - b.F) * sgn(b.S - a.S);
-
-    // return (b.F-a.F)*(c.S-b.S) >= (b.S-a.S)*(c.F-b.F);
-    return D(b.F - a.F) * sgn(c.S - b.S) / D(abs(b.S - a.S)) >=
-           D(c.F - b.F) * sgn(b.S - a.S) / D(abs(c.S - b.S));
-  }
-
-  void add(T a, T b) {
-    if (!isMin) a *= -1, b *= -1;
-    P line(a, b);
-    if (empty()) {
-      H.emplace_front(line);
-      return;
-    }
-    if (H.front().F <= a) {
-      if (H.front().F == a) {
-        if (H.front().S <= b) return;
-        H.pop_front();
-      }
-      while (H.size() >= 2 && check(line, H.front(), H[1])) H.pop_front();
-      H.emplace_front(line);
-    } else {
-      assert(a <= H.back().F);
-      if (H.back().F == a) {
-        if (H.back().S <= b) return;
-        H.pop_back();
-      }
-      while (H.size() >= 2 && check(H[H.size() - 2], H.back(), line))
-        H.pop_back();
-      H.emplace_back(line);
-    }
-  }
-
-  inline T get_y(const P &a, const T &x) { return a.F * x + a.S; }
-
-  T query(T x) {
-    assert(!empty());
-    int l = -1, r = H.size() - 1;
-    while (l + 1 < r) {
-      int m = (l + r) >> 1;
-      if (get_y(H[m], x) >= get_y(H[m + 1], x))
-        l = m;
-      else
-        r = m;
-    }
-    if (isMin) return get_y(H[r], x);
-    return -get_y(H[r], x);
-  }
-
-  T query_monotone_inc(T x) {
-    assert(!empty());
-    while (H.size() >= 2 && get_y(H.front(), x) >= get_y(H[1], x))
-      H.pop_front();
-    if (isMin) return get_y(H.front(), x);
-    return -get_y(H.front(), x);
-  }
-
-  T query_monotone_dec(T x) {
-    assert(!empty());
-    while (H.size() >= 2 && get_y(H.back(), x) >= get_y(H[H.size() - 2], x))
-      H.pop_back();
-    if (isMin) return get_y(H.back(), x);
-    return -get_y(H.back(), x);
-  }
-
-#undef F
-#undef S
-};
-
 ll solve(ll n, vl a) {
   ll ans = n - a[0]; return ans;
 }
@@ -186,18 +98,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n, c; cin >> n >> c;
-  vlin(h, n, 0);
-  ConvexHullTrick<ll, true> cht;
+  ll n; cin >> n;
+  vlin(a, n, 0);
 
-  vl dp(n, LINF);
-  dp[0] = 0;
-
-  rep(i, n - 1) {
-    cht.add(-h[i] * 2, h[i] * h[i] + dp[i]);
-    chmin(dp[i + 1], cht.query(h[i + 1]) + h[i + 1] * h[i + 1] + c);
-  }
-  cout << dp[n - 1] << "\n";
 }
 
 signed main() {
@@ -206,5 +109,3 @@ signed main() {
   while (t--) solve();
   // while (t--) compare();
 }
-
-
