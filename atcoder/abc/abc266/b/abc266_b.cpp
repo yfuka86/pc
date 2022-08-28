@@ -96,146 +96,40 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
-
-template <typename T, bool isMin>
-struct ConvexHullTrick {
-#define F first
-#define S second
-  using P = pair<T, T>;
-  deque<P> H;
-
-  ConvexHullTrick() = default;
-
-  bool empty() const { return H.empty(); }
-
-  void clear() { H.clear(); }
-
-  inline int sgn(T x) { return x == 0 ? 0 : (x < 0 ? -1 : 1); }
-
-  using D = long double;
-
-  inline bool check(const P &a, const P &b, const P &c) {
-    if (b.S == a.S || c.S == b.S)
-      return sgn(b.F - a.F) * sgn(c.S - b.S) >= sgn(c.F - b.F) * sgn(b.S - a.S);
-
-    // return (b.F-a.F)*(c.S-b.S) >= (b.S-a.S)*(c.F-b.F);
-    return D(b.F - a.F) * sgn(c.S - b.S) / D(abs(b.S - a.S)) >=
-           D(c.F - b.F) * sgn(b.S - a.S) / D(abs(c.S - b.S));
-  }
-
-  void add(T a, T b) {
-    if (!isMin) a *= -1, b *= -1;
-    P line(a, b);
-    if (empty()) {
-      H.emplace_front(line);
-      return;
-    }
-    if (H.front().F <= a) {
-      if (H.front().F == a) {
-        if (H.front().S <= b) return;
-        H.pop_front();
-      }
-      while (H.size() >= 2 && check(line, H.front(), H[1])) H.pop_front();
-      H.emplace_front(line);
-    } else {
-      assert(a <= H.back().F);
-      if (H.back().F == a) {
-        if (H.back().S <= b) return;
-        H.pop_back();
-      }
-      while (H.size() >= 2 && check(H[H.size() - 2], H.back(), line))
-        H.pop_back();
-      H.emplace_back(line);
-    }
-  }
-
-  inline T get_y(const P &a, const T &x) { return a.F * x + a.S; }
-
-  T query(T x) {
-    assert(!empty());
-    int l = -1, r = H.size() - 1;
-    while (l + 1 < r) {
-      int m = (l + r) >> 1;
-      if (get_y(H[m], x) >= get_y(H[m + 1], x))
-        l = m;
-      else
-        r = m;
-    }
-    if (isMin) return get_y(H[r], x);
-    return -get_y(H[r], x);
-  }
-
-  T query_monotone_inc(T x) {
-    assert(!empty());
-    while (H.size() >= 2 && get_y(H.front(), x) >= get_y(H[1], x))
-      H.pop_front();
-    if (isMin) return get_y(H.front(), x);
-    return -get_y(H.front(), x);
-  }
-
-  T query_monotone_dec(T x) {
-    assert(!empty());
-    while (H.size() >= 2 && get_y(H.back(), x) >= get_y(H[H.size() - 2], x))
-      H.pop_back();
-    if (isMin) return get_y(H.back(), x);
-    return -get_y(H.back(), x);
-  }
-
-#undef F
-#undef S
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
 };
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
 
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (chmin(costs[to], nc)) que.push({nc, to}); } }
-  return costs; }
 
 void solve() {
-  ll n, m, k; cin >> n >> m >> k;
-  Graph<ll> G(n);
-  rep(i, m) {
-    ll u, v, w; cin >> u >> v >> w; --u; --v;
-    G.add_edge(u, v, w);
-  }
-
-  vl inicost = dijkstra(G, 0);
-  vvl dp(k + 1, vl(n, LINF));
-  dp[0] = inicost;
-
-  rep2(kk, 1, k + 1) {
-    // debug(dp);
-    ConvexHullTrick<ll, true> cht;
-    rep(i, n) cht.add(-i * 2, i * i + dp[kk - 1][i]);
-
-    vl &cost = dp[kk];
-    priority_queue<LP, vlp, greater<LP>> que;
-    cost[0] = 0;
-    rep(i, n) chmin(cost[i], cht.query(i) + i * i);
-    rep(i, n) que.push({cost[i], i});
-    while (!que.empty()) {
-      auto [c, v] = que.top(); que.pop();
-      if (cost[v] < c) continue;
-      for (auto &to: G[v]) {
-        if (chmin(cost[to], c + to.cost)) {
-          que.push({cost[to], to});
-        }
-      }
-    }
-  }
-  coutarray(dp[k]);
+  ll n; cin >> n;
+  cout << mint(n) << "\n";
 }
 
 signed main() {

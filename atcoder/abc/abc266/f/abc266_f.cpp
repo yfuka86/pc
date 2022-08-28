@@ -97,95 +97,6 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template <typename T, bool isMin>
-struct ConvexHullTrick {
-#define F first
-#define S second
-  using P = pair<T, T>;
-  deque<P> H;
-
-  ConvexHullTrick() = default;
-
-  bool empty() const { return H.empty(); }
-
-  void clear() { H.clear(); }
-
-  inline int sgn(T x) { return x == 0 ? 0 : (x < 0 ? -1 : 1); }
-
-  using D = long double;
-
-  inline bool check(const P &a, const P &b, const P &c) {
-    if (b.S == a.S || c.S == b.S)
-      return sgn(b.F - a.F) * sgn(c.S - b.S) >= sgn(c.F - b.F) * sgn(b.S - a.S);
-
-    // return (b.F-a.F)*(c.S-b.S) >= (b.S-a.S)*(c.F-b.F);
-    return D(b.F - a.F) * sgn(c.S - b.S) / D(abs(b.S - a.S)) >=
-           D(c.F - b.F) * sgn(b.S - a.S) / D(abs(c.S - b.S));
-  }
-
-  void add(T a, T b) {
-    if (!isMin) a *= -1, b *= -1;
-    P line(a, b);
-    if (empty()) {
-      H.emplace_front(line);
-      return;
-    }
-    if (H.front().F <= a) {
-      if (H.front().F == a) {
-        if (H.front().S <= b) return;
-        H.pop_front();
-      }
-      while (H.size() >= 2 && check(line, H.front(), H[1])) H.pop_front();
-      H.emplace_front(line);
-    } else {
-      assert(a <= H.back().F);
-      if (H.back().F == a) {
-        if (H.back().S <= b) return;
-        H.pop_back();
-      }
-      while (H.size() >= 2 && check(H[H.size() - 2], H.back(), line))
-        H.pop_back();
-      H.emplace_back(line);
-    }
-  }
-
-  inline T get_y(const P &a, const T &x) { return a.F * x + a.S; }
-
-  T query(T x) {
-    assert(!empty());
-    int l = -1, r = H.size() - 1;
-    while (l + 1 < r) {
-      int m = (l + r) >> 1;
-      if (get_y(H[m], x) >= get_y(H[m + 1], x))
-        l = m;
-      else
-        r = m;
-    }
-    if (isMin) return get_y(H[r], x);
-    return -get_y(H[r], x);
-  }
-
-  T query_monotone_inc(T x) {
-    assert(!empty());
-    while (H.size() >= 2 && get_y(H.front(), x) >= get_y(H[1], x))
-      H.pop_front();
-    if (isMin) return get_y(H.front(), x);
-    return -get_y(H.front(), x);
-  }
-
-  T query_monotone_dec(T x) {
-    assert(!empty());
-    while (H.size() >= 2 && get_y(H.back(), x) >= get_y(H[H.size() - 2], x))
-      H.pop_back();
-    if (isMin) return get_y(H.back(), x);
-    return -get_y(H.back(), x);
-  }
-
-#undef F
-#undef S
-};
-
-
 template< typename T = ll > struct Edge {
   int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
   operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
@@ -196,46 +107,144 @@ template< typename T = ll > struct Graph {
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (chmin(costs[to], nc)) que.push({nc, to}); } }
-  return costs; }
 
-void solve() {
-  ll n, m, k; cin >> n >> m >> k;
-  Graph<ll> G(n);
-  rep(i, m) {
-    ll u, v, w; cin >> u >> v >> w; --u; --v;
-    G.add_edge(u, v, w);
-  }
-
-  vl inicost = dijkstra(G, 0);
-  vvl dp(k + 1, vl(n, LINF));
-  dp[0] = inicost;
-
-  rep2(kk, 1, k + 1) {
-    // debug(dp);
-    ConvexHullTrick<ll, true> cht;
-    rep(i, n) cht.add(-i * 2, i * i + dp[kk - 1][i]);
-
-    vl &cost = dp[kk];
-    priority_queue<LP, vlp, greater<LP>> que;
-    cost[0] = 0;
-    rep(i, n) chmin(cost[i], cht.query(i) + i * i);
-    rep(i, n) que.push({cost[i], i});
-    while (!que.empty()) {
-      auto [c, v] = que.top(); que.pop();
-      if (cost[v] < c) continue;
-      for (auto &to: G[v]) {
-        if (chmin(cost[to], c + to.cost)) {
-          que.push({cost[to], to});
-        }
-      }
+template <typename G>
+struct HeavyLightDecomposition {
+ private:
+  void dfs_sz(int cur) {
+    size[cur] = 1;
+    for (auto& dst : g[cur]) {
+      if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
+      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
     }
   }
-  coutarray(dp[k]);
+  void dfs_hld(int cur) {
+    down[cur] = id++; drev[down[cur]] = cur;
+    for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
+    up[cur] = id;
+  }
+  // [u, v)
+  vector<pair<int, int>> ascend(int u, int v) const {
+    vector<pair<int, int>> res;
+    while (nxt[u] != nxt[v]) { res.emplace_back(down[u], down[nxt[u]]); u = par[nxt[u]]; }
+    if (u != v) res.emplace_back(down[u], down[v] + 1); return res;
+  }
+  // (u, v]
+  vector<pair<int, int>> descend(int u, int v) const {
+    if (u == v) return {};
+    if (nxt[u] == nxt[v]) return {{down[u] + 1, down[v]}};
+    auto res = descend(u, par[nxt[v]]);
+    res.emplace_back(down[nxt[v]], down[v]);
+    return res;
+  }
+ public:
+  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
+  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
+  void build(int root) { dfs_sz(root); dfs_hld(root); }
+  pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
+  template <typename F>
+  void path_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) { int s = a + 1, t = b; s > t ? f(t, s) : f(s, t); }
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) { int s = a, t = b + 1; s > t ? f(t, s) : f(s, t); }
+  }
+  template <typename F>
+  void path_noncommutative_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) f(a + 1, b);
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) f(a, b + 1);
+  }
+  template <typename F>
+  void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
+  int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
+  int la(int a, int d) { assert(depth[a] >= d); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
+  int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
+};
+
+
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
+
+
+void solve() {
+  ll n; cin >> n;
+  Graph<ll> G(n);
+  rep(i, n) {
+    ll u, v; cin >> u >> v; u--; v--;
+    G.add_edge(u, v);
+  }
+
+  vl id(n, -1);
+
+  {
+    vl used(n, false);
+    vlp dp(n, {-1, -1});
+    ll ansv = -1;
+    vl ans;
+
+    function<void(ll, ll)> dfs = [&](ll v, ll p) {
+      used[v] = 1;
+      for (auto &to: G[v]) {
+        if (to == p) continue;
+        if (!used[to]) {
+          dp[to] = {to.idx, v};
+          dfs(to, v);
+        } else if (used[to] == 1) {
+          if (ans.size()) continue;
+          ans.pb(to);
+          ll cur = v;
+          while (cur != to) {
+            ans.pb(cur);
+            auto [id, from] = dp[cur];
+            cur = from;
+          }
+        }
+      }
+      used[v] = 2;
+    };
+    rep(i, n) if (!used[i] && !ans.size()) dfs(i, -1);
+    for(auto v: ans) id[v] = 0;
+  }
+
+  function<void(ll, ll, ll)> dfs2 = [&](ll v, ll p, ll par) {
+    for (auto to: G[v]) {
+      if (to == p) continue;
+      if (id[to] == 0) continue;
+      id[to] = par;
+      dfs2(to, v, par);
+    }
+  };
+  rep(i, n) {
+    if (id[i] == 0) dfs2(i, -1, i + 1);
+  }
+
+  ll q; cin >> q;
+  rep(i, q) {
+    ll x, y; cin >> x >> y; --x; --y;
+    if (id[x] && id[y] && id[x] == id[y]) { cout << "Yes" << "\n"; continue; }
+    if (!id[x] && !id[y]) { cout << "No" << "\n"; continue; }
+    if ((!id[x] && id[y] == x + 1) || (!id[y] && id[x] == y + 1)) { cout << "Yes" << "\n"; continue; }
+    cout << "No" << "\n";
+  }
 }
 
 signed main() {
