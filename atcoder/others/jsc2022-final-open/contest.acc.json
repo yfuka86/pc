@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "jsc2022-final-open",
+    "title": "第三回日本最強プログラマー学生選手権 -決勝- (オープンコンテスト)",
+    "url": "https://atcoder.jp/contests/jsc2022-final-open"
+  },
+  "tasks": [
+    {
+      "id": "jsc2022_final_a",
+      "label": "A",
+      "title": "Max and Argmax",
+      "url": "https://atcoder.jp/contests/jsc2022-final-open/tasks/jsc2022_final_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "jsc2022_final_a.cpp"
+      }
+    },
+    {
+      "id": "jsc2022_final_b",
+      "label": "B",
+      "title": "Increment and Rotate",
+      "url": "https://atcoder.jp/contests/jsc2022-final-open/tasks/jsc2022_final_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "jsc2022_final_b.cpp"
+      }
+    },
+    {
+      "id": "jsc2022_final_c",
+      "label": "C",
+      "title": "Not a Multiple of 3",
+      "url": "https://atcoder.jp/contests/jsc2022-final-open/tasks/jsc2022_final_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "jsc2022_final_c.cpp"
+      }
+    },
+    {
+      "id": "jsc2022_final_d",
+      "label": "D",
+      "title": "And is 0",
+      "url": "https://atcoder.jp/contests/jsc2022-final-open/tasks/jsc2022_final_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "jsc2022_final_d.cpp"
+      }
+    },
+    {
+      "id": "jsc2022_final_e",
+      "label": "E",
+      "title": "Circular Sushi",
+      "url": "https://atcoder.jp/contests/jsc2022-final-open/tasks/jsc2022_final_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "jsc2022_final_e.cpp"
+      }
+    },
+    {
+      "id": "jsc2022_final_f",
+      "label": "F",
+      "title": "Share the Recipe",
+      "url": "https://atcoder.jp/contests/jsc2022-final-open/tasks/jsc2022_final_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "jsc2022_final_f.cpp"
+      }
+    },
+    {
+      "id": "jsc2022_final_g",
+      "label": "G",
+      "title": "Bipartite Partition",
+      "url": "https://atcoder.jp/contests/jsc2022-final-open/tasks/jsc2022_final_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "jsc2022_final_g.cpp"
+      }
+    }
+  ]
+}
