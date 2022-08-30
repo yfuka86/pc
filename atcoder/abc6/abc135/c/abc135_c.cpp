@@ -84,6 +84,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(a, n + 1, 0);
+  vlin(b, n, 0);
+
+  ll bs = accumulate(all(b), 0ll);
+  rep(i, n) {
+    ll c = min(a[i], b[i]);
+    a[i] -= c;
+    b[i] -= c;
+    ll c2 = min(b[i], a[i + 1]);
+    a[i + 1] -= c2;
+    b[i] -= c2;
+  }
+  cout << bs - accumulate(all(b), 0ll) << "\n";
+
 }
 
 signed main() {

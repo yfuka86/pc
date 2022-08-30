@@ -124,9 +124,9 @@ void solve() {
 
   map<string, ll> prerem, sufrem;
 
-  rep(i, n) rep(j, S[i].size()) {
+  rep(i, n) rep2(j, 1, S[i].size()) {
     prerem[S[i].substr(0, j)] = 0;
-    sufrem[S[i].substr(j + 1)] = 0;
+    sufrem[S[i].substr(j)] = 0;
   }
   ll cur = 0;
   for (auto [k, _]: prerem) prerem[k] = cur++;
@@ -163,6 +163,8 @@ void solve() {
       ll psz = k.size();
       bool valid = true;
       rep(j, min(sz, psz)) if (k[psz - 1 - j] != s[j]) { valid = false; break; }
+      if (!valid) continue;
+
       if (psz == sz) {
         G.add_directed_edge(v, t, c[i]);
       } else {
@@ -179,6 +181,8 @@ void solve() {
       ll ssz = k.size();
       bool valid = true;
       rep(j, min(sz, ssz)) if (s[sz - 1 - j] != k[j]) { valid = false; break; }
+      if (!valid) continue;
+
       if (ssz == sz) {
         G.add_directed_edge(v, t, c[i]);
       } else {
@@ -193,7 +197,17 @@ void solve() {
     }
   }
 
-  ll ans = dijkstra(G, s)[t];
+  debug(prerem);
+  debug(sufrem);
+  rep(i, 10005) {
+    if (G[i].size() > 0) {
+      debug(i, G[i]);
+    }
+  }
+
+  vl cost = dijkstra(G, s);
+  debug(cost);
+  ll ans = cost[t];
   cout << (ans == LINF ? -1 : ans) << "\n";
 }
 

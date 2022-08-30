@@ -85,7 +85,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n,m,x; cin >> n >> m >> x;
+  vl c(n); vvl a(n, vl(m));
+  rep(i, n) {
+    cin >> c[i];
+    rep(j, m) {
+      cin >> a[i][j];
+    }
+  }
+
+  ll ans = LINF;
+  rep(S, 1 << n) {
+    ll cost = 0;
+    vl und(m, 0);
+    rep(i, n) {
+      if (S & 1 << i) {
+        cost += c[i];
+        rep(j, m) {
+          und[j] += a[i][j];
+        }
+      }
+    }
+    bool valid = true;
+    rep(i, m) {
+      if (und[i] < x) { valid = false; break; }
+    }
+    if (valid) chmin(ans, cost);
+  }
+  cout << (ans == LINF ? -1 : ans) << "\n";
 }
 
 signed main() {
