@@ -22,3 +22,15 @@ struct Timer {
     bool before(double T) { return time() < (int)(T * 1000); }
     void print() { cerr << "elapsed time: " << (double)time() / 1000 << " sec" << endl; }
 } timer;
+
+// ダイクストラでの用法
+// while(!que.empty() && timer.before(1.5)) {
+// }
+// if (!timer.before(1.5)) cout << "Infinity" << "\n";
+
+Graph<ll> rand_tree(ll n) {
+  RandGen rg; vl p = rg.vecperm(n); Graph<ll> G(n);
+  for (int i = 1; i < n; ++i) G.add_edge(p[rg.l(0, i)], p[i]);
+  return G;
+}
+

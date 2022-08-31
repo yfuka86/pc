@@ -39,8 +39,9 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template <typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout<<t; }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
+template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T,typename U> void dump(const pair<T,U>&);
 template<typename T> void dump(const T&t, enable_if_t<!is_void<typename T::iterator>::value>* =nullptr) { dout << "{ "; for(auto it=t.begin();it!=t.end();){ dump(*it); dout << (++it==t.end() ? "" : " "); } dout<<" }"; }
 template<typename T,typename U> void dump(const pair<T,U>&t) { dout<<"("; dump(t.first); dout<<" "; dump(t.second); dout << ")"; }
@@ -97,48 +98,86 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// https://nyaannyaan.github.io/library/geometry/geometry.hpp
+struct Point {
+  using T = __int128_t;
+  T x, y;
+  Point() : x(0), y(0) {}
+  Point(T x_, T y_) : x(x_), y(y_) {}
+  Point &operator+=(const Point &p) { this->x += p.x; this->y += p.y; return *this; }
+  Point &operator-=(const Point &p) { this->x -= p.x; this->y -= p.y; return *this; }
 
-using Real = long double;
-using Point = complex<Real>;
-using Points = vector<Point>;
-constexpr Real EPS = 1e-8;  // 問題によって変える！
-constexpr Real pi = 3.141592653589793238462643383279L;
-istream &operator>>(istream &is, Point &p) {
-  Real a, b;
-  is >> a >> b;
-  p = Point(a, b);
-  return is;
-}
-ostream &operator<<(ostream &os, Point &p) {
-  return os << real(p) << " " << imag(p);
-}
-inline bool eq(Real a, Real b) { return fabs(b - a) < EPS; }
-
-Point operator*(const Point &p, const Real &d) {
-  return Point(real(p) * d, imag(p) * d);
-}
-
-namespace std {
-bool operator<(const Point &a, const Point &b) {
-  return a.real() != b.real() ? a.real() < b.real() : a.imag() < b.imag();
-}
-}  // namespace std
-
-Real cross(const Point &a, const Point &b) {
-  return real(a) * imag(b) - imag(a) * real(b);
-}
-Real dot(const Point &a, const Point &b) {
-  return real(a) * real(b) + imag(a) * imag(b);
-}
+  int pos() const { if (y < 0) return -1; if (y == 0 && 0 <= x) return 0; return 1; }
+  Point operator+(const Point &p) const { return Point(*this) += p; }
+  Point operator-(const Point &p) const { return Point(*this) -= p; }
+  Point operator-() const { return Point(-this->x, -this->y); }
+  bool operator==(const Point &p) const { return x == p.x && y == p.y; }
+  bool operator!=(const Point &p) const { return x != p.x || y != p.y; }
+  bool operator<(const Point &p) const { return x == p.x ? y < p.y : x < p.x; }
+  friend istream &operator>>(istream &is, Point &p) { long long x, y; is >> x >> y; p.x = x, p.y = y; return is; }
+  friend ostream &operator<<(ostream &os, const Point &p) { os << (long long)(p.x) << " " << (long long)(p.y); return os; }
+};
+struct Line {
+  using T = __int128_t;
+  T a, b, c; // ax + by + c = 0;
+  Line(T a, T b, T c) : a(a), b(b), c(c) {
+    if (a < 0 || (a == 0 && b < 0)) { a = -a; b = -b; c = -c; }
+  }
+  Line(Point p1, Point p2): a(0), b(0), c(0) {
+    assert(p1 != p2);
+    ll dx = p2.x - p1.x, dy = p2.y - p1.y;
+    if (dx == 0) dy = 1;
+    if (dx < 0) dx = -dx; dy = -dy;
+    ll g = gcd(dx, abs(dy)); dx /= g; dy /= g;
+    a = dy;
+    b = -dx;
+    c = -(a * p1.x + b * p1.y);
+  }
+  bool operator==(const Line &l) const { return a == l.a && b == l.b && c == l.c; }
+  // 90度回転
+  Line rotate90() { return Line(this->b, -this->a, this->c); }
+  // pを通るように平行移動
+  Line move_parallelly(Point p) { Line ret = Line(*this); ret.c = -(a * p.x + b * p.y); return ret; }
+};
 
 void solve() {
   ll n; cin >> n;
-  Points p(n); vl c(n);
-  rep(i, n) cin >> p[i] >> c[i];
+  vl x(n), y(n), C(n);
+  rep(i, n) cin >> x[i] >> y[i] >> C[i];
 
+  map<LT, vlp> mp, mp2;
+  rep(i, n) rep(j, i) {
+    Line l({x[i], y[i]}, {x[j], y[j]});
+    Line nl = l.rotate90().move_parallelly({x[i] + x[j], y[i] + y[j]});
+    mp[{nl.a, nl.b, nl.c}].pb({i, j});
 
+    // ll a=2*(x[j]-x[i]), b=2*(y[j]-y[i]), c1=x[j]*x[j]-x[i]*x[i]+y[j]*y[j]-y[i]*y[i];
+    // ll g=gcd(a, gcd(b, c1));
+    // a/=g, b/=g, c1/=g;
+    // if(a<0 || (a==0 && b<0)){
+    //     a=-a,b=-b,c1=-c1;
+    // }
+    // mp[{a, b, c1}].pb({i, j});
+  }
 
+  ll ans = -1;
+
+  for (auto [k, v]: mp) {
+    if (v.size() > 1) mp2[k] = v;
+  }
+  debug(mp2.size());
+
+  for (auto [_, ps]: mp) {
+    map<LP, ll> mpx;
+    for (auto [i, j]: ps) {
+      int mx = x[i] + x[j], my = y[i] + y[j];
+      chmax(mpx[{mx, my}], C[i] + C[j]);
+    }
+    vl t;
+    for (auto [_, nc]: mpx) t.pb(nc);
+    sort(rall(t));
+    if (t.size() > 1) chmax(ans, t[0] + t[1]);
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc050",
+    "title": "AtCoder Beginner Contest 050",
+    "url": "https://atcoder.jp/contests/abc050"
+  },
+  "tasks": [
+    {
+      "id": "abc050_a",
+      "label": "A",
+      "title": "Addition and Subtraction Easy",
+      "url": "https://atcoder.jp/contests/abc050/tasks/abc050_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc050_a.cpp"
+      }
+    },
+    {
+      "id": "abc050_b",
+      "label": "B",
+      "title": "Contest with Drinks Easy",
+      "url": "https://atcoder.jp/contests/abc050/tasks/abc050_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc050_b.cpp"
+      }
+    },
+    {
+      "id": "arc066_a",
+      "label": "C",
+      "title": "Lining Up",
+      "url": "https://atcoder.jp/contests/abc050/tasks/arc066_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc066_a.cpp"
+      }
+    },
+    {
+      "id": "arc066_b",
+      "label": "D",
+      "title": "Xor Sum",
+      "url": "https://atcoder.jp/contests/abc050/tasks/arc066_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc066_b.cpp"
+      }
+    }
+  ]
+}

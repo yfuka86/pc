@@ -124,89 +124,60 @@ void solve() {
 
   map<string, ll> prerem, sufrem;
 
-  rep(i, n) rep2(j, 1, S[i].size()) {
+  rep(i, n) rep(j, S[i].size() + 1) {
     prerem[S[i].substr(0, j)] = 0;
     sufrem[S[i].substr(j)] = 0;
   }
+  prerem.erase(""); sufrem.erase("");
   ll cur = 0;
   for (auto [k, _]: prerem) prerem[k] = cur++;
   for (auto [k, _]: sufrem) sufrem[k] = cur++;
 
   Graph<ll> G(10005);
   ll s = 10000, t = s + 1;
-
-  auto start = [&](string s, ll mid, ll c) {
-    bool valid = true;
-    ll r = s.size() - mid - 1;
-    ll l = mid;
-    rep(i, min(r, l)) {
-      if (s[mid - i - 1] != s[mid + i + 1]) { valid = false; break; }
-    }
-    if (valid) {
-      if (r > l) {
-        ll to = sufrem[s.substr(s.size() - (r - l))];
-        G.add_directed_edge(10000, to, c);
-      } else {
-        ll to = prerem[s.substr(0, l - r)];
-        G.add_directed_edge(10000, to, c);
-      }
-    }
-  };
   rep(i, n) {
     if (is_palindrome(S[i])) G.add_directed_edge(s, t, c[i]);
-    else rep(j, S[i].size()) start(S[i], j, c[i]);
+    else {
+      rep(j, S[i].size() + 1) {
+        if (is_palindrome(S[i].substr(0, j))) {
+          if (j < S[i].size()) G.add_directed_edge(s, sufrem[S[i].substr(j)], c[i]);
+        }
+        if (is_palindrome(S[i].substr(j))) {
+          if (j > 0) G.add_directed_edge(s, prerem[S[i].substr(0, j)], c[i]);
+        }
+      }
+    }
   }
 
   rep(i, n) {
     string s = S[i]; ll sz = S[i].size();
     for (auto [k, v]: prerem) {
-      ll psz = k.size();
-      bool valid = true;
-      rep(j, min(sz, psz)) if (k[psz - 1 - j] != s[j]) { valid = false; break; }
-      if (!valid) continue;
-
-      if (psz == sz) {
-        G.add_directed_edge(v, t, c[i]);
+      ll ksz = k.size();
+      if (ksz == sz) {
+        if (is_palindrome(k + S[i])) G.add_directed_edge(v, t, c[i]);
+      } else if (ksz > sz) {
+        string l = k.substr(0, ksz - sz), r = k.substr(ksz - sz);
+        if (is_palindrome(r + S[i])) G.add_directed_edge(v, prerem[l], c[i]);
       } else {
-        if (psz > sz) {
-          ll to = prerem[k.substr(0, psz - sz)];
-          G.add_directed_edge(v, to, c[i]);
-        } else {
-          ll to = sufrem[s.substr(sz - psz)];
-          G.add_directed_edge(v, to, c[i]);
-        }
+        string l = S[i].substr(0, ksz), r = S[i].substr(ksz);
+        if (is_palindrome(k + l)) G.add_directed_edge(v, sufrem[r], c[i]);
       }
     }
     for (auto [k, v]: sufrem) {
-      ll ssz = k.size();
-      bool valid = true;
-      rep(j, min(sz, ssz)) if (s[sz - 1 - j] != k[j]) { valid = false; break; }
-      if (!valid) continue;
-
-      if (ssz == sz) {
-        G.add_directed_edge(v, t, c[i]);
+      ll ksz = k.size();
+      if (ksz == sz) {
+        if (is_palindrome(S[i] + k)) G.add_directed_edge(v, t, c[i]);
+      } else if (ksz > sz) {
+        string l = k.substr(0, sz), r = k.substr(sz);
+        if (is_palindrome(S[i] + l)) G.add_directed_edge(v, sufrem[r], c[i]);
       } else {
-        if (ssz > sz) {
-          ll to = sufrem[k.substr(ssz - sz)];
-          G.add_directed_edge(v, to, c[i]);
-        } else {
-          ll to = prerem[s.substr(0, sz - ssz)];
-          G.add_directed_edge(v, to, c[i]);
-        }
+        string l = S[i].substr(0, sz - ksz), r = S[i].substr(sz - ksz);
+        if (is_palindrome(r + k)) G.add_directed_edge(v, prerem[l], c[i]);
       }
-    }
-  }
-
-  debug(prerem);
-  debug(sufrem);
-  rep(i, 10005) {
-    if (G[i].size() > 0) {
-      debug(i, G[i]);
     }
   }
 
   vl cost = dijkstra(G, s);
-  debug(cost);
   ll ans = cost[t];
   cout << (ans == LINF ? -1 : ans) << "\n";
 }
