@@ -83,7 +83,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  vlin(a, 3, 0);
+  cout << *max_element(all(a)) - *min_element(all(a)) << "\n";
 }
 
 signed main() {

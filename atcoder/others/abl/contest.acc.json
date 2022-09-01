@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abl",
+    "title": "ACL Beginner Contest",
+    "url": "https://atcoder.jp/contests/abl"
+  },
+  "tasks": [
+    {
+      "id": "abl_a",
+      "label": "A",
+      "title": "Repeat ACL",
+      "url": "https://atcoder.jp/contests/abl/tasks/abl_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abl_a.cpp"
+      }
+    },
+    {
+      "id": "abl_b",
+      "label": "B",
+      "title": "Integer Preference",
+      "url": "https://atcoder.jp/contests/abl/tasks/abl_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abl_b.cpp"
+      }
+    },
+    {
+      "id": "abl_c",
+      "label": "C",
+      "title": "Connect Cities",
+      "url": "https://atcoder.jp/contests/abl/tasks/abl_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abl_c.cpp"
+      }
+    },
+    {
+      "id": "abl_d",
+      "label": "D",
+      "title": "Flat Subsequence",
+      "url": "https://atcoder.jp/contests/abl/tasks/abl_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abl_d.cpp"
+      }
+    },
+    {
+      "id": "abl_e",
+      "label": "E",
+      "title": "Replace Digits",
+      "url": "https://atcoder.jp/contests/abl/tasks/abl_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abl_e.cpp"
+      }
+    },
+    {
+      "id": "abl_f",
+      "label": "F",
+      "title": "Heights and Pairs",
+      "url": "https://atcoder.jp/contests/abl/tasks/abl_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abl_f.cpp"
+      }
+    }
+  ]
+}

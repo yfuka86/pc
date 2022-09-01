@@ -30,7 +30,7 @@ struct RandGen {
   string str(ll n, string op) { vl fig = vecl(n, 0, op.size()); string s; rep(i, n) s.pb(op[fig[i]]); return s; }
   string straz(ll n, ll a = 0, ll z = 26) { vl az = vecl(n, a, z); string s; rep(i, n) s.pb('a' + az[i]); return s; }
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
-  void shuffle(vl &a) { std::shuffle(all(a), mt); }
+  template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
 
 #define dout cout
@@ -39,8 +39,9 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template <typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout<<t; }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
+template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T,typename U> void dump(const pair<T,U>&);
 template<typename T> void dump(const T&t, enable_if_t<!is_void<typename T::iterator>::value>* =nullptr) { dout << "{ "; for(auto it=t.begin();it!=t.end();){ dump(*it); dout << (++it==t.end() ? "" : " "); } dout<<" }"; }
 template<typename T,typename U> void dump(const pair<T,U>&t) { dout<<"("; dump(t.first); dout<<" "; dump(t.second); dout << ")"; }
@@ -76,6 +77,7 @@ ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); wh
 template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
+bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 ll solve(ll n, vl a) {
@@ -98,26 +100,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll h,w; cin >> h >> w;
-  vs grid(h);
-  rep(i, h) cin >> grid[i];
+  ll h, w; cin >> h >> w;
 
-  set<LP> vis;
-  function<void(ll, ll)> dfs = [&](ll i, ll j) {
-    if (vis.find({i, j}) != vis.end()) { cout << -1 << "\n"; return; }
-    vis.insert({i, j});
-    rep(d, 4) {
-      if (drul[d] == grid[i][j]) {
-        ll di = i + dx[d];
-        ll dj = j + dy[d];
-        if (0 <= di && di < h && 0 <= dj && dj < w) dfs(di, dj);
-        else {
-          cout << i + 1 << " " << j + 1 << "\n";
+  vs g(h);
+  rep(i, h) cin >> g[i];
+
+  vvb vis(h, vb(w));
+  vis[0][0] = 1;
+
+  ll x = 0, y = 0;
+  while (1) {
+    rep(i, 4) {
+      if (drul[i] == g[x][y]) {
+        ll nx = x + dx[i];
+        ll ny = y + dy[i];
+        if (0 <= nx && nx < h && 0 <= ny && ny < w) {
+          if (vis[nx][ny]) {
+            cout << -1 << "\n"; return;
+          } else {
+            vis[nx][ny] = 1;
+            x = nx; y = ny;
+            break;
+          }
+        } else {
+          cout << x + 1 << " " << y + 1 << "\n"; return;
         }
       }
     }
-  };
-  dfs(0, 0);
+  }
 }
 
 signed main() {

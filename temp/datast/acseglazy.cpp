@@ -26,12 +26,12 @@ struct lazy_segtree {
   void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
 
-struct S { ll a; }; struct F {};
-S op(S l, S r) { return S{max(l.a, r.a)}; }
-S e() { return S{-1}; }
-S mapping(F f, S x) { return S{r.a}; }
-F composition(F f, F g) { { return F{}; } }
-F id() { return F{}; }
+struct S{ ll sz, sum; }; using F = ll;
+S op(S l, S r) { return {}; }
+S e() { return {0, 0}; }
+S mapping(F f, S x) { if (f == -1) return x; }
+F composition(F f, F g) { if (f == -1) return g; else return f; }
+F id() { return -1; }
 
 using S = ll; using F = ll;
 S op(S l, S r) { return l + r; }

@@ -30,7 +30,7 @@ struct RandGen {
   string str(ll n, string op) { vl fig = vecl(n, 0, op.size()); string s; rep(i, n) s.pb(op[fig[i]]); return s; }
   string straz(ll n, ll a = 0, ll z = 26) { vl az = vecl(n, a, z); string s; rep(i, n) s.pb('a' + az[i]); return s; }
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
-  void shuffle(vl &a) { std::shuffle(all(a), mt); }
+  template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
 
 #define dout cout

@@ -3,7 +3,7 @@
 using namespace atcoder;
 using mint = modint998244353;
 const ll mod = 998244353;
-typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> vvvmi;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi;
 //------------------------------------------------------------------------------
 const int max_n = 1 << 20;
 mint fact[max_n], factinv[max_n];
@@ -14,3 +14,17 @@ mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) re
 ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
+
+
+// Nlog^2Nで複数配列を効率よくたたみ込むもの
+vmi all_convolution(vvmi &a) {
+  multimap<ll, vmi> que;
+  for (auto &v: a) que.emplace(v.size(), v);
+  while (que.size() > 1) {
+    vmi a = que.begin()->se; que.erase(que.begin());
+    vmi b = que.begin()->se; que.erase(que.begin());
+    vmi c = convolution(a, b);
+    que.emplace(c.size(), c);
+  }
+  return que.begin()->se;
+}
