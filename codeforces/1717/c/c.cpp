@@ -102,6 +102,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vlin(a, n, 0);
+  vlin(b, n, 0);
+
+  rep(i, n) {
+    if (a[i] > b[i]) coutret("NO");
+    if (a[i] < b[i] && b[i] > b[(i + 1) % n] + 1) coutret("NO");
+  }
+  coutret("YES");
 }
 
 signed main() {

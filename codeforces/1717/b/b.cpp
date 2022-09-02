@@ -7,7 +7,6 @@
 #define all(v) (v).begin(),(v).end()
 #define rall(v) (v).rbegin(),(v).rend()
 #define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]-=offset;}
-#define coutret(i) { cout << i << "\n"; return; }
 #define pb push_back
 #define mp make_pair
 #define fi first
@@ -101,7 +100,33 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n,k,r,c; cin >> n >> k >> r >> c; r--; c--;
+
+  vvl unit(k, vl(k, 0));
+  ll x = r % k, y = c % k;
+  ll cur = 0;
+  unit[x][y] = 1;
+  rep(i, k) {
+    if (i == x) continue;
+    if (cur == y) cur++;
+    unit[i][cur] = 1;
+    cur++;
+  }
+
+  vvl ans(n, vl(n, 0));
+  rep(i, n / k) rep(j, n / k) {
+    rep(x, k) rep(y, k) {
+      ans[k * i + x][k * j + y] = unit[x][y];
+    }
+  }
+
+  rep(i, n) {
+    rep(j, n) {
+      if (ans[i][j]) cout << "X";
+      else cout << ".";
+    }
+    cout << "\n";
+  }
 }
 
 signed main() {
