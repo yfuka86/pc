@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "jsc2021",
+    "title": "Japanese Student Championship 2021",
+    "url": "https://atcoder.jp/contests/jsc2021"
+  },
+  "tasks": [
+    {
+      "id": "jsc2021_a",
+      "label": "A",
+      "title": "Competition",
+      "url": "https://atcoder.jp/contests/jsc2021/tasks/jsc2021_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "jsc2021_a.cpp"
+      }
+    },
+    {
+      "id": "jsc2021_b",
+      "label": "B",
+      "title": "Xor of Sequences",
+      "url": "https://atcoder.jp/contests/jsc2021/tasks/jsc2021_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "jsc2021_b.cpp"
+      }
+    },
+    {
+      "id": "jsc2021_c",
+      "label": "C",
+      "title": "Max GCD 2",
+      "url": "https://atcoder.jp/contests/jsc2021/tasks/jsc2021_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "jsc2021_c.cpp"
+      }
+    },
+    {
+      "id": "jsc2021_d",
+      "label": "D",
+      "title": "Nowhere P",
+      "url": "https://atcoder.jp/contests/jsc2021/tasks/jsc2021_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "jsc2021_d.cpp"
+      }
+    },
+    {
+      "id": "jsc2021_e",
+      "label": "E",
+      "title": "Level K Palindrome",
+      "url": "https://atcoder.jp/contests/jsc2021/tasks/jsc2021_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "jsc2021_e.cpp"
+      }
+    },
+    {
+      "id": "jsc2021_f",
+      "label": "F",
+      "title": "Max Matrix",
+      "url": "https://atcoder.jp/contests/jsc2021/tasks/jsc2021_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "jsc2021_f.cpp"
+      }
+    },
+    {
+      "id": "jsc2021_g",
+      "label": "G",
+      "title": "Spanning Tree",
+      "url": "https://atcoder.jp/contests/jsc2021/tasks/jsc2021_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "jsc2021_g.cpp"
+      }
+    },
+    {
+      "id": "jsc2021_h",
+      "label": "H",
+      "title": "Shipping",
+      "url": "https://atcoder.jp/contests/jsc2021/tasks/jsc2021_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "jsc2021_h.cpp"
+      }
+    }
+  ]
+}
