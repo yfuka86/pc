@@ -96,21 +96,6 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-vl topo_sort(Graph<ll> G) {
-  ll n = G.size(); vl deg(n), ret; priority_queue<ll, vl, greater<ll>> que;
-  rep(i, n) for (Edge e: G[i]) deg[e.to]++; rep(i, n) if (deg[i] == 0) que.push(i);
-  while (!que.empty()) { ll v = que.top(); que.pop(); ret.pb(v);
-    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); } G[v].clear(); }
-  if (accumulate(all(deg), 0LL) != 0) return {}; else return ret; }
 
 const ll mod = 998244353;
 //------------------------------------------------------------------------------
@@ -141,21 +126,43 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
 
 void solve() {
   ll n, m; cin >> n >> m;
-  Graph<ll> G(n), rG(n);
-  vl deg(n);
+  vvl e(n);
   rep(i, m) {
     ll a, b; cin >> a >> b; --a; --b;
     if (a > b) swap(a, b);
-    G.add_directed_edge(a, b);
-    rG.add_directed_edge(b, a);
-    deg[b]++;
+    e[b].pb(a);
   }
-  vl tp = topo_sort(G);
-  if (tp.size() == 0) { cout << 0 << "\n"; return; }
 
+  init_f();
+  UnionFind uf(n);
+  mint ans = 1;
+  rep(i, n) {
+    map<ll, ll> roots; ll szsum = 0;
+    for (auto j: e[i]) {
+      if (uf.same(i, j)) continue; //他の辺ですでに連結になっているとおかしくなってしまう
+      if (!roots.count(uf.root(j))) { roots[uf.root(j)] = uf.size(j); szsum += uf.size(j); }
+      uf.unite(i, j);
+    }
+    for (auto &[_, sz]: roots) {
+      ans *= comb(szsum, sz);
+      szsum -= sz;
+    }
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
