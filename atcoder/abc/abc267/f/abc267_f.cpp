@@ -7,6 +7,7 @@
 #define all(v) (v).begin(),(v).end()
 #define rall(v) (v).rbegin(),(v).rend()
 #define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]-=offset;}
+#define coutret(i) { cout << i << "\n"; return; }
 #define pb push_back
 #define mp make_pair
 #define fi first
@@ -30,7 +31,7 @@ struct RandGen {
   string str(ll n, string op) { vl fig = vecl(n, 0, op.size()); string s; rep(i, n) s.pb(op[fig[i]]); return s; }
   string straz(ll n, ll a = 0, ll z = 26) { vl az = vecl(n, a, z); string s; rep(i, n) s.pb('a' + az[i]); return s; }
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
-  void shuffle(vl &a) { std::shuffle(all(a), mt); }
+  template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
 
 #define dout cout
@@ -39,8 +40,9 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template <typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout<<t; }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
+template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T,typename U> void dump(const pair<T,U>&);
 template<typename T> void dump(const T&t, enable_if_t<!is_void<typename T::iterator>::value>* =nullptr) { dout << "{ "; for(auto it=t.begin();it!=t.end();){ dump(*it); dout << (++it==t.end() ? "" : " "); } dout<<" }"; }
 template<typename T,typename U> void dump(const pair<T,U>&t) { dout<<"("; dump(t.first); dout<<" "; dump(t.second); dout << ")"; }
@@ -76,6 +78,7 @@ ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); wh
 template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
+bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 ll solve(ll n, vl a) {
@@ -97,45 +100,102 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  ll n, k; cin >> n >> k;
-  vlin(a, n, 0);
-  vl as = csum(a);
-  vl as3(n + 1);
-  rep(i, n + 1) as3[i] = as[i] % 3;
-  vvl as3id(3);
-  rep(i, n + 1) as3id[as3[i]].pb(i);
+// https://nyaannyaan.github.io/library/tree/heavy-light-decomposition.hpp
 
-  vvl dp(k + 1, vl(3, LINF));
-  vvl from(k + 1, vl(3, -1));
-  dp[0][0] = 0;
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-  rep(i, k) {
-    rep(j, 3) {
-      if (dp[i][j] == LINF) continue;
-      rep(k, 3) {
-        if (j == k) continue;
-        auto it = upper_bound(all(as3id[k]), dp[i][j]);
-        if (it != as3id[k].end()) {
-          if (chmin(dp[i + 1][k], *it)) from[i + 1][k] = j;
-        }
-      }
+template <typename G>
+struct HeavyLightDecomposition {
+ private:
+  void dfs_sz(int cur) {
+    size[cur] = 1;
+    for (auto& dst : g[cur]) {
+      if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
+      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
     }
   }
-  // debug(dp);
-  if (dp[k][as3[n]] != LINF) {
-    vl ans;
-    ll cur = n, m3 = from[k][as3[n]];
-    rep_r(i, k) {
-      ans.pb(cur - dp[i][m3]);
-      cur = dp[i][m3];
-      m3 = from[i][m3];
+  void dfs_hld(int cur) {
+    down[cur] = id++; drev[down[cur]] = cur;
+    for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
+    up[cur] = id;
+  }
+  // [u, v)
+  vector<pair<int, int>> ascend(int u, int v) const {
+    vector<pair<int, int>> res;
+    while (nxt[u] != nxt[v]) { res.emplace_back(down[u], down[nxt[u]]); u = par[nxt[u]]; }
+    if (u != v) res.emplace_back(down[u], down[v] + 1); return res;
+  }
+  // (u, v]
+  vector<pair<int, int>> descend(int u, int v) const {
+    if (u == v) return {};
+    if (nxt[u] == nxt[v]) return {{down[u] + 1, down[v]}};
+    auto res = descend(u, par[nxt[v]]);
+    res.emplace_back(down[nxt[v]], down[v]);
+    return res;
+  }
+ public:
+  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
+  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
+  void build(int root) { dfs_sz(root); dfs_hld(root); }
+  pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
+  template <typename F>
+  void path_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) { int s = a + 1, t = b; s > t ? f(t, s) : f(s, t); }
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) { int s = a, t = b + 1; s > t ? f(t, s) : f(s, t); }
+  }
+  template <typename F>
+  void path_noncommutative_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) f(a + 1, b);
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) f(a, b + 1);
+  }
+  template <typename F>
+  void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
+  int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
+  int la(int a, int d) { assert(depth[a] >= d); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
+  int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
+};
+
+pair<ll, LP> diameter(Graph<ll> &G) {
+  LP deepest = mp(0, 0); function<void(ll, ll, ll)> dfs = [&](ll v, ll p, ll d) { chmax(deepest, mp(d, v)); for (auto to: G[v]) if (to != p) dfs(to, v, d + to.cost); };
+  dfs(0, -1, 0); ll s = deepest.second; deepest = mp(0, 0); dfs(s, -1, 0);
+  return mp(deepest.first, mp(s, deepest.second)); }
+
+
+void solve() {
+  ll n; cin >> n;
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    ll a, b; cin >> a >> b; a--; b--;
+    G.add_edge(a, b);
+  }
+
+
+  auto [d, p] = diameter(G);
+  auto [end1, end2] = p;
+  HeavyLightDecomposition<Graph<ll>> hld1(G, end1), hld2(G, end2);
+
+  ll q; cin >> q;
+  rep(i, q) {
+    ll u, k; cin >> u >> k; u--;
+    if (hld1.depth[u] >= k) {
+      cout << hld1.la(u, hld1.depth[u] - k) + 1 << "\n";
+    } else if (hld2.depth[u] >= k) {
+      cout << hld2.la(u, hld2.depth[u] - k) + 1 << "\n";
+    } else {
+      cout << -1 << "\n";
     }
-    reverse(all(ans));
-    cout << "Yes" << "\n";
-    coutarray(ans);
-  } else {
-    cout << "No" << "\n";
   }
 }
 

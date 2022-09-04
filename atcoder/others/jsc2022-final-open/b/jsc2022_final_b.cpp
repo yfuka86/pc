@@ -97,15 +97,50 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template <class T> struct Hist {
+  stack<pair<int, T>> st;
+  T tot;
+  Hist(T e = 0) { tot = e; }
+  void add(int h, T w) {
+    while (!st.empty() && st.top().first <= h) {
+      auto [nh, nw] = st.top();
+      tot -= nw * nh;
+      w += nw;
+      st.pop();
+    }
+    tot += w * h;
+    st.emplace(h, w);
+  }
+};
+
+
 void solve() {
   ll n; cin >> n;
+  vlin(a, n, 0);
 
-  vl frontmax(n), frontop(n);
-  ll cur = 0;
-  rep(i, n) {
+  Hist<ll> h;
+  rep_r(i, n) h.add(a[i], 1);
 
+  // 回す回数の判定のため、後ろから広義単調減少かのフラグ
+  vb inc(n, 0); ll cur = LINF;
+  rep_r(i, n) {
+    if (a[i] <= cur) {
+      inc[i] = true;
+      cur = a[i];
+    } else break;
   }
+  // debug(inc);
 
+  ll ma = *max_element(all(a)), sum = accumulate(all(a), 0ll);
+  ll ans = LINF, subt = 0;
+  rep_r(i, n) {
+    subt += ma - a[i];
+    sum += a[i];
+    h.add(a[i], 1);
+    // debug(h.tot, sum, subt, i);
+    chmin(ans, h.tot - sum - subt + i + (inc[i] ? 0 : n));
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

@@ -7,6 +7,7 @@
 #define all(v) (v).begin(),(v).end()
 #define rall(v) (v).rbegin(),(v).rend()
 #define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]-=offset;}
+#define coutret(i) { cout << i << "\n"; return; }
 #define pb push_back
 #define mp make_pair
 #define fi first
@@ -30,7 +31,7 @@ struct RandGen {
   string str(ll n, string op) { vl fig = vecl(n, 0, op.size()); string s; rep(i, n) s.pb(op[fig[i]]); return s; }
   string straz(ll n, ll a = 0, ll z = 26) { vl az = vecl(n, a, z); string s; rep(i, n) s.pb('a' + az[i]); return s; }
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
-  void shuffle(vl &a) { std::shuffle(all(a), mt); }
+  template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
 
 #define dout cout
@@ -39,8 +40,9 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template <typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout<<t; }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
+template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T,typename U> void dump(const pair<T,U>&);
 template<typename T> void dump(const T&t, enable_if_t<!is_void<typename T::iterator>::value>* =nullptr) { dout << "{ "; for(auto it=t.begin();it!=t.end();){ dump(*it); dout << (++it==t.end() ? "" : " "); } dout<<" }"; }
 template<typename T,typename U> void dump(const pair<T,U>&t) { dout<<"("; dump(t.first); dout<<" "; dump(t.second); dout << ")"; }
@@ -76,6 +78,7 @@ ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); wh
 template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
+bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 ll solve(ll n, vl a) {
@@ -96,47 +99,58 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
 
 void solve() {
-  ll n, k; cin >> n >> k;
+  ll n, m; cin >> n >> m;
   vlin(a, n, 0);
-  vl as = csum(a);
-  vl as3(n + 1);
-  rep(i, n + 1) as3[i] = as[i] % 3;
-  vvl as3id(3);
-  rep(i, n + 1) as3id[as3[i]].pb(i);
+  Graph<ll> G(n);
+  rep(i, m) {
+    ll u, v; cin >> u >> v; u--; v--;
+    G.add_edge(u, v);
+  }
 
-  vvl dp(k + 1, vl(3, LINF));
-  vvl from(k + 1, vl(3, -1));
-  dp[0][0] = 0;
+  vl inicost(n, 0);
+  rep(i, n) {
+    for (auto &to: G[i]) {
+      inicost[i] += a[to];
+    }
+  }
 
-  rep(i, k) {
-    rep(j, 3) {
-      if (dp[i][j] == LINF) continue;
-      rep(k, 3) {
-        if (j == k) continue;
-        auto it = upper_bound(all(as3id[k]), dp[i][j]);
-        if (it != as3id[k].end()) {
-          if (chmin(dp[i + 1][k], *it)) from[i + 1][k] = j;
+  ll ans = binary_search([&](ll mid) {
+    set<ll> s; rep(i, n) s.insert(i);
+    vl cost = inicost;
+
+    while (s.size()) {
+      ll memo = s.size();
+      auto it = s.begin();
+      while (it != s.end()) {
+        ll v = *it;
+        if (cost[v] <= mid) {
+          for (auto &to: G[v]) {
+            cost[to] -= a[v];
+          }
+
+          it = s.erase(it);
+        } else {
+          it++;
         }
       }
+      if (memo == s.size()) return false;
     }
-  }
-  // debug(dp);
-  if (dp[k][as3[n]] != LINF) {
-    vl ans;
-    ll cur = n, m3 = from[k][as3[n]];
-    rep_r(i, k) {
-      ans.pb(cur - dp[i][m3]);
-      cur = dp[i][m3];
-      m3 = from[i][m3];
-    }
-    reverse(all(ans));
-    cout << "Yes" << "\n";
-    coutarray(ans);
-  } else {
-    cout << "No" << "\n";
-  }
+
+    return true;
+  }, *max_element(all(inicost)), 0);
+  cout << ans << "\n";
 }
 
 signed main() {
