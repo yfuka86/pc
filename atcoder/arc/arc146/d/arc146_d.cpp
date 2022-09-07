@@ -98,7 +98,35 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll n, m, k; cin >> n >> m >> k;
+  vl ans(n, 1);
+
+  vector<priority_queue<LT, vlt, greater<LT>>> cond(n);
+  rep(i, k) {
+    ll p, x, q, y; cin >> p >> x >> q >> y; p--; q--;
+    cond[p].push({x - 1, q, y - 1});
+    cond[q].push({y - 1, p, x - 1});
+    cond[p].push({x, q, y});
+    cond[q].push({y, p, x});
+  }
+
+  queue<LT> que;
+  rep(i, n) {
+    while(!cond[i].empty() && get<0>(cond[i].top()) < ans[i]) {
+      que.push(cond[i].top()); cond[i].pop();
+    }
+  }
+  while(!que.empty()) {
+    auto [_, q, y] = que.front(); que.pop();
+    if (chmax(ans[q], y + 1)) {
+      while(!cond[q].empty() && get<0>(cond[q].top()) < ans[q]) {
+        que.push(cond[q].top()); cond[q].pop();
+      }
+    }
+  }
+
+  if (*max_element(all(ans)) <= m) cout << accumulate(all(ans), 0ll) << "\n";
+  else cout << -1 << "\n";
 }
 
 signed main() {

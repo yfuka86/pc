@@ -125,3 +125,16 @@ pair<Point, Point> crosspoint(const Circle &c1, const Circle &c2) {
   Point p2 = c1.p + Point(cos(t - a) * c1.r, sin(t - a) * c1.r);
   return {p1, p2};
 }
+
+
+// 以下yfuka86
+Circle circumcircle(const Point &p1, const Point &p2, const Point &p3) {
+  // TODO 同一直線上チェック（今div == 0でやっている）
+  Real a = abs(p2 - p3), b = abs(p1 - p3), c = abs(p1 - p2);
+  Real a2 = a * a, b2 = b * b, c2 = c * c;
+  Real ca = a2 * (b2 + c2 - a2), cb = b2 * (c2 + a2 - b2), cc = c2 * (a2 + b2 - c2);
+  Real div = (ca + cb + cc);
+  if (div == 0) return Circle{{LINF, LINF}, 0};
+  Point ec = (p1 * ca + p2 * cb + p3 * cc) / div;
+  return Circle{ec, abs(p1 - ec)};
+}
