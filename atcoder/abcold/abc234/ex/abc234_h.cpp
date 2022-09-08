@@ -82,61 +82,70 @@ vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+set<LP> solve(ll n, ll k, vlt p) {
+  sort(all(p));
+
+  vlt yp(n);
+  rep(pi, n) {
+    auto [x, y, i] = p[pi];
+    yp[pi] = {y, x, i};
+  }
+
+  set<LP> ans;
+  set<LT> s;
+
+  ll l = 0, r = 0;
+  // debug(p);
+  // debug(yp);
+  rep(pi, n) {
+    auto [x, y, i] = p[pi];
+    ll nl = lower_bound(all(p), make_tuple(x - k, -LINF, -LINF)) - p.begin();
+    ll nr = upper_bound(all(p), make_tuple(x + k, LINF, LINF)) - p.begin();
+    while (nr > r) {
+      s.insert(yp[r]);
+      r++;
+    }
+    while (nl > l) {
+      s.erase(yp[l]);
+      l++;
+    }
+    // debug(i, s, l, r);
+
+    auto lt = s.lower_bound({y - k, -LINF, -LINF});
+    auto rt = s.upper_bound({y + k, LINF, LINF});
+    while (lt != rt) {
+      auto [y2, x2, i2] = *lt;
+      if ((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y) <= k * k && i != i2) {
+        if (i < i2) ans.insert({i, i2}); else ans.insert({i2, i});
+      }
+      ++lt;
+    }
+  }
+  return ans;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+set<LP> naive(ll n, ll k, vlt p) {
+  set<LP> ans;
+  rep(pj, n) rep(pi, pj) {
+    auto [x, y, i] = p[pi];
+    auto [x2, y2, j] = p[pj];
+    if ((x - x2) * (x - x2) + (y - y2) * (y - y2) <= k * k) ans.insert({i, j});
+  }
+  return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = 10, k = 30;
+    vlt p(n);
+    rep(i, n) p[i] = {rg.l(0, 1e2), rg.l(0, 1e2), i};
+
+    auto so = solve(n, k, p); auto na = naive(n, k, p);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      debug(n, k, p); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
-
-// https://nyaannyaan.github.io/library/misc/mo.hpp
-struct Mo {
-  int width;
-  vector<int> left, right, order;
-
-  Mo(int N, int Q) : order(Q) {
-    width = max<int>(1, 1.0 * N / max<double>(1.0, sqrt(Q * 2.0 / 3.0)));
-    iota(begin(order), end(order), 0);
-  }
-
-  void insert(int l, int r) { /* [l, r) */
-    left.emplace_back(l);
-    right.emplace_back(r);
-  }
-
-  template <typename AL, typename AR, typename DL, typename DR, typename REM>
-  void run(const AL &add_left, const AR &add_right, const DL &delete_left,
-           const DR &delete_right, const REM &rem) {
-    assert(left.size() == order.size());
-    sort(begin(order), end(order), [&](int a, int b) {
-      int ablock = left[a] / width, bblock = left[b] / width;
-      if (ablock != bblock) return ablock < bblock;
-      if (ablock & 1) return right[a] < right[b];
-      return right[a] > right[b];
-    });
-    int nl = 0, nr = 0;
-    for (auto idx : order) {
-      while (nl > left[idx]) add_left(--nl);
-      while (nr < right[idx]) add_right(nr++);
-      while (nl < left[idx]) delete_left(nl++);
-      while (nr > right[idx]) delete_right(--nr);
-      rem(idx);
-    }
-  }
-};
-
 
 void solve() {
   ll n, k; cin >> n >> k;
@@ -145,42 +154,8 @@ void solve() {
     ll x, y; cin >> x >> y;
     p[i] = {x, y, i};
   }
-  sort(all(p));
 
-  vlt yp(n);
-  rep(pi, n) {
-    auto [x, y, i] = p[pi];
-    yp[i] = {y, x, i};
-  }
-
-  set<LP> ans;
-  set<LT> s;
-
-  ll l = 0, r = 0;
-  rep(pi, n) {
-    auto [x, y, i] = p[pi];
-    ll nl = lower_bound(all(p), make_tuple(x - k, -LINF, -LINF)) - p.begin();
-    ll nr = upper_bound(all(p), make_tuple(x + k, LINF, LINF)) - p.begin();
-    while (nr - 1 > r) {
-      s.insert(yp[r]);
-      r++;
-    }
-    while (nl > l) {
-      s.erase(yp[l]);
-      l++;
-    }
-
-    auto lt = s.lower_bound({y - k, -LINF, -LINF});
-    auto rt = s.upper_bound({y + k, LINF, LINF});
-    while (lt != rt) {
-      auto [x2, y2, i2] = *lt;
-      if ((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y) <= k * k && i != i2) {
-        if (i < i2) ans.insert(mp(i, i2)); else ans.insert(mp(i2, i));
-      }
-      ++lt;
-    }
-  }
-
+  auto ans = solve(n, k, p);
   cout << ans.size() << "\n";
   for (auto[p, q]: ans) {
     cout << p + 1 << " " << q + 1 << "\n";

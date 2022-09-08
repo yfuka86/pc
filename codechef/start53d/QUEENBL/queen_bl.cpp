@@ -98,10 +98,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 template<class T> vector<vector<T>> rotate(vector<vector<T>> &a) {
-  assert(a.size() == a[0].size());
-  ll n = a.size();
-  vector<vector<T>> ret(n, vector<T>(n, 0));
-  rep(i, n) rep(j, n) ret[j][n - 1 - i] = a[i][j];
+  ll n = a.size(), m = a[0].size();
+  vector<vector<T>> ret(m, vector<T>(n, 0));
+  rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j];
   return ret;
 }
 

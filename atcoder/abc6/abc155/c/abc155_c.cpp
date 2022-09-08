@@ -86,6 +86,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  map<string, ll> f;
+  ll ma = 0;
+  rep(i, n) {
+    string s; cin >> s;
+    f[s]++;
+    chmax(ma, f[s]);
+  }
+
+  for (auto &[s, cnt]: f) {
+    if (cnt == ma) cout << s << "\n";
+  }
+
+
 }
 
 signed main() {

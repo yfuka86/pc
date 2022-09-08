@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc089",
+    "title": "AtCoder Beginner Contest 089",
+    "url": "https://atcoder.jp/contests/abc089"
+  },
+  "tasks": [
+    {
+      "id": "abc089_a",
+      "label": "A",
+      "title": "Grouping 2",
+      "url": "https://atcoder.jp/contests/abc089/tasks/abc089_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc089_a.cpp"
+      }
+    },
+    {
+      "id": "abc089_b",
+      "label": "B",
+      "title": "Hina Arare",
+      "url": "https://atcoder.jp/contests/abc089/tasks/abc089_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc089_b.cpp"
+      }
+    },
+    {
+      "id": "abc089_c",
+      "label": "C",
+      "title": "March",
+      "url": "https://atcoder.jp/contests/abc089/tasks/abc089_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc089_c.cpp"
+      }
+    },
+    {
+      "id": "abc089_d",
+      "label": "D",
+      "title": "Practical Skill Test",
+      "url": "https://atcoder.jp/contests/abc089/tasks/abc089_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc089_d.cpp"
+      }
+    }
+  ]
+}
