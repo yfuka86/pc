@@ -131,22 +131,36 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 //------------------------------------------------------------------------------
 
 void solve() {
-  ll n, k; cin >> n >> k;
+  ll n, K; cin >> n >> K;
 
-  rep(i, n) {
-    vl p(n); iota(all(p), 0);
-    // p[i] = n;
-    sort(all(p));
-    map<ll, ll> cnt;
-    do {
-      ll sum = 0;
-      rep(i, n) sum += abs(p[i] - i);
-      cnt[sum]++;
-    } while (next_permutation(all(p)));
+  // rep(i, n) {
+  //   vl p(n); iota(all(p), 0);
+  //   // p[i] = n;
+  //   sort(all(p));
+  //   map<ll, ll> cnt;
+  //   do {
+  //     ll sum = 0;
+  //     rep(i, n) sum += abs(p[i] - i);
+  //     cnt[sum]++;
+  //   } while (next_permutation(all(p)));
 
-    debug(i, cnt);
+  //   debug(i, cnt);
+  // }
+
+  v3mi dp(n + 1, vvmi(n + 1, vmi(K + 1)));
+  dp[0][0][0] = 1;
+
+  rep(i, n) rep(j, n + 1) rep(k, K + 1) {
+    // このままペアにする 1 通り
+    // どちらかを余りと組ませどちらかを余りにする j * 2 通り
+    if (k + j * 2 <= K) dp[i + 1][j][k + j * 2] += dp[i][j][k] * (2 * j + 1);
+    // 両方余りにする 1 通り
+    if (j < n - 1 && k + (j + 1) * 2 <= K) dp[i + 1][j + 1][k + (j + 1) * 2] += dp[i][j][k];
+    // 両方を余りのものと組ませる j * j 通り
+    if (0 < j && k + (j - 1) * 2 <= K) dp[i + 1][j - 1][k + (j - 1) * 2] += dp[i][j][k] * j * j;
   }
-
+  debug(dp[n][0]);
+  cout << dp[n][0][K] << "\n";
 }
 
 signed main() {

@@ -102,7 +102,6 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 void solve() {
   ll a, b; cin >> a >> b;
   cout << lcm(a, b) << "\n";
-
 }
 
 signed main() {

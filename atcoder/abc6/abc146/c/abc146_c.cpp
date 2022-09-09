@@ -102,7 +102,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll n; cin >> n;
+  ll a, b, x; cin >> a >> b >> x;
+  ll ans = binary_search([&](ll mid) {
+    return mid * a + digits(mid) * b <= x;
+  }, 0, 1000000001);
+  cout << ans << "\n";
 }
 
 signed main() {
