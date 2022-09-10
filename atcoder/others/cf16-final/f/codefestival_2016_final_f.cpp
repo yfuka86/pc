@@ -101,52 +101,53 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-struct Rngset {
-  map<ll, ll> ranges;
-  Rngset() : ranges() {}
-
-  void on(ll l, ll r) {
-    assert(l < r);
-    auto lt = ranges.lower_bound(l);
-    auto rt = ranges.upper_bound(r);
-    if (lt != ranges.begin() && l <= prev(lt)->se) { l = prev(lt)->fi; lt--; }
-    if (rt != ranges.begin() && r <= prev(rt)->se) { r = prev(rt)->se; }
-    while(lt != rt) { lt = ranges.erase(lt); }
-    ranges[l] = r;
-  }
+const ll mod = 1000000007;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
 };
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
 void solve() {
-  ll a, b; cin >> a >> b;
-  if (a == b) coutret(1);
+  ll n, m; cin >> n >> m;
 
-  ll ans = 0;
-  rep_r(i, 61) {
-    if ((b & 1ll << i) && !(a & 1ll << i)) {
-      ll p2 = (1ll << i), filter = (1ll << i + 1) - 1;
-      // 最初に異なるビットより前は無視して良い
-      b &= filter; a &= filter;
+  // dp[含まれている街の数][1が含まれる最初の強連結成分の数]
+  vvmi dp(n + 1, vmi(n + 1, 0)), dpt(n + 1, vmi(n + 1, 0));
+  dp[1][1] = 1;
 
-      ans += (1ll << i) - a;
-      debug(p2);
-      // r1は最上位ビットが1で作れるもので、0......を使って作れるもの 1[aの残りのビット列....] ~ 1111.....
-      // r2は最上位ビットが1でかつbまでの数値で作れるもの 100..... ~ 1000[bの残りの最上位ビット= 1]111111
-      // r2において「bの残り最上位ビット以下を全て埋めたものまで=最上位ビットの上のビット10...00未満」までが作れることは使っていい数を考えると再帰的に示せる
-      LP r1 = {p2 + a, p2 * 2}, r2 = {p2, p2 + 1};
-      rep(r, i) {
-        if (p2 + (1ll << r) <= b && b < p2 + (1ll << r + 1)) r2 = {p2, p2 + (1ll << r + 1)};
-      }
-
-      debug(r1, r2);
-      if (r2.se >= r1.fi) {
-        ans += r1.se - r2.fi;
-      } else {
-        ans += r1.se - r1.fi + r2.se - r2.fi;
-      }
-      break;
+  rep(_, m) {
+    rep_r(j, n + 1) rep_r(k, j + 1) {
+      if (j < n) dpt[j + 1][k] += dp[j][k] * (n - j);
+      dpt[j][j] += dp[j][k] * k;
+      dpt[j][k] += dp[j][k] * (j - k);
     }
+    dp = dpt;
+    dpt.assign(n + 1, vmi(n + 1, 0));
   }
-  cout << ans << "\n";
+
+  cout << dp[n][n] << "\n";
 }
 
 signed main() {

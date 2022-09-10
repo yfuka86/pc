@@ -1,0 +1,119 @@
+{
+  "contest": {
+    "id": "cf16-final",
+    "title": "CODE FESTIVAL 2016 Final",
+    "url": "https://atcoder.jp/contests/cf16-final"
+  },
+  "tasks": [
+    {
+      "id": "codefestival_2016_final_a",
+      "label": "A",
+      "title": "Where's Snuke?",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_a.cpp"
+      }
+    },
+    {
+      "id": "codefestival_2016_final_b",
+      "label": "B",
+      "title": "Exactly N points",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_b.cpp"
+      }
+    },
+    {
+      "id": "codefestival_2016_final_c",
+      "label": "C",
+      "title": "Interpretation",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_c.cpp"
+      }
+    },
+    {
+      "id": "codefestival_2016_final_d",
+      "label": "D",
+      "title": "Pair Cards",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_d.cpp"
+      }
+    },
+    {
+      "id": "codefestival_2016_final_e",
+      "label": "E",
+      "title": "Cookies",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_e.cpp"
+      }
+    },
+    {
+      "id": "codefestival_2016_final_f",
+      "label": "F",
+      "title": "Road of the King",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_f.cpp"
+      }
+    },
+    {
+      "id": "codefestival_2016_final_g",
+      "label": "G",
+      "title": "Zigzag MST",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_g.cpp"
+      }
+    },
+    {
+      "id": "codefestival_2016_final_h",
+      "label": "H",
+      "title": "Tokaido",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_h.cpp"
+      }
+    },
+    {
+      "id": "codefestival_2016_final_i",
+      "label": "I",
+      "title": "Reverse Grid",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_i.cpp"
+      }
+    },
+    {
+      "id": "codefestival_2016_final_j",
+      "label": "J",
+      "title": "Neue Spiel",
+      "url": "https://atcoder.jp/contests/cf16-final/tasks/codefestival_2016_final_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "codefestival_2016_final_j.cpp"
+      }
+    }
+  ]
+}

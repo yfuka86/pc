@@ -101,52 +101,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-struct Rngset {
-  map<ll, ll> ranges;
-  Rngset() : ranges() {}
-
-  void on(ll l, ll r) {
-    assert(l < r);
-    auto lt = ranges.lower_bound(l);
-    auto rt = ranges.upper_bound(r);
-    if (lt != ranges.begin() && l <= prev(lt)->se) { l = prev(lt)->fi; lt--; }
-    if (rt != ranges.begin() && r <= prev(rt)->se) { r = prev(rt)->se; }
-    while(lt != rt) { lt = ranges.erase(lt); }
-    ranges[l] = r;
-  }
-};
-
 void solve() {
-  ll a, b; cin >> a >> b;
-  if (a == b) coutret(1);
-
-  ll ans = 0;
-  rep_r(i, 61) {
-    if ((b & 1ll << i) && !(a & 1ll << i)) {
-      ll p2 = (1ll << i), filter = (1ll << i + 1) - 1;
-      // 最初に異なるビットより前は無視して良い
-      b &= filter; a &= filter;
-
-      ans += (1ll << i) - a;
-      debug(p2);
-      // r1は最上位ビットが1で作れるもので、0......を使って作れるもの 1[aの残りのビット列....] ~ 1111.....
-      // r2は最上位ビットが1でかつbまでの数値で作れるもの 100..... ~ 1000[bの残りの最上位ビット= 1]111111
-      // r2において「bの残り最上位ビット以下を全て埋めたものまで=最上位ビットの上のビット10...00未満」までが作れることは使っていい数を考えると再帰的に示せる
-      LP r1 = {p2 + a, p2 * 2}, r2 = {p2, p2 + 1};
-      rep(r, i) {
-        if (p2 + (1ll << r) <= b && b < p2 + (1ll << r + 1)) r2 = {p2, p2 + (1ll << r + 1)};
-      }
-
-      debug(r1, r2);
-      if (r2.se >= r1.fi) {
-        ans += r1.se - r2.fi;
-      } else {
-        ans += r1.se - r1.fi + r2.se - r2.fi;
-      }
-      break;
-    }
-  }
-  cout << ans << "\n";
+  ll n; cin >> n;
 }
 
 signed main() {
