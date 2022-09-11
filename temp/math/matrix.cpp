@@ -1,16 +1,10 @@
+// 転置
 template<class T> void flip(vector<vector<T>> &a) {
   assert(a.size() == a[0].size());
   rep(i, a.size()) rep(j, i) {
     swap(a[i][j], a[j][i]);
   }
 }
-// template<class T> vector<vector<T>> rotate(vector<vector<T>> &a) {
-//   assert(a.size() == a[0].size());
-//   ll n = a.size();
-//   vector<vector<T>> ret(n, vector<T>(n, 0));
-//   rep(i, n) rep(j, n) ret[j][n - 1 - i] = a[i][j];
-//   return ret;
-// }
 
 template<class T> vector<vector<T>> rotate(vector<vector<T>> &a) {
   ll n = a.size(), m = a[0].size();
