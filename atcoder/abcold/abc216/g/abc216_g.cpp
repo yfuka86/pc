@@ -101,87 +101,72 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template <size_t X = 26, char margin = 'a', typename T = ll>
-struct Trie {
-public:
-  vector<vector<int>> nxt; vector<bool> end; vector<int> cs, fail; vector<T> node_v;
-  Trie() { init_node(-1); }
-  size_t size() const { return nxt.size(); }
-
-  int add_node(int v, int n, bool isend = false, T val = T()) {
-    assert(fail.size() == 0);
-    int ret = -1;
-    if (nxt[v][n] == -1) ret = nxt[v][n] = init_node(n);
-    else ret = nxt[v][n];
-    if (isend) { end[ret] = 1; node_v[ret] += val; }
-    return ret;
-  }
-  int add(vector<int> &s, T val = T()) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) v = add_node(v, s[i], i == n - 1, val); return v; }
-  int add(string &s, T val = T()) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) v = add_node(v, s[i] - margin, i == n - 1, val); return v; }
-
-  int walk(int v, int n) { return nxt[v][n]; }
-  int search(vector<int> &s) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) { v = walk(v, s[i]); if (v == -1) return v; } return v; }
-  int search(string &s) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) { v = walk(v, s[i] - margin); if (v == -1) return v; } return v; }
-
-  void build_fail() {
-    fail.assign(nxt.size(), 0);
-    vector<int> bfs; bfs.emplace_back(0);
-    queue<int> que; que.push(0);
-    while (!que.empty()) {
-      int v = que.front(); que.pop();
-      node_v[v] = node_v[v] + node_v[fail[v]];
-      for (int s = 0; s < X; ++s) {
-        if (nxt[v][s] == -1) continue;
-        int w = nxt[v][s];
-        que.push(w);
-        bfs.emplace_back(w);
-        if (v == 0) continue;
-        int f = fail[v];
-        while (f && nxt[f][s] == -1) f = fail[f];
-        fail[w] = (nxt[f][s] == -1 ? 0 : nxt[f][s]);
-      }
-    }
-    for (auto v: bfs) {
-      for (int s = 0; s < X; ++s) if (nxt[v][s] == -1) {
-        int f = fail[v];
-        nxt[v][s] = nxt[f][s];
-        if (nxt[v][s] == -1) nxt[v][s] = 0;
-      }
-    }
-  }
-  inline const vector<int> &operator[](const int &k) { return nxt[k]; }
-
-private:
-  int init_node(int n) {
-    nxt.emplace_back(vector<int>(X, -1));
-    cs.emplace_back(n);
-    end.emplace_back(0);
-    node_v.emplace_back(T());
-    return nxt.size() - 1;
-  }
+//2021/12/22-ac----------------------------------------------------------------
+template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S), F (*composition)(F, F), F (*id)()>
+struct lazy_segtree {
+  public:
+  lazy_segtree() : lazy_segtree(0) {}
+  explicit lazy_segtree(int n) : lazy_segtree(std::vector<S>(n, e())) {}
+  explicit lazy_segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); lz = std::vector<F>(size, id()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
+  void set(int p, S x) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
+  S get(int p) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); return d[p]; }
+  S prod(int l, int r) { assert(0 <= l && l <= r && r <= _n); if (l == r) return e(); l += size; r += size; for (int i = log; i >= 1; i--) { if (((l >> i) << i) != l) push(l >> i); if (((r >> i) << i) != r) push((r - 1) >> i); } S sml = e(), smr = e();
+    while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
+  S all_prod() { return d[1]; }
+  void apply(int p, F f) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); d[p] = mapping(f, d[p]); for (int i = 1; i <= log; i++) update(p >> i); }
+  void apply(int l, int r, F f) { assert(0 <= l && l <= r && r <= _n); if (l == r) return; l += size; r += size; for (int i = log; i >= 1; i--) { if (((l >> i) << i) != l) push(l >> i); if (((r >> i) << i) != r) push((r - 1) >> i); }
+    { int l2 = l, r2 = r; while (l < r) { if (l & 1) all_apply(l++, f); if (r & 1) all_apply(--r, f); l >>= 1; r >>= 1; } l = l2; r = r2; } for (int i = 1; i <= log; i++) { if (((l >> i) << i) != l) update(l >> i); if (((r >> i) << i) != r) update((r - 1) >> i); } }
+  template <bool (*g)(S)> int max_right(int l) { return max_right(l, [](S x) { return g(x); }); }
+  template <class G> int max_right(int l, G g) { assert(0 <= l && l <= _n); assert(g(e())); if (l == _n) return _n; l += size; for (int i = log; i >= 1; i--) push(l >> i); S sm = e();
+    do { while (l % 2 == 0) l >>= 1; if (!g(op(sm, d[l]))) { while (l < size) { push(l); l = (2 * l); if (g(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
+  template <bool (*g)(S)> int min_left(int r) { return min_left(r, [](S x) { return g(x); }); }
+  template <class G> int min_left(int r, G g) { assert(0 <= r && r <= _n); assert(g(e())); if (r == 0) return 0; r += size; for (int i = log; i >= 1; i--) push((r - 1) >> i); S sm = e();
+    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!g(op(d[r], sm))) { while (r < size) { push(r); r = (2 * r + 1); if (g(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
+  private:
+  int _n, size, log; std::vector<S> d; std::vector<F> lz;
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+  void all_apply(int k, F f) { d[k] = mapping(f, d[k]); if (k < size) lz[k] = composition(f, lz[k]); }
+  void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
 
+struct S{ ll sz, sum; }; using F = ll;
+S op(S l, S r) { return { l.sz + r.sz, l.sum + r.sum }; }
+S e() { return {0, 0}; }
+S mapping(F f, S x) { if (f == -1) return x; else return { x.sz, x.sz }; }
+F composition(F f, F g) { if (f == -1) return g; else return f; }
+F id() { return -1; }
 
 void solve() {
-  string s; cin >> s;
-  ll n; cin >> n;
-  vs t(n); rep(i, n) cin >> t[i];
-  Trie<26, 'A'> G;
-  rep(i, n) G.add(t[i], 1);
-  G.build_fail();
-
-  // debug(G.nxt);
-  // debug(G.end);
-
-  // debug(G.node_v);
-
-  ll p = 0, ans = 0;
-  rep(i, s.size()) {
-    p = G.walk(p, s[i] - 'A');
-    // debug(p);
-    ans += G.node_v[p];
+  ll n, m; cin >> n >> m;
+  vlt rng(m);
+  rep(i, m) {
+    ll l, r, x; cin >> l >> r >> x; --l;
+    rng[i] = {r, l, x};
   }
-  cout << ans << "\n";
+  sort(all(rng));
+
+  vector<S> s(n, {1, 0});
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(s);
+
+  rep(i, m) {
+    auto [r, l, x] = rng[i];
+    ll sum = seg.prod(l, r).sum;
+    if (sum >= x) continue;
+
+    ll allsz = r - l;
+    ll froml = seg.max_right<function<bool(S)>>(l,
+      [&](S p) {
+        return p.sum + (allsz - p.sz) >= x;
+      }
+    );
+    // debug(froml, r);
+    seg.apply(froml, r, 1);
+  }
+
+  rep(i, n) {
+    if (seg.get(i).sum) cout << 1 << " "; else cout << 0 << " ";
+  } cout << "\n";
+
 }
 
 signed main() {

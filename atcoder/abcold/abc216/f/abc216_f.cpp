@@ -101,85 +101,74 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template <size_t X = 26, char margin = 'a', typename T = ll>
-struct Trie {
-public:
-  vector<vector<int>> nxt; vector<bool> end; vector<int> cs, fail; vector<T> node_v;
-  Trie() { init_node(-1); }
-  size_t size() const { return nxt.size(); }
-
-  int add_node(int v, int n, bool isend = false, T val = T()) {
-    assert(fail.size() == 0);
-    int ret = -1;
-    if (nxt[v][n] == -1) ret = nxt[v][n] = init_node(n);
-    else ret = nxt[v][n];
-    if (isend) { end[ret] = 1; node_v[ret] += val; }
-    return ret;
-  }
-  int add(vector<int> &s, T val = T()) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) v = add_node(v, s[i], i == n - 1, val); return v; }
-  int add(string &s, T val = T()) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) v = add_node(v, s[i] - margin, i == n - 1, val); return v; }
-
-  int walk(int v, int n) { return nxt[v][n]; }
-  int search(vector<int> &s) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) { v = walk(v, s[i]); if (v == -1) return v; } return v; }
-  int search(string &s) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) { v = walk(v, s[i] - margin); if (v == -1) return v; } return v; }
-
-  void build_fail() {
-    fail.assign(nxt.size(), 0);
-    vector<int> bfs; bfs.emplace_back(0);
-    queue<int> que; que.push(0);
-    while (!que.empty()) {
-      int v = que.front(); que.pop();
-      node_v[v] = node_v[v] + node_v[fail[v]];
-      for (int s = 0; s < X; ++s) {
-        if (nxt[v][s] == -1) continue;
-        int w = nxt[v][s];
-        que.push(w);
-        bfs.emplace_back(w);
-        if (v == 0) continue;
-        int f = fail[v];
-        while (f && nxt[f][s] == -1) f = fail[f];
-        fail[w] = (nxt[f][s] == -1 ? 0 : nxt[f][s]);
-      }
-    }
-    for (auto v: bfs) {
-      for (int s = 0; s < X; ++s) if (nxt[v][s] == -1) {
-        int f = fail[v];
-        nxt[v][s] = nxt[f][s];
-        if (nxt[v][s] == -1) nxt[v][s] = 0;
-      }
-    }
-  }
-  inline const vector<int> &operator[](const int &k) { return nxt[k]; }
-
-private:
-  int init_node(int n) {
-    nxt.emplace_back(vector<int>(X, -1));
-    cs.emplace_back(n);
-    end.emplace_back(0);
-    node_v.emplace_back(T());
-    return nxt.size() - 1;
-  }
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
 };
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
 
 void solve() {
-  string s; cin >> s;
   ll n; cin >> n;
-  vs t(n); rep(i, n) cin >> t[i];
-  Trie<26, 'A'> G;
-  rep(i, n) G.add(t[i], 1);
-  G.build_fail();
+  vlin(a, n, 0);
+  vlin(b, n, 0);
 
-  // debug(G.nxt);
-  // debug(G.end);
+  vlp p(n);
+  rep(i, n) { p[i] = {a[i], b[i]};}
+  sort(all(p));
 
-  // debug(G.node_v);
+  mint ans = 0;
 
-  ll p = 0, ans = 0;
-  rep(i, s.size()) {
-    p = G.walk(p, s[i] - 'A');
-    // debug(p);
-    ans += G.node_v[p];
+  BIT<mint> dp(5005);
+  dp.add(0, 1);
+  rep(i, n) {
+    auto [aa, bb] = p[i];
+    if (aa >= bb) ans += dp.sum(1, aa - bb + 1) + 1;
+    rep_r(j, 5000) {
+      if (j + bb > 5000) continue;
+      dp.add(j + bb, dp.sum(j, j + 1));
+    }
   }
   cout << ans << "\n";
 }

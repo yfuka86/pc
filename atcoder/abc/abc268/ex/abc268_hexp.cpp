@@ -308,7 +308,7 @@ vl solve(string s, vs t) {
   rep(i, s.size()) {
     p = G.walk(p, s[i] - 'a');
     // debug(p, G.end[p]);
-    if (G.end[p]) {
+    if (G.node_v[p]) {
       ++cur;
       p = 0;
     }

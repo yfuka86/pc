@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc216",
+    "title": "AtCoder Beginner Contest 216",
+    "url": "https://atcoder.jp/contests/abc216"
+  },
+  "tasks": [
+    {
+      "id": "abc216_a",
+      "label": "A",
+      "title": "Signed Difficulty",
+      "url": "https://atcoder.jp/contests/abc216/tasks/abc216_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc216_a.cpp"
+      }
+    },
+    {
+      "id": "abc216_b",
+      "label": "B",
+      "title": "Same Name",
+      "url": "https://atcoder.jp/contests/abc216/tasks/abc216_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc216_b.cpp"
+      }
+    },
+    {
+      "id": "abc216_c",
+      "label": "C",
+      "title": "Many Balls",
+      "url": "https://atcoder.jp/contests/abc216/tasks/abc216_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc216_c.cpp"
+      }
+    },
+    {
+      "id": "abc216_d",
+      "label": "D",
+      "title": "Pair of Balls",
+      "url": "https://atcoder.jp/contests/abc216/tasks/abc216_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc216_d.cpp"
+      }
+    },
+    {
+      "id": "abc216_e",
+      "label": "E",
+      "title": "Amusement Park",
+      "url": "https://atcoder.jp/contests/abc216/tasks/abc216_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc216_e.cpp"
+      }
+    },
+    {
+      "id": "abc216_f",
+      "label": "F",
+      "title": "Max Sum Counting",
+      "url": "https://atcoder.jp/contests/abc216/tasks/abc216_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc216_f.cpp"
+      }
+    },
+    {
+      "id": "abc216_g",
+      "label": "G",
+      "title": "01Sequence",
+      "url": "https://atcoder.jp/contests/abc216/tasks/abc216_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc216_g.cpp"
+      }
+    },
+    {
+      "id": "abc216_h",
+      "label": "H",
+      "title": "Random Robots",
+      "url": "https://atcoder.jp/contests/abc216/tasks/abc216_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "abc216_h.cpp"
+      }
+    }
+  ]
+}
