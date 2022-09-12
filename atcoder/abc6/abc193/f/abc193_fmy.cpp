@@ -101,16 +101,52 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+#include <atcoder/maxflow>
+using namespace atcoder;
+
 void solve() {
   ll n; cin >> n;
-  ld t, a; cin >> t >> a;
-  vlin(h, n, 0);
+  vs g(n); rep(i, n) cin >> g[i];
 
-  ld diff = LINF; ll ans = -1;
-  rep(i, n) {
-    if (chmin(diff,abs(t - (h[i] * 0.006) - a))) ans = i;
+  if (n == 1) coutret(0);
+
+  mf_graph<ll> mf(n * n + 2);
+  ll s = n * n, t = s + 1;
+
+  auto id = [&](ll i, ll j) { return j * n + i; };
+
+  ll inf = 100;
+
+  rep(i, n) rep(j, n) {
+    ll ma = 4;
+    if (i == 0 || i == n - 1) ma--;
+    if (j == 0 || j == n - 1) ma--;
+    rep(d, 4) {
+      ll di = i + dx[d], dj = j + dy[d];
+      if (0 <= di && di < n && 0 <= dj && dj < n) {
+        mf.add_edge(id(i, j), id(di, dj), 1);
+        mf.add_edge(id(di, dj), id(i, j), 1);
+      }
+    }
+
+    if (g[i][j] == '?') {
+      mf.add_edge(s, id(i, j), ma);
+      mf.add_edge(id(i, j), t, ma);
+    } else {
+      if ((i + j & 1) ^ (g[i][j] == 'W')) {
+        mf.add_edge(s, id(i, j), ma);
+        mf.add_edge(id(i, j), t, inf);
+      } else {
+        mf.add_edge(s, id(i, j), inf);
+        mf.add_edge(id(i, j), t, ma);
+      }
+    }
   }
-  cout << ans + 1 << "\n";
+  ll ma = n * (n - 1) * 2;
+  // 最大流量はma * 2 + penalty
+  // 答えは、(ma * 2 - penalty) / 2
+  // debug(f);
+  cout << (ma * 4 - mf.flow(s, t)) / 2 << "\n";
 }
 
 signed main() {

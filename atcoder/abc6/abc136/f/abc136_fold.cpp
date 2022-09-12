@@ -7,7 +7,6 @@
 #define all(v) (v).begin(),(v).end()
 #define rall(v) (v).rbegin(),(v).rend()
 #define vlin(name,sz,offset) vl name(sz); rep(i,sz){cin>>name[i]; name[i]-=offset;}
-#define coutret(i) { cout << i << "\n"; return; }
 #define pb push_back
 #define mp make_pair
 #define fi first
@@ -17,9 +16,8 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
-template<typename T> using min_pq = priority_queue<T, vector<T>, greater<T>>;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
 
@@ -32,7 +30,7 @@ struct RandGen {
   string str(ll n, string op) { vl fig = vecl(n, 0, op.size()); string s; rep(i, n) s.pb(op[fig[i]]); return s; }
   string straz(ll n, ll a = 0, ll z = 26) { vl az = vecl(n, a, z); string s; rep(i, n) s.pb('a' + az[i]); return s; }
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
-  template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
+  void shuffle(vl &a) { std::shuffle(all(a), mt); }
 };
 
 #define dout cout
@@ -41,9 +39,8 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
+template <typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout<<t; }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
-template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T,typename U> void dump(const pair<T,U>&);
 template<typename T> void dump(const T&t, enable_if_t<!is_void<typename T::iterator>::value>* =nullptr) { dout << "{ "; for(auto it=t.begin();it!=t.end();){ dump(*it); dout << (++it==t.end() ? "" : " "); } dout<<" }"; }
 template<typename T,typename U> void dump(const pair<T,U>&t) { dout<<"("; dump(t.first); dout<<" "; dump(t.second); dout << ")"; }
@@ -54,7 +51,7 @@ void trace() { dout << "\n"; } template<typename Head, typename... Tail> void tr
 #define debug(...) do {dout<<#__VA_ARGS__<<" = ";trace(__VA_ARGS__); } while(0)
 #endif
 template<typename T> void coutarray(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
-template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
+template<typename T> void coutmatrix(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { xcoutarray(v[i], offset); } }
 template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); coutarray(v); cout.flush(); cin >> a; }
 // template<typename Q, typename A> void iquery(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
@@ -64,9 +61,9 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll digits(ll n) { ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
+ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
-template<typename T> ll digits(T n) { assert(n >= 0); ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T> void uniq(vector<T>&a) { sort(all(a)); a.erase(unique(all(a)), a.end()); }
@@ -79,42 +76,123 @@ ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); wh
 template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
-bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+ll solve(ll N, vl a) {
+  ll ans = N - a[0]; return ans;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+ll naive(ll N, vl a) {
+  ll ans = N + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll N = 10;
+    vl a = rg.vecl(N, 1, 1e2);
+    auto so = solve(N, a); auto na = naive(N, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      dump(N); dump(a);
+      cout << "solve: "; dump(so);
+      cout << "naive: "; dump(na);
     if (check || (!check && c > loop)) break; }
   }
 }
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+//------------------------------------------------------------------------------
+const int max_n = 1 << 20;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
 
 void solve() {
   ll n; cin >> n;
-  ld t, a; cin >> t >> a;
-  vlin(h, n, 0);
+  vl x(n), y(n);
+  rep(i, n) cin >> x[i] >> y[i];
+  comp(x); comp(y);
 
-  ld diff = LINF; ll ans = -1;
-  rep(i, n) {
-    if (chmin(diff,abs(t - (h[i] * 0.006) - a))) ans = i;
+  vlt p(n);
+  rep(i, n) p[i] = {x[i], y[i], i};
+  sort(all(p));
+  vl llower(n, 0), rlower(n, 0), lupper(n, 0), rupper(n, 0);
+
+  {
+    BIT<ll> bt(n);
+    rep(i, n) {
+      auto [x, y, id] = p[i];
+      llower[id] = bt.sum(0, y);
+      rlower[id] = bt.sum(y, n);
+      bt.add(y, 1);
+    }
   }
-  cout << ans + 1 << "\n";
+  reverse(all(p));
+  {
+    BIT<ll> bt(n);
+    rep(i, n) {
+      auto [x, y, id] = p[i];
+      lupper[id] = bt.sum(0, y);
+      rupper[id] = bt.sum(y, n);
+      bt.add(y, 1);
+    }
+  }
+
+  mint ans = 0;
+  mint all = mint(2).pow(n);
+  rep(i, n) {
+    // それ自身を含む
+    ans += all / 2;
+    // 含まないもので含まれるものの選び方を包除
+    ans += (mint(2).pow(llower[i]) - 1) * (mint(2).pow(rupper[i]) - 1) * mint(2).pow(rlower[i] + lupper[i]);
+    ans += (mint(2).pow(rlower[i]) - 1) * (mint(2).pow(lupper[i]) - 1) * mint(2).pow(llower[i] + rupper[i]);
+    ans -= (mint(2).pow(llower[i]) - 1) * (mint(2).pow(rupper[i]) - 1) * (mint(2).pow(rlower[i]) - 1) * (mint(2).pow(lupper[i]) - 1);
+  }
+  cout << ans << "\n";
 }
 
 signed main() {
-  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(15);
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr); cout.tie(nullptr); cout << fixed << setprecision(15);
   int t = 1; //cin >> t;
   while (t--) solve();
   // while (t--) compare();

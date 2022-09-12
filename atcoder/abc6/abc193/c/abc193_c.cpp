@@ -103,14 +103,6 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
-  ld t, a; cin >> t >> a;
-  vlin(h, n, 0);
-
-  ld diff = LINF; ll ans = -1;
-  rep(i, n) {
-    if (chmin(diff,abs(t - (h[i] * 0.006) - a))) ans = i;
-  }
-  cout << ans + 1 << "\n";
 }
 
 signed main() {
