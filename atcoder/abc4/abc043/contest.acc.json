@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc043",
+    "title": "AtCoder Beginner Contest 043",
+    "url": "https://atcoder.jp/contests/abc043"
+  },
+  "tasks": [
+    {
+      "id": "abc043_a",
+      "label": "A",
+      "title": "Children and Candies (ABC Edit)",
+      "url": "https://atcoder.jp/contests/abc043/tasks/abc043_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc043_a.cpp"
+      }
+    },
+    {
+      "id": "abc043_b",
+      "label": "B",
+      "title": "Unhappy Hacking (ABC Edit)",
+      "url": "https://atcoder.jp/contests/abc043/tasks/abc043_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc043_b.cpp"
+      }
+    },
+    {
+      "id": "arc059_a",
+      "label": "C",
+      "title": "Be Together",
+      "url": "https://atcoder.jp/contests/abc043/tasks/arc059_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc059_a.cpp"
+      }
+    },
+    {
+      "id": "arc059_b",
+      "label": "D",
+      "title": "Unbalanced",
+      "url": "https://atcoder.jp/contests/abc043/tasks/arc059_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc059_b.cpp"
+      }
+    }
+  ]
+}

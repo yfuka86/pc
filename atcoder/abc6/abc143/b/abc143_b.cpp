@@ -101,7 +101,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
-
+  vlin(d, n, 0);
+  ll ans = 0;
+  rep(i, n) rep(j, i) {
+    ans += d[i] * d[j];
+  }
+  cout << ans << "\n";
 }
 
 signed main() {

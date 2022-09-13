@@ -1,13 +1,13 @@
-bool is_prime(long long N) {
-  if (N == 1) return false; for (long long i = 2; i * i <= N; ++i) if (N % i == 0) return false; return true;
-}
+// テンプレに入れた
+// vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
+// ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
+
+bool is_prime(long long N) { if (N == 1) return false; for (long long i = 2; i * i <= N; ++i) if (N % i == 0) return false; return true; }
 
 vector<ll> primes_below(const ll N) {
   vector<bool> is_prime(N + 1, true); for(ll i = 2; i * i <= N; i++) { if ((i > 2 && i % 2 == 0) || !is_prime[i]) continue; for(ll j = i * i; j <= N; j += i) is_prime[j] = false; }
   vector<ll> ret; for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i); return ret; }
-vl divisor(ll n) {
-  vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } }
-  sort(all(ret)); return ret; }
+
 vl tortient_enum(const ll n) {
   vl ps = primes_below(n), ret(n + 1); iota(all(ret), 0);
   for (auto &p: ps) for (int i = 1; i * p <= n; ++i) ret[i * p] -= ret[i * p] / p;
@@ -18,11 +18,6 @@ map<ll, ll> prime_factorize(ll N) {
   map<ll, ll> res;
   for (ll a = 2; a * a <= N; ++a) { if (N % a != 0) continue; ll ex = 0; while (N % a == 0) { ++ex; N /= a; } res[a]= ex; }
   if (N != 1) res[N] = 1; return res; }
-
-ll mex(vl& v) {
-  set<ll> S; for(ll n: v) S.insert(n);
-  ll ret = 0; while (S.find(ret) != S.end()) ret++;
-  return ret; }
 
 // ap + bq = gcd(a, b)
 LP extGCD(ll a, ll b) {

@@ -84,6 +84,15 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   ll n; cin >> n;
+  vector<tuple<string, ll, ll>> v(n);
+  rep(i, n) {
+    string s; ll p; cin >> s >> p;
+    v[i] = {s, -p, i};
+  }
+  sort(all(v));
+  rep(i, n) {
+    cout << get<2>(v[i]) + 1 << "\n";
+  }
 }
 
 signed main() {

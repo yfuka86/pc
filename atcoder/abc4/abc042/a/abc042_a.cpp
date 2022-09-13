@@ -27,7 +27,10 @@ template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} 
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
 void solve() {
-  ll n; cin >> n;
+  ll a, b, c; cin >> a >> b >> c;
+  map<ll,ll>mp;mp[a]++; mp[b]++; mp[c]++;
+  if (mp[5] == 2 && mp[7] == 1) cout << "YES" << "\n";
+  else cout << "NO" << "\n";
 }
 
 signed main() {

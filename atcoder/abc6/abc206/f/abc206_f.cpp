@@ -98,9 +98,10 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 ll mex(vl& v) {
-  set<ll> S; for(ll n: v) S.insert(n);
-  ll ret = 0; while (S.find(ret) != S.end()) ret++;
-  return ret; }
+  ll n = v.size(); vb S(n + 1);
+  for (auto a: v) if (a <= n) S[a] = 1;
+  ll ret = 0; while (S[ret]) ret++; return ret;
+}
 
 void solve() {
   ll n; cin >> n;

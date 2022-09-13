@@ -26,17 +26,17 @@ template<typename T> void coutbin(T &a, int d) { for (int i = 0; i < d; i++) cou
 template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
 
+ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
+
 vector<vl> grundy(51, vl(1500, -1));
 ll calcg(ll w, ll b) {
   if (grundy[w][b] != -1) return grundy[w][b];
   if (w == 0 && b == 1) return grundy[w][b] = 0;
 
-  vb mex(1500, 0);
-  if (w >= 1) mex[calcg(w - 1, b + w)] = 1;
-  rep2(i, 1, b / 2 + 1) {
-    mex[calcg(w, b - i)] = 1;
-  }
-  rep(i, 1500) if (mex[i] == 0) return grundy[w][b] = i;
+  vl t;
+  if (w >= 1) t.pb(calcg(w - 1, b + w));
+  rep2(i, 1, b / 2 + 1) t.pb(calcg(w, b - i));
+  return grundy[w][b] = mex(t);
 }
 
 int main()
