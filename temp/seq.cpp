@@ -38,6 +38,21 @@ string lcs(string &s1, string &s2){
   reverse(all(s)); return s;
 }
 
+// dpなど用差分更新累積和（更新範囲が限られてないとクエリO(n)）
+template<typename T>
+struct incr_csum {
+  int n, upd = 1e9; vector<T> a, asum;
+  explicit incr_csum(int _n): n(_n), a(n, T(0)), asum(n + 1, T(0)) {}
+  explicit incr_csum(const vector<T> &v): n(v.size()) { a = v; asum(n + 1); update_all(); }
+  // 関数以外の代入禁止
+  T &operator[](int k) { if (upd != INF && upd < k) { for(int i = upd; i < k; ++i) asum[i + 1] = asum[i] + a[i]; upd = k; } return asum[k]; }
+  T set(int k, T x) { if (a[k] != x) chmin(upd, k); return a[k] = x; }
+  T add(int k, T x) { if (x != 0) chmin(upd, k); return a[k] += x; }
+  T sum(int l, int r) { return (*this)[r] - (*this)[l]; }
+  void update_all() { for(int i = 0; i < n; ++i) asum[i + 1] = asum[i] + a[i]; upd = -1; }
+};
+
+
 // 二次元累積和（一応）
 vvl cumsum2d(vvl &a) {
   ll H = a.size(), W = a[0].size(); vvl sum(H + 1, vl(W + 1, 0));

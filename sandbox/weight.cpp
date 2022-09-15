@@ -515,7 +515,7 @@ template <class S> vector<pair<S, int>> runLength(const vector<S> &v) {
 vector<pair<char, int>> runLength(const string &v) {
     vector<pair<char, int>> res;
     for(auto &e : v) {
-        if(res.empty() or res.back().fi != e)
+        if(res.empty() or res.back().fi != e)[]
             res.eb(e, 1);
         else
             res.back().se++;

@@ -1,6 +1,3 @@
-#include <vector>
-using namespace std;
-int main() { return 0; }
 //-------------------------------------------------
 struct SuccinctIndexableDictionary {
   size_t length, blocks; vector<unsigned> bit, sum;

@@ -128,6 +128,7 @@ pair<Point, Point> crosspoint(const Circle &c1, const Circle &c2) {
 
 
 // 以下yfuka86
+// 三点の外接円
 Circle circumcircle(const Point &p1, const Point &p2, const Point &p3) {
   // TODO 同一直線上チェック（今div == 0でやっている）
   Real a = abs(p2 - p3), b = abs(p1 - p3), c = abs(p1 - p2);
@@ -137,4 +138,59 @@ Circle circumcircle(const Point &p1, const Point &p2, const Point &p3) {
   if (div == 0) return Circle{{LINF, LINF}, 0};
   Point ec = (p1 * ca + p2 * cb + p3 * cc) / div;
   return Circle{ec, abs(p1 - ec)};
+}
+
+// 直線系
+// https://github.com/noshi91/NoshiMochiLibrary/blob/master/Geometory/Geometry.Kutimoti.cpp
+struct Line {
+  Point from, to;
+  Line(Point from = Point(), Point to = Point()) : from(from), to(to) {}
+};
+
+struct Segment {
+  Point from, to;
+  Segment(Point from = Point(), Point to = Point()) : from(from), to(to) {}
+};
+
+bool is_orthogonal(const Line& la, const Line& lb) {
+  return eq(0.0, dot(la.from - la.to, lb.from - lb.from));
+}
+bool is_parallel(const Line& la, const Line& lb) {
+  return eq(0.0, cross(la.from - la.to, lb.from - lb.from));
+}
+bool is_Point_on(const Line& l, const Point& p) {
+  return eq(0.0, cross(l.to - l.from, p - l.from));
+}
+bool is_Point_on(const Segment& s, const Point& p) {
+  return (s.from - p).abs() + (p - s.to).abs() < (s.from - s.to).abs() + EPS;
+}
+ld distance(const Line& l, const Point& p) {
+  return abs(cross(l.to - l.from, p - l.from)) / (l.to - l.from).abs();
+}
+ld distance(const Segment& s, const Point& p) {
+  if (dot(s.to - s.from, p - s.from) < EPS) return (p - s.from).abs();
+  if (dot(s.from - s.to, p - s.to) < EPS) return (p - s.to).abs();
+  return abs(cross(s.to - s.from, p - s.from)) / (s.to - s.from).abs();
+}
+ld is_intersected(const Segment& a, const Segment& b) {
+  return (cross(a.to - a.from, b.from - a.from) *
+              cross(a.to - a.from, b.to - a.from) <
+          EPS) &&
+          (cross(b.to - b.from, a.from - b.from) *
+              cross(b.to - b.from, a.to - b.from) <
+          EPS);
+}
+
+Point intersection_point(const Segment& a, const Segment& b) {
+  Point bp = b.to - b.from;
+  ld d1 = abs(cross(bp, a.from - b.from));
+  ld d2 = abs(cross(bp, a.to - b.from));
+  ld t = d1 / (d1 + d2);
+  return a.from + (a.to - a.from) * t;
+}
+
+Point intersection_point(const Line& a, const Line& b) {
+  Point ap = a.to - a.from;
+  Point bp = b.to - b.from;
+  return a.from + ap * cross(bp, b.from - a.from) / cross(bp, ap);
 }
