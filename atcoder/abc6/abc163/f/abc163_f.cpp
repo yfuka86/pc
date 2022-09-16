@@ -11,7 +11,7 @@ template<typename T> class infinity{ public: static constexpr T MAX=numeric_limi
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
 #define _overload5(a, b, c, d, e, name, ...) name
 #define _overload4(a, b, c, d, name, ...) name
-#define _overload2(a, b, name, ...) name
+#define _overload3(a, b, c, name, ...) name
 #define _rep0(n) for(ll i = 0; (ll)(i) < n; ++i)
 #define _rep1(i, n) for(ll i = 0; i < (ll)(n); ++i)
 #define _rep2(i, a, b) for(ll i = (ll)(a); i < (ll)(b); ++i)
@@ -76,7 +76,7 @@ void trace() { dout << "\n"; } template<typename Head, typename... Tail> void tr
 #define LD(...) ld __VA_ARGS__; IN(__VA_ARGS__)
 #define _vl(name, size) vl name(size); IN(name)
 #define _vl2(name, size, off) vl name(size); IN(name); rep(i, size) name[i]-=off
-#define VL(...) _overload2(__VA_ARGS__, _vl2, _vl)(__VA_ARGS__)
+#define VL(...) _overload3(__VA_ARGS__, _vl2, _vl)(__VA_ARGS__)
 #define VEC(type, name, size) vector<type> name(size); IN(name)
 #define VEC2(type, name1, name2, size) vector<type> name1(size), name2(size); for(int i = 0; i < size; i++) IN(name1[i], name2[i])
 #define VEC3(type, name1, name2, name3, size) vector<type> name1(size), name2(size), name3(size); for(int i = 0; i < size; i++) IN(name1[i], name2[i], name3[i])
@@ -144,8 +144,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
 void solve() {
   LL(n);
+  VL(c, n, 1);
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    LL(a, b); --a; --b;
+    G.add_edge(a, b);
+  }
 }
 
 signed main() {

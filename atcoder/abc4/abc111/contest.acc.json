@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc111",
+    "title": "AtCoder Beginner Contest 111",
+    "url": "https://atcoder.jp/contests/abc111"
+  },
+  "tasks": [
+    {
+      "id": "abc111_a",
+      "label": "A",
+      "title": "AtCoder Beginner Contest 999",
+      "url": "https://atcoder.jp/contests/abc111/tasks/abc111_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc111_a.cpp"
+      }
+    },
+    {
+      "id": "abc111_b",
+      "label": "B",
+      "title": "AtCoder Beginner Contest 111",
+      "url": "https://atcoder.jp/contests/abc111/tasks/abc111_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc111_b.cpp"
+      }
+    },
+    {
+      "id": "arc103_a",
+      "label": "C",
+      "title": "/\\/\\/\\/",
+      "url": "https://atcoder.jp/contests/abc111/tasks/arc103_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc103_a.cpp"
+      }
+    },
+    {
+      "id": "arc103_b",
+      "label": "D",
+      "title": "Robot Arms",
+      "url": "https://atcoder.jp/contests/abc111/tasks/arc103_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc103_b.cpp"
+      }
+    }
+  ]
+}

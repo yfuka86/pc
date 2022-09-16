@@ -145,7 +145,7 @@ void solve() {
   LL(h,w,n);
   VEC2(ll, a, b, n);
 
-  map<ll, vl> mp;
+  unordered_map<ll, vl> mp;
   rep(i, n) mp[--a[i]].pb(--b[i]);
 
   fore(_, v, mp) sort(all(v));
