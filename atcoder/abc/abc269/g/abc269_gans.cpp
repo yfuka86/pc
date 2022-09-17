@@ -145,13 +145,66 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+struct SlideMin {
+  deque<LP> q;
+  SlideMin() {}
+  void push(ll i, ll x) {
+    while (q.size() && q.back().second >= x) {
+      q.pop_back();
+    }
+    q.emplace_back(i,x);
+  }
+  ll get(ll l) { // l <= i
+    while (q.size() && q.front().first < l) {
+      q.pop_front();
+    }
+    // assert(q.size());
+    if (q.size() == 0) return LINF;
+    else return q.front().second;
+  }
+};
+
 void solve() {
-  LL(n);
+  LL(n, m);
+  VEC2(ll, a, b, n);
+  map<ll, ll> mp;
+  ll suma = sum_of(a);
+  ll sl=0, sr=0;
+  rep(i, n) {
+    ll d = b[i] - a[i];
+    mp[d]++;
+    if (d < 0) sl += -d; else sr += d;
+  }
+  ll w = sr + sl;
+  vl dp(w + 1, LINF);
+  dp[sl] = 0;
+
+  fore(_d,c,mp) {
+    if (_d == 0) continue;
+    bool neg = _d < 0;
+    ll d = abs(_d);
+    vl p(w + 1, LINF);
+    if (neg) reverse(all(dp));
+    rep(si, d) {
+      SlideMin sm;
+      rep(i, si, w + 1, d) {
+        if (dp[i] != LINF) sm.push(i, dp[i] - i / d);
+        chmin(dp[i], sm.get(i - d * c) + i / d);
+      }
+    }
+    if (neg) reverse(all(dp));
+  }
+
+  vl ans(m + 1, -1);
+  rep(i, w + 1)  if (dp[i] != LINF) {
+    ans[i - sl + suma] = dp[i];
+  }
+  OUTARRAY(ans,0,"\n");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

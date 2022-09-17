@@ -96,7 +96,7 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
+template<typename A> void IANSWER(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -146,12 +146,39 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,m);
+  VEC2(ll, a, b, n);
+
+  ll ini = sum_of(a);
+  vl diff(n);
+  rep(i, n) diff[i] = b[i] - a[i];
+
+  map<ll, ll> f;
+  rep(i, n) f[diff[i]]++;
+  f.erase(0);
+
+  vl dp(m + 1, LINF), dpt(m + 1, LINF);
+  dp[ini] = 0; dpt[ini] = 0;
+  fore(d, cn, f) {
+    rep(i, m + 1) {
+      if (dp[i] == LINF) continue;
+      rep(j, 1, cn + 1) {
+        if (!incl(i + d * j, 0ll, m + 1)) break;
+        chmin(dpt[i + d * j], dp[i] + j);
+      }
+    }
+    dp = dpt;
+  }
+  // debug(dp);
+
+  rep(i, m + 1) {
+    OUT(dp[i] == LINF ? -1 : dp[i]);
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

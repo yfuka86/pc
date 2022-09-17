@@ -96,7 +96,7 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
+template<typename A> void IANSWER(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -146,12 +146,27 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(x);
+
+  vl t;
+  rep(i, 62) {
+    if (x & 1ll << i) t.pb(i);
+  }
+
+  vl ans;
+  rep(i, 1 << t.size()) {
+    ll sum = 0;
+    rep(j, t.size()) {
+      if (i & 1 << j) sum |= 1LL << t[j];
+    }
+    ans.pb(sum);
+  }
+  OUTARRAY(ans, 0, "\n");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

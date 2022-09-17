@@ -147,11 +147,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  ll x = binary_search([&](ll mid) {
+    if (mid == 0) return true;
+    ll a;
+    IQUERY({1ll, mid, 1ll, n}, a);
+    return a == mid;
+  }, 0, n);
+  ll y = binary_search([&](ll mid) {
+    if (mid == 0) return true;
+    ll a;
+    IQUERY({1ll, n, 1ll, mid}, a);
+    return a == mid;
+  }, 0, n);
+  OUT("! ", x + 1, y + 1);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

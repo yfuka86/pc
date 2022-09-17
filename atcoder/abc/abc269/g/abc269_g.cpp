@@ -96,7 +96,7 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
+template<typename A> void IANSWER(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -146,12 +146,58 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,m);
+  VEC2(ll, a, b, n);
+
+  ll ini = sum_of(a);
+  vl diff(n);
+  rep(i, n) diff[i] = b[i] - a[i];
+
+  map<ll, ll> f;
+  rep(i, n) f[diff[i]]++;
+  f.erase(0);
+
+  vl dp(m + 1, LINF);
+  dp[ini] = 0;
+  fore(d, cn, f) {
+    if (d < 0) {
+      ll ad = abs(d);
+      rep(i, m + 1 - ad, m + 1) {
+        deque<LP> idx;
+        for (ll j = i; j >= 0; j-=ad) {
+          while (!idx.empty() && idx.back().se + (idx.back().fi - j) / ad >= dp[j]) idx.pop_back();
+          if (dp[j] != LINF) idx.eb(j, dp[j]);
+
+          if (idx.size()) chmin(dp[j], idx.front().se + (idx.front().fi - j) / ad);
+
+          if (idx.size() && idx.front().fi == j + cn * ad) idx.pop_front();
+        }
+      }
+    } else {
+      rep(i, d) {
+        deque<LP> idx;
+        for (ll j = i; j <= m; j+=d) {
+          while (!idx.empty() && idx.back().se + (j - idx.back().fi) / d >= dp[j]) idx.pop_back();
+          if (dp[j] != LINF) idx.eb(j, dp[j]);
+
+          if (idx.size()) chmin(dp[j], idx.front().se + (j - idx.front().fi) / d);
+
+          if (idx.size() && idx.front().fi == j - cn * d) idx.pop_front();
+        }
+      }
+    }
+    // debug(dp);
+  }
+  // debug(dp);
+
+  rep(i, m + 1) {
+    OUT(dp[i] == LINF ? -1 : dp[i]);
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
