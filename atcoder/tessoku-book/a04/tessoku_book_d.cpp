@@ -144,7 +144,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); bitset<10> bs(n);
+  OUT(bs);
 }
 
 signed main() {

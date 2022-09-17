@@ -144,7 +144,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  VL(a, n);
+  ll ans = binary_search([&](ll mid) {
+    ll sum = 0;
+    rep(i, n) {
+      sum += mid / a[i];
+    }
+    return sum >= k;
+  }, 1e9, 0);
+  OUT(ans);
 }
 
 signed main() {

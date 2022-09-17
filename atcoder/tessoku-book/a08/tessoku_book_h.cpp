@@ -143,8 +143,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+vvl cumsum2d(vvl &a) {
+  ll H = a.size(), W = a[0].size(); vvl sum(H + 1, vl(W + 1, 0));
+  rep(i, H) rep(j, W) sum[i + 1][j + 1] += sum[i + 1][j] + sum[i][j + 1] + a[i][j] - sum[i][j];
+  return sum;
+}
+
 void solve() {
-  LL(n);
+  LL(h,w); VV(ll,x,h,w);
+  LL(q);
+  vvl csum = cumsum2d(x);
+  rep(i, q) {
+    LL(a,b,c,d); --a; --b;
+    OUT(csum[a][b] - csum[c][b] - csum[a][d] + csum[c][d]);
+  }
 }
 
 signed main() {

@@ -144,7 +144,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  ll ans = 0;
+  rep(i, 1, n + 1) rep(j, 1, n + 1) {
+    if (incl(k - i - j, 1ll, n + 1)) ans++;
+  }
+  OUT(ans);
 }
 
 signed main() {

@@ -144,7 +144,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, q); VL(a, n);
+  vl as = csum(a);
+  rep(i, q) {
+    LL(l, r); --l;
+    OUT(as[r] - as[l]);
+  }
 }
 
 signed main() {

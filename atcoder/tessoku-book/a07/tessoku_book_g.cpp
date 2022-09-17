@@ -144,7 +144,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(d,n);
+  vl imos(d + 1);
+  rep(i, n) {
+    LL(l, r); l--;
+    imos[l]++;
+    imos[r]--;
+  }
+  rep(i, d) imos[i + 1] += imos[i];
+  imos.pop_back();
+  OUTARRAY(imos, 0, "\n");
 }
 
 signed main() {

@@ -144,7 +144,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,x); VL(a,n);
+  if (find(all(a), x) != a.end()) OUT("Yes"); else OUT("No");
 }
 
 signed main() {

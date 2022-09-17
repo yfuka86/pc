@@ -144,7 +144,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  VV(ll, a, 4, n);
+
+  set<ll> s;
+  rep(i, n) rep(j, n) {
+    s.insert(a[0][i] + a[1][j]);
+  }
+
+  rep(i, n) rep(j, n) {
+    ll t = a[2][i] + a[3][j];
+    auto it = s.lower_bound(k - t);
+    if (it != s.end() && *it == k - t) OUTRET("Yes");
+  }
+  OUT("No");
 }
 
 signed main() {

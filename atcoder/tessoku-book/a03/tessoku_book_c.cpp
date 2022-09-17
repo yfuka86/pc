@@ -144,7 +144,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,k); VL(p,n); VL(q,n);
+  rep(i, n) rep(j, n) {
+    if (p[i] + q[j] == k) OUTRET("Yes");
+  }
+  OUT("No");
 }
 
 signed main() {
