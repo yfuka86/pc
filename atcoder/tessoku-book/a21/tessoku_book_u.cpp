@@ -145,6 +145,21 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VEC2(ll, p, a, n);
+  rep(i, n) p[i]--;
+
+  vv(ll, dp, n + 1, n + 1, 0);
+
+  rep(sz, 1, n + 1) {
+    rep(i, n) {
+      ll l = i, r = i + sz;
+      if (r > n) break;
+      dp[l][r] = max(dp[l + 1][r] + (incl(p[l], l, r) ? a[l] : 0), dp[l][r - 1] + (incl(p[r - 1], l, r) ? a[r - 1] : 0));
+    }
+  }
+
+  // debug(dp);
+  OUT(dp[0][n]);
 }
 
 signed main() {

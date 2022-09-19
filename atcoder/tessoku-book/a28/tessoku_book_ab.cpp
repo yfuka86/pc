@@ -72,6 +72,7 @@ void trace() { dout << "\n"; } template<typename Head, typename... Tail> void tr
 #endif
 // 入出力系
 #define LL(...) ll __VA_ARGS__; IN(__VA_ARGS__)
+#define CHR(...) char __VA_ARGS__; IN(__VA_ARGS__)
 #define STR(...) string __VA_ARGS__; IN(__VA_ARGS__)
 #define LD(...) ld __VA_ARGS__; IN(__VA_ARGS__)
 #define _vl(name, size) vl name(size); IN(name)
@@ -145,6 +146,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  ll ans = 0;
+  rep(i, n) {
+    CHR(c); LL(a);
+    if (c == '+') ans += a;
+    if (c == '-') ans -= a;
+    if (c == '*') ans *= a;
+    if (ans < 0) ans += 10000;
+    ans %= 10000;
+    OUT(ans);
+  }
 }
 
 signed main() {

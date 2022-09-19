@@ -144,7 +144,21 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); VL(a, n);
+
+  vl dp = a;
+  rep(i, n - 1) {
+    vl t;
+    if (n - 1 - i & 1) {
+      //maximize
+      rep(i, dp.size() - 1) t.pb(max(dp[i], dp[i + 1]));
+    } else {
+      //minimize
+      rep(i, dp.size() - 1) t.pb(min(dp[i], dp[i + 1]));
+    }
+    dp = t;
+  }
+  OUT(dp[0]);
 }
 
 signed main() {

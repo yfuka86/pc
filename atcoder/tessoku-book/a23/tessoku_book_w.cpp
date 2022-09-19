@@ -144,7 +144,23 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, m);
+  VV(ll, a, m, n);
+
+  vl dp(1 << n, LINF); dp[0] = 0;
+
+  rep(i, m) {
+    ll t = 0;
+    rep(j, n) {
+      if (a[i][j]) t |= 1 << j;
+    }
+    rep(S, 1 << n) {
+      chmin(dp[S | t], dp[S] + 1);
+    }
+  }
+  // debug(dp);
+  ll ans = dp[(1 << n) - 1];
+  OUT(ans == LINF ? -1 : ans);
 }
 
 signed main() {

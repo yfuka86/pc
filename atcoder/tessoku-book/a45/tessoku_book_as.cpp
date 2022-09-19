@@ -145,6 +145,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  STR(c, s);
+  ll sum = 0;
+  rep(i, n) {
+    if (s[i] == 'B') sum += 1;
+    if (s[i] == 'R') sum += 2;
+  }
+  if (c == "W" && sum % 3 == 0) OUTRET("Yes");
+  if (c == "B" && sum % 3 == 1) OUTRET("Yes");
+  if (c == "R" && sum % 3 == 2) OUTRET("Yes");
+  OUT("No");
 }
 
 signed main() {

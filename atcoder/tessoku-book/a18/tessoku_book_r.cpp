@@ -144,7 +144,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, s);
+  VL(a, n);
+
+  vl dp(s + 1, 0); dp[0] = 1;
+  rep(i, n) {
+    rep_r(j, s) {
+      if (dp[j] && j + a[i] <= s) {
+        dp[j + a[i]] = 1;
+      }
+    }
+  }
+  if (dp[s]) OUT("Yes"); else OUT("No");
 }
 
 signed main() {

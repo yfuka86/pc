@@ -144,7 +144,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  OUT((k < n * 2 - 2 || n * 2 - k & 1) ? "No" : "Yes");
 }
 
 signed main() {

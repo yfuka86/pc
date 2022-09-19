@@ -145,6 +145,15 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VL(a, n - 1, 1); VL(b, n - 1, 1);
+  // debug(a, b);
+  vl dp(n);
+  rep(i, n - 1) {
+    chmax(dp[a[i]], dp[i] + 100);
+    chmax(dp[b[i]], dp[i] + 150);
+  }
+  // debug(dp);
+  OUT(dp[n - 1]);
 }
 
 signed main() {

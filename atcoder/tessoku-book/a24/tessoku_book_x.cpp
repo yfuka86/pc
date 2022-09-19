@@ -145,6 +145,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VL(a, n);
+  vl dp(n, LINF);
+
+  rep(i, n) {
+    auto it = lower_bound(all(dp), a[i]);
+    *it = a[i];
+  }
+
+  rep_r(i, n) {
+    if (dp[i] != LINF) OUTRET(i + 1);
+  }
 }
 
 signed main() {

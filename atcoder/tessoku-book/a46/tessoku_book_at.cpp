@@ -143,8 +143,106 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+struct Timer {
+  private:
+    chrono::high_resolution_clock::time_point start, end;
+
+  public:
+    Timer() { set(); }
+    void set() { start = chrono::high_resolution_clock::now(); }
+    int time() {
+        end = chrono::high_resolution_clock::now();
+        return chrono::duration_cast<chrono::milliseconds>(end - start).count();
+    }
+    bool before(double T) { return time() < (int)(T * 1000); }
+    void print() { cerr << "elapsed time: " << (double)time() / 1000 << " sec" << endl; }
+} timer;
+
+// ダイクストラでの用法
+// while(!que.empty() && timer.before(1.5)) {
+// }
+// if (!timer.before(1.5)) cout << "Infinity" << "\n";
+
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
   LL(n);
+  VEC2(ll, x, y, n);
+
+  vv(ll, dist, n, n);
+  vlt edges;
+  rep(i, n) rep(j, i) {
+    ll dx = x[j] - x[i], dy = y[j] - y[i];
+    ll di = dx * dx + dy * dy;
+    edges.pb({di, j, i});
+    dist[i][j] = dist[j][i] = di;
+  }
+  sort(all(edges));
+
+  vvl c(n); vb vis(n);
+  UnionFind uf(n);
+  set<ll> end; rep(i, n) end.insert(i);
+  fore(d, from, to, edges) {
+    if (end.find(from) != end.end() && end.find(to) != end.end() && !uf.same(from, to)) {
+      c[from].pb(to);
+      c[to].pb(from);
+      if (vis[from]) end.erase(from); else vis[from] = true;
+      if (vis[to]) end.erase(to); else vis[to] = true;
+      uf.unite(from, to);
+    }
+    // debug(end);
+  }
+
+  ll p = -1, cur = -1; vl ans;
+  // 端点を見つける
+  rep(i, n) if (c[i].size() == 1) { cur = i; break; }
+  while (1) {
+    ans.pb(cur);
+    if (c[cur][0] != p) {
+      p = cur;
+      cur = c[cur][0];
+    } else {
+      if (c[cur].size() == 1) break;
+      p = cur;
+      cur = c[cur][1];
+    }
+  }
+
+  rep(i, n) if (ans[i] == 0) { rotate(ans.begin(), ans.begin() + i, ans.end()); break; }
+  ans.pb(0);
+
+  // 局所探索・焼きなまし
+
+  RandGen rg;
+  uniform_real_distribution<ld> randouble(0.0, 1.0);
+  while (timer.before(0.8)) {
+    // if (cnt % 100000 == 0) debug(timer.time());
+
+    ll i = rg.l(0, n), j = rg.l(0, n);
+    if (abs(j - i) <= 1) continue;
+    if (j < i) swap(i, j);
+    ll d1 = dist[ans[i]][ans[i + 1]] + dist[ans[j]][ans[j + 1]];
+    ll d2 = dist[ans[i]][ans[j]] + dist[ans[i + 1]][ans[j + 1]];
+    if (d2 < d1) reverse(ans.begin() + i + 1, ans.begin() + j + 1);
+    else {
+      ld T = 30.0 - (30.0 * (ld)timer.time() / 800);
+      // e^(diff / T) diffは悪化なので負になる
+      ld prob = exp(min<ld>(0.0, (sqrt(d1) - sqrt(d2)) / T));
+      if (randouble(rg.mt) < prob) reverse(ans.begin() + i + 1, ans.begin() + j + 1);
+    }
+  }
+
+  OUTARRAY(ans, 1, "\n");
 }
 
 signed main() {

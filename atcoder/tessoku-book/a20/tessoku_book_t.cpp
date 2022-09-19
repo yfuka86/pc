@@ -144,7 +144,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  STR(s,t);
+  ll n = s.size(), m = t.size();
+
+  vv(ll, dp, n + 1, m + 1, 0);
+  rep(i, n) rep(j, m) {
+    if (s[i] == t[j]) dp[i + 1][j + 1] = dp[i][j] + 1;
+    else dp[i + 1][j + 1] = max(dp[i][j + 1], dp[i + 1][j]);
+  }
+  // debug(dp);
+  OUT(dp[n][m]);
 }
 
 signed main() {

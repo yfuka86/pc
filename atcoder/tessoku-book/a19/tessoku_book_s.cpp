@@ -144,7 +144,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, W);
+  VEC2(ll, w, v, n);
+
+  vl dp(W + 1, 0);
+
+  rep(i, n) {
+    rep_r(j, W) {
+      if (j + w[i] <= W) chmax(dp[j + w[i]], dp[j] + v[i]);
+    }
+  }
+  OUT(*max_element(all(dp)));
 }
 
 signed main() {

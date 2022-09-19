@@ -144,7 +144,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); STR(s);
+  rep(i, n - 2) {
+    string ss = s.substr(i, 3);
+    if (ss == "RRR" || ss == "BBB") OUTRET("Yes");
+  }
+  OUT("No");
 }
 
 signed main() {

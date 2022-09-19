@@ -143,8 +143,33 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+
+// Rolling hash　自分のやつ
+const ll P_B = 17, P_M = 1e9 + 7;
+vl bf(1e6 + 10, -1);
+ll b_fact(ll p) {
+  if (bf[p] == -1) { bf[0] = 1; rep(i, 1e6 + 9) bf[i + 1] = bf[i] * P_B % P_M; }
+  return bf[p];
+}
+
+template<typename T> vl get_hash(vector<T>& s) { vl h(s.size() + 1, 0); rep(i, s.size()) { h[i + 1] = (P_B * h[i] + s[i]) % P_M; } return h; }
+vl get_hash(string& s) { vl h(s.size() + 1, 0); rep(i, s.size()) { h[i + 1] = (P_B * h[i] + s[i]) % P_M; } return h; }
+
+ll sub_hash(vl& h, ll l, ll r) {
+  assert(0 <= l && r <= h.size());
+  ll ret = h[r] - (b_fact(r - l) * h[l] % P_M); if (ret < 0) ret += P_M;
+  return ret;
+}
+
 void solve() {
-  LL(n);
+  LL(n, q);
+  STR(s);
+  vl sh = get_hash(s);
+  rep(i,q) {
+    LL(a, b, c, d);
+    a--; c--;
+    if (sub_hash(sh, a, b) == sub_hash(sh, c, d)) OUT("Yes"); else OUT("No");
+  }
 }
 
 signed main() {

@@ -144,7 +144,22 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, x, y);
+  VL(a, n);
+
+  vl dp(100001, 0);
+  rep(i, 100001) {
+    vl t;
+    if (0 <= i - x) t.pb(dp[i - x]);
+    if (0 <= i - y) t.pb(dp[i - y]);
+    dp[i] = mex(t);
+  }
+
+  ll sum = 0;
+  rep(i, n) {
+    sum ^= dp[a[i]];
+  }
+  OUT(sum ? "First" : "Second");
 }
 
 signed main() {

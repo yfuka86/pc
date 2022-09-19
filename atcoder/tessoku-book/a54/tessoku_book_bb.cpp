@@ -144,7 +144,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(q);
+  map<string, ll> mp;
+  rep(i, q) {
+    LL(t); STR(s);
+    if (t == 1) {
+      LL(x);
+      mp[s] = x;
+    } else if (t == 2) {
+      OUT(mp[s]);
+    }
+  }
 }
 
 signed main() {

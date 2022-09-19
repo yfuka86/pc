@@ -19,8 +19,8 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define rep(...) _overload4(__VA_ARGS__, _rep3, _rep2, _rep1, _rep0)(__VA_ARGS__)
 #define _per0(n) for(ll i = 0; i < (ll)(n); ++i)
 #define _per1(i, n) for(ll i = (ll)(n)-1; i >= 0; --i)
-#define _per2(i, a, b) for(ll i = (ll)(a)-1; i >= (ll)(b); --i)
-#define _per3(i, a, b, c) for(ll i = (ll)(a)-1; i >= (ll)(b); i -= (ll)(c))
+#define _per2(i, a, b) for(ll i = (ll)(b)-1; i >= (ll)(a); --i)
+#define _per3(i, a, b, c) for(ll i = (ll)(b)-1; i >= (ll)(a); i -= (ll)(c))
 #define rep_r(...) _overload4(__VA_ARGS__, _per3, _per2, _per1, _per0)(__VA_ARGS__)
 #define _fore0(a) rep(a.size())
 #define _fore1(i, a) for(auto &&i : a)
@@ -72,6 +72,7 @@ void trace() { dout << "\n"; } template<typename Head, typename... Tail> void tr
 #endif
 // 入出力系
 #define LL(...) ll __VA_ARGS__; IN(__VA_ARGS__)
+#define CHR(...) char __VA_ARGS__; IN(__VA_ARGS__)
 #define STR(...) string __VA_ARGS__; IN(__VA_ARGS__)
 #define LD(...) ld __VA_ARGS__; IN(__VA_ARGS__)
 #define _vl(name, size) vl name(size); IN(name)

@@ -144,7 +144,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,m,b);
+  VL(a, n); VL(c, m);
+  OUT(n * m * b + sum_of(a) * m + sum_of(c) * n);
 }
 
 signed main() {

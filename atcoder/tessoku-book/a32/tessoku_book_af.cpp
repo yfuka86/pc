@@ -144,7 +144,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, a, b);
+  vl dp(n + 1, -1);
+  function<ll(ll)> dfs = [&](ll x) {
+    if (dp[x] != -1) return dp[x];
+    if (x < min(a, b)) return dp[x] = 0;
+
+    ll mi = 1;
+    if (a <= x) chmin(mi, dfs(x - a));
+    if (b <= x) chmin(mi, dfs(x - b));
+    return dp[x] = mi ? 0 : 1;
+  };
+  ll ans = dfs(n);
+  OUT(ans ? "First": "Second");
 }
 
 signed main() {

@@ -144,7 +144,22 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, q);
+
+  vl a(n); iota(all(a), 1);
+  bool rev = false;
+  rep(i, q) {
+    LL(t);
+    if (t == 1) {
+      LL(x, y); x--;
+      if (rev) a[n - 1 - x] = y; else a[x] = y;
+    } else if (t == 2) {
+      rev = !rev;
+    } else {
+      LL(x); x--;
+      OUT(rev ? a[n - 1 - x] : a[x]);
+    }
+  }
 }
 
 signed main() {

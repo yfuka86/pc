@@ -144,7 +144,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(h, w);
+  vs g(h); IN(g);
+
+  vv(ll, dp, h, w); dp[0][0] = 1;
+
+  rep(i, h) rep(j, w) {
+    if (g[i][j] == '#') continue;
+    if (i > 0) dp[i][j] += dp[i - 1][j];
+    if (j > 0) dp[i][j] += dp[i][j - 1];
+  }
+  OUT(dp[h - 1][w - 1]);
 }
 
 signed main() {

@@ -203,7 +203,6 @@ void solve() {
       if (ta & 1) ta++; if (tb & 1) tb++;
       if (tc & 1) tc--; if (td & 1) td--;
       mint tmp = 0;
-
       ll xn = ((tc - ta) / 2 + 1);
       ll yn = ((td - tb) / 2 + 1);
       // i成分

@@ -144,7 +144,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  VEC2(ll, a, b, n);
+
+  vvl p(101);
+  rep(i, n) p[a[i]].pb(b[i]);
+
+  ll ans = 0;
+
+  vl s(101);
+  rep(i, 101) {
+    fore(bb, p[i]) s[bb]++;
+    if (k < i) fore(bb, p[i - k - 1]) s[bb]--;
+
+    rep(j, 101) {
+      chmax(ans, sum_of(s, j, min(j + k + 1, 101)));
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {

@@ -19,8 +19,8 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define rep(...) _overload4(__VA_ARGS__, _rep3, _rep2, _rep1, _rep0)(__VA_ARGS__)
 #define _per0(n) for(ll i = 0; i < (ll)(n); ++i)
 #define _per1(i, n) for(ll i = (ll)(n)-1; i >= 0; --i)
-#define _per2(i, a, b) for(ll i = (ll)(a)-1; i >= (ll)(b); --i)
-#define _per3(i, a, b, c) for(ll i = (ll)(a)-1; i >= (ll)(b); i -= (ll)(c))
+#define _per2(i, a, b) for(ll i = (ll)(b)-1; i >= (ll)(a); --i)
+#define _per3(i, a, b, c) for(ll i = (ll)(b)-1; i >= (ll)(a); i -= (ll)(c))
 #define rep_r(...) _overload4(__VA_ARGS__, _per3, _per2, _per1, _per0)(__VA_ARGS__)
 #define _fore0(a) rep(a.size())
 #define _fore1(i, a) for(auto &&i : a)
@@ -143,8 +143,71 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+struct S {
+  ll score, from, hand, xscore;
+  int x[20];
+  S() : score(20), from(-1), hand(-1), xscore(20) { rep(i, 20) x[i] = 0; }
+};
+
 void solve() {
-  LL(n);
+  LL(t);
+  VEC3(ll, p, q, r, t);
+  rep(i, t) { p[i]--; q[i]--; r[i]--; }
+
+  // RandGen rg;
+  // ll t = 100;
+  // vl p = rg.vecl(t, 0, 20), q = rg.vecl(t, 0, 20), r = rg.vecl(t, 0, 20);
+
+  vector<vector<S>> beam(t + 1);
+  beam[0].pb(S());
+
+  rep(i, t) {
+    rep(j, min(beam[i].size(), 20000)) {
+      {
+        S s = beam[i][j];
+        s.x[p[i]]++; s.x[q[i]]++; s.x[r[i]]++;
+        ll cnt = 0;
+        rep(i, 20) if (s.x[i] == 0) cnt++;
+
+        s.score += cnt;
+        s.from = j;
+        s.hand = 0;
+        s.xscore = cnt;
+        beam[i + 1].eb(s);
+      }
+      {
+        S s = beam[i][j];
+        s.x[p[i]]--; s.x[q[i]]--; s.x[r[i]]--;
+        ll cnt = 0;
+        rep(i, 20) if (s.x[i] == 0) cnt++;
+
+        s.score += cnt;
+        s.from = j;
+        s.hand = 1;
+        s.xscore = cnt;
+        beam[i + 1].eb(s);
+      }
+    }
+    ll rem = t - i - 1;
+    sort(all(beam[i + 1]), [&](S a, S b) { return a.score > b.score; });
+  }
+
+  // rep(i, 5) {
+  //   S s = beam[t][i];
+  //   debug(s.score, s.from, s.hand, s.xscore);
+  //   rep(i, 20) cout << s.x[i] << " ";
+  //   OUT("\n");
+  // }
+
+  ll cur = 0;
+  vector<char> ans;
+  rep_r(i, 1, t + 1) {
+    S s = beam[i][cur];
+    if (s.hand) ans.pb('B'); else ans.pb('A');
+    cur = s.from;
+  }
+  reverse(all(ans));
+  rep(i, t) OUT(ans[i]);
 }
 
 signed main() {

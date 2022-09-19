@@ -145,6 +145,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  vlp rng(n); IN(rng); rep(i, n) swap(rng[i].fi, rng[i].se);
+  sort(all(rng));
+
+  ll cur = 0, ans = 0;
+  rep(i, n) {
+    auto [r, l] = rng[i];
+    if (cur <= l) {
+      ans++;
+      cur = r;
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {

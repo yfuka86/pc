@@ -143,8 +143,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const ll mod = 1000000007;
+
 void solve() {
-  LL(n);
+  LL(a, b);
+
+  ll pa = a, ans = 1;
+
+  rep(i, 35) {
+    if (b & 1ll << i) { ans *= pa; ans %= mod; }
+    pa *= pa; pa %= mod;
+  }
+  OUT(ans);
 }
 
 signed main() {

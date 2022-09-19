@@ -144,7 +144,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(q);
+  mpq<ll> que;
+  rep(i, q) {
+    LL(t);
+    if (t == 1) {
+      LL(x); que.push(x);
+    } else if (t == 2) {
+      OUT(que.top());
+    } else {
+      que.pop();
+    }
+  }
 }
 
 signed main() {
