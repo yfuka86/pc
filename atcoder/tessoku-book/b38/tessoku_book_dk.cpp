@@ -145,6 +145,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  STR(s);
+
+  vl h(n, 1);
+
+  rep(i, n - 1) {
+    if (s[i] == 'A') chmax(h[i + 1], h[i] + 1);
+  }
+  rep_r(i, n - 1) {
+    if (s[i] == 'B') chmax(h[i], h[i + 1] + 1);
+  }
+
+  OUT(sum_of(h));
 }
 
 signed main() {

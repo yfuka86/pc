@@ -145,6 +145,15 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+
+  vb is_prime(n + 1, 1);
+
+  rep(i, 2, n + 1) {
+    if (is_prime[i]) OUT(i);
+    rep(j, i * 2, n + 1, i) {
+      is_prime[j] = 0;
+    }
+  }
 }
 
 signed main() {

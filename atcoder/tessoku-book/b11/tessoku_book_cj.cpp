@@ -145,6 +145,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VL(a, n); sort(all(a));
+  LL(q);
+  rep(i, q) {
+    LL(x);
+    OUT(lower_bound(all(a), x) - a.begin());
+  }
 }
 
 signed main() {

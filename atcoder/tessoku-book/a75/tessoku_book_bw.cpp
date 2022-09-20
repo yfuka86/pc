@@ -145,6 +145,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VEC2(ll, t, d, n);
+
+  vlp p(n); rep(i, n) p[i] = {d[i], t[i]};
+  sort(all(p));
+
+  vl dp(3000);
+  rep(i, n) {
+    auto [d, t] = p[i];
+    rep_r(j, 3000) {
+      if (j + t <= d) chmax(dp[j + t], dp[j] + 1);
+    }
+  }
+  OUT(*max_element(all(dp)));
 }
 
 signed main() {

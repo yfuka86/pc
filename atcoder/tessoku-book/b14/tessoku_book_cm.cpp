@@ -144,7 +144,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  VL(a, n);
+
+  ll n1 = n / 2, n2 = n - n1;
+
+  set<ll> s;
+  rep(S, 1 << n1) {
+    ll sum = 0;
+    rep(i, n1) if (S & 1 << i) sum += a[i];
+    if (sum < k) s.insert(sum);
+  }
+
+  rep(S, 1 << n2) {
+    ll sum = 0;
+    rep(i, n2) if (S & 1 << i) sum += a[n1 + i];
+    if (s.find(k - sum) != s.end()) OUTRET("Yes");
+  }
+  OUT("No");
 }
 
 signed main() {

@@ -144,7 +144,13 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); VL(p, n - 1, 1);
+
+  vl cnt(n, 1);
+  rep_r(i, n - 1) {
+    cnt[p[i]] += cnt[i + 1];
+  }
+  OUTARRAY(cnt, -1);
 }
 
 signed main() {

@@ -144,7 +144,31 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(h, w, k);
+  vs c(h); IN(c);
+
+  ll ans = 0;
+
+  rep(S, 1 << h) {
+    if (__builtin_popcount(S) > k) continue;
+    ll rem = k - __builtin_popcount(S);
+    multiset<ll> s;
+    rep(j, w) {
+      ll cnt = 0;
+      rep(i, h) {
+        if (!(S & 1 << i) && c[i][j] == '.') cnt++;
+      }
+      s.insert(cnt);
+    }
+    while (s.size() && rem) {
+      s.erase(prev(s.end()));
+      rem--;
+    }
+    ll sum = 0; fore(i, s) sum += i;
+    chmax(ans, h * w - sum);
+  }
+
+  OUT(ans);
 }
 
 signed main() {

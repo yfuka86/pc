@@ -144,7 +144,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  STR(n);
+  ll ans = 0;
+  rep_r(i, n.size()) {
+    if (n[i] == '1') ans += 1 << (n.size() - 1 - i);
+  }
+  OUT(ans);
 }
 
 signed main() {

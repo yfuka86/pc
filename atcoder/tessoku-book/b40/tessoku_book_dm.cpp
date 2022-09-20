@@ -145,6 +145,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VL(a, n);
+  vl cnt(100);
+  rep(i, n) cnt[a[i] % 100]++;
+
+  ll ans = 0;
+  rep(i, 1, 50) {
+    ans += cnt[i] * cnt[100 - i];
+  }
+  ans += cnt[0] * (cnt[0] - 1) / 2;
+  ans += cnt[50] * (cnt[50] - 1) / 2;
+  OUT(ans);
 }
 
 signed main() {

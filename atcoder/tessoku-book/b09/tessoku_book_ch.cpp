@@ -90,7 +90,7 @@ void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...t
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<typename T> void OUTARRAY(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
-template<typename T> void OUTMAT(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
+template<typename T> void OUTMAT(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { OUTARRAY(v[i], offset); } }
 template<typename T> void OUTBIN(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); coutarray(v); cout.flush(); cin >> a; }
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
@@ -143,8 +143,27 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+vvl csum2d(vvl &a) {
+  ll H = a.size(), W = a[0].size(); vvl sum(H + 1, vl(W + 1, 0));
+  rep(i, H) rep(j, W) sum[i + 1][j + 1] += sum[i + 1][j] + sum[i][j + 1] + a[i][j] - sum[i][j];
+  return sum;
+}
+
 void solve() {
   LL(n);
+  ll ma = 1505;
+  vv(ll, imos, ma, ma);
+  rep(i, n) {
+    LL(a, b, c, d);
+    imos[a][b]++;
+    imos[c][d]++;
+    imos[a][d]--;
+    imos[c][b]--;
+  }
+  vvl cs = csum2d(imos);
+  ll ans = 0;
+  rep(i, ma) rep(j, ma) if (cs[i][j] > 0) ans++;
+  OUT(ans);
 }
 
 signed main() {

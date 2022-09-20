@@ -179,7 +179,7 @@ void solve() {
       seg.set(--pos, x);
     } else {
       LL(l, r);
-      OUT(seg.prod(--l, r));
+      OUT(seg.prod(--l, --r));
     }
   }
 }

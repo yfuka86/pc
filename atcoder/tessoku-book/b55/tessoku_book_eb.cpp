@@ -144,7 +144,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(q);
+  set<ll> s;
+  s.insert(-LINF); s.insert(LINF);
+  rep(i,q) {
+    LL(t, x);
+    if (t == 1) {
+      s.insert(x);
+    } else {
+      if (s.size() == 2) { OUT(-1); continue; }
+      auto it = s.lower_bound(x);
+      OUT(min(abs(*it - x), abs(*prev(it) - x)));
+    }
+  }
 }
 
 signed main() {

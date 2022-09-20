@@ -144,7 +144,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,m);
+  vv(ll, g, n);
+
+  rep(i, m) {
+    LL(a, b); --a; --b;
+    g[a].pb(b); g[b].pb(a);
+  }
+
+  rep(i, n) {
+    cout << i + 1 << ": {";
+    rep(j, g[i].size()) cout << g[i][j] + 1 << (j == g[i].size() - 1 ? "" : ", ");
+    cout << "}" << "\n";
+  }
 }
 
 signed main() {

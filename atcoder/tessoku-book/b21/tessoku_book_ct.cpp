@@ -145,6 +145,21 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  STR(s);
+
+  vv(ll, dp, n + 1, n + 1, -1);
+
+  function<ll(ll, ll)> dfs = [&](ll l, ll r) {
+    if (r == l) return 0ll;
+    if (r - l == 1) return 1ll;
+    if (dp[l][r] != -1) return dp[l][r];
+
+    ll ma = 0;
+    if (s[l] == s[r - 1]) chmax(ma, dfs(l + 1, r - 1) + 2);
+    chmax(ma, max(dfs(l + 1, r), dfs(l, r - 1)));
+    return dp[l][r] = ma;
+  };
+  OUT(dfs(0, n));
 }
 
 signed main() {

@@ -16,15 +16,15 @@ struct BIT {
     return x; }
 };
 // ----------------------------------------------------------------------
-ll inv_num(vl& v) {
+ll inv_num(vl& v) { // comp(v);
   BIT<int> bs(v.size()); ll ans = 0;
-  rep(i, v.size()) { ans += i - bs.sum(v[i]); bs.add(v[i], 1); } return ans; }
+  rep(i, v.size()) { ans += i - bs.sum(v[i] + 1); bs.add(v[i], 1); } return ans; }
 // ----------------------------------------------------------------------
 
 template<typename T = ll>
 struct RangeAdd: BIT<T> {
   RangeAdd(int _n = 0) : BIT<T>(_n) {}
-  T get(int i) { return this.sum(i); }
+  T get(int i) { return this->sum(i + 1); }
   void range_add(int l, int r, T x) {
     this->add(l, x); this->add(r, -x);
   }

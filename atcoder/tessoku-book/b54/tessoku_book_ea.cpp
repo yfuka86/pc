@@ -144,7 +144,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); VL(a,n);
+  map<ll, ll> cn;
+  rep(i, n) cn[a[i]]++;
+  ll ans = 0;
+  fore(_, c, cn) ans += c * (c - 1) / 2;
+  OUT(ans);
 }
 
 signed main() {

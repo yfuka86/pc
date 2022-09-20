@@ -144,7 +144,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,x);
+  STR(a);
+
+  a[x - 1] = '@';
+  {
+    ll cur = x - 1;
+    while (cur > 0 && a[cur - 1] == '.') {
+      cur--;
+      a[cur] = '@';
+    }
+  }
+  {
+    ll cur = x - 1;
+    while (cur < n - 1 && a[cur + 1] == '.') {
+      cur++;
+      a[cur] = '@';
+    }
+  }
+  OUT(a);
 }
 
 signed main() {

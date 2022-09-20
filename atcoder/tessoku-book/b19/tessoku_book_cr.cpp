@@ -144,7 +144,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(N, W);
+  VEC2(ll, w, v, N);
+
+  vl dp(100005, LINF); dp[0] = 0;
+
+  rep(i, N) {
+    rep_r(j, 100004) {
+      if (j + v[i] < 100005) chmin(dp[j + v[i]], dp[j] + w[i]);
+    }
+  }
+
+  ll ans = 0;
+  rep(i, 100005) if (dp[i] <= W) ans = i;
+  OUT(ans);
 }
 
 signed main() {

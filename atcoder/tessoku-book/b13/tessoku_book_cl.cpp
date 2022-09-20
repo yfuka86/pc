@@ -144,7 +144,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  VL(a, n);
+
+  ll ans = 0;
+  ll sum = 0, l = 0;
+  rep(i, n) {
+    sum += a[i];
+    while (sum > k) {
+      sum -= a[l];
+      l++;
+    }
+    ans += i - l + 1;
+  }
+  OUT(ans);
 }
 
 signed main() {

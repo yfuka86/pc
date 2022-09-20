@@ -144,7 +144,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, x, y);
+  VL(a, n);
+  ll ans = 0;
+  vl grundy = {0, 0, 1, 1, 2};
+  rep(i, n) {
+    ans ^= grundy[a[i] % 5];
+  }
+  OUT(ans ? "First" : "Second");
 }
 
 signed main() {

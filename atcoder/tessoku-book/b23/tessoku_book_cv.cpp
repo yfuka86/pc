@@ -145,6 +145,21 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VEC2(ll, x, y, n);
+
+  vv(ld, dp, 1 << n, n, DINF);
+  dp[0][0] = 0;
+
+  rep(S, 1 << n) {
+    rep(j, n) {
+      if (S & 1 << j) continue;
+      rep(i, n) {
+        ll dx = x[j] - x[i], dy = y[j] - y[i];
+        chmin(dp[S | 1 << j][j], dp[S][i] + sqrt(dx * dx + dy * dy));
+      }
+    }
+  }
+  OUT(dp[(1 << n) - 1][0]);
 }
 
 signed main() {

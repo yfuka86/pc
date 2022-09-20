@@ -144,7 +144,22 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(x, y);
+
+  vlp ans;
+  while (x != 1 || y != 1) {
+    ans.pb({x, y});
+    if (x > y) {
+      x = x - y;
+    } else {
+      y = y - x;
+    }
+  }
+  reverse(all(ans));
+  OUT(ans.size());
+  fore(x, y, ans) {
+    OUT(x, y);
+  }
 }
 
 signed main() {

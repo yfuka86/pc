@@ -145,6 +145,13 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  ld ok = 10000, ng = 0;
+  rep(_, 100) {
+    ld mid = (ok + ng) / 2;
+    if (pow(mid,3) + mid >= n) ok = mid;
+    else ng = mid;
+  }
+  OUT(ok);
 }
 
 signed main() {

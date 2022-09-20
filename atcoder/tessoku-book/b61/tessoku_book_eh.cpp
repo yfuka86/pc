@@ -144,7 +144,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,m);
+  map<ll, ll> cn;
+  rep(i, m) {
+    LL(a, b); cn[a]++; cn[b]++;
+  }
+
+  ll ma = 0, ans = -1;
+  fore(id, c, cn) {
+    if (chmax(ma, c)) ans = id;
+  }
+  OUT(ans);
 }
 
 signed main() {

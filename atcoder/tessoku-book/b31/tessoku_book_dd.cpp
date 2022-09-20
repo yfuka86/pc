@@ -145,6 +145,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  OUT(n / 3 + n / 5 + n / 7 - n / 15 - n / 35 - n / 21 + n / 105);
 }
 
 signed main() {

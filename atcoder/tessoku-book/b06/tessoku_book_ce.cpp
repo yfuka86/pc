@@ -145,6 +145,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VL(a, n);
+  vl as = csum(a);
+  LL(q);
+  rep(i, q) {
+    LL(l,r); --l;
+    ll len = r - l;
+    ll win = as[r] - as[l], lose = len - win;
+    if (win > lose) OUT("win");
+    else if (win < lose) OUT("lose");
+    else OUT("draw");
+  }
 }
 
 signed main() {

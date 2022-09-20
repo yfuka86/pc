@@ -145,6 +145,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VV(ll, a, n, n);
+
+  vl p(n); iota(all(p), 0);
+
+  LL(q);
+  rep(i, q) {
+    LL(t,x,y);--x;--y;
+    if (t == 1) {
+      swap(p[x], p[y]);
+    } else {
+      OUT(a[p[x]][y]);
+    }
+  }
 }
 
 signed main() {

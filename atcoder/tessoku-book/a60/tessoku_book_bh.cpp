@@ -145,6 +145,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VL(a, n);
+  vl ans(n, -1);
+
+  stack<LP> st;
+
+  rep_r(i, n) {
+    while(st.size() && st.top().fi < a[i]) {
+      ans[st.top().se] = i + 1;
+      st.pop();
+    }
+    st.push({a[i],i});
+  }
+  OUTARRAY(ans);
 }
 
 signed main() {

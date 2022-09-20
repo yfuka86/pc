@@ -144,7 +144,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  VL(a, k);
+  vl dp(n + 1);
+  rep(i, n + 1) {
+    ll t = 0;
+    rep(j, k) {
+      if (0 <= i - a[j] && !dp[i - a[j]]) { t = 1; break; }
+    }
+    dp[i] = t;
+  }
+  OUT(dp[n] ? "First" : "Second");
 }
 
 signed main() {

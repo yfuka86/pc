@@ -144,7 +144,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  STR(s);
+  vlp ans;
+
+  vl t;
+  rep(i, s.size()) {
+    if (s[i] == '(') t.pb(i + 1);
+    else {
+      ans.pb({t.back(), i + 1});
+      t.pop_back();
+    }
+  }
+  fore(a, b, ans) OUT(a, b);
 }
 
 signed main() {

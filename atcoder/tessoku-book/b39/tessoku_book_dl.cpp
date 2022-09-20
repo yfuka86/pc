@@ -144,7 +144,22 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, d);
+
+  vv(ll, a, d);
+  rep(i, n) {
+    LL(x, y); --x;
+    a[x].pb(y);
+  }
+  pq<ll> task;
+  ll ans = 0;
+  rep(i, d) {
+    fore(y, a[i]) task.push(y);
+    if (task.size()) {
+      ans += task.top(); task.pop();
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {

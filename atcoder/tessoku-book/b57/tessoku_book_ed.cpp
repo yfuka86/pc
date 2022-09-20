@@ -144,7 +144,32 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  vv(ll, dp, 20, n + 1, -1);
+  rep(i, n + 1) {
+    dp[0][i] = i - sum_of(digits(i));
+  }
+  rep(i, 19) {
+    rep(j, n + 1) {
+      dp[i + 1][j] = dp[i][dp[i][j]];
+    }
+  }
+  debug(dp);
+
+  if (k > 100000) {
+    vl ans(n, 0); OUTARRAY(ans, 0, "\n");
+  } else {
+    vl ans(n + 1); iota(all(ans), 0);
+    rep(b, 20) {
+      if (k & 1 << b) {
+        rep(i, n + 1) {
+          ans[i] = dp[b][ans[i]];
+        }
+      }
+    }
+    ans.erase(ans.begin());
+    OUTARRAY(ans, 0, "\n");
+  }
 }
 
 signed main() {

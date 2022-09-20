@@ -145,6 +145,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VL(h, n);
+
+  vl dp(n, LINF); dp[0] = 0;
+  rep(i, n - 1) {
+    chmin(dp[i + 1], dp[i] + abs(h[i + 1] - h[i]));
+    if (i < n - 2) chmin(dp[i + 2], dp[i] + abs(h[i + 2] - h[i]));
+  }
+  OUT(dp[n - 1]);
 }
 
 signed main() {

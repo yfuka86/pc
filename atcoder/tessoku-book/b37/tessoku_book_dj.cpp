@@ -145,6 +145,31 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  vl d = digits(n); reverse(all(d));
+  ll m = d.size();
+
+  v3(ll, dp, m + 1, 150, 2);
+  dp[0][0][1] = 1;
+
+  rep(i, m) {
+    rep(dd, d[i] + 1) {
+      rep(j, 150) {
+        if (j + dd < 150) dp[i + 1][j + dd][d[i] == dd] += dp[i][j][1];
+      }
+    }
+    rep(dd, 10) {
+      rep(j, 150) {
+        if (j + dd < 150) dp[i + 1][j + dd][0] += dp[i][j][0];
+      }
+    }
+  }
+
+  // debug(dp[m]);
+  ll ans = 0;
+  rep(i, 150) {
+    ans += (dp[m][i][0] + dp[m][i][1]) * i;
+  }
+  OUT(ans);
 }
 
 signed main() {

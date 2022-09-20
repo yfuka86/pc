@@ -145,6 +145,30 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VEC2(ll, a, b, n);
+
+  auto f = [&]() {
+    ll as = 0, bs = 0;
+    rep(i, n) {
+      if (a[i] >= 0 && b[i] >= 0) {
+        as += a[i]; bs += b[i];
+      } else if (a[i] + b[i] > 0) {
+        as += a[i]; bs += b[i];
+      }
+    }
+    return abs(as) + abs(bs);
+  };
+
+  ll ans = 0;
+  chmax(ans, f());
+  rep(i, n) b[i] = -b[i];
+  chmax(ans, f());
+  rep(i, n) a[i] = -a[i];
+  chmax(ans, f());
+  rep(i, n) a[i] = -b[i];
+  chmax(ans, f());
+
+  OUT(ans);
 }
 
 signed main() {

@@ -144,7 +144,33 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, s);
+  VL(a, n);
+
+  vl dp(s + 1, 0), from(s + 1, -1);
+  dp[0] = 1;
+  rep(i, n) {
+    rep_r(j, s) {
+      if (dp[j] && j + a[i] <= s) {
+        dp[j + a[i]] = 1;
+        if (from[j + a[i]] == -1) from[j + a[i]] = i;
+      }
+    }
+  }
+
+  if (dp[s]) {
+    ll cur = s;
+    vl ans;
+    while (from[cur] != -1) {
+      ans.pb(from[cur]);
+      cur = cur - a[from[cur]];
+    }
+    reverse(all(ans));
+    OUT(ans.size());
+    OUTARRAY(ans, 1);
+  } else {
+    OUT(-1);
+  }
 }
 
 signed main() {

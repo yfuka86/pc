@@ -142,9 +142,42 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+// 典型LCS
+string lcs(string &s1, string &s2){
+  ll s1n = s1.size(), s2n = s2.size();
+  vvl dp(s1n + 1, vl(s2n + 1, 0));
+  vector<vlp> dpfrom(s1n + 1, vlp(s2n + 1, {-1, -1}));
+  rep(i, s1n) rep(j, s2n) {
+    if (s1[i] == s2[j]) { dp[i + 1][j + 1] = dp[i][j] + 1; dpfrom[i + 1][j + 1] = {i, j};
+    } else {
+      dp[i + 1][j + 1] = max(dp[i + 1][j], dp[i][j + 1]); dpfrom[i + 1][j + 1] = dp[i + 1][j] > dp[i][j + 1] ? mp(i + 1, j) : mp(i, j + 1);
+    }
+  }
+
+  string s = ""; ll m = s1n, n = s2n;
+  while (dpfrom[m][n].first >= 0) {
+    if (dpfrom[m][n] == mp(m - 1, n - 1)) s.pb(s1[m - 1]);
+    auto [tm, tn] = dpfrom[m][n]; m = tm; n = tn;
+  }
+  reverse(all(s)); return s;
+}
+
 
 void solve() {
-  LL(n);
+  STR(s, t);
+  ll n = s.size(), m = t.size();
+
+  vv(ll, dp, n + 1, m + 1, LINF); dp[0][0] = 0;
+  rep(i, n + 1) rep(j, m + 1) {
+    if (i < n && j < m) {
+      if (s[i] == t[j]) chmin(dp[i + 1][j + 1], dp[i][j]);
+      else chmin(dp[i + 1][j + 1], dp[i][j] + 1);
+    }
+    if (i < n) chmin(dp[i + 1][j], dp[i][j] + 1);
+    if (j < m) chmin(dp[i][j + 1], dp[i][j] + 1);
+  }
+  // debug(dp);
+  OUT(dp[n][m]);
 }
 
 signed main() {

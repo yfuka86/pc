@@ -144,7 +144,10 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,m); VL(a,m);
+  vl cnt(n, m);
+  rep(i, m) cnt[a[i] - 1]--;
+  OUTARRAY(cnt, 0, "\n");
 }
 
 signed main() {
