@@ -143,8 +143,29 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+#include <atcoder/maxflow>
+using namespace atcoder;
+
 void solve() {
-  LL(n);
+  LL(n, m);
+  VL(p, n);
+  VEC2(ll, a, b, m);
+  rep(i, m) { --a[i]; --b[i]; }
+
+  mf_graph<ll> mf(n + 2);
+  ll s = n, t = s + 1;
+
+  ll ma = 150;
+  rep(i, n) {
+    mf.add_edge(s, i, ma - p[i]);
+    mf.add_edge(i, t, ma);
+  }
+
+  rep(i, m) {
+    mf.add_edge(b[i], a[i], INF);
+  }
+
+  OUT(n * 150 - mf.flow(s, t));
 }
 
 signed main() {

@@ -145,6 +145,38 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  set<string> S;
+  rep(i, 10000) {
+    string s = to_string(i);
+    while (s.size() < 4) s.insert(s.begin(), '0');
+    S.insert(s);
+  }
+  rep(i, n) {
+    STR(s); LL(t);
+    if (t == 1) { OUTRET(s); }
+    else {
+      vs cand;
+      rep(j, 4) {
+        string scopy = s;
+        rep(d, 10) {
+          if (s[j] - '0' == d) continue;
+          scopy[j] = '0' + d;
+          cand.pb(scopy);
+        }
+      }
+
+      S.erase(s);
+      if (t == 2) {
+        set<string> ns;
+        fore(ca, cand) if (S.find(ca) != S.end()) ns.insert(ca);
+        S = ns;
+      } else {
+        fore(ca, cand) S.erase(ca);
+      }
+    }
+  }
+  if (S.size() > 1) OUT("Can't Solve");
+  else OUT(*S.begin());
 }
 
 signed main() {

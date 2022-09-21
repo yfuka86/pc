@@ -144,7 +144,28 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(q);
+
+  deque<string> q1, q2;
+
+  rep(i, q) {
+    char t; cin >> t;
+    if (t == 'A') {
+      STR(x);
+      q2.pb(x);
+    } else if (t == 'B') {
+      STR(x);
+      q2.push_front(x);
+    } else if (t == 'C') {
+      q1.pop_front();
+    } else {
+      OUT(q1.front());
+    }
+    if (q1.size() < q2.size()) {
+      q1.pb(q2.front());
+      q2.pop_front();
+    }
+  }
 }
 
 signed main() {

@@ -145,6 +145,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  fore(d, divisor(n)) {
+    OUT(d);
+  }
 }
 
 signed main() {

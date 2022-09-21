@@ -144,7 +144,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  VL(a, n);
+  ld ok = 0, ng = 1e9;
+
+  rep(_, 100) {
+    ld mid = (ok + ng) / 2;
+    ll sum = 0;
+    rep(i, n) {
+      sum += floor((ld)a[i] / mid);
+    }
+    if (sum >= k) ok = mid;
+    else ng = mid;
+  }
+
+  vl ans(n);
+  rep(i, n) {
+    ans[i] = floor((ld)a[i] / ok);
+  }
+  OUTARRAY(ans);
 }
 
 signed main() {

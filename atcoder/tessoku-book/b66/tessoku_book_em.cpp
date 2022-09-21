@@ -143,8 +143,55 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
-  LL(n);
+  LL(n, m);
+  vlp e(m); IN(e); rep(i, m) { e[i].fi--; e[i].se--; }
+
+  LL(q);
+  vlt query(q);
+  vb stop(m);
+  rep(i, q) {
+    LL(t);
+    if (t == 1) {
+      LL(x); --x;
+      stop[x] = 1;
+      query[i] = {1, x, -1};
+    } else {
+      LL(u, v); --u; --v;
+      query[i] = {2, u, v};
+    }
+  }
+  reverse(all(query));
+
+  UnionFind uf(n);
+  rep(i, m) {
+    if (!stop[i]) uf.unite(e[i].fi, e[i].se);
+  }
+
+  vl ans;
+  rep(i, q) {
+    auto [t, x, y] = query[i];
+    if (t == 1) {
+      uf.unite(e[x].fi, e[x].se);
+    } else {
+      if (uf.same(x, y)) ans.pb(1); else ans.pb(0);
+    }
+  }
+  reverse(all(ans));
+
+  fore(b, ans) OUT(b ? "Yes" : "No");
 }
 
 signed main() {

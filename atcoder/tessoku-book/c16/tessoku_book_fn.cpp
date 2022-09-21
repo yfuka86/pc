@@ -144,7 +144,31 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, m, k);
+  vlt4 f(m);
+  rep(i, m) {
+    LL(a, s, b, t); --a; --b;
+    f[i] = {s, t + k, a, b};
+  }
+  sort(all(f));
+
+  vl dp(n);
+
+  mpq<LT> que;
+  rep(i, m) {
+    auto [s, t, a, b] = f[i];
+    while (!que.empty() && get<0>(que.top()) <= s) {
+      auto [_, b, i] = que.top(); que.pop();
+      chmax(dp[b], i);
+    }
+    que.push({t, b, dp[a] + 1});
+  }
+  while (!que.empty()) {
+    auto [_, b, i] = que.top(); que.pop();
+    chmax(dp[b], i);
+  }
+
+  OUT(*max_element(all(dp)));
 }
 
 signed main() {

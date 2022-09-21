@@ -145,6 +145,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  OUT(n);
+  rep(i, n) {
+    ll a = i, b = (i + 1) % n;
+    OUT(a + 1, b + 1);
+  }
 }
 
 signed main() {

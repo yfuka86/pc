@@ -142,9 +142,36 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 void solve() {
-  LL(n);
+  LL(n, m);
+  Graph<ll> G(n);
+  rep(i, m) {
+    LL(a, b); --a; --b;
+    G.add_edge(a, b);
+  }
+  vb vis(n);
+  vl ans, t;
+  function<void(ll)> dfs = [&](ll v) {
+    vis[v] = 1;
+    t.pb(v);
+    if (v == n - 1) ans = t;
+    fore(to, G[v]) {
+      if (!vis[to]) dfs(to);
+    }
+    t.pop_back();
+  };
+  dfs(0);
+  OUTARRAY(ans, 1);
 }
 
 signed main() {

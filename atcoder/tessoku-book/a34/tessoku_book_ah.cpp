@@ -154,6 +154,8 @@ void solve() {
     if (0 <= i - y) t.pb(dp[i - y]);
     dp[i] = mex(t);
   }
+  // vl d(dp.begin(), dp.begin() + 100);
+  // debug(d);
 
   ll sum = 0;
   rep(i, n) {

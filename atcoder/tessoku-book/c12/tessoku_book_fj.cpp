@@ -144,7 +144,33 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n,m,k);
+  VEC2(ll, a, b, m); rep(i, m){ a[i]--; b[i]--; }
+
+  vv(ll, cnt, n + 1, n + 1);
+
+  rep(i, n) rep(j, i + 1, n + 1) {
+    ll t = 0;
+    rep(mm, m) {
+      if (incl(a[mm], i, j) && incl(b[mm], i, j)) t++;
+    }
+    cnt[i][j] = t;
+  }
+  // debug(cnt);
+
+  // dp[個目の前に][個の区切り]
+  vv(ll, dp, n + 1, k + 1, -LINF);
+  dp[0][0] = 0;
+
+  rep(i, n) {
+    rep(j, k) {
+      rep(d, 1, n + 1) {
+        if (n < i + d) break;
+        chmax(dp[i + d][j + 1], dp[i][j] + cnt[i][i + d]);
+      }
+    }
+  }
+  OUT(dp[n][k]);
 }
 
 signed main() {

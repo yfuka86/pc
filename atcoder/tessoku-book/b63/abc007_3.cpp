@@ -144,7 +144,26 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(r, c);
+  LL(sy, sx, gy, gx); --sy, --sx, --gy, --gx;
+  vs g(r); IN(g);
+
+  vv(ll, cost, r, c, LINF);
+  cost[sy][sx] = 0;
+
+  queue<LP> que; que.push({sy, sx});
+  while(!que.empty()) {
+    auto [x, y] = que.front(); que.pop();
+    rep(d, 4) {
+      ll di = x + dx[d], dj = y + dy[d];
+      if (incl(di, 0ll, r) && incl(dj, 0ll, c) && g[di][dj] == '.') {
+        if (chmin(cost[di][dj], cost[x][y] + 1)) {
+          que.push({di, dj});
+        }
+      }
+    }
+  }
+  OUT(cost[gy][gx]);
 }
 
 signed main() {

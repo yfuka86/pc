@@ -145,6 +145,21 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VL(a, n * 2);
+
+  vv(ll, dp, n * 2 + 1, n * 2 + 1);
+
+  function<ll(ll, ll)> dfs = [&](ll l, ll r) {
+    assert((r - l) % 2 == 0);
+    if (r - l == 2) return abs(a[l] - a[l + 1]);
+    if (dp[l][r]) return dp[l][r];
+
+    ll ret = LINF;
+    chmin(ret, abs(a[l] - a[r - 1]) + dfs(l + 1, r - 1));
+    rep(i, l + 2, r, 2) chmin(ret, dfs(l, i) + dfs(i, r));
+    return dp[l][r] = ret;
+  };
+  OUT(dfs(0, n * 2));
 }
 
 signed main() {

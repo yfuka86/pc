@@ -145,6 +145,13 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  string ans(10, '4');
+
+  rep(i, 10) {
+    if (n - 1 & 1 << i) ans[i] = '7';
+  }
+  reverse(all(ans));
+  OUT(ans);
 }
 
 signed main() {

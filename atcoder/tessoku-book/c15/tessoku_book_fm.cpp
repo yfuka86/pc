@@ -144,7 +144,41 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  vlp p(n), rp(n);
+  rep(i, n) {
+    LL(l, r); r += k;
+    p[i] = {l, r};
+    rp[i] = {r, l};
+  }
+  vlp sp = p; sort(rall(sp));
+  sort(all(rp));
+
+  vl t = {0};
+  {
+    ll cur = 0;
+    rep(i, n) {
+      auto [r, l] = rp[i];
+      if (cur <= l) { t.pb(r); cur = r; }
+    }
+  }
+  vl rt = {-200000};
+  {
+    ll cur = 200000;
+    rep(i, n) {
+      auto [l, r] = sp[i];
+      if (r <= cur) { rt.pb(-l); cur = l; }
+    }
+  }
+
+  // debug(t, rt);
+  rep(i, n) {
+    auto [l, r] = p[i];
+    ll sum = 1;
+    sum += prev(upper_bound(all(t), l)) - t.begin();
+    sum += prev(upper_bound(all(rt), -r)) - rt.begin();
+    OUT(sum);
+  }
 }
 
 signed main() {
