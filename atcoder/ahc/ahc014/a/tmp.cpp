@@ -147,109 +147,329 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static int get_mod() { return mod; }
+ll n, m, center;
+vvl g;
+vector<set<ll>> ex, ey, edx, edy;
+
+vvl ans;
+set<vl> cands;
+
+ll score() {
+  ld ret = (ld)1e6 * n * n / m;
+  ll s = 0, w = 0;
+  ll c = center;
+  rep(i, n) rep(j, n) {
+    ll t = (i - c) * (i - c) + (j - c) * (j - c) + 1;
+    s += t;
+    if (g[i][j]) w += t;
+  }
+  return round(ret * w / s);
+}
+LP tr(ll x, ll y) {
+  return mp(x + y, x - y + n - 1);
+}
+LP rt(ll x, ll y) {
+  y -= n - 1;
+  ll dx = (x + y) / 2, dy = (x - y) / 2;
+  if (incl(dx, 0ll, n) && incl(dy, 0ll, n)) return mp(dx, dy);
+  else return mp(-1, -1);
+}
+ll dg(ll x, ll y) {
+  auto p = rt(x, y);
+  if (p.fi == -1) return false;
+  else return g[p.fi][p.se];
+}
+
+struct Cand;
+vector<Cand> enum_cand(ll x, ll y);
+vector<Cand> enum_dcand(ll x, ll y);
+list<pair<vl, Cand>> que;
+ll inv_count();
+
+struct Cand {
+  ll t, x1, y1, x2, y2, nx, ny;
+  Cand(ll t, ll x1, ll y1, ll x2, ll y2, ll nx, ll ny): t(t), x1(x1), y1(y1), x2(x2), y2(y2), nx(nx), ny(ny) { }
+  Cand(vl v) : t(v[0]), x1(v[1]), y1(v[2]), x2(v[3]), y2(v[4]), nx(v[5]), ny(v[6]) { }
+  vl attr() { return {t, x1, y1, x2, y2, nx, ny}; }
+  ll edgesize() const {
+    ll e = abs(x2 - x1) * 2 + abs(y2 - y1) * 2;
+    return t ? e / 2 : e;
+  }
+  ll score() const {
+    auto p = rt(nx, ny);
+    ll dx = (t ? p.fi : nx), dy = (t ? p.se : ny);
+    dx -= center;
+    dy -= center;
+    return dx * dx + dy * dy + 1;
+  }
+  LP dscore() {
+    if (!valid()) return mp(0, LINF);
+
+    addtemp();
+    LP p = t ? rt(nx, ny) : mp(nx, ny);
+    LP trp = t ? mp(nx, ny) : tr(nx, ny);
+    ll cnt = 1;
+    fore(c, enum_cand(p.fi, p.se)) {
+      if (cands.find(c.attr()) == cands.end()) { cnt++; break; }
+    }
+    fore(c, enum_dcand(trp.fi, trp.se)) {
+      if (cands.find(c.attr()) == cands.end()) { cnt++; break; }
+    }
+    ll inv = inv_count();
+    removetemp();
+    return mp(cnt, inv);
+  }
+  vl sortattr() {
+    auto [cnt, inv] = this->dscore();
+    ll a = cnt * 100 / (inv + 1);
+    ll sc = this->score(), esz = this->edgesize();
+    return {-a * (10000 * sc / (esz * esz * esz * esz))};
+  }
+  bool valid() {
+    if (t == 0) {
+      if (g[nx][ny] == 1) return false;
+      rep(i, x1 + 1, x2) if (g[i][y1] || g[i][y2]) return false;
+      rep(j, y1 + 1, y2) if (g[x1][j] || g[x2][j]) return false;
+      if (ex[x1].lower_bound(y1) != ex[x1].lower_bound(y2)) return false;
+      if (ex[x2].lower_bound(y1) != ex[x2].lower_bound(y2)) return false;
+      if (ey[y1].lower_bound(x1) != ey[y1].lower_bound(x2)) return false;
+      if (ey[y2].lower_bound(x1) != ey[y2].lower_bound(x2)) return false;
+    } else {
+      if (rt(x1, y1).fi == -1 || rt(x2, y2).fi == -1 || rt(x1, y2).fi == -1 || rt(x2, y1).fi == -1 || rt(nx, ny).fi == -1) return false;
+      if (dg(nx, ny) == 1) return false;
+      rep(i, x1 + 2, x2) if (dg(i, y1) || dg(i, y2)) return false;
+      rep(j, y1 + 2, y2) if (dg(x1, j) || dg(x2, j)) return false;
+      if (edx[x1].lower_bound(y1) != edx[x1].lower_bound(y2)) return false;
+      if (edx[x2].lower_bound(y1) != edx[x2].lower_bound(y2)) return false;
+      if (edy[y1].lower_bound(x1) != edy[y1].lower_bound(x2)) return false;
+      if (edy[y2].lower_bound(x1) != edy[y2].lower_bound(x2)) return false;
+    }
+    return true;
+  }
+  void add() {
+    assert(valid());
+    addtemp();
+    if (t == 0) {
+      ans.pb({nx, ny, nx ^ x1 ^ x2, ny, nx ^ x1 ^ x2, ny ^ y1 ^ y2, nx, ny ^ y1 ^ y2});
+    } else {
+      auto p1 = rt(nx, ny);
+      auto p2 = rt(nx ^ x1 ^ x2, ny);
+      auto p3 = rt(nx ^ x1 ^ x2, ny ^ y1 ^ y2);
+      auto p4 = rt(nx, ny ^ y1 ^ y2);
+      ans.pb({p1.fi, p1.se, p2.fi, p2.se, p3.fi, p3.se, p4.fi, p4.se});
+    }
+  }
+  void addtemp() {
+    assert(valid());
+    if (t == 0) {
+      g[nx][ny] = 1;
+      rep(j, y1, y2) { ex[x1].insert(j); ex[x2].insert(j); }
+      rep(i, x1, x2) { ey[y1].insert(i); ey[y2].insert(i); }
+    } else {
+      auto [xx, yy] = rt(nx, ny);
+      g[xx][yy] = 1;
+      rep(j, y1, y2, 2) { edx[x1].insert(j); edx[x2].insert(j); }
+      rep(i, x1, x2, 2) { edy[y1].insert(i); edy[y2].insert(i); }
+    }
+  }
+  void removetemp() {
+    if (t == 0) {
+      g[nx][ny] = 0;
+      rep(j, y1, y2) { ex[x1].erase(j); ex[x2].erase(j); }
+      rep(i, x1, x2) { ey[y1].erase(i); ey[y2].erase(i); }
+    } else {
+      auto [xx, yy] = rt(nx, ny);
+      g[xx][yy] = 0;
+      rep(j, y1, y2, 2) { edx[x1].erase(j); edx[x2].erase(j); }
+      rep(i, x1, x2, 2) { edy[y1].erase(i); edy[y2].erase(i); }
+    }
+  }
+  bool operator<(const struct Cand& other) const {
+    return this->edgesize() > other.edgesize();
+  }
 };
-using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-//------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
+ostream &operator<<(ostream &os, const Cand &c) {
+  return os << "{" << c.x1 << "," << c.y1 << "," << c.x2 << "," << c.y2 << "}";
+}
 
-/**
- * @brief Fast Walsh Hadamard Transform (高速ウォルシュアダマール変換)
- */
-template< typename T >
-void fast_walsh_hadamard_transform(vector< T > &f, bool inv = false) {
-  const int n = (int) f.size();
-  assert((n & (n - 1)) == 0);
-  for(int i = 1; i < n; i <<= 1) {
-    for(int j = 0; j < n; j += i << 1) {
-      for(int k = 0; k < i; k++) {
-        T s = f[j + k], t = f[j + k + i];
-        f[j + k] = s + t;
-        f[j + k + i] = s - t;
+ll inv_count() {
+  ll ret = 0;
+  fore(s, c, que) { if (!c.valid()) ret++; }
+  return ret;
+}
+
+vector<Cand> candx(ll x, ll y1, ll y2) {
+  vector<Cand> t;
+  ll i = x, a = y1, b = y2;
+  rep_r(k, i) {
+    if (g[k][a] && g[k][b]) break;
+    if (g[k][a]) { t.pb(Cand(0, k, a, i, b, k, b)); break; }
+    if (g[k][b]) { t.pb(Cand(0, k, a, i, b, k, a)); break; }
+  }
+  rep(k, i + 1, n) {
+    if (g[k][a] && g[k][b]) break;
+    if (g[k][a]) { t.pb(Cand(0, i, a, k, b, k, b)); break; }
+    if (g[k][b]) { t.pb(Cand(0, i, a, k, b, k, a)); break; }
+  }
+  return t;
+}
+vector<Cand> candy(ll x1, ll x2, ll y) {
+  vector<Cand> t;
+  ll i = y, a = x1, b = x2;
+  rep_r(k, i) {
+    if (g[a][k] && g[b][k]) break;
+    if (g[a][k]) { t.pb(Cand(0, a, k, b, i, b, k)); break; }
+    if (g[b][k]) { t.pb(Cand(0, a, k, b, i, a, k)); break; }
+  }
+  rep(k, i + 1, n) {
+    if (g[a][k] && g[b][k]) break;
+    if (g[a][k]) { t.pb(Cand(0, a, i, b, k, b, k)); break; }
+    if (g[b][k]) { t.pb(Cand(0, a, i, b, k, a, k)); break; }
+  }
+  return t;
+}
+vector<Cand> enum_cand(ll x, ll y) {
+  // assert(g[x][y]);
+
+  vector<Cand> t, ret;
+  rep_r(i, y) if (g[x][i]) { fore(c, candx(x, i, y)) t.pb(c); break; }
+  rep(i, y + 1, n) if (g[x][i]) { fore(c, candx(x, y, i)) t.pb(c); break; }
+  rep_r(i, x) if (g[i][y]) { fore(c, candy(i, x, y)) t.pb(c); break; }
+  rep(i, x + 1, n) if (g[i][y]) { fore(c, candy(x, i, y)) t.pb(c); break; }
+  fore(c, t) if (c.valid()) ret.pb(c);
+  return ret;
+}
+
+vector<Cand> dcandx(ll x, ll y1, ll y2) {
+  assert(!((y1 - y2) & 1));
+  vector<Cand> t;
+  ll i = x, a = y1, b = y2;
+
+  ll xroom = min(abs(y1 - (n - 1)), abs(y2 - (n - 1)));
+  ll xl = xroom, xr = n * 2 - 1 - xroom;
+
+  rep_r(k, xl, x - 1, 2) {
+    if (dg(k, a) && dg(k, b)) break;
+    if (dg(k, a)) { t.pb(Cand(1, k, a, i, b, k, b)); break; }
+    if (dg(k, b)) { t.pb(Cand(1, k, a, i, b, k, a)); break; }
+  }
+  rep(k, x + 2, xr, 2) {
+    if (dg(k, a) && dg(k, b)) break;
+    if (dg(k, a)) { t.pb(Cand(1, i, a, k, b, k, b)); break; }
+    if (dg(k, b)) { t.pb(Cand(1, i, a, k, b, k, a)); break; }
+  }
+  return t;
+}
+vector<Cand> dcandy(ll x1, ll x2, ll y) {
+  assert(!((x1 - x2) & 1));
+  vector<Cand> t;
+  ll i = y, a = x1, b = x2;
+
+  ll yroom = min(abs((x1 - (n - 1))), abs((x2 - (n - 1))));
+  ll yl = yroom, yr = n * 2 - 1 - yroom;
+
+  rep_r(k, yl, y - 1, 2) {
+    if (dg(a, k) && dg(b, k)) break;
+    if (dg(a, k)) { t.pb(Cand(1, a, k, b, i, b, k)); break; }
+    if (dg(b, k)) { t.pb(Cand(1, a, k, b, i, a, k)); break; }
+  }
+  rep(k, y + 2, yr, 2) {
+    if (dg(a, k) && dg(b, k)) break;
+    if (dg(a, k)) { t.pb(Cand(1, a, i, b, k, b, k)); break; }
+    if (dg(b, k)) { t.pb(Cand(1, a, i, b, k, a, k)); break; }
+  }
+  return t;
+}
+vector<Cand> enum_dcand(ll tx, ll ty) {
+  vector<Cand> t, ret;
+  auto [x, y] = rt(tx, ty);
+  // assert(g[x][y]);
+
+  ll xroom = abs(ty - (n - 1));
+  ll xl = xroom, xr = n * 2 - 1 - xroom;
+  ll yroom = abs(tx - (n - 1));
+  ll yl = yroom, yr = n * 2 - 1 - yroom;
+
+  rep_r(i, yl, ty - 1, 2) if (dg(tx, i)) { fore(c, dcandx(tx, i, ty)) t.pb(c); break; }
+  rep(i, ty + 2, yr, 2) if (dg(tx, i)) { fore(c, dcandx(tx, ty, i)) t.pb(c); break; }
+  rep_r(i, xl, tx - 1, 2) if (dg(i, ty)) { fore(c, dcandy(i, tx, ty)) t.pb(c); break; }
+  rep(i, tx + 2, xr, 2) if (dg(i, ty)) { fore(c, dcandy(tx, i, ty)) t.pb(c); break; }
+
+  fore(c, t) if (c.valid()) ret.pb(c);
+  return ret;
+}
+
+ll solve(bool toans = true) {
+  cin >> n >> m;
+  VEC2(ll, x, y, m);
+
+  ///////////////////////////////////
+  // RandGen rg;
+  // n = rg.l(15, 31) * 2 + 1, m = rg.l(n, n * n / 12 + 1);
+  // vl x(m), y(m);
+  // {
+  //   set<LP> s;
+  //   while (s.size() < m) s.insert({rg.l(n / 4, 3 * n / 4 + 1), rg.l(n / 4, 3 * n / 4 + 1)});
+  //   ll cur = 0; fore(a, b, s) { x[cur] = a; y[cur] = b; cur++; }
+  // }
+  ///////////////////////////////////
+
+  center = (n - 1) / 2;
+  ex.clear(); ey.clear(); edx.clear(); edy.clear(); ans.clear(); cands.clear();
+  g.assign(n, vl(n)); ex.resize(n); ey.resize(n); edx.resize(n * 2 - 1); edy.resize(n * 2 - 1);
+  rep(i, m) g[x[i]][y[i]] = 1;
+
+  auto cpush = [&](Cand c) {
+    cands.insert(c.attr());
+    que.pb(mp(c.sortattr(), c));
+  };
+
+  rep(i, n) rep(j, n) {
+    if (g[i][j]) {
+      fore(c, enum_cand(i, j)) cpush(c);
+      auto [x, y] = tr(i, j);
+      fore(c, enum_dcand(x, y)) cpush(c);
+    }
+  }
+
+  while(!que.empty()) {
+    que.sort();
+    auto [d, c] = que.front(); que.pop_front();
+    if (c.valid()) {
+      c.add();
+      ll cnt = 0;
+      for (auto it = que.begin(); it != que.end(); ) {
+        cnt++;
+        auto &[d, c] = *it;
+        if (!c.valid()) it = que.erase(it);
+        else {
+          if (cnt <= 100000 / que.size()) it->fi = c.sortattr(); // スコア更新入れるとさすがにTLEする
+          it++;
+        }
       }
-    }
-  }
-  if(inv) {
-    T inv_n = T(1) / n;
-    for(auto &x : f) x *= inv_n;
-  }
-}
-
-/**
- * @brief Bitwise Xor Convolution (Bitwise-XOR畳み込み)
- */
-template< typename T >
-vector< T > bitwise_xor_convolution(vector< T > f, vector< T > g) {
-  const int n = (int) f.size();
-  assert(f.size() == g.size());
-  assert((n & (n - 1)) == 0);
-  fast_walsh_hadamard_transform(f, false);
-  fast_walsh_hadamard_transform(g, false);
-  for(int i = 0; i < n; i++) f[i] *= g[i];
-  fast_walsh_hadamard_transform(f, true);
-  return f;
-}
-
-void solve() {
-  LL(n, k);
-  VL(a, k);
-
-  vmi f(1 << 16);
-  rep(i, k) f[a[i]] = 1;
-  ll ma = 20;
-  vv(mint, dp, ma + 1);
-  dp[0] = f;
-  rep(i, ma) dp[i + 1] = bitwise_xor_convolution(dp[i], dp[i]);
-
-  vv(mint, dps, ma + 1);
-  dps[0] = f;
-  rep(i, ma) {
-    dps[i + 1] = bitwise_xor_convolution(dps[i], dp[i]);
-    rep(j, dps[i + 1].size()) dps[i + 1][j] += dps[i][j];
-  }
-
-  // debug(dp);
-
-  mint comp = 0;
-  vmi sum(1 << 16); sum[0] = 1;
-  rep_r(i, 20) {
-    if (n & 1 << i) {
-      comp += bitwise_xor_convolution(sum, dps[i])[0];
-      sum = bitwise_xor_convolution(sum, dp[i]);
+      LP p = c.t ? rt(c.nx, c.ny) : mp(c.nx, c.ny);
+      LP trp = c.t ? mp(c.nx, c.ny) : tr(c.nx, c.ny);
+      // if (p.fi == -1) { debug(c.nx, c.ny); continue; }
+      fore(c, enum_cand(p.fi, p.se)) cpush(c);
+      fore(c, enum_dcand(trp.fi, trp.se)) cpush(c);
     }
   }
 
-  mint ans = 0;
-  rep(i, 1, n + 1) ans += mint(k).pow(i);
-  OUT(ans - comp);
+  if (toans) {
+    OUT(ans.size());
+    rep(i, ans.size()) OUTARRAY(ans[i]);
+  }
+
+  // debug(ans.size(), score());
+  return score();
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
   int t = 1; // cin >> t;
   while (t--) solve();
-  // while (t--) compare();
+
+  // ll sum = 0;
+  // rep(_, 50) sum += solve(false);
+  // debug(sum);
 }

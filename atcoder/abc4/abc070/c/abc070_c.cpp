@@ -147,104 +147,13 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-//------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
-
-/**
- * @brief Fast Walsh Hadamard Transform (高速ウォルシュアダマール変換)
- */
-template< typename T >
-void fast_walsh_hadamard_transform(vector< T > &f, bool inv = false) {
-  const int n = (int) f.size();
-  assert((n & (n - 1)) == 0);
-  for(int i = 1; i < n; i <<= 1) {
-    for(int j = 0; j < n; j += i << 1) {
-      for(int k = 0; k < i; k++) {
-        T s = f[j + k], t = f[j + k + i];
-        f[j + k] = s + t;
-        f[j + k + i] = s - t;
-      }
-    }
-  }
-  if(inv) {
-    T inv_n = T(1) / n;
-    for(auto &x : f) x *= inv_n;
-  }
-}
-
-/**
- * @brief Bitwise Xor Convolution (Bitwise-XOR畳み込み)
- */
-template< typename T >
-vector< T > bitwise_xor_convolution(vector< T > f, vector< T > g) {
-  const int n = (int) f.size();
-  assert(f.size() == g.size());
-  assert((n & (n - 1)) == 0);
-  fast_walsh_hadamard_transform(f, false);
-  fast_walsh_hadamard_transform(g, false);
-  for(int i = 0; i < n; i++) f[i] *= g[i];
-  fast_walsh_hadamard_transform(f, true);
-  return f;
-}
-
 void solve() {
-  LL(n, k);
-  VL(a, k);
-
-  vmi f(1 << 16);
-  rep(i, k) f[a[i]] = 1;
-  ll ma = 20;
-  vv(mint, dp, ma + 1);
-  dp[0] = f;
-  rep(i, ma) dp[i + 1] = bitwise_xor_convolution(dp[i], dp[i]);
-
-  vv(mint, dps, ma + 1);
-  dps[0] = f;
-  rep(i, ma) {
-    dps[i + 1] = bitwise_xor_convolution(dps[i], dp[i]);
-    rep(j, dps[i + 1].size()) dps[i + 1][j] += dps[i][j];
+  LL(n); VL(t, n);
+  ll sum = 1;
+  rep(i, n) {
+    sum = lcm(sum, t[i]);
   }
-
-  // debug(dp);
-
-  mint comp = 0;
-  vmi sum(1 << 16); sum[0] = 1;
-  rep_r(i, 20) {
-    if (n & 1 << i) {
-      comp += bitwise_xor_convolution(sum, dps[i])[0];
-      sum = bitwise_xor_convolution(sum, dp[i]);
-    }
-  }
-
-  mint ans = 0;
-  rep(i, 1, n + 1) ans += mint(k).pow(i);
-  OUT(ans - comp);
+  OUT(sum);
 }
 
 signed main() {

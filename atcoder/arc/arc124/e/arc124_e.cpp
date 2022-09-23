@@ -180,38 +180,10 @@ void solve() {
   auto f = [&](ll x) { if (x < 1) return mint(0); return mint(x + 1) * x * inv2; };
   auto f2 = [&](ll x) { if (x < 2) return mint(0); return mint(x + 1) * x * (x - 1) * inv6; };
 
-  auto calc = [&]() {
-    v4(mint, dp, n + 1, 2, 2, 2);
-    // dp[i個目まで][1個目][i + 1個目の印?]
-    dp[1][0][0][0] = a[0] + 1;
-    dp[1][0][0][1] = f(a[0]);
-    dp[1][1][1][0] = f(a[0]);
-    dp[1][1][1][1] = f2(a[0]);
-    rep(i, 1, n) {
-      rep(j, 2) {
-        dp[i + 1][j][1][0] += dp[i][j][0][0] * f(a[i]);
-        dp[i + 1][j][1][1] += dp[i][j][0][0] * f2(a[i]);
+  v4(mint, dp, n + 1, 2, 2, 2);
+  // dp[i個目まで][1個目][i個目の印][最大のものを含むか]
 
-        dp[i + 1][j][0][0] += dp[i][j][0][1] * (a[i] + 1);
-        dp[i + 1][j][0][1] += dp[i][j][0][1] * f(a[i]);
 
-        dp[i + 1][j][1][1] += dp[i][j][1][0] * f2(a[i]);
-        dp[i + 1][j][1][0] += dp[i][j][1][0] * f(a[i]);
-
-        dp[i + 1][j][0][1] += dp[i][j][1][1] * f(a[i]);
-        dp[i + 1][j][0][0] += dp[i][j][1][1] * (a[i] + 1);
-      }
-    }
-    debug(dp);
-
-    return dp[n][0][0][1] + dp[n][0][1][1] + dp[n][1][0][0] + dp[n][1][1][0];
-  };
-
-  mint ans = -calc();
-  rep(i, n) a[i]++;
-  debug(ans);
-  ans += calc();
-  OUT(ans);
 }
 
 signed main() {

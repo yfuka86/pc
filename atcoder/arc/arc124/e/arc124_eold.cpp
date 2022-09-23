@@ -19,8 +19,8 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define rep(...) _overload4(__VA_ARGS__, _rep3, _rep2, _rep1, _rep0)(__VA_ARGS__)
 #define _per0(n) for(ll i = 0; i < (ll)(n); ++i)
 #define _per1(i, n) for(ll i = (ll)(n)-1; i >= 0; --i)
-#define _per2(i, a, b) for(ll i = (ll)(b)-1; i >= (ll)(a); --i)
-#define _per3(i, a, b, c) for(ll i = (ll)(b)-1; i >= (ll)(a); i -= (ll)(c))
+#define _per2(i, a, b) for(ll i = (ll)(a)-1; i >= (ll)(b); --i)
+#define _per3(i, a, b, c) for(ll i = (ll)(a)-1; i >= (ll)(b); i -= (ll)(c))
 #define rep_r(...) _overload4(__VA_ARGS__, _per3, _per2, _per1, _per0)(__VA_ARGS__)
 #define _fore0(a) rep(a.size())
 #define _fore1(i, a) for(auto &&i : a)
@@ -30,7 +30,7 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define fore(...) _overload5(__VA_ARGS__, _fore4, _fore3, _fore2, _fore1, _fore0)(__VA_ARGS__)
 #define all(v) (v).begin(),(v).end()
 #define rall(v) (v).rbegin(),(v).rend()
-#define rng_of(v, l, r) (v).begin() + l, (v).begin() + r
+#define rng(v, l, r) (v).begin() + l, (v).begin() + r
 #define pb push_back
 #define eb emplace_back
 #define mp make_pair
@@ -61,7 +61,6 @@ void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } vo
 template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
 template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
-template<typename T, typename U, typename V, typename S> void dump(const tuple<T, U, V, S>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << " "; dump(get<3>(t)); dout << ")"; }
 template<typename T,typename U> void dump(const pair<T,U>&);
 template<typename T> void dump(const T&t, enable_if_t<!is_void<typename T::iterator>::value>* =nullptr) { dout << "{ "; for(auto it=t.begin();it!=t.end();){ dump(*it); dout << (++it==t.end() ? "" : " "); } dout<<" }"; }
 template<typename T,typename U> void dump(const pair<T,U>&t) { dout<<"("; dump(t.first); dout<<" "; dump(t.second); dout << ")"; }
@@ -73,7 +72,6 @@ void trace() { dout << "\n"; } template<typename Head, typename... Tail> void tr
 #endif
 // 入出力系
 #define LL(...) ll __VA_ARGS__; IN(__VA_ARGS__)
-#define CHR(...) char __VA_ARGS__; IN(__VA_ARGS__)
 #define STR(...) string __VA_ARGS__; IN(__VA_ARGS__)
 #define LD(...) ld __VA_ARGS__; IN(__VA_ARGS__)
 #define _vl(name, size) vl name(size); IN(name)
@@ -92,23 +90,23 @@ void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...t
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<typename T> void OUTARRAY(vector<T>& v, int offset = 0, string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset) cout << v[i] + offset; else cout << v[i]; } cout << "\n"; }
-template<typename T> void OUTMAT(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { OUTARRAY(v[i], offset); } }
+template<typename T> void OUTMAT(vector<vector<T>>& v, int offset = 0) { rep(i, v.size()) { coutarray(v[i], offset); } }
 template<typename T> void OUTBIN(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
-template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); OUTARRAY(v); cout.flush(); cin >> a; }
+template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); coutarray(v); cout.flush(); cin >> a; }
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
+template<typename A> void IANSWER(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
-pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
 ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
 template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
-template<typename T = ll> T sum_of(const vector<T> &v, int l = 0, int r = INF) { return accumulate(rng_of(v, l, min(r, (int)v.size())), T(0)); }
+template<typename T = ll> T sum_of(const vector<T> &v, int l = 0, int r = INF) { return accumulate(rng(v, l, min(r, (int)v.size())), T(0)); }
 ll max(int x, ll y) { return max((ll)x, y); } ll max(ll x, int y) { return max(x, (ll)y); }
 ll min(int x, ll y) { return min((ll)x, y); } ll min(ll x, int y) { return min(x, (ll)y); }
 ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
@@ -124,7 +122,6 @@ template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i,
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 template <class T, class S> bool incl(const T &x, const S &l, const S &r) { return l <= x and x < r; }
-void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i) x ^= 1ll << b;  }
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
@@ -166,7 +163,7 @@ template< int mod > struct ModInt {
 };
 using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
 //------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
+const int max_n = 1 << 20;
 mint fact[max_n], factinv[max_n];
 void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
 mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
@@ -176,75 +173,45 @@ ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1)
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
-/**
- * @brief Fast Walsh Hadamard Transform (高速ウォルシュアダマール変換)
- */
-template< typename T >
-void fast_walsh_hadamard_transform(vector< T > &f, bool inv = false) {
-  const int n = (int) f.size();
-  assert((n & (n - 1)) == 0);
-  for(int i = 1; i < n; i <<= 1) {
-    for(int j = 0; j < n; j += i << 1) {
-      for(int k = 0; k < i; k++) {
-        T s = f[j + k], t = f[j + k + i];
-        f[j + k] = s + t;
-        f[j + k + i] = s - t;
+void solve() {
+  LL(n);
+  VL(a, n);
+  mint inv2 = mint(2).inv(), inv6 = mint(6).inv();
+  auto f = [&](ll x) { if (x < 1) return mint(0); return mint(x + 1) * x * inv2; };
+  auto f2 = [&](ll x) { if (x < 2) return mint(0); return mint(x + 1) * x * (x - 1) * inv6; };
+
+  auto calc = [&]() {
+    v4(mint, dp, n + 1, 2, 2, 2);
+    // dp[i個目まで][1個目][i + 1個目の印?]
+    dp[1][0][0][0] = a[0] + 1;
+    dp[1][0][0][1] = f(a[0]);
+    dp[1][1][1][0] = f(a[0]);
+    dp[1][1][1][1] = f2(a[0]);
+    rep(i, 1, n) {
+      rep(j, 2) {
+        dp[i + 1][j][1][0] += dp[i][j][0][0] * f(a[i]);
+        dp[i + 1][j][1][1] += dp[i][j][0][0] * f2(a[i]);
+
+        dp[i + 1][j][0][0] += dp[i][j][0][1] * (a[i] + 1);
+        dp[i + 1][j][0][1] += dp[i][j][0][1] * f(a[i]);
+
+        dp[i + 1][j][1][1] += dp[i][j][1][0] * f2(a[i]);
+        dp[i + 1][j][1][0] += dp[i][j][1][0] * f(a[i]);
+
+        dp[i + 1][j][0][1] += dp[i][j][1][1] * f(a[i]);
+        dp[i + 1][j][0][0] += dp[i][j][1][1] * (a[i] + 1);
       }
     }
-  }
-  if(inv) {
-    T inv_n = T(1) / n;
-    for(auto &x : f) x *= inv_n;
-  }
-}
+    debug(dp);
 
-/**
- * @brief Bitwise Xor Convolution (Bitwise-XOR畳み込み)
- */
-template< typename T >
-vector< T > bitwise_xor_convolution(vector< T > f, vector< T > g) {
-  const int n = (int) f.size();
-  assert(f.size() == g.size());
-  assert((n & (n - 1)) == 0);
-  fast_walsh_hadamard_transform(f, false);
-  fast_walsh_hadamard_transform(g, false);
-  for(int i = 0; i < n; i++) f[i] *= g[i];
-  fast_walsh_hadamard_transform(f, true);
-  return f;
-}
+    return dp[n][0][0][1] + dp[n][0][1][1] + dp[n][1][0][0] + dp[n][1][1][0];
+  };
 
-void solve() {
-  LL(n, k);
-  VL(a, k);
-
-  vmi f(1 << 16);
-  rep(i, k) f[a[i]] = 1;
-  ll ma = 20;
-  vv(mint, dp, ma + 1);
-  dp[0] = f;
-  rep(i, ma) dp[i + 1] = bitwise_xor_convolution(dp[i], dp[i]);
-
-  vv(mint, dps, ma + 1);
-  dps[0] = f;
-  rep(i, ma) {
-    dps[i + 1] = bitwise_xor_convolution(dps[i], dp[i]);
-    rep(j, dps[i + 1].size()) dps[i + 1][j] += dps[i][j];
-  }
-
-  // debug(dp);
-
-  mint comp = 0;
-  vmi sum(1 << 16); sum[0] = 1;
-  rep_r(i, 20) {
-    if (n & 1 << i) {
-      comp += bitwise_xor_convolution(sum, dps[i])[0];
-      sum = bitwise_xor_convolution(sum, dp[i]);
-    }
-  }
-
-  mint ans = 0;
-  rep(i, 1, n + 1) ans += mint(k).pow(i);
-  OUT(ans - comp);
+  mint ans = -calc();
+  rep(i, n) a[i]++;
+  debug(ans);
+  ans += calc();
+  OUT(ans);
 }
 
 signed main() {

@@ -143,6 +143,13 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  ll ans = 0;
+  rep(a, 1, n) {
+    rep(b, 1, n / a + 1) {
+      if (n - a * b > 0) ans++;
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {

@@ -1,0 +1,20 @@
+{
+  "contest": {
+    "id": "ahc014",
+    "title": "estie Programming Contest 2022（AtCoder Heuristic Contest 014）",
+    "url": "https://atcoder.jp/contests/ahc014"
+  },
+  "tasks": [
+    {
+      "id": "ahc014_a",
+      "label": "A",
+      "title": "RectJoin",
+      "url": "https://atcoder.jp/contests/ahc014/tasks/ahc014_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "ahc014_a.cpp"
+      }
+    }
+  ]
+}
