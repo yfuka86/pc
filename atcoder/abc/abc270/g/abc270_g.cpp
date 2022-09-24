@@ -147,116 +147,237 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-
-template <class S, class T>
-struct SquareRootDecomposition {
-  struct Block {
-    int id, l, r, sz; Block() = default;
-    Block(int _i, int _l, int _r) : id(_i), l(_l), r(_r) { sz = r - l; }
-  };
-  int N, B; vector<Block> bl;
-
-  SquareRootDecomposition(int _N, int _B) : N(_N), B(_B) {
-    bl.resize(N / B + 1);
-    for (int i = 0; i <= N / B; ++i) { bl[i] = Block(i, i * B, min((i + 1) * B, N)); }
+struct Barrett {
+  using u32 = unsigned int;
+  using i64 = long long;
+  using u64 = unsigned long long;
+  u32 m;
+  u64 im;
+  Barrett() : m(), im() {}
+  Barrett(int n) : m(n), im(u64(-1) / m + 1) {}
+  constexpr inline i64 quo(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? x - 1 : x;
   }
-  int size() const { return bl.size(); }
-
-  template <class UP, class UA>
-  void update(const UP &update_part, const UA &update_all, int l, int r, S x) {
-    assert(0 <= l && r <= N && l <= r);
-    if (l / B == r / B) {
-      update_part(bl[l / B], l, r, x);
-    } else {
-      if (l % B) update_part(bl[l / B], l, (l / B + 1) * B, x);
-      for (int i = ceil(l, B); i < r / B; i++) update_all(bl[i], x);
-      if (r % B) update_part(bl[r / B], (r / B) * B, r, x);
+  constexpr inline i64 rem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? r + m : r;
+  }
+  constexpr inline pair<i64, int> quorem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    if (m <= r) return {x - 1, r + m};
+    return {x, r};
+  }
+  constexpr inline i64 pow(u64 n, i64 p) {
+    u32 a = rem(n), r = m == 1 ? 0 : 1;
+    while (p) {
+      if (p & 1) r = rem(u64(r) * a);
+      a = rem(u64(a) * a);
+      p >>= 1;
     }
-  }
-
-  template <class QP, class QA, class M>
-  T query(const QP &query_part, const QA &query_all, const M &merge, int l, int r, T e) {
-    assert(0 <= l && r <= N && l <= r);
-    if (l / B == r / B) return query_part(bl[l / B], l, r);
-    T ret = e;
-    if (l % B) ret = merge(ret, query_part(bl[l / B], l, (l / B + 1) * B));
-    for (int i = ceil(l, B); i < r / B; i++) ret = merge(ret, query_all(bl[i]));
-    if (r % B) ret = merge(ret, query_part(bl[r / B], (r / B) * B, r));
-    return ret;
+    return r;
   }
 };
 
-void solve() {
-  LL(n); VL(a, n);
-  LL(q); VEC3(ll, L, R, X, q);
+struct ArbitraryModInt {
+  int x;
 
-  vl t = a; rep(i, q) t.pb(X[i]);
-  comp(t); rep(i, n) a[i] = t[i]; rep(i, q) X[i] = t[n + i];
+  ArbitraryModInt() : x(0) {}
 
-  vl f(t.size());
-  rep(i, n) f[a[i]]++;
-
-  ll sum = 0; rep(i, t.size()) sum += f[i] * (f[i] - 1) / 2;
-
-  ll sq = sqrtll(n).se;
-  SquareRootDecomposition<ll, ll> seg(n, sq);
-
-  vl same(seg.size(), -1);
-
-  auto add = [&](ll k, ll v) {
-    sum += (f[k] + (f[k] + v - 1)) * v / 2;
-    f[k] += v;
-  };
-  auto subt = [&](ll k, ll v) {
-    f[k] -= v;
-    sum -= (f[k] + (f[k] + v - 1)) * v / 2;
-  };
-
-
-  auto update_part = [&](auto b, ll l, ll r, ll x) {
-    if (same[b.id] != -1) {
-      rep(i, b.l, b.r) {
-        a[i] = incl(i, l, r) ? x : same[b.id];
-      }
-      subt(same[b.id], r - l);
-      add(x, r - l);
-      same[b.id] = -1;
-    } else {
-      rep(i, l, r) {
-        subt(a[i], 1);
-        a[i] = x;
-      }
-      add(x, r - l);
-    }
-  };
-  auto update_all = [&](auto b, ll x) {
-    if (same[b.id] != -1) {
-      subt(same[b.id], b.sz);
-      same[b.id] = x;
-      add(same[b.id], b.sz);
-    } else {
-      rep(i, b.l, b.r) {
-        subt(a[i], 1);
-        a[i] = x;
-      }
-      add(x, b.sz);
-      same[b.id] = x;
-    }
-  };
-
-
-  rep(i, q) {
-    ll l = L[i] - 1, r = R[i], x = X[i];
-    seg.update(update_part, update_all, l, r, x);
-    OUT(sum);
+  ArbitraryModInt(int64_t y) {
+    int z = y % get_mod();
+    if (z < 0) z += get_mod();
+    x = z;
   }
 
-  // debug(a, X, sum);
+  ArbitraryModInt &operator+=(const ArbitraryModInt &p) {
+    if ((x += p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator-=(const ArbitraryModInt &p) {
+    if ((x += get_mod() - p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator*=(const ArbitraryModInt &p) {
+    x = rem((unsigned long long)x * p.x);
+    return *this;
+  }
+
+  ArbitraryModInt &operator/=(const ArbitraryModInt &p) {
+    *this *= p.inverse();
+    return *this;
+  }
+
+  ArbitraryModInt operator-() const { return ArbitraryModInt(-x); }
+
+  ArbitraryModInt operator+(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) += p;
+  }
+
+  ArbitraryModInt operator-(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) -= p;
+  }
+
+  ArbitraryModInt operator*(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) *= p;
+  }
+
+  ArbitraryModInt operator/(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) /= p;
+  }
+
+  bool operator==(const ArbitraryModInt &p) const { return x == p.x; }
+
+  bool operator!=(const ArbitraryModInt &p) const { return x != p.x; }
+
+  ArbitraryModInt inverse() const {
+    int a = x, b = get_mod(), u = 1, v = 0, t;
+    while (b > 0) {
+      t = a / b;
+      swap(a -= t * b, b);
+      swap(u -= t * v, v);
+    }
+    return ArbitraryModInt(u);
+  }
+
+  ArbitraryModInt pow(int64_t n) const {
+    ArbitraryModInt ret(1), mul(x);
+    while (n > 0) {
+      if (n & 1) ret *= mul;
+      mul *= mul;
+      n >>= 1;
+    }
+    return ret;
+  }
+
+  friend ostream &operator<<(ostream &os, const ArbitraryModInt &p) {
+    return os << p.x;
+  }
+
+  friend istream &operator>>(istream &is, ArbitraryModInt &a) {
+    int64_t t;
+    is >> t;
+    a = ArbitraryModInt(t);
+    return (is);
+  }
+
+  int get() const { return x; }
+
+  inline unsigned int rem(unsigned long long p) { return barrett().rem(p); }
+
+  static inline Barrett &barrett() {
+    static Barrett b;
+    return b;
+  }
+
+  static inline int &get_mod() {
+    static int mod = 0;
+    return mod;
+  }
+
+  static void set_mod(int md) {
+    assert(0 < md && md <= (1LL << 30) - 1);
+    get_mod() = md;
+    barrett() = Barrett(md);
+  }
+};
+
+using mint = ArbitraryModInt;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+
+// const ll mod = 998244353;
+// //------------------------------------------------------------------------------
+// template< int mod > struct ModInt {
+//   int x; ModInt() : x(0) {}
+//   ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+//   ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+//   ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+//   ModInt operator-() const { return ModInt(-x); }
+//   ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+//   ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+//   bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+//   ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+//   ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+//   friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+//   friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+//   static int get_mod() { return mod; }
+// };
+// using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+// //------------------------------------------------------------------------------
+// const int max_n = (1 << 20) + 1;
+// mint fact[max_n], factinv[max_n];
+// void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+// mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+// mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+
+// mod.cppに依存している
+// a^x ≡ b (mod. m) となる最小の正の整数 x を求める
+ll mod_log(ll a, ll b, ll m) {
+  a %= m; b %= m; ll sqrtm = sqrtll(m).se;
+  unordered_map<ll, ll> apow; ll rem = a;
+  for(ll r = 1; r < sqrtm; ++r) {
+    if (!apow.count(rem)) apow[rem] = r;
+    (rem *= a) %= m;
+  }
+
+  ll A = mod_pow(mod_inv(a, m), sqrtm, m);
+  rem = b;
+  for(ll q = 0; q < sqrtm; ++q) {
+    if (rem == 1 && q > 0) return q * sqrtm;
+    else if (apow.count(rem)) return q * sqrtm + apow[rem];
+    (rem *= A) %= m;
+  }
+  return -1;
+}
+
+void solve() {
+  LL(p, a, b, s, g);
+  mint::set_mod(p);
+
+  if (s % p == g % p) OUTRET(0);
+
+  if (a == 0) {
+    if (b % p == g % p) { OUTRET(1); }
+    else OUTRET(-1);
+  }
+
+  if (a == 1) {
+    ll diff = g - s; if (diff < 0) diff += p; diff %= p;
+    if (b == 0) {
+      OUT(-1);
+    } else {
+      OUT(mint(diff) / mint(b));
+    }
+  } else {
+    if (b == 0) {
+      mint t = mint(g) / mint(s);
+      OUT(mod_log(a, t.x, p));
+    } else {
+      mint r = mint(b) / mint(1 - a);
+      mint ini = mint(s) - r;
+
+      mint t = (mint(g) - r) / ini;
+      // if (t.x == 1) OUTRET(0);
+
+      debug(s, r, ini, t);
+      OUT(mod_log(a, t.x, p));
+    }
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

@@ -38,12 +38,11 @@ ull euler_phi(ull n) {
   for(ll i = 2; i * i <= n; i++) if(n % i == 0) { ret -= ret / i; while(n % i == 0) n /= i; }
   if(n > 1) ret -= ret / n; return ret; }
 
-
 // mod.cppに依存している
 // a^x ≡ b (mod. m) となる最小の正の整数 x を求める
 ll mod_log(ll a, ll b, ll m) {
-  a %= m; b %= m; ll sqrtm = sqrt_ceil(m);
-  map<ll, ll> apow; ll rem = a;
+  a %= m; b %= m; ll sqrtm = sqrtll(m).se;
+  unordered_map<ll, ll> apow; ll rem = a;
   for(ll r = 1; r < sqrtm; ++r) {
     if (!apow.count(rem)) apow[rem] = r;
     (rem *= a) %= m;

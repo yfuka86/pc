@@ -147,111 +147,40 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-template <class S, class T>
-struct SquareRootDecomposition {
-  struct Block {
-    int id, l, r, sz; Block() = default;
-    Block(int _i, int _l, int _r) : id(_i), l(_l), r(_r) { sz = r - l; }
-  };
-  int N, B; vector<Block> bl;
-
-  SquareRootDecomposition(int _N, int _B) : N(_N), B(_B) {
-    bl.resize(N / B + 1);
-    for (int i = 0; i <= N / B; ++i) { bl[i] = Block(i, i * B, min((i + 1) * B, N)); }
-  }
-  int size() const { return bl.size(); }
-
-  template <class UP, class UA>
-  void update(const UP &update_part, const UA &update_all, int l, int r, S x) {
-    assert(0 <= l && r <= N && l <= r);
-    if (l / B == r / B) {
-      update_part(bl[l / B], l, r, x);
-    } else {
-      if (l % B) update_part(bl[l / B], l, (l / B + 1) * B, x);
-      for (int i = ceil(l, B); i < r / B; i++) update_all(bl[i], x);
-      if (r % B) update_part(bl[r / B], (r / B) * B, r, x);
-    }
-  }
-
-  template <class QP, class QA, class M>
-  T query(const QP &query_part, const QA &query_all, const M &merge, int l, int r, T e) {
-    assert(0 <= l && r <= N && l <= r);
-    if (l / B == r / B) return query_part(bl[l / B], l, r);
-    T ret = e;
-    if (l % B) ret = merge(ret, query_part(bl[l / B], l, (l / B + 1) * B));
-    for (int i = ceil(l, B); i < r / B; i++) ret = merge(ret, query_all(bl[i]));
-    if (r % B) ret = merge(ret, query_part(bl[r / B], (r / B) * B, r));
-    return ret;
-  }
-};
 
 void solve() {
-  LL(n); VL(a, n);
-  LL(q); VEC3(ll, L, R, X, q);
-
-  vl t = a; rep(i, q) t.pb(X[i]);
-  comp(t); rep(i, n) a[i] = t[i]; rep(i, q) X[i] = t[n + i];
-
-  vl f(t.size());
-  rep(i, n) f[a[i]]++;
-
-  ll sum = 0; rep(i, t.size()) sum += f[i] * (f[i] - 1) / 2;
-
-  ll sq = sqrtll(n).se;
-  SquareRootDecomposition<ll, ll> seg(n, sq);
-
-  vl same(seg.size(), -1);
-
-  auto add = [&](ll k, ll v) {
-    sum += (f[k] + (f[k] + v - 1)) * v / 2;
-    f[k] += v;
-  };
-  auto subt = [&](ll k, ll v) {
-    f[k] -= v;
-    sum -= (f[k] + (f[k] + v - 1)) * v / 2;
-  };
-
-
-  auto update_part = [&](auto b, ll l, ll r, ll x) {
-    if (same[b.id] != -1) {
-      rep(i, b.l, b.r) {
-        a[i] = incl(i, l, r) ? x : same[b.id];
-      }
-      subt(same[b.id], r - l);
-      add(x, r - l);
-      same[b.id] = -1;
-    } else {
-      rep(i, l, r) {
-        subt(a[i], 1);
-        a[i] = x;
-      }
-      add(x, r - l);
-    }
-  };
-  auto update_all = [&](auto b, ll x) {
-    if (same[b.id] != -1) {
-      subt(same[b.id], b.sz);
-      same[b.id] = x;
-      add(same[b.id], b.sz);
-    } else {
-      rep(i, b.l, b.r) {
-        subt(a[i], 1);
-        a[i] = x;
-      }
-      add(x, b.sz);
-      same[b.id] = x;
-    }
-  };
-
-
-  rep(i, q) {
-    ll l = L[i] - 1, r = R[i], x = X[i];
-    seg.update(update_part, update_all, l, r, x);
-    OUT(sum);
+  LL(n, x, y); x--; y--;
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    LL(u,v); u--; v--;
+    G.add_edge(u, v);
   }
 
-  // debug(a, X, sum);
+  vl ans, fans;
+  function<void(ll,ll)> dfs = [&](ll v, ll p) {
+    ans.pb(v);
+    if (v == y) {
+      fans = ans;
+    }
+    fore(to, G[v]) {
+      if (to == p) continue;
+      dfs(to, v);
+    }
+    ans.pop_back();
+  };
+  dfs(x, -1);
+
+  OUTARRAY(fans, 1);
 }
 
 signed main() {

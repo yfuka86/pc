@@ -147,111 +147,93 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-
-template <class S, class T>
-struct SquareRootDecomposition {
-  struct Block {
-    int id, l, r, sz; Block() = default;
-    Block(int _i, int _l, int _r) : id(_i), l(_l), r(_r) { sz = r - l; }
-  };
-  int N, B; vector<Block> bl;
-
-  SquareRootDecomposition(int _N, int _B) : N(_N), B(_B) {
-    bl.resize(N / B + 1);
-    for (int i = 0; i <= N / B; ++i) { bl[i] = Block(i, i * B, min((i + 1) * B, N)); }
-  }
-  int size() const { return bl.size(); }
-
-  template <class UP, class UA>
-  void update(const UP &update_part, const UA &update_all, int l, int r, S x) {
-    assert(0 <= l && r <= N && l <= r);
-    if (l / B == r / B) {
-      update_part(bl[l / B], l, r, x);
-    } else {
-      if (l % B) update_part(bl[l / B], l, (l / B + 1) * B, x);
-      for (int i = ceil(l, B); i < r / B; i++) update_all(bl[i], x);
-      if (r % B) update_part(bl[r / B], (r / B) * B, r, x);
-    }
-  }
-
-  template <class QP, class QA, class M>
-  T query(const QP &query_part, const QA &query_all, const M &merge, int l, int r, T e) {
-    assert(0 <= l && r <= N && l <= r);
-    if (l / B == r / B) return query_part(bl[l / B], l, r);
-    T ret = e;
-    if (l % B) ret = merge(ret, query_part(bl[l / B], l, (l / B + 1) * B));
-    for (int i = ceil(l, B); i < r / B; i++) ret = merge(ret, query_all(bl[i]));
-    if (r % B) ret = merge(ret, query_part(bl[r / B], (r / B) * B, r));
-    return ret;
-  }
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
 };
+//------------------------------------------------------------------------------
+
 
 void solve() {
-  LL(n); VL(a, n);
-  LL(q); VEC3(ll, L, R, X, q);
+  LL(n, m);
+  VL(x, n); VL(y, n);
 
-  vl t = a; rep(i, q) t.pb(X[i]);
-  comp(t); rep(i, n) a[i] = t[i]; rep(i, q) X[i] = t[n + i];
+  VEC3(ll, a, b, z, m);
 
-  vl f(t.size());
-  rep(i, n) f[a[i]]++;
+  vlt e(m);
+  rep(i, m) e[i] = {z[i], --a[i], --b[i]};
+  sort(all(e));
 
-  ll sum = 0; rep(i, t.size()) sum += f[i] * (f[i] - 1) / 2;
+  ll ans = LINF;
 
-  ll sq = sqrtll(n).se;
-  SquareRootDecomposition<ll, ll> seg(n, sq);
-
-  vl same(seg.size(), -1);
-
-  auto add = [&](ll k, ll v) {
-    sum += (f[k] + (f[k] + v - 1)) * v / 2;
-    f[k] += v;
-  };
-  auto subt = [&](ll k, ll v) {
-    f[k] -= v;
-    sum -= (f[k] + (f[k] + v - 1)) * v / 2;
-  };
-
-
-  auto update_part = [&](auto b, ll l, ll r, ll x) {
-    if (same[b.id] != -1) {
-      rep(i, b.l, b.r) {
-        a[i] = incl(i, l, r) ? x : same[b.id];
+  {
+    UnionFind uf(n);
+    ll t = 0;
+    fore(c, a, b, e) {
+      if (!uf.same(a, b)) {
+        uf.unite(a, b);
+        t += c;
       }
-      subt(same[b.id], r - l);
-      add(x, r - l);
-      same[b.id] = -1;
-    } else {
-      rep(i, l, r) {
-        subt(a[i], 1);
-        a[i] = x;
-      }
-      add(x, r - l);
     }
-  };
-  auto update_all = [&](auto b, ll x) {
-    if (same[b.id] != -1) {
-      subt(same[b.id], b.sz);
-      same[b.id] = x;
-      add(same[b.id], b.sz);
-    } else {
-      rep(i, b.l, b.r) {
-        subt(a[i], 1);
-        a[i] = x;
-      }
-      add(x, b.sz);
-      same[b.id] = x;
-    }
-  };
-
-
-  rep(i, q) {
-    ll l = L[i] - 1, r = R[i], x = X[i];
-    seg.update(update_part, update_all, l, r, x);
-    OUT(sum);
+    if (uf.size(0) == n) chmin(ans, t);
   }
 
-  // debug(a, X, sum);
+  {
+    UnionFind uf(n + 1);
+    vlt te = e;
+    rep(i, n) te.pb({x[i], i, n});
+    sort(all(te));
+    ll t = 0;
+    fore(c, a, b, te) {
+      if (!uf.same(a, b)) {
+        uf.unite(a, b);
+        t += c;
+      }
+    }
+    chmin(ans, t);
+  }
+
+
+  {
+    UnionFind uf(n + 1);
+    vlt te = e;
+    rep(i, n) te.pb({y[i], i, n});
+    sort(all(te));
+    ll t = 0;
+    fore(c, a, b, te) {
+      if (!uf.same(a, b)) {
+        uf.unite(a, b);
+        t += c;
+      }
+    }
+    chmin(ans, t);
+  }
+
+  {
+    UnionFind uf(n + 2);
+    vlt te = e;
+    rep(i, n) {
+      te.pb({x[i], i, n});
+      te.pb({y[i], i, n + 1});
+    }
+    sort(all(te));
+    ll t = 0;
+    fore(c, a, b, te) {
+      if (!uf.same(a, b)) {
+        uf.unite(a, b);
+        t += c;
+      }
+    }
+    chmin(ans, t);
+  }
+
+  OUT(ans);
 }
 
 signed main() {

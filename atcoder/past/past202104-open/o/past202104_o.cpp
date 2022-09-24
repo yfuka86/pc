@@ -214,9 +214,80 @@ struct HeavyLightDecomposition {
   int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
   LL(n, m);
+  Graph<ll> G(n);
+  UnionFind uf(n);
 
+  vlp e;
+  rep(i, m) {
+    LL(a, b); --a; --b;
+    if (!uf.same(a, b)) {
+      uf.unite(a, b);
+      G.add_edge(a, b);
+    } else e.pb({a, b});
+  }
+  HeavyLightDecomposition<Graph<ll>> hld(G, 0);
+
+  vector<map<ll, LP>> dp(1 << e.size());
+  rep(S, 1 << e.size()) {
+    vlp es;
+    rep(i, e.size()) if (S & 1 << i) es.pb(e[i]);
+    rep(i, es.size()) rep(j, 2) {
+      ll cur = j ? es[i].se : es[i].fi, dist = 1;
+      vlp t = es; t.erase(t.begin() + i);
+      while (t.size()) {
+        ll id = -1, nxt = -1, mi = LINF;
+        rep(i, t.size()) {
+          if (chmin(mi, hld.dist(cur, t[i].fi))) { id = i; nxt = t[i].se; }
+          if (chmin(mi, hld.dist(cur, t[i].se))) { id = i; nxt = t[i].fi; }
+        }
+        t.erase(t.begin() + id);
+        dist += mi + 1;
+        cur = nxt;
+      }
+      dp[S][j ? es[i].fi : es[i].se] = {dist, cur};
+    }
+  }
+
+
+  // debug(e);
+  LL(q);
+  rep(i, q) {
+    LL(u, v); --u; --v;
+    ll ans = hld.dist(u, v);
+    // debug(dist);
+
+    vl d1(e.size()), d2(e.size());
+    rep(i, e.size()) {
+      d1[i] = hld.dist(u, e[i].fi);
+      d2[i] = hld.dist(u, e[i].se);
+    }
+
+    rep(S, 1 << e.size()) {
+      ll mi = LINF, nxt = -1;
+      rep(i, e.size()) if (S & 1 << i) {
+        if (chmin(mi, d1[i])) nxt = e[i].fi;
+        if (chmin(mi, d2[i])) nxt = e[i].se;
+      }
+
+      auto [dist, to] = dp[S][nxt];
+      chmin(ans, mi + dist + hld.dist(to, v));
+    }
+    OUT(ans);
+  }
 }
 
 signed main() {
