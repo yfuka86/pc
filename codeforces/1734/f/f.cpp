@@ -148,39 +148,37 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n,m,k,q);
-  vlp item(n); IN(item);
-  sort(all(item));
+  LL(n, m);
 
-  ll cnt = 0, sum = 0;
-  multiset<ll> chose, cand;
-
-  rep(i, m) {
-    sum += item[i].fi;
-    cnt += item[i].se;
-    if (item[i].se) chose.insert(item[i].fi);
+  // nがオフセット
+  // dp[桁][max一致][直前の繰り上がり][繰り上がり数の偶奇]
+  v4(ll, dp, 63, 2, 2, 2);
+  dp[0][1][0][0] = 1;
+  rep(i, 62) {
+    bool carry = n & 1ll << i;
+    rep(j, 2) rep(k, 2) {
+      bool o1 = carry + j + 1 >= 2;
+      bool o0 = carry + j >= 2;
+      if (m & 1ll << i) {
+        dp[i + 1][1][o1][k ^ o1] += dp[i][1][j][k];//1
+        dp[i + 1][0][o0][k ^ o0] += dp[i][1][j][k];//0
+      } else {
+        dp[i + 1][1][o1][k ^ o1] += dp[i][1][j][k];//1
+        dp[i + 1][1][o0][k ^ o0] += dp[i][1][j][k];//0
+      }
+      dp[i + 1][m & 1ll << i ? 0 : 1][o1][k ^ o1] += dp[i][0][j][k];//1
+      dp[i + 1][0][o0][k ^ o0] += dp[i][0][j][k];//0
+    }
+    // debug(i, dp[i + 1]);
   }
-  rep(i, m, n) {
-    if (!item[i].se) cand.insert(item[i].fi);
-  }
 
-  ll ans = sum + ceil(cnt, k) * q;
-  while (chose.size() && cand.size()) {
-    auto it = prev(chose.end());
-    auto it2 = cand.begin();
-    sum += (*it2 - *it);
-    cnt--;
-    chmin(ans, sum + ceil(cnt, k) * q);
-
-    chose.erase(it);
-    cand.erase(it2);
-  }
-  OUT(ans);
+  ll k = __builtin_parityll(n) ? 0 : 1;
+  OUT(dp[62][0][0][k] + dp[62][0][1][k]);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

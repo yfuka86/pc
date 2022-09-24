@@ -148,39 +148,39 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n,m,k,q);
-  vlp item(n); IN(item);
-  sort(all(item));
+  LL(n, k); VL(a, n);
 
-  ll cnt = 0, sum = 0;
-  multiset<ll> chose, cand;
+  vl as = csum(a);
+  k--;
 
-  rep(i, m) {
-    sum += item[i].fi;
-    cnt += item[i].se;
-    if (item[i].se) chose.insert(item[i].fi);
+  {
+    ll right = as[n] - as[k + 1];
+    ll sum = a[k], cur = a[k];
+    rep_r(i, k) {
+      cur += a[i];
+      if (cur < 0) break;
+      chmax(sum, cur);
+    }
+    if (sum + right >= 0) OUTRET("YES");
   }
-  rep(i, m, n) {
-    if (!item[i].se) cand.insert(item[i].fi);
+
+  {
+    ll left = as[k] - as[0];
+    ll sum = a[k], cur = a[k];
+    rep(i, k + 1, n) {
+      cur += a[i];
+      if (cur < 0) break;
+      chmax(sum, cur);
+    }
+    if (sum + left >= 0) OUTRET("YES");
   }
 
-  ll ans = sum + ceil(cnt, k) * q;
-  while (chose.size() && cand.size()) {
-    auto it = prev(chose.end());
-    auto it2 = cand.begin();
-    sum += (*it2 - *it);
-    cnt--;
-    chmin(ans, sum + ceil(cnt, k) * q);
-
-    chose.erase(it);
-    cand.erase(it2);
-  }
-  OUT(ans);
+  OUTRET("NO");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

@@ -148,7 +148,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, c);
+  VEC2(ld, x, y, n);
+
+  ld l = -1e5, r = 1e5;
+  rep(_, 100) {
+    ld hi = (l+r*2)/3, lo = (l*2+r)/3;
+    ld cost1 = 0, cost2 = 0;
+    rep(i, n) {
+      cost1 += pow(abs(x[i] - hi), 2);
+      cost2 += pow(abs(x[i] - lo), 2);
+    }
+    if (cost1 < cost2) l = lo; else r = hi;
+  }
+
+  ld ans = 0;
+  rep(i, n) {
+    ans += pow(abs(x[i] - l), 2) + pow(abs(y[i] - c), 2);
+  }
+  OUT(ans);
 }
 
 signed main() {

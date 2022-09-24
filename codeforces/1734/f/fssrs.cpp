@@ -148,39 +148,41 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n,m,k,q);
-  vlp item(n); IN(item);
-  sort(all(item));
+  LL(n, m);
 
-  ll cnt = 0, sum = 0;
-  multiset<ll> chose, cand;
-
-  rep(i, m) {
-    sum += item[i].fi;
-    cnt += item[i].se;
-    if (item[i].se) chose.insert(item[i].fi);
+  v4(ll, dp, 61, 2, 2, 2);
+  // dp[桁目][範囲内=0][前の桁の繰り上がり][繰り上がりの偶奇]
+  dp[0][1][0][0] = 1;
+  for (int j = 0; j < 60; j++){
+    for (int s = 0; s < 2; s++){
+      for (int p = 0; p < 2; p++){
+        for (int c = 0; c < 2; c++){
+          for (int d = 0; d < 2; d++){
+            int s2 = s;
+            if (d != (m >> j & 1)){
+              s2 = d;
+            }
+            int p2 = 0;
+            int c2 = c;
+            // 繰り上がり
+            if ((n >> j & 1) + d + p >= 2){
+              p2 = 1;
+              c2 = 1 - c;
+            }
+            dp[j + 1][s2][p2][c2] += dp[j][s][p][c];
+          }
+        }
+      }
+    }
+    debug(j, dp[j]);
   }
-  rep(i, m, n) {
-    if (!item[i].se) cand.insert(item[i].fi);
-  }
-
-  ll ans = sum + ceil(cnt, k) * q;
-  while (chose.size() && cand.size()) {
-    auto it = prev(chose.end());
-    auto it2 = cand.begin();
-    sum += (*it2 - *it);
-    cnt--;
-    chmin(ans, sum + ceil(cnt, k) * q);
-
-    chose.erase(it);
-    cand.erase(it2);
-  }
-  OUT(ans);
+  int p = __builtin_parityll(n);
+  cout << dp[60][0][0][1 - p] + dp[60][0][1][1 - p] << endl;
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

@@ -148,7 +148,22 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, h);
+  vlp p(n); IN(p);
+
+  sort(all(p), [&](LP a, LP b) {
+    return b.fi * a.se < a.fi * b.se;
+  });
+
+  vl dp(h + 1);
+  rep(i, n) {
+    auto [a, b] = p[i];
+    rep(j, h + 1) {
+      chmax(dp[max(j - b, 0)], dp[j] + j * a);
+    }
+  }
+
+  OUT(*max_element(all(dp)));
 }
 
 signed main() {

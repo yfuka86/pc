@@ -148,39 +148,29 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n,m,k,q);
-  vlp item(n); IN(item);
-  sort(all(item));
+  LL(n);
+  STR(t);
+  t.insert(t.begin(), '0');
 
-  ll cnt = 0, sum = 0;
-  multiset<ll> chose, cand;
+  vl s(n + 1, 1);
 
-  rep(i, m) {
-    sum += item[i].fi;
-    cnt += item[i].se;
-    if (item[i].se) chose.insert(item[i].fi);
+  ll ans = 0;
+  rep(i, 1, n + 1) {
+    rep(j, i, n + 1, i) {
+      if (s[j] && t[j] == '0') {
+        s[j] = 0;
+        ans += i;
+      }
+      if (t[j] == '1') break;
+    }
   }
-  rep(i, m, n) {
-    if (!item[i].se) cand.insert(item[i].fi);
-  }
-
-  ll ans = sum + ceil(cnt, k) * q;
-  while (chose.size() && cand.size()) {
-    auto it = prev(chose.end());
-    auto it2 = cand.begin();
-    sum += (*it2 - *it);
-    cnt--;
-    chmin(ans, sum + ceil(cnt, k) * q);
-
-    chose.erase(it);
-    cand.erase(it2);
-  }
+  // debug(s);
   OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

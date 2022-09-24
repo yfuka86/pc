@@ -148,7 +148,26 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(h, w);
+  VV(ll, a, h, w);
+
+  v3(ll, dp, h, w, h + w + 1);
+  dp[0][0][1] = a[0][0];
+
+  rep(i, h) rep(j, w) rep(k, h + w) {
+    if (i < h - 1) {
+      chmax(dp[i + 1][j][k], dp[i][j][k]);
+      chmax(dp[i + 1][j][k + 1], dp[i][j][k] + a[i + 1][j]);
+    }
+    if (j < w - 1) {
+      chmax(dp[i][j + 1][k], dp[i][j][k]);
+      chmax(dp[i][j + 1][k + 1], dp[i][j][k] + a[i][j + 1]);
+    }
+  }
+
+  rep(i, 1, h + w) {
+    OUT(dp[h - 1][w - 1][i]);
+  }
 }
 
 signed main() {
