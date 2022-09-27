@@ -169,7 +169,7 @@ void solve() {
       dp[i + 1][m & 1ll << i ? 0 : 1][o1][k ^ o1] += dp[i][0][j][k];//1
       dp[i + 1][0][o0][k ^ o0] += dp[i][0][j][k];//0
     }
-    // debug(i, dp[i + 1]);
+    debug(i, dp[i + 1]);
   }
 
   ll k = __builtin_parityll(n) ? 0 : 1;

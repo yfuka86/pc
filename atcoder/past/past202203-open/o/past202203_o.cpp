@@ -170,6 +170,8 @@ void solve() {
 
   vb vis(n); vl bi(n, -1);
   vlt part;
+
+  ll sum = 0;
   rep(i, n) {
     if (!vis[i]) {
       ll sz = 0, zero = 0, bigraph = 1;
@@ -190,11 +192,32 @@ void solve() {
       dfs(i);
 
       if (sz > 1) {
+        sum += sz;
         part.pb({bigraph, sz, zero});
       }
     }
   }
   debug(part);
+
+  vv(bool, dp, n / 3 + 2, n / 3 + 2);
+  dp[0][0] = 1;
+  fore(bi, sz, zero, part) {
+    if (bi == 0) continue;
+    rep_r(i, n / 3 + 2) rep_r(j, n / 3 + 2) {
+      if (dp[i][j]) {
+        if (i + sz - zero <= n / 3 + 1 && j + zero <= n / 3 + 1) dp[i + sz - zero][j + zero] = 1;
+        if (i + zero <= n / 3 + 1 && j + sz - zero <= n / 3 + 1) dp[i + zero][j + sz - zero] = 1;
+      }
+    }
+  }
+
+  ll r1 = n / 3 + (n % 3 >= 1), r2 = n / 3 + (n % 3 >= 2), r3 = n / 3;
+  rep(i, n / 3 + 2) rep(j, n / 3 + 2) {
+    if (dp[i][j]) {
+      if (i <= r1 && j <= r2 && sum - i - j <= r3) OUTRET("Yes");
+    }
+  }
+  OUTRET("No");
 }
 
 signed main() {

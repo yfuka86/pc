@@ -147,8 +147,75 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
 void solve() {
-  LL(n);
+  LL(n, q); VL(p, n);
+  vl cp = p, qid;
+
+  vlt query(q);
+  rep(i, q) {
+    LL(t);
+    if (t == 1) {
+      LL(a, x); --a;
+      query[i] = {t, a, x};
+      qid.pb(i);
+      cp.pb(x);
+    } else if (t == 2) {
+      LL(a); --a;
+      query[i] = {t, a, -1};
+    } else {
+      LL(r);
+      query[i] = {t, r, -1};
+    }
+  }
+
+  comp(cp);
+  rep(i, n) p[i] = cp[i];
+  rep(i, qid.size()) {
+    auto [t, a, _] = query[qid[i]];
+    query[qid[i]] = {t, a, cp[n + i]};
+  }
+
+  debug(p); debug(query);
+
+  vl scoretop(1000000, -1);
+  rep(i, n) scoretop[p[i]] = i;
+  BIT<ll> bt(1000000);
+  rep(i, n) bt.add(p[i], 1);
+
+  rep(i, q) {
+    auto [t, a, x] = query[i];
+    if (t == 1) {
+      bt.add(p[a], -1);
+      scoretop[p[a]] = -1;
+      p[a] = x;
+      bt.add(p[a], 1);
+      scoretop[p[a]] = a;
+    } else if (t == 2) {
+      OUT(n - bt.sum(p[a]));
+    } else {
+      ll i = bt.lower_bound(n - a + 1);
+      OUT(scoretop[i] + 1);
+    }
+  }
 }
 
 signed main() {

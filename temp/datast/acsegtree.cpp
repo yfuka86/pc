@@ -27,6 +27,14 @@ S e() { return 0; }
 S op(S l, S r) { return max(l, r); }
 S e() { return -LINF; }
 
+S op(S l, S r) { return min(l, r); }
+S e() { return LINF; }
+
+// indexつきmin(値が同じなら左優先)
+struct S {ll idx, x;};
+S op(S l, S r) { if (l.x <= r.x) return l; else return r; }
+S e() { return {-1, LINF}; }
+
 segtree<S, op, e> seg(a);
 
 ll ans = seg.max_right<function<bool(S)>>(0,

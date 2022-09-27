@@ -97,8 +97,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
+template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int topbit(T x){ if (sizeof(x) == 4) return 31 - __builtin_clz(x); else return 63 - __builtin_clzll(x); }
+template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int lowbit(T x){ if (sizeof(x) == 4) return __builtin_ctz(x); else return __builtin_ctzll(x); }
 
+// // (0, 1, 2, 3, 4) -> (-1, 0, 1, 1, 2)
+// // (0, 1, 2, 3, 4) -> (32 or 64, 0, 1, 0, 2)
+// int lowbit(int x) { return 31 - __builtin_clz(x); }
+// int lowbit(unsigned int x) { return 31 - __builtin_clz(x); }
+// int lowbit(ll x) { return 63 - __builtin_clzll(x); }
+// int lowbit(ull x) { return 63 - __builtin_clzll(x); }
+
+void solve() {
+  int a; ll b; unsigned int c;
+  rep(i, 16) {
+    debug(i,lowbit(i));
+  }
+
+  a = 1 << 30;
+  b = 1ll << 32;
+  c = 1 << 31;
+  // debug(__builtin_clz(a), __builtin_clz(c));
+  debug(lowbit(b), lowbit(c));
+  debug(a, b, c);
+  debug(sizeof(a), sizeof(b), sizeof(c));
+  set<ll> s;
+  rep(i, 10) s.insert(i);
+  debug(s);
+  debug(LINF);
+  debug(true);
 }
 
 signed main() {
