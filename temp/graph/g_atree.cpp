@@ -12,7 +12,7 @@ Graph<ll> build_aux_tree(HeavyLightDecomposition<Graph<ll>> &hld, vl& vs) {
 
   Graph<ll> G(hld.g.size()); stack<ll> st;
   st.push(v[0].second);
-  rep2(i, 1, v.size()) {
+  rep(i, 1, v.size()) {
     auto [_, next] = v[i];
     while (hld.up[st.top()] < hld.up[next]) st.pop();
     G.add_edge(st.top(), next);

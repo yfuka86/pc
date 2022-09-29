@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc077",
+    "title": "AtCoder Beginner Contest 077",
+    "url": "https://atcoder.jp/contests/abc077"
+  },
+  "tasks": [
+    {
+      "id": "abc077_a",
+      "label": "A",
+      "title": "Rotation",
+      "url": "https://atcoder.jp/contests/abc077/tasks/abc077_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc077_a.cpp"
+      }
+    },
+    {
+      "id": "abc077_b",
+      "label": "B",
+      "title": "Around Square",
+      "url": "https://atcoder.jp/contests/abc077/tasks/abc077_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc077_b.cpp"
+      }
+    },
+    {
+      "id": "arc084_a",
+      "label": "C",
+      "title": "Snuke Festival",
+      "url": "https://atcoder.jp/contests/abc077/tasks/arc084_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc084_a.cpp"
+      }
+    },
+    {
+      "id": "arc084_b",
+      "label": "D",
+      "title": "Small Multiple",
+      "url": "https://atcoder.jp/contests/abc077/tasks/arc084_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc084_b.cpp"
+      }
+    }
+  ]
+}
