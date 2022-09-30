@@ -126,7 +126,7 @@ ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); wh
 template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
-template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
+template <class T, class S> bool incl(const T &x, const S &l, const S &r) { return l <= x and x < r; }
 void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i) x ^= 1ll << b;  }
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
@@ -151,12 +151,60 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); vs g(2); IN(g);
+
+  rep(_, 10) rep(i, 2) g[i].pb('0');
+
+  // debug(g);
+
+  auto f = [&](ll i) {
+    ll b1 = g[0][i] == '1', b2 = g[1][i] == '1';
+    return (b2 << 1 | b1);
+  };
+
+  v3(ll, dp, n + 5, 4, 4, -LINF);
+  if (g[1][0] == '1') dp[0][2][f(1)] = 0; else dp[0][0][f(1)] = 0;
+
+  rep(i, n + 4) {
+    ll b = f(i + 2);
+    chmax(dp[i + 1][0][b], dp[i][0][0]);
+    chmax(dp[i + 1][0][b], dp[i][0][1] + 1);
+    chmax(dp[i + 1][2][b], dp[i][0][2]);
+    chmax(dp[i + 1][2][b], dp[i][0][3] + 1);
+
+    chmax(dp[i + 1][1][b], dp[i][1][0]);
+    chmax(dp[i + 1][3][b], dp[i][1][1]);
+    chmax(dp[i + 1][1][b], dp[i][1][2] + 1);
+    chmax(dp[i + 1][3][b], dp[i][1][3] + 1);
+
+    chmax(dp[i + 1][1][b], dp[i][2][0] + 1);
+    chmax(dp[i + 1][0][b], dp[i][2][0]);
+    chmax(dp[i + 1][1][b], dp[i][2][1] + 1);
+    chmax(dp[i + 1][0][b], dp[i][2][1] + 1);
+    chmax(dp[i + 1][1][b], dp[i][2][2] + 2);
+    chmax(dp[i + 1][2][b], dp[i][2][3] + 1);
+    chmax(dp[i + 1][1][b], dp[i][2][3] + 2);
+
+    chmax(dp[i + 1][0][b], dp[i][3][0] + 1);
+    chmax(dp[i + 1][1][b], dp[i][3][0]);
+    chmax(dp[i + 1][0][b], dp[i][3][1] + 2);
+    chmax(dp[i + 1][0][b], dp[i][3][2] + 1);
+    chmax(dp[i + 1][1][b], dp[i][3][2] + 1);
+    chmax(dp[i + 1][3][b], dp[i][3][3] + 1);
+    chmax(dp[i + 1][0][b], dp[i][3][3] + 2);
+  }
+  // rep(i, n + 1) {
+  //   debug(i, dp[i]);
+  // }
+  ll ans = 0;
+  debug(dp[n]);
+
+  OUT(max(dp[n + 4][0][0], dp[n + 4][1][0]));
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

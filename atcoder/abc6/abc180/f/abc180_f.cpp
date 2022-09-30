@@ -184,43 +184,21 @@ void solve() {
   init_f();
 
   if (m < l - 1) OUTRET(0);
-  if (l == 1) {
 
-  }
+  v3(mint, dp, n + 1, m + 1, 2);
+  dp[0][0][0] = 1;
 
-  vv(mint, dp, n - l + 1, m + 1);
-  dp[0][0] = 1;
-
-  rep(sz, 2, l) {
-    rep(d, 1, n / sz + 1) {
-      rep(i, n) rep(j, m) {
-        if (i + sz * d > n - l || j + sz * d > m) break;
-        mint cnt = combP(n - i, sz * d) / mint(sz).pow(d) / fact[d];
-        dp[i + d * sz][j + d * sz] += dp[i][j] * cnt;
-      }
-      rep(i, n) rep(j, m) {
-        if (i + sz * d > n - l || j + (sz - 1) * d > m) break;
-        mint cnt = combP(n - i, sz * d) / mint(2).pow(d) / fact[d];
-        dp[i + d * sz][j + d * (sz - 1)] += dp[i][j] * cnt;
+  rep(i, n) {
+    rep(sz, 1, l + 1) {
+      rep(j, m + 1) {
+        rep(k, 2) {
+          if (1 < sz && i + sz <= n && j + sz <= m) dp[i + sz][j + sz][k | sz == l] += dp[i][j][k] * comb(n - i - 1, sz - 1) * fact[sz - 1] / (sz > 2 ? 2 : 1);
+          if (i + sz <= n && j + sz - 1 <= m) dp[i + sz][j + sz - 1][k | sz == l] += dp[i][j][k] * comb(n - i - 1, sz - 1) * fact[sz] / (sz > 1 ? 2 : 1);
+        }
       }
     }
   }
-  // debug(dp);
-
-  mint ans = 0;
-  rep(i, 1, n / l + 1) {
-    rep(sz, i + 1) {
-      ll sz2 = i - sz;
-      mint cnt = combP(i * l, sz * l) / mint(l).pow(sz) / fact[sz];
-      mint cnt2 = fact[sz2 * l] / mint(2).pow(sz2) / fact[sz2];
-      debug(sz, sz2, cnt, cnt2);
-
-      ll dn = i * l, dm = i * l - sz2;
-      debug(dn, dm);
-      if (dn <= n && dm <= m) ans += dp[n - dn][m - dm] * cnt * cnt2;
-    }
-  }
-  OUT(ans);
+  OUT(dp[n][m][1]);
 }
 
 signed main() {

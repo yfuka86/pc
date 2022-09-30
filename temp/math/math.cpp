@@ -81,6 +81,26 @@ vector<int> prime_enumerate(int N) {
   return ret;
 }
 
+// 二点からマンハッタン距離の等しい点（パリティが等しい場合のみ）
+LP manhattan_samedist(LP p1, LP p2, ll dist) {
+  auto [x1, y1] = p1;
+  auto [x2, y2] = p2;
+  ll dx = x2 - x1, dy = y2 - y1;
+  bool swaped = false;
+  if (abs(dx) > abs(dy)) { swap(dx, dy); swaped = true; }
+  ll rem = dist * 2 - abs(dx) - abs(dy);
+  // パリティチェック
+  assert(rem > 0 && !(rem & 1));
+
+  ll ddx = abs(dx) + rem / 2;
+  ll ddy = dist - (abs(dx) + rem / 2);
+  if (dx < 0) ddx = -ddx;
+  if (dy < 0) ddy = -ddy;
+  if (swaped) swap(ddx, ddy);
+
+  return mp(x1 + ddx, y1 + ddy);
+}
+
 // 等比数列などの和
 mint geo_sum(mint a, mint r, ll sz) {
   if (sz == 0) return mint(0);

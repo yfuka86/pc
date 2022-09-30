@@ -126,7 +126,7 @@ ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); wh
 template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
-template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
+template <class T, class S> bool incl(const T &x, const S &l, const S &r) { return l <= x and x < r; }
 void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i) x ^= 1ll << b;  }
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
@@ -151,7 +151,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); VL(d, n);
+  vl ans(n);
+  ans[0] = d[0];
+
+  ll cur = d[0];
+  rep(i, 1, n) {
+    if (d[i] == 0) ans[i] = cur;
+    else {
+      if (cur - d[i] >= 0) OUTRET(-1);
+      cur += d[i];
+      ans[i] = cur;
+    }
+  }
+  OUTARRAY(ans);
 }
 
 signed main() {
