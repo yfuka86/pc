@@ -150,68 +150,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (chmin(costs[to], nc)) que.push({nc, to}); } }
-  return costs; }
-
 void solve() {
   LL(n, m, k);
-  Graph<ll> G(n);
-  rep(i, m){
-    LL(a, b, c); --a; --b;
-    G.add_directed_edge(a, b, c);
+  VEC3(ll, a, b, c, m);
+  VL(e, k, 1);
+
+  vl dp(n, LINF); dp[0] = 0;
+  rep(i, k) {
+    chmin(dp[b[e[i]] - 1], dp[a[e[i]] - 1] + c[e[i]]);
   }
-  VL(e, k);
-  vvl emp(m);
-  rep(i, k) emp[--e[i]].pb(i);
-
-  priority_queue<LT, vector<LT>, greater<LT>> que;
-  vector<map<ll, ll>> costs(n);
-  costs[0][0] = 0;
-  que.push({0, 0, 0});
-  while(!que.empty()) {
-    auto [c, v, id] = que.top(); que.pop(); if (costs[v][id] < c) continue;
-    for(auto &to: G[v]) {
-      ll nc = costs[v][id] + to.cost;
-      auto it = lower_bound(all(emp[to.idx]), id);
-      if (it == emp[to.idx].end()) continue;
-
-      auto lt = costs[to].upper_bound(*it);
-      if (lt != costs[to].begin()) {
-        if (prev(lt)->se < nc) continue;
-      }
-
-      if (!costs[to].count(*it)) {
-        costs[to][*it] = nc;
-        que.push(tie(nc, to, *it));
-      } else {
-        if (chmin(costs[to][*it], nc)) que.push(tie(nc, to, *it));
-      }
-    }
-  }
-
-  if (costs[n - 1].size() == 0) {
-    OUT(-1);
-  } else {
-    ll ans = LINF;
-    fore(_, c, costs[n - 1]) {
-      chmin(ans, c);
-    }
-    OUT(ans);
-  }
+  OUT(dp[n - 1] == LINF ? -1 : dp[n - 1]);
 }
 
 signed main() {

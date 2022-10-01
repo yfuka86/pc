@@ -150,71 +150,68 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// ----------------------------------------------------------------------
-template<typename T>
-struct BIT {
-  int n; vector<T> bit;
-  BIT(int _n = 0) : n(_n), bit(n + 1) {}
-  // sum of [0, i), 0 <= i <= n
-  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
-  // 0 <= i < n
-  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
-  //[l, r) 0 <= l < r < n
-  T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, sum(i) >= w, none -> n
-  int lower_bound(T w) {
-    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
-    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
-    return x; }
-};
-// ----------------------------------------------------------------------
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+vector<ll> dijkstra(Graph<ll> &G, ll start) {
+  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (chmin(costs[to], nc)) que.push({nc, to}); } }
+  return costs; }
 
 void solve() {
-  ll off = 100000;
-  LL(n);
-  VEC2(ll, x, y, n);
-  vvl g(200005);
-  rep(i, n) g[x[i] + y[i]].pb(x[i] - y[i] + off);
-
-
-  LL(q);
-  VEC3(ll, a, b, k, q);
-  rep(i, q) {
-    ll da = a[i] + b[i];
-    ll db = a[i] - b[i] + off;
-    a[i] = da;
-    b[i] = db;
+  LL(n, m, k);
+  Graph<ll> G(n);
+  rep(i, m){
+    LL(a, b, c); --a; --b;
+    G.add_directed_edge(a, b, c);
   }
-  vlp ans(q, {200000, -1});
+  VL(e, k);
+  vvl emp(m);
+  rep(i, k) emp[--e[i]].pb(i);
 
-  while(1) {
-    mpq<LT4> que;
-    rep(i, q) {
-      if (ans[i].fi - 1 > ans[i].se) {
-        ll mid = (ans[i].fi + ans[i].se) / 2;
-        que.push({max(a[i] - mid, 0), -1, i, mid});
-        que.push({min(a[i] + mid + 1, 200001), 1, i, mid});
+  priority_queue<LT, vector<LT>, greater<LT>> que;
+  vector<map<ll, ll>> costs(n);
+  costs[0][0] = 0;
+  que.push({0, 0, 0});
+  while(!que.empty()) {
+    auto [c, v, id] = que.top(); que.pop(); if (costs[v][id] < c) continue;
+    for(auto &to: G[v]) {
+      ll nc = costs[v][id] + to.cost;
+      auto it = lower_bound(all(emp[to.idx]), id);
+      if (it == emp[to.idx].end()) continue;
+
+      auto lt = costs[to].upper_bound(*it);
+      if (lt != costs[to].begin()) {
+        if (prev(lt)->se < nc) continue;
+      }
+
+      if (!costs[to].count(*it)) {
+        costs[to][*it] = nc;
+        que.push(tie(nc, to, *it));
+      } else {
+        if (chmin(costs[to][*it], nc)) que.push(tie(nc, to, *it));
       }
     }
-    if (que.size() == 0) break;
-    BIT<ll> bt(200001);
-
-    vl anstmp(q, 0);
-    rep(i, 200002) {
-      while (!que.empty() && get<0>(que.top()) <= i) {
-        auto [_, c, id, mid] = que.top(); que.pop();
-        // debug(c, id, mid);
-        anstmp[id] += c * bt.sum(max(b[id] - mid, 0), min(b[id] + mid + 1, 200001));
-        if (c == 1) {
-          if (anstmp[id] >= k[id]) ans[id].fi = mid; else ans[id].se = mid;
-        }
-      }
-      fore(v, g[i]) bt.add(v, 1);
-    }
-    // debug(ans);
   }
 
-  rep(i, q) OUT(ans[i].fi);
+  if (costs[n - 1].size() == 0) {
+    OUT(-1);
+  } else {
+    ll ans = LINF;
+    fore(_, c, costs[n - 1]) {
+      chmin(ans, c);
+    }
+    OUT(ans);
+  }
 }
 
 signed main() {

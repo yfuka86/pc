@@ -150,71 +150,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// ----------------------------------------------------------------------
-template<typename T>
-struct BIT {
-  int n; vector<T> bit;
-  BIT(int _n = 0) : n(_n), bit(n + 1) {}
-  // sum of [0, i), 0 <= i <= n
-  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
-  // 0 <= i < n
-  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
-  //[l, r) 0 <= l < r < n
-  T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, sum(i) >= w, none -> n
-  int lower_bound(T w) {
-    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
-    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
-    return x; }
-};
-// ----------------------------------------------------------------------
-
 void solve() {
-  ll off = 100000;
-  LL(n);
-  VEC2(ll, x, y, n);
-  vvl g(200005);
-  rep(i, n) g[x[i] + y[i]].pb(x[i] - y[i] + off);
+  LL(n); VL(a, n);
+  sort(all(a));
+  map<ll, ll> mp;
+  rep(i, n) mp[a[i]]++;
+  vl uni; fore(k,v,mp) uni.pb(k);
 
-
-  LL(q);
-  VEC3(ll, a, b, k, q);
-  rep(i, q) {
-    ll da = a[i] + b[i];
-    ll db = a[i] - b[i] + off;
-    a[i] = da;
-    b[i] = db;
-  }
-  vlp ans(q, {200000, -1});
-
-  while(1) {
-    mpq<LT4> que;
-    rep(i, q) {
-      if (ans[i].fi - 1 > ans[i].se) {
-        ll mid = (ans[i].fi + ans[i].se) / 2;
-        que.push({max(a[i] - mid, 0), -1, i, mid});
-        que.push({min(a[i] + mid + 1, 200001), 1, i, mid});
-      }
-    }
-    if (que.size() == 0) break;
-    BIT<ll> bt(200001);
-
-    vl anstmp(q, 0);
-    rep(i, 200002) {
-      while (!que.empty() && get<0>(que.top()) <= i) {
-        auto [_, c, id, mid] = que.top(); que.pop();
-        // debug(c, id, mid);
-        anstmp[id] += c * bt.sum(max(b[id] - mid, 0), min(b[id] + mid + 1, 200001));
-        if (c == 1) {
-          if (anstmp[id] >= k[id]) ans[id].fi = mid; else ans[id].se = mid;
-        }
-      }
-      fore(v, g[i]) bt.add(v, 1);
-    }
-    // debug(ans);
-  }
-
-  rep(i, q) OUT(ans[i].fi);
+  ll ans = binary_search([&](ll mid) {
+    ll have = upper_bound(all(uni), mid) - uni.begin();
+    return have + (n - have) / 2 >= mid;
+  }, 0, n + 1);
+  OUT(ans);
 }
 
 signed main() {

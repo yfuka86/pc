@@ -152,15 +152,26 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n); VL(a, n);
-  sort(all(a));
-  map<ll, ll> mp;
-  rep(i, n) mp[a[i]]++;
-  vl uni; fore(k,v,mp) uni.pb(k);
+  multiset<ll> s;
+  rep(i, n) {
+    if (s.find(a[i]) != s.end()) s.insert(LINF);
+    else s.insert(a[i]);
+  }
 
-  ll ans = binary_search([&](ll mid) {
-    ll have = upper_bound(all(uni), mid) - uni.begin();
-    return have + (n - have) / 2 >= mid;
-  }, 0, n + 1);
+  ll ans = 0;
+  rep(i, 1, n + 1) {
+    if (s.find(i) != s.end()) {
+      s.erase(s.find(i));
+      ans++;
+    } else {
+      if (s.size() >= 2) {
+        s.erase(prev(s.end()));
+        s.erase(prev(s.end()));
+        ans++;
+      } else break;
+    }
+  }
+
   OUT(ans);
 }
 

@@ -111,7 +111,9 @@
     "semaphore": "cpp",
     "cuchar": "cpp",
     "source_location": "cpp",
-    "segtree": "cpp"
+    "segtree": "cpp",
+    "rope": "cpp",
+    "slist": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",
