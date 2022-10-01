@@ -57,7 +57,7 @@ template<typename T, typename=void> struct is_specialize:false_type{};
 template<typename T> struct is_specialize<T, typename conditional<false,typename T::iterator, void>::type>:true_type{};
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
-void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); } void dump(i128 t) { if (t > LINF) dout<<"inf+"; else dout<<(ll)t; }
+void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
 template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
 template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
@@ -150,132 +150,49 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-
-// https://nyaannyaan.github.io/library/geometry/integer-geometry.hpp
-
-struct Point {
-  using T = __int128_t;
-  T x, y;
-  Point() : x(0), y(0) {}
-  Point(T x_, T y_) : x(x_), y(y_) {}
-  Point &operator+=(const Point &p) { this->x += p.x; this->y += p.y; return *this; }
-  Point &operator-=(const Point &p) { this->x -= p.x; this->y -= p.y; return *this; }
-
-  int pos() const { if (y < 0) return -1; if (y == 0 && 0 <= x) return 0; return 1; }
-  Point operator+(const Point &p) const { return Point(*this) += p; }
-  Point operator-(const Point &p) const { return Point(*this) -= p; }
-  Point operator-() const { return Point(-this->x, -this->y); }
-  bool operator==(const Point &p) const { return x == p.x && y == p.y; }
-  bool operator!=(const Point &p) const { return x != p.x || y != p.y; }
-  bool operator<(const Point &p) const { return x == p.x ? y < p.y : x < p.x; }
-  friend istream &operator>>(istream &is, Point &p) { long long x, y; is >> x >> y; p.x = x, p.y = y; return is; }
-  friend ostream &operator<<(ostream &os, const Point &p) { os << (long long)(p.x) << " " << (long long)(p.y); return os; }
-};
-using Points = vector<Point>;
-
-Point::T dot(const Point &a, const Point &b) { return a.x * b.x + a.y * b.y; }
-Point::T cross(const Point &a, const Point &b) { return a.x * b.y - a.y * b.x; }
-
-// sort by argument (-Pi ~ Pi)
-void ArgumentSort(Points &v) {
-  sort(begin(v), end(v), [](Point a, Point b) {
-    if (a.pos() != b.pos()) return a.pos() < b.pos();
-    return cross(a, b) > 0;
-  });
-}
-
-// 1 ... counterclockwise / 0 straight / -1 clockwise
-int ccw(const Point &a, const Point &b, const Point &c) {
-  Point::T t = cross(b - a, c - a);
-  return t < 0 ? -1 : t == 0 ? 0 : 1;
-}
-
-// v must have sorted by x-coordinate
-Points LowerHull(const Points &ps) {
-  int N = (int)ps.size();
-  for (int i = 0; i < N - 1; i++) assert(ps[i].x <= ps[i + 1].x);
-  if (N <= 2) return ps;
-  Points convex(N);
-  int k = 0;
-  for (int i = 0; i < N; convex[k++] = ps[i++]) {
-    while (k >= 2 && ccw(convex[k - 2], convex[k - 1], ps[i]) <= 0) --k;
-  }
-  convex.resize(k);
-  return convex;
-}
-
-Points UpperHull(const Points &ps) {
-  int N = (int)ps.size();
-  for (int i = 0; i < N - 1; i++) assert(ps[i].x <= ps[i + 1].x);
-  if (N <= 2) return ps;
-  Points convex(N);
-  int k = 0;
-  for (int i = 0; i < N; convex[k++] = ps[i++]) {
-    while (k >= 2 && ccw(convex[k - 2], convex[k - 1], ps[i]) >= 0) --k;
-  }
-  convex.resize(k);
-  return convex;
-}
-
-Points ConvexHull(const Points &ps) {
-  int N = (int)ps.size();
-  for (int i = 0; i < N - 1; i++) assert(ps[i].x <= ps[i + 1].x);
-  if (N <= 2) return ps;
-  Points convex(2 * N);
-  int k = 0;
-  for (int i = 0; i < N; convex[k++] = ps[i++]) {
-    while (k >= 2 && ccw(convex[k - 2], convex[k - 1], ps[i]) <= 0) --k;
-  }
-  for (int i = N - 2, t = k + 1; i >= 0; convex[k++] = ps[i--]) {
-    while (k >= t && ccw(convex[k - 2], convex[k - 1], ps[i]) <= 0) --k;
-  }
-  convex.resize(k - 1);
-  return convex;
-}
-
-
 void solve() {
-  LL(n);
-  Points p(n); IN(p);
-  LL(m);
-  Points u(m); IN(u);
+  LL(n); VL(a, n); VL(b, n);
 
-  vector<pair<Point, Point>> mi(n);
-  rep(i, n) mi[i] = {p[i] + u[0], p[(i + 1) % n] + u[0]};
-
-  rep(i, n) rep(j, m) {
-    Point c1 = mi[i].se - mi[i].fi;
-    Point c2 = p[(i + 1) % n] + u[j] - mi[i].fi;
-
-    if (cross(c1, c2) >= 0) {
-      mi[i] = {p[i] + u[j], p[(i + 1) % n] + u[j]};
-    }
-  }
-  LL(q);
-  rep(i, q) {
-    LL(a,b);
-    bool valid = true;
-    rep(i, n) {
-      Point c = Point{a, b} - mi[i].fi;
-      // debug(mi[i].fi);
-      // debug(mi[i].se - mi[i].fi);
-      // debug(c);
-      ll cp = cross(mi[i].se - mi[i].fi, c);
-      // debug(cp);
-      if (cp < 0) valid = false;
-    }
-    OUT(valid ? "Yes" : "No");
+  vector<multiset<ll>> s(2);
+  rep(i, n) {
+    s[a[i]].insert(b[i]);
   }
 
-  // debug(cross(Point{-2, 0}, Point{-2, -1}));
+  ll ans = 0;
+  {
+    ll sum = 0;
+    auto t = s;
+    while (t[0].size() && t[1].size()) {
+      rep(i, 2) {
+        auto it = prev(t[i].end());
+        sum += *it * (i == 0 || (i == 1 && t[0].size()) ? 2 : 1);
+        t[i].erase(it);
+      }
+    }
+    fore(i, t[0]) sum += i;
+    fore(i, t[1]) sum += i;
+    chmax(ans, sum);
+  }
+  {
+    ll sum = 0;
+    auto t = s;
+    while (t[0].size() && t[1].size()) {
+      rep_r(i, 2) {
+        auto it = prev(t[i].end());
+        sum += *it * (i == 1 || (i == 0 && t[1].size()) ? 2 : 1);
+        t[i].erase(it);
+      }
+    }
+    fore(i, t[0]) sum += i;
+    fore(i, t[1]) sum += i;
+    chmax(ans, sum);
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
-
-
-
