@@ -6,11 +6,11 @@ template<class T> void flip(vector<vector<T>> &a) {
   }
 }
 
-template<class T> vector<vector<T>> rotate(vector<vector<T>> &a) {
+template<class T> void rotate(vector<vector<T>> &a) {
   ll n = a.size(), m = a[0].size();
   vector<vector<T>> ret(m, vector<T>(n, 0));
   rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j];
-  return ret;
+  a = ret;
 }
 
 template<typename T> vector<vector<T>> m_e(ll sz) { assert(sz > 0); vector<vector<T>> ret(sz, vector<T>(sz, T())); rep(i, sz) ret[i][i] = 1; return ret; }

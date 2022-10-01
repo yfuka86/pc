@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc271",
+    "title": "KYOCERA Programming Contest 2022（AtCoder Beginner Contest 271）",
+    "url": "https://atcoder.jp/contests/abc271"
+  },
+  "tasks": [
+    {
+      "id": "abc271_a",
+      "label": "A",
+      "title": "484558",
+      "url": "https://atcoder.jp/contests/abc271/tasks/abc271_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc271_a.cpp"
+      }
+    },
+    {
+      "id": "abc271_b",
+      "label": "B",
+      "title": "Maintain Multiple Sequences",
+      "url": "https://atcoder.jp/contests/abc271/tasks/abc271_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc271_b.cpp"
+      }
+    },
+    {
+      "id": "abc271_c",
+      "label": "C",
+      "title": "Manga",
+      "url": "https://atcoder.jp/contests/abc271/tasks/abc271_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc271_c.cpp"
+      }
+    },
+    {
+      "id": "abc271_d",
+      "label": "D",
+      "title": "Flip and Adjust",
+      "url": "https://atcoder.jp/contests/abc271/tasks/abc271_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc271_d.cpp"
+      }
+    },
+    {
+      "id": "abc271_e",
+      "label": "E",
+      "title": "Subsequence Path",
+      "url": "https://atcoder.jp/contests/abc271/tasks/abc271_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc271_e.cpp"
+      }
+    },
+    {
+      "id": "abc271_f",
+      "label": "F",
+      "title": "XOR on Grid Path",
+      "url": "https://atcoder.jp/contests/abc271/tasks/abc271_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc271_f.cpp"
+      }
+    },
+    {
+      "id": "abc271_g",
+      "label": "G",
+      "title": "Access Counter",
+      "url": "https://atcoder.jp/contests/abc271/tasks/abc271_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc271_g.cpp"
+      }
+    },
+    {
+      "id": "abc271_h",
+      "label": "Ex",
+      "title": "General General",
+      "url": "https://atcoder.jp/contests/abc271/tasks/abc271_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc271_h.cpp"
+      }
+    }
+  ]
+}
