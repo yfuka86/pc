@@ -116,17 +116,20 @@ vs split(string str, char del) {
   return res;
 }
 
-vl manacher(const string &s) {
-  vl radius(s.size()); int i = 0, j = 0;
-  while(i < s.size()) {
-    while(i - j >= 0 && i + j < s.size() && s[i - j] == s[i + j]) ++j;
+vl manacher(const string &_s, bool even = false) {
+  string s = "";
+  if (even) { for(int i = 0; i < (int)_s.size(); ++i) { s.pb('$'); s.pb(_s[i]); } s.pb('$'); } else s = _s;
+  ll n = s.size();
+  vl radius(n); int i = 0, j = 0;
+  while(i < n) {
+    while(i - j >= 0 && i + j < n && s[i - j] == s[i + j]) ++j;
     radius[i] = j;
     int k = 1;
-    while(i - k >= 0 && i + k < s.size() && k + radius[i - k] < j) {
-      radius[i + k] = radius[i - k];
-      ++k;
+    while(i - k >= 0 && i + k < n && k + radius[i - k] < j) {
+      radius[i + k] = radius[i - k]; ++k;
     }
     i += k; j -= k;
   }
+  if (even) { radius.erase(radius.begin()); radius.pop_back(); for(int i = 0; i < (int)radius.size(); ++i) --radius[i]; }
   return radius;
 }
