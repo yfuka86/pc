@@ -153,6 +153,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(h, w, a, b);
+
+  function<vlp(ll, ll, ll, ll)> slv = [&](ll h, ll w, ll a, ll b) {
+    vlp t;
+    if (h == 2) {
+      rep(i, 1, b) { t.pb({1, i}); t.pb({2, i}); }
+      rep(i, b, w + 1) t.pb({a == 1 ? 2 : 1, i});
+      rep_r(i, b, w + 1) t.pb({a, i});
+    } else if (w == 2) {
+      fore(p, slv(w, h, b, a)) t.pb({p.se, p.fi});
+    } else {
+      if (a == 1 || (a == 2 && b == w)) {
+        rep(i, h) t.pb({i + 1, 1});
+        fore(p, slv(h, w - 1, h + 1 - a, b - 1)) {
+          t.pb({h + 1 - p.fi, p.se + 1});
+        }
+      } else {
+        rep(i, w) t.pb({1, i + 1});
+        fore(p, slv(h - 1, w, a - 1, w + 1 - b)) {
+          t.pb({p.fi + 1, w + 1 - p.se});
+        }
+      }
+    }
+    return t;
+  };
+
+  fore(p, slv(h, w, a, b)) {
+    OUT(p.fi, p.se);
+  }
 }
 
 signed main() {

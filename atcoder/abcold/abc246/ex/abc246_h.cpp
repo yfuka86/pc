@@ -1,45 +1,372 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
-#define rep(i,n) for(ll i=0;i<(ll)(n);i++)
-#define rep_r(i,n) for(ll i=(ll)(n)-1;i>=0;i--)
-#define rep2(i,sta,n) for(ll i=sta;i<(ll)(n);i++)
-#define rep2_r(i,sta,n) for(ll i=(ll)(n)-1;i>=sta;i--)
-#define all(v) (v).begin(),(v).end()
-#define pb push_back
-#define mp make_pair
-
 using namespace std;
-typedef long long ll; typedef unsigned long long ull; typedef long double ld;
-typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT;
-typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<LP> vlp; typedef vector<bool> vb; typedef vector<string> vs;
-const int INF = numeric_limits<int>::max(); const ll LINF = LLONG_MAX; const double DINF = numeric_limits<double>::infinity();
+using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; using i128 = __int128_t;
+using P = pair<int, int>; using LP = pair<ll, ll>; using LT = tuple<ll, ll, ll>; using LT4 =  tuple<ll, ll, ll, ll>;
+typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
+template<typename T> using pq = priority_queue<T>; template<typename T> using mpq = priority_queue<T, vector<T>, greater<T>>;
+template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
+const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
+#define _overload5(a, b, c, d, e, name, ...) name
+#define _overload4(a, b, c, d, name, ...) name
+#define _overload3(a, b, c, name, ...) name
+#define _rep0(n) for(ll i = 0; (ll)(i) < n; ++i)
+#define _rep1(i, n) for(ll i = 0; i < (ll)(n); ++i)
+#define _rep2(i, a, b) for(ll i = (ll)(a); i < (ll)(b); ++i)
+#define _rep3(i, a, b, c) for(ll i = (ll)(a); i < (ll)(b); i += (ll)(c))
+#define rep(...) _overload4(__VA_ARGS__, _rep3, _rep2, _rep1, _rep0)(__VA_ARGS__)
+#define _per0(n) for(ll i = 0; i < (ll)(n); ++i)
+#define _per1(i, n) for(ll i = (ll)(n)-1; i >= 0; --i)
+#define _per2(i, a, b) for(ll i = (ll)(b)-1; i >= (ll)(a); --i)
+#define _per3(i, a, b, c) for(ll i = (ll)(b)-1; i >= (ll)(a); i -= (ll)(c))
+#define rep_r(...) _overload4(__VA_ARGS__, _per3, _per2, _per1, _per0)(__VA_ARGS__)
+#define _fore0(a) rep(a.size())
+#define _fore1(i, a) for(auto &&i : a)
+#define _fore2(a, b, v) for(auto &&[a, b] : v)
+#define _fore3(a, b, c, v) for(auto &&[a, b, c] : v)
+#define _fore4(a, b, c, d, v) for(auto &&[a, b, c, d] : v)
+#define fore(...) _overload5(__VA_ARGS__, _fore4, _fore3, _fore2, _fore1, _fore0)(__VA_ARGS__)
+#define all(v) (v).begin(),(v).end()
+#define rall(v) (v).rbegin(),(v).rend()
+#define rng_of(v, l, r) (v).begin() + l, (v).begin() + r
+#define pb push_back
+#define eb emplace_back
+#define mp make_pair
+#define fi first
+#define se second
+#define vv(type, name, h, ...) vector<vector<type>> name(h, vector<type>(__VA_ARGS__))
+#define v3(type, name, h, w, ...) vector<vector<vector<type>>> name(h, vector<vector<type>>(w, vector<type>(__VA_ARGS__)))
+#define v4(type, name, a, b, c, ...) vector<vector<vector<vector<type>>>> name(a, vector<vector<vector<type>>>(b, vector<vector<type>>(c, vector<type>(__VA_ARGS__))))
 
-using A = ll;
-template<typename Q> A iquery(Q q, string str = "? ") { cout << str << q << "\n"; cout.flush(); A a; cin >> a; return a; }
-template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << "\n"; cout.flush(); }
-int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
-int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
-template <typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
-template <typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
-template <class T> T POW(T x, int n) { assert(n >= 0); T res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
-template<typename T> void comp(vector<T>&a){ vector<T> b = a; sort(all(b)); b.erase(unique(all(b)), b.end()); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<typename T> void coutarray(vector<T>& v, int offset = 0) { rep(i, v.size()) { if (i > 0) cout << " "; cout << v[i] + offset; } cout << "\n"; }
-template<typename T> void coutmatrix(vector<vector<T>>& v) { rep(i, v.size()) { rep(j, v[i].size()) { if (j > 0) cout << " "; cout << v[i][j]; } cout << "\n";} }
-template<typename K, typename V> void coutmap(map<K, V> & m) { for (const auto& kv : m) { cout << kv.first << ":" << kv.second << " "; } cout << "\n"; }
-template<typename T> void coutbin(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
-template<class T> bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1;} return 0; }
-template<class T> bool chmax(T &a, const T &b) { if (b > a) { a = b; return 1;} return 0; }
-vl dx = {1, 0, -1, 0}; vl dy = {0, -1, 0, 1};
+struct RandGen {
+  using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
+  ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
+  LP lp(ll a, ll b, bool rng = true) { ll x = l(a, b - 1), y = l(rng ? x + 1 : a, b - 1); return {x, y}; }
+  vl vecl(ll n, ll a, ll b) { ud d(a, b - 1); vl ret(n); rep(i, n) ret[i] = d(mt); return ret; }
+  vl vecperm(ll n, ll from = 0) { vl perm(n); iota(all(perm), from); shuffle(perm); return perm; }
+  string str(ll n, string op) { vl fig = vecl(n, 0, op.size()); string s; rep(i, n) s.pb(op[fig[i]]); return s; }
+  string straz(ll n, ll a = 0, ll z = 26) { vl az = vecl(n, a, z); string s; rep(i, n) s.pb('a' + az[i]); return s; }
+  string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
+  template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
+};
+// デバッグ系
+#define dout cout
+template<typename T, typename=void> struct is_specialize:false_type{};
+template<typename T> struct is_specialize<T, typename conditional<false,typename T::iterator, void>::type>:true_type{};
+template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
+template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
+void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
+template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
+template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
+template<typename T, typename U, typename V, typename S> void dump(const tuple<T, U, V, S>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << " "; dump(get<3>(t)); dout << ")"; }
+template<typename T,typename U> void dump(const pair<T,U>&);
+template<typename T> void dump(const T&t, enable_if_t<!is_void<typename T::iterator>::value>* =nullptr) { dout << "{ "; for(auto it=t.begin();it!=t.end();){ dump(*it); dout << (++it==t.end() ? "" : " "); } dout<<" }"; }
+template<typename T,typename U> void dump(const pair<T,U>&t) { dout<<"("; dump(t.first); dout<<" "; dump(t.second); dout << ")"; }
+void trace() { dout << "\n"; } template<typename Head, typename... Tail> void trace(Head&&head, Tail&&... tail) { dump(head); if(sizeof...(tail)) dout<<", "; trace(forward<Tail>(tail)...); }
+#ifdef ONLINE_JUDGE
+#define debug(...) (void(0))
+#else
+#define debug(...) do {dout<<#__VA_ARGS__<<" = ";trace(__VA_ARGS__); } while(0)
+#endif
+// 入出力系
+#define LL(...) ll __VA_ARGS__; IN(__VA_ARGS__)
+#define CHR(...) char __VA_ARGS__; IN(__VA_ARGS__)
+#define STR(...) string __VA_ARGS__; IN(__VA_ARGS__)
+#define LD(...) ld __VA_ARGS__; IN(__VA_ARGS__)
+#define _vl(name, size) vl name(size); IN(name)
+#define _vl2(name, size, off) vl name(size); IN(name); rep(i, size) name[i]-=off
+#define VL(...) _overload3(__VA_ARGS__, _vl2, _vl)(__VA_ARGS__)
+#define VEC(type, name, size) vector<type> name(size); IN(name)
+#define VEC2(type, name1, name2, size) vector<type> name1(size), name2(size); for(int i = 0; i < size; i++) IN(name1[i], name2[i])
+#define VEC3(type, name1, name2, name3, size) vector<type> name1(size), name2(size), name3(size); for(int i = 0; i < size; i++) IN(name1[i], name2[i], name3[i])
+#define VEC4(type, name1, name2, name3, name4, size) vector<type> name1(size), name2(size), name3(size), name4(size); for(int i = 0; i < size; i++) IN(name1[i], name2[i], name3[i], name4[i]);
+#define VV(type, name, h, w) vector<vector<type>> name(h, vector<type>(w)); IN(name)
+void scan(int &a) { cin >> a; } void scan(long long &a) { cin >> a; } void scan(char &a) { cin >> a; } void scan(double &a) { cin >> a; } void scan(string &a) { cin >> a; }
+template <class T> void scan(T &a) { cin >> a; }
+template <class T, class S> void scan(pair<T, S> &p) { scan(p.first), scan(p.second); }
+template <class T> void scan(vector<T> &a) { for(auto &i : a) scan(i); }
+void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...tail) { scan(head); IN(tail...); }
+#define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
+template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
+void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
+template<typename T> void OUTARRAY(vector<T>& v, T offset = T(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
+template<typename T> void OUTMAT(vector<vector<T>>& v, T offset = T(0)) { rep(i, v.size()) { OUTARRAY(v[i], offset); } }
+template<typename T> void OUTBIN(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
+template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); OUTARRAY(v); cout.flush(); cin >> a; }
+// template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
+//   a = query[0] ? A() : A();
+// }
+template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
+// 数値系
+int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
+int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
+pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
+ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
+template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
+template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int msb(T x){ if (sizeof(x) == 4) return 31 - __builtin_clz(x); else return 63 - __builtin_clzll(x); }
+template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int lsb(T x){ if (sizeof(x) == 4) return __builtin_ctz(x); else return __builtin_ctzll(x); }
+template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
+template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
+template<typename T = ll> T sum_of(const vector<T> &v, int l = 0, int r = INF) { return accumulate(rng_of(v, l, min(r, (int)v.size())), T(0)); }
+ll max(int x, ll y) { return max((ll)x, y); } ll max(ll x, int y) { return max(x, (ll)y); }
+ll min(int x, ll y) { return min((ll)x, y); } ll min(ll x, int y) { return min(x, (ll)y); }
+ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
+// 操作系
+template<class T> void rotate(vector<vector<T>> &a) { ll n = a.size(), m = a[0].size(); vector<vector<T>> ret(m, vector<T>(n, 0)); rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j]; a = ret; }
+template<typename T> void uniq(vector<T>&a) { sort(all(a)); a.erase(unique(all(a)), a.end()); }
+template<typename T> void comp(vector<T>&a) { vector<T> b = a; uniq(b); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
+template<class T, class U> bool chmin(T &a, const U &b) { if (b < a) { a = b; return 1;} return 0; }
+template<class T, class U> bool chmax(T &a, const U &b) { if (b > a) { a = b; return 1;} return 0; }
+template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
+template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
+ll binary_search(function<bool(ll)> check, ll ok, ll ng) { assert(check(ok)); while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
+template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
+template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
+vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
+template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
+void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i) x ^= 1ll << b;  }
+bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
+const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
+
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
+}
+
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
+}
+
+void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
+  while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
+    if (!check || na != so) { cout << c << "times tried" << "\n";
+      debug(n, a); debug(so); debug(na);
+    if (check || (!check && c > loop)) break; }
+  }
+}
+
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+
+// https://nyaannyaan.github.io/library/matrix/matrix.hpp
+template <class T>
+struct Matrix {
+  vector<vector<T> > A;
+
+  Matrix() = default;
+  Matrix(int n, int m) : A(n, vector<T>(m, T())) {}
+  Matrix(int n) : A(n, vector<T>(n, T())){};
+  Matrix(vector<vector<T>> &a) { A = a; }
+  int H() const { return A.size(); }
+  int W() const { return A[0].size(); }
+  int size() const { return A.size(); }
+  inline const vector<T> &operator[](int k) const { return A[k]; }
+  inline vector<T> &operator[](int k) { return A[k]; }
+  static Matrix I(int n) {
+    Matrix mat(n);
+    for (int i = 0; i < n; i++) mat[i][i] = 1;
+    return (mat);
+  }
+  Matrix &operator+=(const Matrix &B) {
+    int n = H(), m = W();
+    assert(n == B.H() && m == B.W());
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < m; j++) (*this)[i][j] += B[i][j];
+    return (*this);
+  }
+  Matrix &operator-=(const Matrix &B) {
+    int n = H(), m = W();
+    assert(n == B.H() && m == B.W());
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < m; j++) (*this)[i][j] -= B[i][j];
+    return (*this);
+  }
+  Matrix &operator*=(const Matrix &B) {
+    int n = H(), m = B.W(), p = W();
+    assert(p == B.H());
+    vector<vector<T> > C(n, vector<T>(m, T{}));
+    for (int i = 0; i < n; i++)
+      for (int k = 0; k < p; k++)
+        for (int j = 0; j < m; j++) C[i][j] += (*this)[i][k] * B[k][j];
+    A.swap(C);
+    return (*this);
+  }
+  Matrix &operator^=(long long k) {
+    Matrix B = Matrix::I(H());
+    while (k > 0) {
+      if (k & 1) B *= *this;
+      *this *= *this;
+      k >>= 1LL;
+    }
+    A.swap(B.A);
+    return (*this);
+  }
+  Matrix operator+(const Matrix &B) const { return (Matrix(*this) += B); }
+  Matrix operator-(const Matrix &B) const { return (Matrix(*this) -= B); }
+  Matrix operator*(const Matrix &B) const { return (Matrix(*this) *= B); }
+  Matrix operator^(const long long k) const { return (Matrix(*this) ^= k); }
+  bool operator==(const Matrix &B) const {
+    assert(H() == B.H() && W() == B.W());
+    for (int i = 0; i < H(); i++)
+      for (int j = 0; j < W(); j++)
+        if (A[i][j] != B[i][j]) return false;
+    return true;
+  }
+  bool operator!=(const Matrix &B) const {
+    assert(H() == B.H() && W() == B.W());
+    for (int i = 0; i < H(); i++)
+      for (int j = 0; j < W(); j++)
+        if (A[i][j] != B[i][j]) return true;
+    return false;
+  }
+  friend ostream &operator<<(ostream &os, const Matrix &p) {
+    int n = p.H(), m = p.W();
+    for (int i = 0; i < n; i++) {
+      os << (i ? "   " : "") << "[";
+      for (int j = 0; j < m; j++) {
+        os << p[i][j] << (j + 1 == m ? "]\n" : ",");
+      }
+    }
+    return (os);
+  }
+  T determinant() const {
+    Matrix B(*this);
+    assert(H() == W());
+    T ret = 1;
+    for (int i = 0; i < H(); i++) {
+      int idx = -1;
+      for (int j = i; j < W(); j++) {
+        if (B[j][i] != 0) {
+          idx = j;
+          break;
+        }
+      }
+      if (idx == -1) return 0;
+      if (i != idx) {
+        ret *= T(-1);
+        swap(B[i], B[idx]);
+      }
+      ret *= B[i][i];
+      T inv = T(1) / B[i][i];
+      for (int j = 0; j < W(); j++) {
+        B[i][j] *= inv;
+      }
+      for (int j = i + 1; j < H(); j++) {
+        T a = B[j][i];
+        if (a == 0) continue;
+        for (int k = i; k < W(); k++) {
+          B[j][k] -= B[i][k] * a;
+        }
+      }
+    }
+    return ret;
+  }
+};
+
+//------------------------------------------------------------------------------
+template <class S, S (*op)(S, S), S (*e)()> struct segtree {
+  public:
+  segtree() : segtree(0) {}
+  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
+  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
+  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
+  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
+  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
+  S all_prod() const { return d[1]; }
+  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
+  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
+    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
+  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
+  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
+    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
+  private:
+  int _n, size, log; std::vector<S> d;
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+};
+//------------------------------------------------------------------------------
+
+using S = Matrix<mint>;
+S op(S l, S r) { return r * l; }
+S e() { return S::I(3); }
+
+// https://atcoder.jp/contests/abc246/submissions/30653835
+// 行列じゃないけど、自分の最初の方針に近い解
+
+// https://atcoder.jp/contests/abc246/submissions/30670365
+// 行列はarrayを乗せるのがよい
 
 void solve() {
-  ll n; cin >> n;
+  LL(n, q);
+  STR(s);
+  segtree<S, op, e> seg(n);
+
+  vvmi t0 = {{1,1,1},{0,1,0},{0,0,1}};
+  vvmi t1 = {{1,0,0},{1,1,1},{0,0,1}};
+  vvmi t2 = {{1,1,1},{1,1,1},{0,0,1}};
+
+  Matrix<mint> m0(t0), m1(t1), m2(t2);
+
+  rep(i, n) {
+    if (s[i] == '?') {
+      seg.set(i, m2);
+    } else if (s[i] == '0') {
+      seg.set(i, m0);
+    } else {
+      seg.set(i, m1);
+    }
+  }
+
+  rep(i, q) {
+    LL(x); --x; CHR(c);
+
+    if (c == '?') {
+      seg.set(x, m2);
+    } else if (c == '0') {
+      seg.set(x, m0);
+    } else {
+      seg.set(x, m1);
+    }
+    S res = seg.prod(0, n);
+    OUT(res[0][2] + res[1][2]);
+  }
 }
 
 signed main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
-  int t = 1; //cin >> t;
+  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
+  int t = 1; // cin >> t;
   while (t--) solve();
+  // while (t--) compare();
 }

@@ -145,6 +145,60 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VEC2(ll, x, y, n);
+
+  ll parity = abs(x[0]) + abs(y[0]) & 1;
+  rep(i, n) if ((abs(x[i]) + abs(y[i]) & 1) != parity) OUTRET(-1);
+
+  vl arm(35);
+  rep(i, 35) arm[i] = POW(2, 35 - 1 - i);
+  if (parity != 1) arm.pb(1);
+
+  OUT(arm.size());
+  OUTARRAY(arm);
+
+  rep(i, n) {
+    ll xx = x[i] + y[i], yy = x[i] - y[i];
+    ll curx = 0, cury = 0;
+    string ans = "";
+    rep(i, arm.size()) {
+      ll dx, dy;
+      if (curx < xx) {
+        curx += arm[i];
+        dx = 1;
+      } else {
+        curx -= arm[i];
+        dx = 0;
+      }
+      if (cury < yy) {
+        cury += arm[i];
+        dy = 1;
+      } else {
+        cury -= arm[i];
+        dy = 0;
+      }
+
+      if (dx && dy) ans.pb('R');
+      if (dx && !dy) ans.pb('U');
+      if (!dx && dy) ans.pb('D');
+      if (!dx && !dy) ans.pb('L');
+    }
+
+    if (false) {
+      ll conx = 0, cony = 0;
+      rep(i, arm.size()) {
+        if (ans[i] == 'U') cony += arm[i];
+        if (ans[i] == 'D') cony -= arm[i];
+        if (ans[i] == 'L') conx -= arm[i];
+        if (ans[i] == 'R') conx += arm[i];
+      }
+      if (conx != x[i] || cony != y[i]) {
+        debug(x[i], y[i], conx, cony);
+      }
+    }
+
+    OUT(ans);
+  }
 }
 
 signed main() {
