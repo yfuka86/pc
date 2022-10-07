@@ -152,98 +152,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// XOR 基底を求める
-//   - O(B (N + logB))   B はビット長
-//   - 掃き出し法と同じように MSB の降順にする（不要なら消す）
-template<class T>
-vector<T> xor_basis(const vector<T>& A) {
-  vector<T> basis;
-  for (T a : A) {
-    for (const T& b : basis) { a = min(a, a ^ b); }
-    if (a) { basis.push_back(a); }
-  }
-  // MSB の降順にソートしておく
-  sort(basis.rbegin(), basis.rend());
-  return basis;
-}
-
-const int m = 30;
-const int D = m * 2;
-struct BB {
-  vl d;
-  BB(): d(D) {}
-  void add(ll x) {
-    for (int i = D - 1; i >= 0; --i) {
-      if (x >> i & 1) {
-        if (d[i]) x ^= d[i];
-        else {
-          d[i] = x;
-          return;
-        }
-      }
-    }
-  }
-  ll rank() {
-    ll res = 0;
-    rep(i, D) if (d[i]) ++res;
-    return res;
-  }
-  bool can(ll k) {
-    rep(i, D) if (d[i]) return d[i] <= k;
-    return false;
-  }
-};
-BB bb;
-ll f2(ll i, ll b) {
-  i += m - 1;
-  BB bb2;
-  while (i >= 0) {
-    bb2.add(bb.d[i] & ((1 << m) - 1));
-    --i;
-  }
-  for (i = m - 1; i >= 0; --i) {
-    b = max(b, b^bb2.d[i]);
-  }
-  return b;
-}
-ll f(ll k, ll i, ll a, ll b) {
-  ll res = 0;
-  if (i == 0) return f2(i, b);
-  --i;
-  ll d = bb.d[m + i];
-  rep(bi,2) {
-    if ((k >> i) == (a >> i)) {
-      res = max(res, f(k, i, a, b));
-    }
-    if ((k >> i) > (a >> i)) {
-      res = max(res, f2(i, b));
-    }
-    if (!d) break;
-    a ^= d >> m;
-    b ^= d & ((1 << m) - 1);
-  }
-  return res;
-}
-
-
 void solve() {
-  LL(n, k);
-  VEC2(ll, a, b, n);
+  LL(n); STR(s);
 
-
-  rep(i,n) bb.add((ll)a[i] << m | b[i]);
-  ll ans = f(k, m, 0, 0);
-  if (ans == 0) {
-    BB ba;
-    rep(i, n) ba.add(a[i]);
-    if (ba.rank() == n && !ba.can(k)) OUTRET(-1);
+  deque<char> que;
+  rep(i, n / 2) {
+    if (s[i] == '0') que.push_front('0'); else que.pb('1');
+    if (s[n - 1 - i] == '1') que.push_front('1'); else que.pb('0');
   }
+  if (n & 1) if (s[n / 2] == '0') que.push_front('0'); else que.pb('1');
+
+  string ans = "";
+  while(que.size()) { ans.pb(que.front()); que.pop_front(); }
   OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

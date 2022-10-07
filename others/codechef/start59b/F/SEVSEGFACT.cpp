@@ -152,98 +152,72 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// XOR 基底を求める
-//   - O(B (N + logB))   B はビット長
-//   - 掃き出し法と同じように MSB の降順にする（不要なら消す）
-template<class T>
-vector<T> xor_basis(const vector<T>& A) {
-  vector<T> basis;
-  for (T a : A) {
-    for (const T& b : basis) { a = min(a, a ^ b); }
-    if (a) { basis.push_back(a); }
-  }
-  // MSB の降順にソートしておく
-  sort(basis.rbegin(), basis.rend());
-  return basis;
-}
-
-const int m = 30;
-const int D = m * 2;
-struct BB {
-  vl d;
-  BB(): d(D) {}
-  void add(ll x) {
-    for (int i = D - 1; i >= 0; --i) {
-      if (x >> i & 1) {
-        if (d[i]) x ^= d[i];
-        else {
-          d[i] = x;
-          return;
-        }
-      }
-    }
-  }
-  ll rank() {
-    ll res = 0;
-    rep(i, D) if (d[i]) ++res;
-    return res;
-  }
-  bool can(ll k) {
-    rep(i, D) if (d[i]) return d[i] <= k;
-    return false;
-  }
-};
-BB bb;
-ll f2(ll i, ll b) {
-  i += m - 1;
-  BB bb2;
-  while (i >= 0) {
-    bb2.add(bb.d[i] & ((1 << m) - 1));
-    --i;
-  }
-  for (i = m - 1; i >= 0; --i) {
-    b = max(b, b^bb2.d[i]);
-  }
-  return b;
-}
-ll f(ll k, ll i, ll a, ll b) {
-  ll res = 0;
-  if (i == 0) return f2(i, b);
-  --i;
-  ll d = bb.d[m + i];
-  rep(bi,2) {
-    if ((k >> i) == (a >> i)) {
-      res = max(res, f(k, i, a, b));
-    }
-    if ((k >> i) > (a >> i)) {
-      res = max(res, f2(i, b));
-    }
-    if (!d) break;
-    a ^= d >> m;
-    b ^= d & ((1 << m) - 1);
-  }
-  return res;
-}
-
-
 void solve() {
-  LL(n, k);
-  VEC2(ll, a, b, n);
+  STR(n); VL(s, 7);
+  ll alls = sum_of(s);
+  vl cost(10);
+  cost[0] = alls - s[6];
+  cost[1] = s[1] + s[2];
+  cost[2] = alls - s[2] - s[5];
+  cost[3] = alls - s[4] - s[5];
+  cost[4] = s[1] + s[2] + s[5] + s[6];
+  cost[5] = alls - s[1] - s[4];
+  cost[6] = alls - s[1];
+  cost[7] = s[0] + s[1] + s[2];
+  cost[8] = alls;
+  cost[9] = alls - s[4];
+  // debug(cost);
 
+  ll ans = cost[1];
 
-  rep(i,n) bb.add((ll)a[i] << m | b[i]);
-  ll ans = f(k, m, 0, 0);
-  if (ans == 0) {
-    BB ba;
-    rep(i, n) ba.add(a[i]);
-    if (ba.rank() == n && !ba.can(k)) OUTRET(-1);
-  }
+  auto test = [&](ll c, ll co) {
+    ll cur = 0;
+    // debug(c, co);
+    rep(i, n.size()) {
+      cur *= 10;
+      cur += (n[i] - '0');
+      cur %= c;
+    }
+
+    if (cur == 0) chmin(ans, co);
+  };
+
+  ll i = 0, cocur = 0;
+  function<void()> dfs = [&]() {
+    i *= 10; i += 2;
+    cocur += cost[2];
+    if (cocur < ans) {
+      test(i, cocur);
+      dfs();
+    }
+    i /= 10;
+    cocur -= cost[2];
+
+    i *= 10; i += 5;
+    cocur += cost[5];
+    if (cocur < ans) {
+      test(i, cocur);
+      dfs();
+    }
+    i /= 10;
+    cocur -= cost[5];
+
+    i *= 10; i += 6;
+    cocur += cost[6];
+    if (cocur < ans) {
+      test(i, cocur);
+      dfs();
+    }
+    i /= 10;
+    cocur -= cost[6];
+  };
+  dfs();
   OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

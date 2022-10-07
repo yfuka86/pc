@@ -152,98 +152,50 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// XOR 基底を求める
-//   - O(B (N + logB))   B はビット長
-//   - 掃き出し法と同じように MSB の降順にする（不要なら消す）
-template<class T>
-vector<T> xor_basis(const vector<T>& A) {
-  vector<T> basis;
-  for (T a : A) {
-    for (const T& b : basis) { a = min(a, a ^ b); }
-    if (a) { basis.push_back(a); }
-  }
-  // MSB の降順にソートしておく
-  sort(basis.rbegin(), basis.rend());
-  return basis;
-}
-
-const int m = 30;
-const int D = m * 2;
-struct BB {
-  vl d;
-  BB(): d(D) {}
-  void add(ll x) {
-    for (int i = D - 1; i >= 0; --i) {
-      if (x >> i & 1) {
-        if (d[i]) x ^= d[i];
-        else {
-          d[i] = x;
-          return;
-        }
+void solve() {
+  LL(n, k); STR(s);
+  vv(ll, dp, 5, n);
+  rep(i, n) dp[0][i] = s[i] - '0';
+  rep(i, 4) {
+    rep(j, n) {
+      if (dp[i][j]) {
+        if (j > 0 && !dp[i][j - 1]) dp[i + 1][j - 1] = 1;
+        if (j < n - 1 && !dp[i][j + 1]) dp[i + 1][j + 1] = 1;
       }
     }
   }
-  ll rank() {
-    ll res = 0;
-    rep(i, D) if (d[i]) ++res;
-    return res;
-  }
-  bool can(ll k) {
-    rep(i, D) if (d[i]) return d[i] <= k;
-    return false;
-  }
-};
-BB bb;
-ll f2(ll i, ll b) {
-  i += m - 1;
-  BB bb2;
-  while (i >= 0) {
-    bb2.add(bb.d[i] & ((1 << m) - 1));
-    --i;
-  }
-  for (i = m - 1; i >= 0; --i) {
-    b = max(b, b^bb2.d[i]);
-  }
-  return b;
-}
-ll f(ll k, ll i, ll a, ll b) {
-  ll res = 0;
-  if (i == 0) return f2(i, b);
-  --i;
-  ll d = bb.d[m + i];
-  rep(bi,2) {
-    if ((k >> i) == (a >> i)) {
-      res = max(res, f(k, i, a, b));
+  // OUTMAT(dp);
+
+  vl initial = k & 1 ? dp[1] : dp[2];
+  if (k & 1) k--; else k -= 2;
+
+  vl id1;
+  rep(i, n) if (initial[i]) id1.pb(i);
+
+  vl ans = initial;
+
+  // k/2回広がる
+  // debug(id1);
+  rep(i, id1.size()) {
+    ll l = 0, r = n - 1;
+    if (i > 0) l = (id1[i - 1] + id1[i]) / 2 + 1;
+    if (i < id1.size() - 1) r = (id1[i] + id1[i + 1]) / 2;
+    for (ll id = id1[i]; id >= max(id1[i] - k, l); id -= 2) {
+      ans[id] = 1;
     }
-    if ((k >> i) > (a >> i)) {
-      res = max(res, f2(i, b));
+    for (ll id = id1[i]; id <= min(id1[i] + k, r); id += 2) {
+      ans[id] = 1;
     }
-    if (!d) break;
-    a ^= d >> m;
-    b ^= d & ((1 << m) - 1);
+    // debug(ans);
   }
-  return res;
-}
-
-
-void solve() {
-  LL(n, k);
-  VEC2(ll, a, b, n);
-
-
-  rep(i,n) bb.add((ll)a[i] << m | b[i]);
-  ll ans = f(k, m, 0, 0);
-  if (ans == 0) {
-    BB ba;
-    rep(i, n) ba.add(a[i]);
-    if (ba.rank() == n && !ba.can(k)) OUTRET(-1);
-  }
-  OUT(ans);
+  rep(i, n) {
+    cout << ans[i];
+  } cout << "\n";
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

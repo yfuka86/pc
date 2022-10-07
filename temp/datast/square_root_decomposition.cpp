@@ -1,4 +1,4 @@
-
+// 列の平方分割
 template <class S, class T>
 struct SquareRootDecomposition {
   struct Block {

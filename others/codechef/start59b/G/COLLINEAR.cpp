@@ -152,93 +152,130 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// XOR 基底を求める
-//   - O(B (N + logB))   B はビット長
-//   - 掃き出し法と同じように MSB の降順にする（不要なら消す）
-template<class T>
-vector<T> xor_basis(const vector<T>& A) {
-  vector<T> basis;
-  for (T a : A) {
-    for (const T& b : basis) { a = min(a, a ^ b); }
-    if (a) { basis.push_back(a); }
-  }
-  // MSB の降順にソートしておく
-  sort(basis.rbegin(), basis.rend());
-  return basis;
+// https://nyaannyaan.github.io/library/geometry/integer-geometry.hpp
+
+struct Point {
+  using T = __int128_t;
+  T x, y;
+  Point() : x(0), y(0) {}
+  Point(T x_, T y_) : x(x_), y(y_) {}
+  Point &operator+=(const Point &p) { this->x += p.x; this->y += p.y; return *this; }
+  Point &operator-=(const Point &p) { this->x -= p.x; this->y -= p.y; return *this; }
+
+  int pos() const { if (y < 0) return -1; if (y == 0 && 0 <= x) return 0; return 1; }
+  Point operator+(const Point &p) const { return Point(*this) += p; }
+  Point operator-(const Point &p) const { return Point(*this) -= p; }
+  Point operator-() const { return Point(-this->x, -this->y); }
+  bool operator==(const Point &p) const { return x == p.x && y == p.y; }
+  bool operator!=(const Point &p) const { return x != p.x || y != p.y; }
+  bool operator<(const Point &p) const { return x == p.x ? y < p.y : x < p.x; }
+  friend istream &operator>>(istream &is, Point &p) { long long x, y; is >> x >> y; p.x = x, p.y = y; return is; }
+  friend ostream &operator<<(ostream &os, const Point &p) { os << (long long)(p.x) << " " << (long long)(p.y); return os; }
+};
+using Points = vector<Point>;
+
+Point::T dot(const Point &a, const Point &b) { return a.x * b.x + a.y * b.y; }
+Point::T cross(const Point &a, const Point &b) { return a.x * b.y - a.y * b.x; }
+
+
+//2021/12/22-ac----------------------------------------------------------------
+template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S), F (*composition)(F, F), F (*id)()>
+struct lazy_segtree {
+  public:
+  lazy_segtree() : lazy_segtree(0) {}
+  explicit lazy_segtree(int n) : lazy_segtree(std::vector<S>(n, e())) {}
+  explicit lazy_segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); lz = std::vector<F>(size, id()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
+  void set(int p, S x) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
+  S get(int p) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); return d[p]; }
+  S prod(int l, int r) { assert(0 <= l && l <= r && r <= _n); if (l == r) return e(); l += size; r += size; for (int i = log; i >= 1; i--) { if (((l >> i) << i) != l) push(l >> i); if (((r >> i) << i) != r) push((r - 1) >> i); } S sml = e(), smr = e();
+    while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
+  S all_prod() { return d[1]; }
+  void apply(int p, F f) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); d[p] = mapping(f, d[p]); for (int i = 1; i <= log; i++) update(p >> i); }
+  void apply(int l, int r, F f) { assert(0 <= l && l <= r && r <= _n); if (l == r) return; l += size; r += size; for (int i = log; i >= 1; i--) { if (((l >> i) << i) != l) push(l >> i); if (((r >> i) << i) != r) push((r - 1) >> i); }
+    { int l2 = l, r2 = r; while (l < r) { if (l & 1) all_apply(l++, f); if (r & 1) all_apply(--r, f); l >>= 1; r >>= 1; } l = l2; r = r2; } for (int i = 1; i <= log; i++) { if (((l >> i) << i) != l) update(l >> i); if (((r >> i) << i) != r) update((r - 1) >> i); } }
+  template <bool (*g)(S)> int max_right(int l) { return max_right(l, [](S x) { return g(x); }); }
+  template <class G> int max_right(int l, G g) { assert(0 <= l && l <= _n); assert(g(e())); if (l == _n) return _n; l += size; for (int i = log; i >= 1; i--) push(l >> i); S sm = e();
+    do { while (l % 2 == 0) l >>= 1; if (!g(op(sm, d[l]))) { while (l < size) { push(l); l = (2 * l); if (g(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
+  template <bool (*g)(S)> int min_left(int r) { return min_left(r, [](S x) { return g(x); }); }
+  template <class G> int min_left(int r, G g) { assert(0 <= r && r <= _n); assert(g(e())); if (r == 0) return 0; r += size; for (int i = log; i >= 1; i--) push((r - 1) >> i); S sm = e();
+    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!g(op(d[r], sm))) { while (r < size) { push(r); r = (2 * r + 1); if (g(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
+  private:
+  int _n, size, log; std::vector<S> d; std::vector<F> lz;
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+  void all_apply(int k, F f) { d[k] = mapping(f, d[k]); if (k < size) lz[k] = composition(f, lz[k]); }
+  void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
+};
+//------------------------------------------------------------------------------
+template <class S, S (*op)(S, S), S (*e)()> struct segtree {
+  public:
+  segtree() : segtree(0) {}
+  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
+  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
+  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
+  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
+  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
+  S all_prod() const { return d[1]; }
+  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
+  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
+    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
+  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
+  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
+    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
+  private:
+  int _n, size, log; std::vector<S> d;
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+};
+//------------------------------------------------------------------------------
+
+struct S {
+  bool col;
+  ll x, y;
+};
+S op(S l, S r) {
+  if (l.x == LINF) return r;
+  if (r.x == LINF) return l;
+  ll cr = l.x * r.y - l.y * r.x;
+  return { col && !cr, r.p };
+}
+S e() { return {true, LINF, LINF}; }
+
+
+using S2 = LP;
+S op() {
+
 }
 
-const int m = 30;
-const int D = m * 2;
-struct BB {
-  vl d;
-  BB(): d(D) {}
-  void add(ll x) {
-    for (int i = D - 1; i >= 0; --i) {
-      if (x >> i & 1) {
-        if (d[i]) x ^= d[i];
-        else {
-          d[i] = x;
-          return;
-        }
+void solve() {
+  LL(n, m);
+  VEC2(ll, x, y, n);
+
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(n - 1);
+
+  rep(i, n - 1) {
+    seg.set(i, {true, x[i + 1] - x[i], y[i + 1] - y[i]});
+  }
+
+  rep(i, m) {
+    LL(t);
+    if (t == 1) {
+      LL(l, r, k, b); --l; --r;
+      seg.apply(l, r, {k, b});
+
+      if (l > 0) {
+
+        S from = seg.get(l - 1);
+      }
+      if (r < n - 1) {
+        S to = seg.get(r);
+      }
+    } else {
+      LL(l, r);
+      if (r - l <= 1) OUT("YES");
+      else {
+        if (seg.prod(--l, --r).col) OUT("YES"); else OUT("NO");
       }
     }
   }
-  ll rank() {
-    ll res = 0;
-    rep(i, D) if (d[i]) ++res;
-    return res;
-  }
-  bool can(ll k) {
-    rep(i, D) if (d[i]) return d[i] <= k;
-    return false;
-  }
-};
-BB bb;
-ll f2(ll i, ll b) {
-  i += m - 1;
-  BB bb2;
-  while (i >= 0) {
-    bb2.add(bb.d[i] & ((1 << m) - 1));
-    --i;
-  }
-  for (i = m - 1; i >= 0; --i) {
-    b = max(b, b^bb2.d[i]);
-  }
-  return b;
-}
-ll f(ll k, ll i, ll a, ll b) {
-  ll res = 0;
-  if (i == 0) return f2(i, b);
-  --i;
-  ll d = bb.d[m + i];
-  rep(bi,2) {
-    if ((k >> i) == (a >> i)) {
-      res = max(res, f(k, i, a, b));
-    }
-    if ((k >> i) > (a >> i)) {
-      res = max(res, f2(i, b));
-    }
-    if (!d) break;
-    a ^= d >> m;
-    b ^= d & ((1 << m) - 1);
-  }
-  return res;
-}
-
-
-void solve() {
-  LL(n, k);
-  VEC2(ll, a, b, n);
-
-
-  rep(i,n) bb.add((ll)a[i] << m | b[i]);
-  ll ans = f(k, m, 0, 0);
-  if (ans == 0) {
-    BB ba;
-    rep(i, n) ba.add(a[i]);
-    if (ba.rank() == n && !ba.can(k)) OUTRET(-1);
-  }
-  OUT(ans);
 }
 
 signed main() {

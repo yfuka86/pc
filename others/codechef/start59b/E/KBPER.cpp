@@ -152,98 +152,82 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// XOR 基底を求める
-//   - O(B (N + logB))   B はビット長
-//   - 掃き出し法と同じように MSB の降順にする（不要なら消す）
-template<class T>
-vector<T> xor_basis(const vector<T>& A) {
-  vector<T> basis;
-  for (T a : A) {
-    for (const T& b : basis) { a = min(a, a ^ b); }
-    if (a) { basis.push_back(a); }
-  }
-  // MSB の降順にソートしておく
-  sort(basis.rbegin(), basis.rend());
-  return basis;
-}
-
-const int m = 30;
-const int D = m * 2;
-struct BB {
-  vl d;
-  BB(): d(D) {}
-  void add(ll x) {
-    for (int i = D - 1; i >= 0; --i) {
-      if (x >> i & 1) {
-        if (d[i]) x ^= d[i];
-        else {
-          d[i] = x;
-          return;
-        }
-      }
-    }
-  }
-  ll rank() {
-    ll res = 0;
-    rep(i, D) if (d[i]) ++res;
-    return res;
-  }
-  bool can(ll k) {
-    rep(i, D) if (d[i]) return d[i] <= k;
-    return false;
-  }
+const ll mod = 1000000007;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
 };
-BB bb;
-ll f2(ll i, ll b) {
-  i += m - 1;
-  BB bb2;
-  while (i >= 0) {
-    bb2.add(bb.d[i] & ((1 << m) - 1));
-    --i;
-  }
-  for (i = m - 1; i >= 0; --i) {
-    b = max(b, b^bb2.d[i]);
-  }
-  return b;
-}
-ll f(ll k, ll i, ll a, ll b) {
-  ll res = 0;
-  if (i == 0) return f2(i, b);
-  --i;
-  ll d = bb.d[m + i];
-  rep(bi,2) {
-    if ((k >> i) == (a >> i)) {
-      res = max(res, f(k, i, a, b));
-    }
-    if ((k >> i) > (a >> i)) {
-      res = max(res, f2(i, b));
-    }
-    if (!d) break;
-    a ^= d >> m;
-    b ^= d & ((1 << m) - 1);
-  }
-  return res;
-}
-
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
 void solve() {
   LL(n, k);
-  VEC2(ll, a, b, n);
+  VL(p, n);
 
+  set<ll> s; rep(i, n) s.insert(i + 1);
+  rep(i, n) if (p[i]) s.erase(p[i]);
 
-  rep(i,n) bb.add((ll)a[i] << m | b[i]);
-  ll ans = f(k, m, 0, 0);
-  if (ans == 0) {
-    BB ba;
-    rep(i, n) ba.add(a[i]);
-    if (ba.rank() == n && !ba.can(k)) OUTRET(-1);
+  ll odd = 0, even = 0;
+  fore(i, s) if (i & 1) odd++; else even++;
+  ll rem = odd + even;
+
+  vl zerocount(n + 1);
+  rep(i, n) {
+    zerocount[i + 1] = zerocount[i];
+    if (p[i] == 0) zerocount[i + 1]++;
   }
-  OUT(ans);
+  // debug(zerocount);
+
+  v4(mint, dp, n + 1, k + 2, odd + 2, 2);
+
+  if (p[0] != 0) {
+    dp[1][1][0][p[0] & 1] = 1;
+  } else {
+    dp[1][1][1][1] = odd;
+    dp[1][1][0][0] = even;
+  }
+
+  rep(i, 1, n) rep(j, k + 1) rep(o, odd + 1) rep(b, 2) {
+    if (p[i] != 0) {
+      dp[i + 1][j + ((p[i] & 1) ^ b)][o][p[i] & 1] += dp[i][j][o][b];
+    } else {
+      if (b) {
+        dp[i + 1][j][o + 1][1] += dp[i][j][o][b] * (odd - o);
+        dp[i + 1][j + 1][o][0] += dp[i][j][o][b] * (even - (zerocount[i] - o));
+      } else {
+        dp[i + 1][j + 1][o + 1][1] += dp[i][j][o][b] * (odd - o);
+        dp[i + 1][j][o][0] += dp[i][j][o][b] * (even - (zerocount[i] - o));
+      }
+    }
+  }
+  // rep(i, n + 1) debug(dp[i]);
+  OUT(dp[n][k][odd][0] + dp[n][k][odd][1]);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
