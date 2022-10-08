@@ -154,29 +154,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
-  STR(s,x);
-
-  vv(ll, dp, n + 1, 7, -1);
-  dp[n] = {1,0,0,0,0,0,0};
-
-  function<ll(ll, ll)> dfs = [&](ll i, ll m) {
-    if (dp[i][m] != -1) return dp[i][m];
-
-    ll o1 = (m * 10 + (s[i] - '0')) % 7;
-    ll o2 = (m * 10) % 7;
-    if (x[i] == 'T') { // 高橋が7の倍数にしたい
-      if (dfs(i + 1, o1) || dfs(i + 1, o2)) { return dp[i][m] = 1; } else return dp[i][m] = 0;
-    } else {
-      if (dfs(i + 1, o1) && dfs(i + 1, o2)) { return dp[i][m] = 1; } else return dp[i][m] = 0;
-    }
-  };
-  dfs(0, 0);
-  if (dp[0][0]) OUT("Takahashi"); else OUT("Aoki");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

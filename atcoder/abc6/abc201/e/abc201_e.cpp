@@ -152,6 +152,36 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const ll mod = 1000000007;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+
 template< typename T = ll > struct Edge {
   int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
   operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
@@ -164,17 +194,57 @@ template< typename T = ll > struct Graph {
 
 void solve() {
   LL(n);
+  Graph<ll> G(n);
   rep(i, n - 1) {
     LL(u,v,w); --u; --v;
     G.add_edge(u, v, w);
   }
 
-  rep(b, 60) {
-    vv(ll, dp, n, 2);
-    auto dfs = [&]() {
+  v3(ll, dp, n, 60, 2);
+  vl cnt(60);
 
+  function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    rep(b, 60) dp[v][b][0] = 1;
+
+    fore(to, G[v]) {
+      if (to == p) continue;
+      dfs(to, v);
     }
-  }
+
+    rep(b, 60) {
+      ll sum0 = 0, sum1 = 0;
+      fore(to, G[v]) {
+        if (to == p) continue;
+        if (to.cost >> b & 1) {
+          sum0 += dp[to][b][1];
+          sum1 += dp[to][b][0];
+        } else {
+          sum0 += dp[to][b][0];
+          sum1 += dp[to][b][1];
+        }
+      }
+      cnt[b] += sum1;
+      ll t = 0;
+      fore(to, G[v]) {
+        if (to == p) continue;
+        if (to.cost >> b & 1) {
+          t += (sum0 - dp[to][b][1]) * dp[to][b][0];
+          t += (sum1 - dp[to][b][0]) * dp[to][b][1];
+        } else {
+          t += (sum0 - dp[to][b][0]) * dp[to][b][1];
+          t += (sum1 - dp[to][b][1]) * dp[to][b][0];
+        }
+      }
+      cnt[b] += t / 2;
+      dp[v][b][0] += sum0;
+      dp[v][b][1] += sum1;
+    }
+  };
+  dfs(0, -1);
+
+  mint ans = 0;
+  rep(b, 60) ans += mint(1ll << b) * cnt[b];
+  OUT(ans);
 }
 
 signed main() {

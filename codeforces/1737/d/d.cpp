@@ -151,32 +151,76 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+pair<vl, vl> dijkstra(Graph<ll> &G, ll start) {
+  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
+  vl from(G.size(), -1);
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = costs[v] + 1; if (chmin(costs[to], nc)) { from[to] = v; que.push({nc, to}); } } }
+  return mp(costs, from); }
 
 void solve() {
-  LL(n);
-  STR(s,x);
+  LL(n, m);
 
-  vv(ll, dp, n + 1, 7, -1);
-  dp[n] = {1,0,0,0,0,0,0};
+  Graph<ll> G(n);
+  vlt edge;
 
-  function<ll(ll, ll)> dfs = [&](ll i, ll m) {
-    if (dp[i][m] != -1) return dp[i][m];
+  rep(i, m) {
+    LL(u, v, w); --u; --v;
+    edge.pb({u, v, w});
+    G.add_edge(u, v, w);
+  }
 
-    ll o1 = (m * 10 + (s[i] - '0')) % 7;
-    ll o2 = (m * 10) % 7;
-    if (x[i] == 'T') { // 高橋が7の倍数にしたい
-      if (dfs(i + 1, o1) || dfs(i + 1, o2)) { return dp[i][m] = 1; } else return dp[i][m] = 0;
-    } else {
-      if (dfs(i + 1, o1) && dfs(i + 1, o2)) { return dp[i][m] = 1; } else return dp[i][m] = 0;
+  auto [sc,from] = dijkstra(G, 0);
+  auto [tc,_] = dijkstra(G, n - 1);
+  // debug(sc, tc);
+
+  ll ans = LINF;
+
+  rep(i, m) {
+    auto [u, v, w] = edge[i];
+
+    chmin(ans, w * (sc[u] + tc[v] + 1));
+    chmin(ans, w * (sc[v] + tc[u] + 1));
+    if (sc[u] <= sc[v]) {
+      ll cur = u; vl t;
+      while (cur != -1) {
+        t.pb(cur);
+        cur = from[cur];
+      }
+
+      fore(vv, t) {
+        chmin(ans, w * (sc[u] + 1 + tc[vv] + 1));
+      }
     }
-  };
-  dfs(0, 0);
-  if (dp[0][0]) OUT("Takahashi"); else OUT("Aoki");
+    if (sc[v] <= sc[u]) {
+      ll cur = v; vl t;
+      while (cur != -1) {
+        t.pb(cur);
+        cur = from[cur];
+      }
+
+      fore(vv, t) {
+        chmin(ans, w * (sc[v] + 1 + tc[vv] + 1));
+      }
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

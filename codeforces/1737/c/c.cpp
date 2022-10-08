@@ -154,29 +154,39 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
-  STR(s,x);
+  VEC2(ll, r, c, 3);
+  LL(X, Y);
 
-  vv(ll, dp, n + 1, 7, -1);
-  dp[n] = {1,0,0,0,0,0,0};
-
-  function<ll(ll, ll)> dfs = [&](ll i, ll m) {
-    if (dp[i][m] != -1) return dp[i][m];
-
-    ll o1 = (m * 10 + (s[i] - '0')) % 7;
-    ll o2 = (m * 10) % 7;
-    if (x[i] == 'T') { // 高橋が7の倍数にしたい
-      if (dfs(i + 1, o1) || dfs(i + 1, o2)) { return dp[i][m] = 1; } else return dp[i][m] = 0;
-    } else {
-      if (dfs(i + 1, o1) && dfs(i + 1, o2)) { return dp[i][m] = 1; } else return dp[i][m] = 0;
+  vlp cur = {{1, 1}, {1, n}, {n, 1}, {n, n}};
+  rep(d, 4) {
+    auto [x, y] = cur[d];
+    ll x2 = (x == 1 ? x + 1 : x - 1), y2 = (y == 1 ? y + 1 : y - 1);
+    ll cnt = 0;
+    rep(k, 3) {
+      if (r[k] == x && c[k] == y) cnt++;
+      if (r[k] == x2 && c[k] == y) cnt++;
+      if (r[k] == x && c[k] == y2) cnt++;
     }
-  };
-  dfs(0, 0);
-  if (dp[0][0]) OUT("Takahashi"); else OUT("Aoki");
+
+    // debug(d, cnt);
+    if (cnt == 3) {
+      if (d == 0) if (X == 1 || Y == 1) OUTRET("YES");
+      if (d == 1) if (X == 1 || Y == n) OUTRET("YES");
+      if (d == 2) if (X == n || Y == 1) OUTRET("YES");
+      if (d == 3) if (X == n || Y == n) OUTRET("YES");
+      OUTRET("NO");
+    }
+  }
+
+  rep(i, 3) {
+    if (abs(X - r[i]) % 2 == 0 && abs(Y - c[i]) % 2 == 0) OUTRET("YES");
+  }
+  OUT("NO");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
