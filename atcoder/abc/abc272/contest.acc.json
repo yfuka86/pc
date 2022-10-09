@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc272",
+    "title": "AtCoder Beginner Contest 272",
+    "url": "https://atcoder.jp/contests/abc272"
+  },
+  "tasks": [
+    {
+      "id": "abc272_a",
+      "label": "A",
+      "title": "Integer Sum",
+      "url": "https://atcoder.jp/contests/abc272/tasks/abc272_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc272_a.cpp"
+      }
+    },
+    {
+      "id": "abc272_b",
+      "label": "B",
+      "title": "Everyone is Friends",
+      "url": "https://atcoder.jp/contests/abc272/tasks/abc272_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc272_b.cpp"
+      }
+    },
+    {
+      "id": "abc272_c",
+      "label": "C",
+      "title": "Max Even",
+      "url": "https://atcoder.jp/contests/abc272/tasks/abc272_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc272_c.cpp"
+      }
+    },
+    {
+      "id": "abc272_d",
+      "label": "D",
+      "title": "Root M Leaper",
+      "url": "https://atcoder.jp/contests/abc272/tasks/abc272_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc272_d.cpp"
+      }
+    },
+    {
+      "id": "abc272_e",
+      "label": "E",
+      "title": "Add and Mex",
+      "url": "https://atcoder.jp/contests/abc272/tasks/abc272_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc272_e.cpp"
+      }
+    },
+    {
+      "id": "abc272_f",
+      "label": "F",
+      "title": "Two Strings",
+      "url": "https://atcoder.jp/contests/abc272/tasks/abc272_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc272_f.cpp"
+      }
+    },
+    {
+      "id": "abc272_g",
+      "label": "G",
+      "title": "Yet Another mod M",
+      "url": "https://atcoder.jp/contests/abc272/tasks/abc272_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc272_g.cpp"
+      }
+    },
+    {
+      "id": "abc272_h",
+      "label": "Ex",
+      "title": "Flipping Coins 2",
+      "url": "https://atcoder.jp/contests/abc272/tasks/abc272_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc272_h.cpp"
+      }
+    }
+  ]
+}

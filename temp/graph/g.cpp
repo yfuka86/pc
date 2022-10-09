@@ -9,11 +9,14 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
+  mpq<LP> que; vl cost(G.size(), LINF);
+  cost[start] = 0; que.push({0, start});
   while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = costs[v] + to.cost; if (chmin(costs[to], nc)) que.push({nc, to}); } }
-  return costs; }
+    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = cost[v] + to.cost; if (chmin(cost[to], nc)) que.push({nc, to}); }
+  }
+  return cost;
+}
 vector<vl> floyd_warshall(Graph<ll> &G) {
   ll n = G.size(); vector<vl> costs(n, vl(n ,LINF)); rep(i, n) { costs[i][i] = 0; for(Edge e: G[i]) costs[i][e.to] = e.cost; }
   rep(k, n) rep(i, n) rep(j, n) { if (costs[i][k] == LINF || costs[k][j] == LINF) continue; costs[i][j] = min(costs[i][j], costs[i][k] + costs[k][j]); }
@@ -28,6 +31,18 @@ pair<ll, LP> diameter(Graph<ll> &G) {
   LP deepest = mp(0, 0); function<void(ll, ll, ll)> dfs = [&](ll v, ll p, ll d) { chmax(deepest, mp(d, v)); for (auto to: G[v]) if (to != p) dfs(to, v, d + to.cost); };
   dfs(0, -1, 0); ll s = deepest.second; deepest = mp(0, 0); dfs(s, -1, 0);
   return mp(deepest.first, mp(s, deepest.second)); }
+
+pair<vl, vl> dijkstra_restore(Graph<ll> &G, ll start) {
+  mpq<LP> que; vl cost(G.size(), LINF), from(G.size(), -1);
+  cost[start] = 0; que.push({0, start});
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = cost[v] + to.cost;
+      if (chmin(cost[to], nc)) { que.push({nc, to}); from[to] = v; }
+    }
+  }
+  return {cost, from};
+}
 
 template< typename T = ll >
 pair<vi, vector<Edge<T>>> bridges(Graph<T> &G) {

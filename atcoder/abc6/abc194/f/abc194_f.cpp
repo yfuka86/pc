@@ -182,18 +182,34 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 //------------------------------------------------------------------------------
 
 void solve() {
-  LL(n, K);
-  ll d = n.size();
+  STR(s); LL(K);
+  ll n = s.size();
+  auto d = [&](ll i) {
+    if (s[i] - '0' < 10) return s[i] - '0';
+    else return s[i] - 'A' + 10;
+  };
 
-  // dp[iまでの数字を使い][j桁目まで][k種使える][maxと一致]
-  v4(mint, dp, 16, d + 1, K + 1, 2);
-  rep(i, 1, 16) {
-    rep(j, d) {
-      rep(k, K + 1) {
-
-      }
+  vv(mint, dp, n + 1, 17);
+  set<ll> ma;
+  rep(i, n) {
+    debug(d(i));
+    // maxから派生するもの
+    rep(j, (i ? 0 : 1), d(i)) {
+      ll t = ma.find(j) != ma.end() ? ma.size() : ma.size() + 1;
+      dp[i + 1][t] += 1;
+    }
+    ma.insert(d(i));
+    // この桁から始まるもの
+    if (i) dp[i + 1][1] += 15;
+    // 普通の遷移
+    rep(j, 17) {
+      if (j < 16) dp[i + 1][j + 1] += dp[i][j] * (16 - j);
+      dp[i + 1][j] += dp[i][j] * j;
     }
   }
+  // debug(dp);
+
+  OUT(dp[n][K] + (ma.size() == K));
 }
 
 signed main() {

@@ -161,13 +161,17 @@ template< typename T = ll > struct Graph {
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-pair<vl, vl> dijkstra(Graph<ll> &G, ll start) {
-  priority_queue<LP, vector<LP>, greater<LP>> que; vector<ll> costs(G.size(), LINF); costs[start] = 0; que.push({0, start});
-  vl from(G.size(), -1);
+pair<vl, vl> dijkstra_restore(Graph<ll> &G, ll start) {
+  mpq<LP> que; vl cost(G.size(), LINF), from(G.size(), -1);
+  cost[start] = 0; que.push({0, start});
   while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (costs[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = costs[v] + 1; if (chmin(costs[to], nc)) { from[to] = v; que.push({nc, to}); } } }
-  return mp(costs, from); }
+    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = cost[v] + to.cost;
+      if (chmin(cost[to], nc)) { que.push({nc, to}); from[to] = v; }
+    }
+  }
+  return {cost, from};
+}
 
 void solve() {
   LL(n, m);
@@ -181,9 +185,11 @@ void solve() {
     G.add_edge(u, v, w);
   }
 
-  auto [sc,from] = dijkstra(G, 0);
-  auto [tc,_] = dijkstra(G, n - 1);
+  auto [sc,from] = dijkstra_restore(G, 0);
+  auto [tc,_] = dijkstra_restore(G, n - 1);
   // debug(sc, tc);
+
+  // debug(from);
 
   ll ans = LINF;
 
