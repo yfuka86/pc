@@ -151,48 +151,60 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  mpq<LP> que; vl cost(G.size(), LINF);
-  cost[start] = 0; que.push({0, start});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = cost[v] + to.cost; if (chmin(cost[to], nc)) que.push({nc, to}); }
-  }
-  return cost;
-}
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
 void solve() {
-  LL(n, m, x, y); --x; --y;
-  Graph<ll> G(n);
+  LL(n); VL(p, n - 1, 1);
+  p.insert(p.begin(), -1);
 
-  vl diag(m);
-  rep(i, m) {
-    LL(a, b, t, k); --a; --b;
-    G.add_edge(a, b, t);
-    diag[i] = k;
+  vl sz(n);
+  sz[0] += 1;
+  rep_r(i, 1, n) {
+    sz[i] += 1;
+    sz[p[i]] += sz[i];
   }
+  debug(sz);
+  debug(p);
 
-  mpq<LP> que; vl cost(G.size(), LINF);
-  cost[x] = 0; que.push({0, x});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
-    for(auto &to: G[v]) {
-      ll nc = ceil(cost[v], diag[to.idx]) * diag[to.idx] + to.cost;
-      if (chmin(cost[to], nc)) que.push({nc, to});
-    }
+  vmi dp(n);
+  rep_r(i, 1, n) {
+    dp[i] += 1;
+    mint div = sz[i] + 1;
+    debug(i, dp[i], sz[p[i]] - 1, div);
+    dp[p[i]] += dp[i] + mint(sz[i]) / mint(sz[p[i]] - 1) * div;
+
   }
-  if (cost[y] == LINF) OUT(-1);
-  else OUT(cost[y]);
+  debug(mint(34)/ 6);
+
+  OUT(dp[0] + 1);
 }
 
 signed main() {

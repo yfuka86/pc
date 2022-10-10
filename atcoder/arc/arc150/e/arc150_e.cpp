@@ -151,48 +151,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  mpq<LP> que; vl cost(G.size(), LINF);
-  cost[start] = 0; que.push({0, start});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = cost[v] + to.cost; if (chmin(cost[to], nc)) que.push({nc, to}); }
-  }
-  return cost;
-}
 
 void solve() {
-  LL(n, m, x, y); --x; --y;
-  Graph<ll> G(n);
-
-  vl diag(m);
-  rep(i, m) {
-    LL(a, b, t, k); --a; --b;
-    G.add_edge(a, b, t);
-    diag[i] = k;
-  }
-
-  mpq<LP> que; vl cost(G.size(), LINF);
-  cost[x] = 0; que.push({0, x});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
-    for(auto &to: G[v]) {
-      ll nc = ceil(cost[v], diag[to.idx]) * diag[to.idx] + to.cost;
-      if (chmin(cost[to], nc)) que.push({nc, to});
-    }
-  }
-  if (cost[y] == LINF) OUT(-1);
-  else OUT(cost[y]);
+  LL(n);
 }
 
 signed main() {

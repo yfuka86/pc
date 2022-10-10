@@ -187,8 +187,32 @@ struct PrimeSieve {
 
 void solve() {
   LL(n); VL(a, n);
-  sort(all(a));
+  map<ll, vl> S;
+  {
+    rep(i, n) {
+      fore(d, divisor(a[i])) {
+        S[d].pb(i);
+      }
+    }
+    auto it = S.upper_bound(*min_element(all(a)));
+    while (it != S.end()) it = S.erase(it);
+    // debug(S);
+  }
 
+  ll ans = 0;
+  for(auto it = S.begin(); it != S.end(); it = S.erase(it)) {
+    auto [d, v] = *it;
+    ll sum = 0;
+    fore(i, v) {
+      sum = gcd(sum, a[i]);
+      if (sum == d) { ans++; break; }
+      if (S.find(sum) != S.end()) {
+        ans++;
+        S.erase(sum);
+      }
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {

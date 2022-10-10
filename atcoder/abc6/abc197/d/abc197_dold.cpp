@@ -151,48 +151,63 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  mpq<LP> que; vl cost(G.size(), LINF);
-  cost[start] = 0; que.push({0, start});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = cost[v] + to.cost; if (chmin(cost[to], nc)) que.push({nc, to}); }
-  }
-  return cost;
+// https://nyaannyaan.github.io/library/geometry/geometry.hpp
+
+using Real = long double;
+using Point = complex<Real>;
+using Points = vector<Point>;
+constexpr Real EPS = 1e-8;  // 問題によって変える！
+constexpr Real pi = 3.141592653589793238462643383279L;
+istream &operator>>(istream &is, Point &p) {
+  Real a, b;
+  is >> a >> b;
+  p = Point(a, b);
+  return is;
+}
+ostream &operator<<(ostream &os, Point &p) {
+  return os << real(p) << " " << imag(p);
+}
+inline bool eq(Real a, Real b) { return fabs(b - a) < EPS; }
+
+Point operator*(const Point &p, const Real &d) {
+  return Point(real(p) * d, imag(p) * d);
+}
+
+namespace std {
+bool operator<(const Point &a, const Point &b) {
+  return a.real() != b.real() ? a.real() < b.real() : a.imag() < b.imag();
+}
+}  // namespace std
+
+Real cross(const Point &a, const Point &b) {
+  return real(a) * imag(b) - imag(a) * real(b);
+}
+Real dot(const Point &a, const Point &b) {
+  return real(a) * real(b) + imag(a) * imag(b);
 }
 
 void solve() {
-  LL(n, m, x, y); --x; --y;
-  Graph<ll> G(n);
+  LL(n);
+  Point a, b; cin >> a >> b;
+  Point diff = b - a;
 
-  vl diag(m);
-  rep(i, m) {
-    LL(a, b, t, k); --a; --b;
-    G.add_edge(a, b, t);
-    diag[i] = k;
-  }
+  ld d = 360.0 / n;
+  ld angle = (270.0 + d / 2) / 360 * 2 * M_PI;
+  Point unit = diff * exp(Point{0, angle});
 
-  mpq<LP> que; vl cost(G.size(), LINF);
-  cost[x] = 0; que.push({0, x});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
-    for(auto &to: G[v]) {
-      ll nc = ceil(cost[v], diag[to.idx]) * diag[to.idx] + to.cost;
-      if (chmin(cost[to], nc)) que.push({nc, to});
-    }
+  Point t = unit, m = a;
+  rep(i, n / 2) {
+    m += t;
+    // debug(t);
+    t *= exp(Point{0, 2.0 * M_PI / n});
   }
-  if (cost[y] == LINF) OUT(-1);
-  else OUT(cost[y]);
+  // debug(m);
+  ld scale = abs(diff) / abs(m - a);
+  // debug(scale);
+  Point ans = a + (unit * scale);
+
+  OUT(ans.real(), ans.imag());
 }
 
 signed main() {

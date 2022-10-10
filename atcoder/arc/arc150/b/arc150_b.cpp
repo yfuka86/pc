@@ -133,71 +133,56 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+ll solve(ll a, ll b) {
+  ld ra = (ld)b / (ld)a;
+
+  ll a1 = floor(ra), a2 = ceil(ra);
+
+  // debug(a1, a2);
+
+  ll ans = LINF;
+  {
+    ll cur = 0;
+    ll ta = a;
+    ta += b / a1 - a;
+    cur += b / a1 - a;
+    rep(i, 100000) {
+      chmin(ans, cur + i + ceil(b, ta + i) * (ta + i) - b);
+    }
+  }
+
+  { // でかい方のケース
+    chmin(ans, a2 * a - b);
+  }
+
+  return ans;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+ll naive(ll a, ll b) {
+  return 0;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll a = rg.l(1, 1e2), b = rg.l(1, 1e2);
+    auto so = solve(a,b); auto na = naive(a,b);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      debug(a,b); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  mpq<LP> que; vl cost(G.size(), LINF);
-  cost[start] = 0; que.push({0, start});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = cost[v] + to.cost; if (chmin(cost[to], nc)) que.push({nc, to}); }
-  }
-  return cost;
-}
 
 void solve() {
-  LL(n, m, x, y); --x; --y;
-  Graph<ll> G(n);
-
-  vl diag(m);
-  rep(i, m) {
-    LL(a, b, t, k); --a; --b;
-    G.add_edge(a, b, t);
-    diag[i] = k;
-  }
-
-  mpq<LP> que; vl cost(G.size(), LINF);
-  cost[x] = 0; que.push({0, x});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
-    for(auto &to: G[v]) {
-      ll nc = ceil(cost[v], diag[to.idx]) * diag[to.idx] + to.cost;
-      if (chmin(cost[to], nc)) que.push({nc, to});
-    }
-  }
-  if (cost[y] == LINF) OUT(-1);
-  else OUT(cost[y]);
+  LL(a, b);
+  if (b % a == 0) OUTRET(0);
+  if (a > b) OUTRET(a - b);
+  ll ans = solve(a,b);
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

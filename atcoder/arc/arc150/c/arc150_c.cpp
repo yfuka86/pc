@@ -151,6 +151,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+
 template< typename T = ll > struct Edge {
   int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
   operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
@@ -161,38 +162,51 @@ template< typename T = ll > struct Graph {
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
-vector<ll> dijkstra(Graph<ll> &G, ll start) {
-  mpq<LP> que; vl cost(G.size(), LINF);
-  cost[start] = 0; que.push({0, start});
-  while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
-    for(auto &to: G[v]) { ll nc = cost[v] + to.cost; if (chmin(cost[to], nc)) que.push({nc, to}); }
-  }
-  return cost;
+template< typename T = ll >
+pair<vi, vector<Edge<T>>> bridges(Graph<T> &G) {
+  int n = G.size(); vector<int> used(n), ord(n), low(n), articulation; vector<Edge<T>> bridge;
+  function<int(int, int, int)> dfs = [&](int idx, int k, int par) {
+    used[idx] = true; ord[idx] = k++; low[idx] = ord[idx];
+    bool is_articulation = false, beet = false; int cnt = 0;
+    for(auto &to : G[idx]) {
+      if(to == par && !exchange(beet, true)) continue;
+      if(!used[to]) {
+        ++cnt; k = dfs(to, k, idx); low[idx] = min(low[idx], low[to]);
+        is_articulation |= par >= 0 && low[to] >= ord[idx];
+        if(ord[idx] < low[to]) bridge.emplace_back(to);
+      } else low[idx] = min(low[idx], ord[to]);
+    }
+    is_articulation |= par == -1 && cnt > 1; if (is_articulation) articulation.push_back(idx);
+    return k;
+  };
+  int k = 0; for(int i = 0; i < n; i++) if(!used[i]) k = dfs(i, k, -1);
+  return mp(articulation, bridge);
 }
 
-void solve() {
-  LL(n, m, x, y); --x; --y;
-  Graph<ll> G(n);
 
-  vl diag(m);
+void solve() {
+  LL(n, m, k);
+  Graph<ll> G(n);
   rep(i, m) {
-    LL(a, b, t, k); --a; --b;
-    G.add_edge(a, b, t);
-    diag[i] = k;
+    LL(u, v); --u; --v;
+    G.add_edge(u, v);
   }
+  VL(a, n); VL(b, k);
+  b.pb(-1);
 
   mpq<LP> que; vl cost(G.size(), LINF);
-  cost[x] = 0; que.push({0, x});
+  cost[0] = a[0] == b[0];
+  que.push({cost[0], 0});
   while(!que.empty()) {
-    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
+    auto [c, v] = que.top(); que.pop();
+    if (cost[v] < c) continue;
     for(auto &to: G[v]) {
-      ll nc = ceil(cost[v], diag[to.idx]) * diag[to.idx] + to.cost;
+      ll nc = cost[v] + (b[cost[v]] == a[to]);
       if (chmin(cost[to], nc)) que.push({nc, to});
     }
   }
-  if (cost[y] == LINF) OUT(-1);
-  else OUT(cost[y]);
+
+  if (cost[n - 1] < k) OUT("No"); else OUT("Yes");
 }
 
 signed main() {
