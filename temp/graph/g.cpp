@@ -32,6 +32,16 @@ pair<ll, LP> diameter(Graph<ll> &G) {
   dfs(0, -1, 0); ll s = deepest.second; deepest = mp(0, 0); dfs(s, -1, 0);
   return mp(deepest.first, mp(s, deepest.second)); }
 
+vector<ll> bfs(Graph<ll> &G, ll start) {
+  queue<ll> que; vl cost(G.size(), LINF);
+  cost[start] = 0; que.push(start);
+  while(!que.empty()) {
+    auto v = que.front(); que.pop();
+    // costは1でないといけない
+    for(auto &to: G[v]) { if (chmin(cost[to], cost[v] + to.cost)) que.push(to); }
+  }
+  return cost;
+}
 pair<vl, vl> dijkstra_restore(Graph<ll> &G, ll start) {
   mpq<LP> que; vl cost(G.size(), LINF), from(G.size(), -1);
   cost[start] = 0; que.push({0, start});

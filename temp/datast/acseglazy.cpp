@@ -33,10 +33,10 @@ S mapping(F f, S x) { if (f == -1) return x; }
 F composition(F f, F g) { if (f == -1) return g; else return f; }
 F id() { return -1; }
 
-using S = ll; using F = ll;
-S op(S l, S r) { return l + r; }
-S e() { return 0; }
-S mapping(F f, S x) { return f + x; }
+struct S {ll sum, sz;}; using F = ll;
+S op(S l, S r) { return {l.sum + r.sum, l.sz + r.sz}; }
+S e() { return {0, 1}; }
+S mapping(F f, S x) { return {x.sum + f * x.sz, x.sz}; }
 F composition(F f, F g) { return f + g; }
 F id() { return 0; }
 
