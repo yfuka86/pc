@@ -152,8 +152,54 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
 void solve() {
-  LL(n);
+  LL(h, w, m);
+  vvl g(h);
+
+  ll xma = h, yma = w;
+  rep(i, m) {
+    LL(x, y); --x; --y;
+    g[x].pb(y);
+    if (x == 0) chmin(yma, y);
+    else if (y == 0) chmin(xma, x);
+  }
+  rep(i, h) sort(all(g[i]));
+
+  BIT<ll> bt(w);
+  rep(i, yma) bt.add(i, 1);
+
+  ll ans = 0;
+  rep(i, h) {
+    fore(y, g[i]) {
+      if (bt.sum(y, y + 1) == 1) bt.add(y, -1);
+    }
+    if (i != 0 && i < xma) {
+      ll l = g[i].size() ? g[i][0] : w;
+      ans += l + bt.sum(l, w);
+    } else {
+      ans += bt.sum(0, w);
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {

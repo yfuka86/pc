@@ -26,6 +26,7 @@ struct lazy_segtree {
   void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
 };
 
+// テンプレ
 struct S{ ll sz, sum; }; using F = ll;
 S op(S l, S r) { return {}; }
 S e() { return {0, 0}; }
@@ -33,6 +34,7 @@ S mapping(F f, S x) { if (f == -1) return x; }
 F composition(F f, F g) { if (f == -1) return g; else return f; }
 F id() { return -1; }
 
+// sum
 struct S {ll sum, sz;}; using F = ll;
 S op(S l, S r) { return {l.sum + r.sum, l.sz + r.sz}; }
 S e() { return {0, 1}; }
@@ -40,11 +42,17 @@ S mapping(F f, S x) { return {x.sum + f * x.sz, x.sz}; }
 F composition(F f, F g) { return f + g; }
 F id() { return 0; }
 
+// 区間min
 using S = ll; using F = ll;
 S op(S l, S r) { return min(l, r); }
 S e() { return LINF; }
+// update ver
 S mapping(F f, S x) { return f != -1 ? f : x; }
 F composition(F f, F g) { return f != -1 ? f : g; }
+F id() { return -1; }
+// chmin ver
+S mapping(F f, S x) { return f != -1 ? min(f, x) : x; }
+F composition(F f, F g) { if (f == -1) return g; if (g == -1) return f; return min(f, g); }
 F id() { return -1; }
 
 // linear_functions sum seg from here

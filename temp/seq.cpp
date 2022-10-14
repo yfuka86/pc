@@ -19,6 +19,17 @@ vmi subseq_num(vector<ll> &v) {
 }
 
 // 典型LCS
+
+template<class T> ll lcs(vector<T> s1, vector<T> s2){
+  ll n = s1.size(), m = s2.size();
+  vvl dp(n + 1, vl(m + 1, 0));
+  rep(i, n) rep(j, m) {
+    if (s1[i] == s2[j]) dp[i + 1][j + 1] = dp[i][j] + 1;
+    else dp[i + 1][j + 1] = max(dp[i + 1][j], dp[i][j + 1]);
+  }
+  return dp[n][m];
+}
+
 string lcs(string &s1, string &s2){
   ll s1n = s1.size(), s2n = s2.size();
   vvl dp(s1n + 1, vl(s2n + 1, 0));

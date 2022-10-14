@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc173",
+    "title": "AtCoder Beginner Contest 173",
+    "url": "https://atcoder.jp/contests/abc173"
+  },
+  "tasks": [
+    {
+      "id": "abc173_a",
+      "label": "A",
+      "title": "Payment",
+      "url": "https://atcoder.jp/contests/abc173/tasks/abc173_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc173_a.cpp"
+      }
+    },
+    {
+      "id": "abc173_b",
+      "label": "B",
+      "title": "Judge Status Summary",
+      "url": "https://atcoder.jp/contests/abc173/tasks/abc173_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc173_b.cpp"
+      }
+    },
+    {
+      "id": "abc173_c",
+      "label": "C",
+      "title": "H and V",
+      "url": "https://atcoder.jp/contests/abc173/tasks/abc173_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc173_c.cpp"
+      }
+    },
+    {
+      "id": "abc173_d",
+      "label": "D",
+      "title": "Chat in a Circle",
+      "url": "https://atcoder.jp/contests/abc173/tasks/abc173_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc173_d.cpp"
+      }
+    },
+    {
+      "id": "abc173_e",
+      "label": "E",
+      "title": "Multiplication 4",
+      "url": "https://atcoder.jp/contests/abc173/tasks/abc173_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc173_e.cpp"
+      }
+    },
+    {
+      "id": "abc173_f",
+      "label": "F",
+      "title": "Intervals on Tree",
+      "url": "https://atcoder.jp/contests/abc173/tasks/abc173_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc173_f.cpp"
+      }
+    }
+  ]
+}
