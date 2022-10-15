@@ -153,32 +153,85 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
 void solve() {
   LL(n);
-  Graph<ll> G(n);
-  rep(i, n - 1) {
-    LL(a, b); --a; --b;
-    G.add_edge(a, b);
+  VL(r, n); VL(c, n);
+  vl rr;
+  rep(i, n) {
+    if (r[i]) rr.pb(r[i]);
+  }
+  vl rs = csum(rr);
+  vl cnt(3);
+  rep(i, n) cnt[c[i]]++;
+  ll sum = sum_of(cnt);
+
+  // dp[cで1の行数][cで2だが今1の行数]
+  ll c1 = cnt[1], c2 = cnt[2];
+  vv(mint, dp, c1 + 1, c2 + 1);
+  vv(mint, dpt, c1 + 1, c2 + 1);
+  dp[0][0] = 1;
+  rep(i, rr.size()) {
+    ll sofar = rs[i];
+    // debug(sofar);
+    rep_r(j, c1 + 1) {
+      if (sofar - j < 0) continue;
+      ll j2 = sofar - j;
+      if (j2 > c2) continue;
+
+      ll already2 = sofar - (j + j2) / 2;
+      ll rem1 = (c1 - j);
+      ll rem2 = (c2 - already2 - j2);
+
+      if (rr[i] == 1) {
+        if (j + 1 <= c1) dpt[j + 1][j2] += dp[j][j2] * rem1;
+        if (j2 + 1 <= c2) dpt[j][j2 + 1] += dp[j][j2] * rem2;
+        if (0 < j2) dpt[j][j2 - 1] += dp[j][j2] * j2;
+      } else {
+        dpt[j][j2] += dp[j][j2] * (c2 - already2 - j2); // そのまま2
+        if (j + 2 <= c1) dpt[j + 2][j2] += dp[j][j2] * rem1 * (rem1 - 1) / 2;
+
+        if (j2 + 2 <= c2) dpt[j][j2 + 2] += dp[j][j2] * rem2 * (rem2 - 1) / 2;
+        if (j2 > 1) dpt[j][j2 - 2] += dp[j][j2] * j2 * (j2 - 1) / 2;
+
+        if (j + 1 <= c1 && j2 + 1 <= c2) dpt[j + 1][j2 + 1] += dp[j][j2] * rem2 * rem1;
+        if (j + 1 <= c1 && j2 > 0) dpt[j + 1][j2 - 1] += dp[j][j2] * j2 * rem1;
+      }
+    }
+    dp = dpt;
+    dpt.assign(n + 1, vmi(c2 + 1));
+    debug(dp);
   }
 
-  vl par(n),
-
-  vector<set<ll>> smin(n);
-
-  function<void(ll, ll)> dfs = [&](ll v, ll p) {
-
-  };
+  OUT(dp[c1][0]);
 }
 
 signed main() {

@@ -153,32 +153,53 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
-
 void solve() {
+  LL(h, w, r, c); --r; --c;
   LL(n);
-  Graph<ll> G(n);
-  rep(i, n - 1) {
-    LL(a, b); --a; --b;
-    G.add_edge(a, b);
+  map<ll, set<ll>> gridr, gridc;
+  rep(i, n) {
+    LL(_r, _c); --_r; --_c;
+    gridr[_r].insert(_c);
+    gridc[_c].insert(_r);
   }
-
-  vl par(n),
-
-  vector<set<ll>> smin(n);
-
-  function<void(ll, ll)> dfs = [&](ll v, ll p) {
-
-  };
+  LL(q);
+  rep(i, q) {
+    CHR(d); LL(l);
+    // debug(d, l);
+    if (d == 'D') { // xが増える
+      auto it = gridc[c].upper_bound(r);
+      if (it == gridc[c].end()) {
+        r = min(h - 1, r + l);
+      } else {
+        r = min(h - 1, min(r + l, *it - 1));
+      }
+    }
+    if (d == 'U') {
+      auto it = gridc[c].lower_bound(r);
+      if (it == gridc[c].begin()) {
+        r = max(0, r - l);
+      } else {
+        r = max(0, max(r - l, *prev(it) + 1));
+      }
+    }
+    if (d == 'R') { // yが増える
+      auto it = gridr[r].upper_bound(c);
+      if (it == gridr[r].end()) {
+        c = min(w - 1, c + l);
+      } else {
+        c = min(w - 1, min(c + l, *it - 1));
+      }
+    }
+    if (d == 'L') {
+      auto it = gridr[r].lower_bound(c);
+      if (it == gridr[r].begin()) {
+        c = max(0, c - l);
+      } else {
+        c = max(0, max(c - l, *prev(it) + 1));
+      }
+    }
+    OUT(r + 1, c + 1);
+  }
 }
 
 signed main() {

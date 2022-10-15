@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc273",
+    "title": "Panasonic Programming Contest 2022(AtCoder Beginner Contest 273)",
+    "url": "https://atcoder.jp/contests/abc273"
+  },
+  "tasks": [
+    {
+      "id": "abc273_a",
+      "label": "A",
+      "title": "A Recursive Function",
+      "url": "https://atcoder.jp/contests/abc273/tasks/abc273_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc273_a.cpp"
+      }
+    },
+    {
+      "id": "abc273_b",
+      "label": "B",
+      "title": "Broken Rounding",
+      "url": "https://atcoder.jp/contests/abc273/tasks/abc273_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc273_b.cpp"
+      }
+    },
+    {
+      "id": "abc273_c",
+      "label": "C",
+      "title": "(K+1)-th Largest Number",
+      "url": "https://atcoder.jp/contests/abc273/tasks/abc273_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc273_c.cpp"
+      }
+    },
+    {
+      "id": "abc273_d",
+      "label": "D",
+      "title": "LRUD Instructions",
+      "url": "https://atcoder.jp/contests/abc273/tasks/abc273_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc273_d.cpp"
+      }
+    },
+    {
+      "id": "abc273_e",
+      "label": "E",
+      "title": "Notebook",
+      "url": "https://atcoder.jp/contests/abc273/tasks/abc273_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc273_e.cpp"
+      }
+    },
+    {
+      "id": "abc273_f",
+      "label": "F",
+      "title": "Hammer 2",
+      "url": "https://atcoder.jp/contests/abc273/tasks/abc273_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc273_f.cpp"
+      }
+    },
+    {
+      "id": "abc273_g",
+      "label": "G",
+      "title": "Row Column Sums 2",
+      "url": "https://atcoder.jp/contests/abc273/tasks/abc273_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc273_g.cpp"
+      }
+    },
+    {
+      "id": "abc273_h",
+      "label": "Ex",
+      "title": "Inv(0,1)ving Insert(1,0)n",
+      "url": "https://atcoder.jp/contests/abc273/tasks/abc273_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc273_h.cpp"
+      }
+    }
+  ]
+}
