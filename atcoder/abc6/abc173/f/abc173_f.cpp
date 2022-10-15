@@ -155,6 +155,13 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  ll ans = 0;
+  rep(i, 1, n + 1) ans += i * (n - i + 1);
+  rep(i, n - 1) {
+    LL(u, v); if (u > v) swap(u, v); --u; --v;
+    ans -= (u + 1) * (n - v);
+  }
+  OUT(ans);
 }
 
 signed main() {

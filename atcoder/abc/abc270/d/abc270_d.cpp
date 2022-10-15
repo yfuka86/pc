@@ -149,31 +149,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n, k); VL(a, k);
+  vl dp(n + 1);
 
-  vv(ll, dp, n + 1, 2);
-  function<ll(ll, ll)> dfs = [&](ll rem, ll p) {
-    if (rem == 0) return 0ll;
-    if (dp[rem][p] != 0) return dp[rem][p];
-
-    if (p) {
-      ll ma = -LINF;
-      rep(i, k) {
-        if (rem < a[i]) break;
-        chmax(ma, dfs(rem - a[i], 0) + a[i]);
-      }
-      return dp[rem][p] = ma;
-    } else {
-      ll mi = LINF;
-      rep(i, k) {
-        if (rem < a[i]) break;
-        chmin(mi, dfs(rem - a[i], 1) - a[i]);
-      }
-      return dp[rem][p] = mi;
-    }
-  };
-
-  ll diff = dfs(n, 1);
-  OUT((n + diff) / 2);
+  rep(i, n + 1) rep(j, k) {
+    if (i >= a[j]) chmax(dp[i], i - dp[i - a[j]]);
+  }
+  OUT(dp[n]);
 }
 
 signed main() {

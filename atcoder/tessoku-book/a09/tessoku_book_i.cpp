@@ -162,7 +162,6 @@ void solve() {
     imos[i].pop_back();
     OUTARRAY(imos[i]);
   }
-
 }
 
 signed main() {

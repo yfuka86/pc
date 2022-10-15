@@ -154,7 +154,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(q);
-  map<char, int> s, t;
+  map<char, ll> s, t;
   s['a']++; t['a']++;
   rep(i, q) {
     LL(_t, k); STR(x);
