@@ -152,12 +152,75 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
+vector<ll> dijkstra(Graph<ll> &G, ll start) {
+  mpq<LP> que; vl cost(G.size(), LINF);
+  cost[start] = 0; que.push({0, start});
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = cost[v] + to.cost; if (chmin(cost[to], nc)) que.push({nc, to}); }
+  }
+  return cost;
+}
+
+pair<vl, vl> dijkstra_restore(Graph<ll> &G, ll start) {
+  mpq<LP> que; vl cost(G.size(), LINF), from(G.size(), -1);
+  cost[start] = 0; que.push({0, start});
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = cost[v] + to.cost;
+      if (chmin(cost[to], nc)) { que.push({nc, to}); from[to] = v; }
+    }
+  }
+  return {cost, from};
+}
 void solve() {
-  LL(n); VL(a, n);
-  ll t = 0;
-  rep(i, 2, n) t ^= a[i];
+  LL(n, m);
+  LL(w, x, y, z); --w; --x; --y; --z;
+  Graph<ll> G(n), rG(n);
+  vlt edges(m);
+  rep(i, m) {
+    LL(c, s, t); --s; --t;
+    edges[i] = {c, s, t};
+    G.add_directed_edge(s,t,c);
+    rG.add_directed_edge(t,s,c);
+  }
+  vl wc = dijkstra(G, w);
+  vl xc = dijkstra(rG, x);
+  vl yc = dijkstra(G, y);
+  vl zc = dijkstra(rG, z);
+  if (wc[x] == LINF || yc[z] == LINF) OUTRET("Impossible");
 
+  vl dp(n, LINF);
+  rep(i, n) {
+    if (xc[i] == LINF || zc[i] == LINF) continue;
+    dp[i] = xc[i] + zc[i];
+  }
+
+  debug(dp);
+
+  rep_r(i, n) {
+    fore(to, rG[i]) {
+      chmin(dp[to], dp[i] + to.cost);
+    }
+  }
+  debug(dp);
+
+  ll ans = LINF;
+  rep(i, n) {
+    if (dp[i] == LINF || wc[i] == LINF || yc[i] == LINF) continue;
+    chmin(ans, dp[i] + wc[i] + yc[i]);
+  }
+  OUT(min(ans, wc[x] + yc[z]));
 }
 
 signed main() {

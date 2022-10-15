@@ -154,10 +154,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(a, n);
-  ll t = 0;
-  rep(i, 2, n) t ^= a[i];
-
+  LL(n);
 }
 
 signed main() {

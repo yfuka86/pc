@@ -154,10 +154,12 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(a, n);
-  ll t = 0;
-  rep(i, 2, n) t ^= a[i];
-
+  LL(n);
+  if (n == 3) {
+    OUT("Yes");
+    vvl m = {{1,7,9}, {2,8,5}, {3,4,6}};
+    OUTMAT(m);
+  } else OUT("No");
 }
 
 signed main() {

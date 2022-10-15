@@ -154,10 +154,48 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(a, n);
-  ll t = 0;
-  rep(i, 2, n) t ^= a[i];
+  // RandGen rg;
 
+  // while (1) {
+  //   ll x = rg.l(1, 100);
+  //   ll ans = rg.l(0, 1 << msb(x));
+  //   ll v1 = (ans & 1ll << msb(x)) ? (1ll << msb(x)) : 0, v2 = ans ^ v1;
+  //   if (!(v1 <= x && v2 <= x)) {
+  //     debug(x, ans, v1, v2);
+  //     break;
+  //   }
+  // }
+
+  LL(n,x);
+  VL(a,n);
+  ll cnt = 0, sum = 0;
+  rep(i, n) {
+    if (a[i] == -1) cnt++;
+    else sum ^= a[i];
+  }
+  if (cnt == 0) {
+    if (sum == x) OUTARRAY(a); else OUT(-1);
+  } else if (cnt == 1) {
+    ll ans = x ^ sum;
+    if (incl(ans, 0, x + 1)) {
+      rep(i, n) if (a[i] == -1) a[i] = ans;
+      OUTARRAY(a);
+    } else {
+      OUT(-1);
+    }
+  } else {
+    ll ans = x ^ sum;
+    ll v1 = (ans & 1ll << msb(x)) ? (1ll << msb(x)) : 0, v2 = ans ^ v1;
+    rep(i, n) if (a[i] == -1) { a[i] = v1; break; }
+    rep(i, n) if (a[i] == -1) { a[i] = v2; break; }
+    rep(i, n) if (a[i] == -1) { a[i] = 0; }
+    if (v1 <= x && v2 <= x) {
+      OUTARRAY(a);
+    } else OUT(-1);
+    // ll check = 0;
+    // rep(i, n) check ^= a[i];
+    // assert(check == x);
+  }
 }
 
 signed main() {

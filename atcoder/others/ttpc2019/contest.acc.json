@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "ttpc2019",
+    "title": "東京工業大学プログラミングコンテスト2019",
+    "url": "https://atcoder.jp/contests/ttpc2019"
+  },
+  "tasks": [
+    {
+      "id": "ttpc2019_a",
+      "label": "A",
+      "title": "Next TTPC",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "ttpc2019_a.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_b",
+      "label": "B",
+      "title": "okyoech",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "ttpc2019_b.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_c",
+      "label": "C",
+      "title": "XOR Filling",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "ttpc2019_c.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_d",
+      "label": "D",
+      "title": "素数取りゲーム",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "ttpc2019_d.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_e",
+      "label": "E",
+      "title": "N法陣",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "ttpc2019_e.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_f",
+      "label": "F",
+      "title": "Road Construction",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "ttpc2019_f.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_g",
+      "label": "G",
+      "title": "Palindromic Love Letter",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "ttpc2019_g.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_h",
+      "label": "H",
+      "title": "救援",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "ttpc2019_h.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_i",
+      "label": "I",
+      "title": "I hate P",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "ttpc2019_i.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_j",
+      "label": "J",
+      "title": "動的無計画法",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "ttpc2019_j.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_k",
+      "label": "K",
+      "title": "サーキュレーション",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "ttpc2019_k.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_l",
+      "label": "L",
+      "title": "多項式の零点の個数",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "ttpc2019_l.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_m",
+      "label": "M",
+      "title": "Inversion Numbers of Tree",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "ttpc2019_m.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_n",
+      "label": "N",
+      "title": "瓜二つ",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "ttpc2019_n.cpp"
+      }
+    },
+    {
+      "id": "ttpc2019_o",
+      "label": "O",
+      "title": "oneesan puzzle",
+      "url": "https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "ttpc2019_o.cpp"
+      }
+    }
+  ]
+}
