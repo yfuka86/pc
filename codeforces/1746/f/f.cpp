@@ -153,127 +153,78 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-#pragma once
-
-template <typename T, int shift = 4>
-struct PersistentArray {
-  struct Node {
-    Node *ns[1 << shift];
-    Node() { memset(ns, 0, sizeof(ns)); }
-    Node(const Node &other) { memcpy(ns, other.ns, sizeof(ns)); }
-    Node(const Node *other) { memcpy(ns, other->ns, sizeof(ns)); }
+// 列の平方分割
+template <class S, class T>
+struct SquareRootDecomposition {
+  struct Block {
+    int id, l, r, sz; Block() = default;
+    Block(int _i, int _l, int _r) : id(_i), l(_l), r(_r) { sz = r - l; }
   };
-  inline Node *my_new() { return new Node(); }
-  inline Node *my_new(const Node &other) { return new Node(other); }
-  inline Node *my_new(const Node *other) { return new Node(other); }
-  inline T *my_new_leaf(const T &val) { return new T{val}; }
+  int N, B; vector<Block> bl;
 
-  using i64 = long long;
-  static constexpr int mask = (1 << shift) - 1;
-  Node *root;
-  int depth;
-  T ID;
-
-  PersistentArray() {}
-
-  PersistentArray(i64 MAX, T ID_ = T(0)) : root(my_new()), depth(0), ID(ID_) {
-    while (MAX) ++depth, MAX >>= shift;
+  SquareRootDecomposition(int _N, int _B) : N(_N), B(_B) {
+    bl.resize(N / B + 1);
+    for (int i = 0; i <= N / B; ++i) { bl[i] = Block(i, i * B, min((i + 1) * B, N)); }
   }
+  int size() const { return bl.size(); }
 
-  PersistentArray(const vector<T> &v, T ID_ = T(0))
-      : root(my_new()), depth(0), ID(ID_) {
-    i64 MAX = v.size();
-    while (MAX) ++depth, MAX >>= shift;
-    for (int i = 0; i < (int)v.size(); i++) {
-      Node *n = root;
-      for (int k = i, d = depth; d; d--) {
-        if (!(n->ns[k & mask])) {
-          if (d == 1)
-            n->ns[k & mask] = reinterpret_cast<Node *>(my_new_leaf(v[i]));
-          else
-            n->ns[k & mask] = my_new();
-        }
-        n = n->ns[k & mask];
-        k >>= shift;
-      }
+  template <class UP, class UA>
+  void update(const UP &update_part, const UA &update_all, int l, int r, S x) {
+    assert(0 <= l && r <= N && l <= r);
+    if (l / B == r / B) {
+      update_part(bl[l / B], l, r, x);
+    } else {
+      if (l % B) update_part(bl[l / B], l, (l / B + 1) * B, x);
+      for (int i = ceil(l, B); i < r / B; i++) update_all(bl[i], x);
+      if (r % B) update_part(bl[r / B], (r / B) * B, r, x);
     }
   }
 
-  T get(Node *n, i64 k) const {
-    for (int i = depth; i; --i) {
-      n = n ? n->ns[k & mask] : nullptr;
-      k >>= shift;
-    }
-    return n ? *reinterpret_cast<T *>(n) : ID;
+  template <class QP, class QA, class M>
+  T query(const QP &query_part, const QA &query_all, const M &merge, int l, int r, T e) {
+    assert(0 <= l && r <= N && l <= r);
+    if (l / B == r / B) return query_part(bl[l / B], l, r);
+    T ret = e;
+    if (l % B) ret = merge(ret, query_part(bl[l / B], l, (l / B + 1) * B));
+    for (int i = ceil(l, B); i < r / B; i++) ret = merge(ret, query_all(bl[i]));
+    if (r % B) ret = merge(ret, query_part(bl[r / B], (r / B) * B, r));
+    return ret;
   }
-  T get(i64 k) const { return get(root, k); }
-
-  Node *update(Node *n, i64 k, const T &val) {
-    stack<pair<Node *, int>> st;
-    for (int i = depth; i; --i) {
-      st.emplace(n, k & mask);
-      n = n ? n->ns[k & mask] : nullptr;
-      k >>= shift;
-    }
-    Node *chd = reinterpret_cast<Node *>(my_new_leaf(val));
-    while (!st.empty()) {
-      Node *par;
-      int k;
-      tie(par, k) = st.top();
-      st.pop();
-      Node *nxt = par ? my_new(par) : my_new();
-      nxt->ns[k] = chd;
-      chd = nxt;
-    }
-    return root = chd;
-  }
-  Node *update(i64 k, const T &val) { return update(root, k, val); }
 };
 
-/**
- * @brief 永続配列
- */
+// queryの動作はまだ未検証
+SquareRootDecomposition<ll, ll> seg(n, b);
+// ブロック数
+seg.size()
+// 対象ブロック b(b.id), 範囲 [l, r), 作用素 x
+auto update_part = [&](auto b, ll l, ll r, ll x) {
+};
+// 対象ブロック b(b.id), 作用素 x, ( 範囲[b.l, b.r) )
+auto update_all = [&](auto b, ll x) {
+};
 
 
 void solve() {
-  LL(q);
+  LL(n, q);
+  VL(a, n);
 
-  ll cur = 0;
-  PersistentArray<ll> arr(vl(500000));
-  using Node = decltype(arr)::Node;
-  Node *curn = arr.root;
-  unordered_map<ll, Node*> mp;
-  unordered_map<ll, ll> mpi;
-  rep(i, q) {
-    STR(s);
-    if (s == "DELETE") {
-      if (cur != 0) {
-        curn = arr.update(curn, --cur, 0);
-      }
-    } else {
-      LL(x);
-      if (s == "ADD") {
-        curn = arr.update(curn, cur, x); cur++;
-      }
-      if (s == "SAVE") {
-        mp[x] = curn;
-        mpi[x] = cur;
-      }
-      if (s == "LOAD") {
-        curn = mp[x];
-        cur = mpi[x];
-      }
-    }
-    ll ans = arr.get(curn, cur - 1);
-    if (ans > 0) cout << ans; else cout << -1;
-    cout << " ";
-  }
+
+  // queryの動作はまだ未検証
+  SquareRootDecomposition<ll, ll> seg(n, b);
+  // ブロック数
+  seg.size()
+  // 対象ブロック b(b.id), 範囲 [l, r), 作用素 x
+  auto update_part = [&](auto b, ll l, ll r, ll x) {
+  };
+  // 対象ブロック b(b.id), 作用素 x, ( 範囲[b.l, b.r) )
+  auto update_all = [&](auto b, ll x) {
+  };
 
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

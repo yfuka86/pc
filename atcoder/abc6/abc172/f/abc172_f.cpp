@@ -157,7 +157,18 @@ void solve() {
   LL(n); VL(a, n);
   ll t = 0;
   rep(i, 2, n) t ^= a[i];
+  ll sum = a[0] + a[1], mi = a[0];
 
+  OUTBIN(a[0], 50);
+  OUTBIN(a[1], 50);
+  OUTBIN(t, 50);
+
+  ll diff = sum - t;
+  if (diff & 1) OUTRET(-1);
+
+  diff /= 2;
+  debug(t, diff);
+  // 桁DP diffがand (a[0] - x) (a[1] + x)のandがdiffとなるような最小のxを下から決める桁dp
 }
 
 signed main() {

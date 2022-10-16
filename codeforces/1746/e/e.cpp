@@ -95,7 +95,7 @@ void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
 template<class T, class S = ll> void OUTMAT(vector<vector<T>>& v, S offset = S(0)) { rep(i, v.size()) { OUTARRAY(v[i], offset); } }
 template<typename T> void OUTBIN(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
-template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); OUTARRAY(v); cout.flush(); cin >> a; }
+template<typename Q, typename A> void IQUERY(vector<Q> q, A &a, string str = "? ") { cout << str; OUTARRAY(q); cout.flush(); cin >> a; }
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
@@ -153,122 +153,59 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-#pragma once
-
-template <typename T, int shift = 4>
-struct PersistentArray {
-  struct Node {
-    Node *ns[1 << shift];
-    Node() { memset(ns, 0, sizeof(ns)); }
-    Node(const Node &other) { memcpy(ns, other.ns, sizeof(ns)); }
-    Node(const Node *other) { memcpy(ns, other->ns, sizeof(ns)); }
-  };
-  inline Node *my_new() { return new Node(); }
-  inline Node *my_new(const Node &other) { return new Node(other); }
-  inline Node *my_new(const Node *other) { return new Node(other); }
-  inline T *my_new_leaf(const T &val) { return new T{val}; }
-
-  using i64 = long long;
-  static constexpr int mask = (1 << shift) - 1;
-  Node *root;
-  int depth;
-  T ID;
-
-  PersistentArray() {}
-
-  PersistentArray(i64 MAX, T ID_ = T(0)) : root(my_new()), depth(0), ID(ID_) {
-    while (MAX) ++depth, MAX >>= shift;
-  }
-
-  PersistentArray(const vector<T> &v, T ID_ = T(0))
-      : root(my_new()), depth(0), ID(ID_) {
-    i64 MAX = v.size();
-    while (MAX) ++depth, MAX >>= shift;
-    for (int i = 0; i < (int)v.size(); i++) {
-      Node *n = root;
-      for (int k = i, d = depth; d; d--) {
-        if (!(n->ns[k & mask])) {
-          if (d == 1)
-            n->ns[k & mask] = reinterpret_cast<Node *>(my_new_leaf(v[i]));
-          else
-            n->ns[k & mask] = my_new();
-        }
-        n = n->ns[k & mask];
-        k >>= shift;
-      }
-    }
-  }
-
-  T get(Node *n, i64 k) const {
-    for (int i = depth; i; --i) {
-      n = n ? n->ns[k & mask] : nullptr;
-      k >>= shift;
-    }
-    return n ? *reinterpret_cast<T *>(n) : ID;
-  }
-  T get(i64 k) const { return get(root, k); }
-
-  Node *update(Node *n, i64 k, const T &val) {
-    stack<pair<Node *, int>> st;
-    for (int i = depth; i; --i) {
-      st.emplace(n, k & mask);
-      n = n ? n->ns[k & mask] : nullptr;
-      k >>= shift;
-    }
-    Node *chd = reinterpret_cast<Node *>(my_new_leaf(val));
-    while (!st.empty()) {
-      Node *par;
-      int k;
-      tie(par, k) = st.top();
-      st.pop();
-      Node *nxt = par ? my_new(par) : my_new();
-      nxt->ns[k] = chd;
-      chd = nxt;
-    }
-    return root = chd;
-  }
-  Node *update(i64 k, const T &val) { return update(root, k, val); }
-};
-
-/**
- * @brief 永続配列
- */
-
-
+//https://twitter.com/maspy_stars/status/1581332067379343360
+//[E1] 3 回で 2/3 に減らす。a, b, c の 3 分割して。
+// a → o → b → o → ab が残る
+// a → o → b → x → ac が残る
+// a → x → a → x → bc が残る
+// a → x → a → o → b → x → ac が残る
+// a → x → a → o → b → o → ab が残る
 void solve() {
-  LL(q);
+  LL(n);
 
-  ll cur = 0;
-  PersistentArray<ll> arr(vl(500000));
-  using Node = decltype(arr)::Node;
-  Node *curn = arr.root;
-  unordered_map<ll, Node*> mp;
-  unordered_map<ll, ll> mpi;
-  rep(i, q) {
-    STR(s);
-    if (s == "DELETE") {
-      if (cur != 0) {
-        curn = arr.update(curn, --cur, 0);
+  auto f = [&](set<ll> &t) {
+    cout << "? " << t.size() << " ";
+    fore(e, t) cout << e << " ";
+    cout << "\n"; cout.flush();
+    STR(a);
+    return a == "YES";
+  };
+
+  set<ll> s; rep(i, 1, n + 1) s.insert(i);
+  while (s.size() > 2) {
+    ll cur = 0;
+    vector<set<ll>> t(3);
+    fore(e, s) {
+      t[cur % 3].insert(e);
+      cur++;
+    }
+    bool a = f(t[0]);
+    s.clear();
+    if (a) {
+      fore(e, t[0]) s.insert(e);
+      if (f(t[1])) {
+        fore(e, t[1]) s.insert(e);
+      } else {
+        fore(e, t[2]) s.insert(e);
       }
     } else {
-      LL(x);
-      if (s == "ADD") {
-        curn = arr.update(curn, cur, x); cur++;
-      }
-      if (s == "SAVE") {
-        mp[x] = curn;
-        mpi[x] = cur;
-      }
-      if (s == "LOAD") {
-        curn = mp[x];
-        cur = mpi[x];
+      if (f(t[0])) {
+        fore(e, t[0]) s.insert(e);
+        if (f(t[1])) {
+          fore(e, t[1]) s.insert(e);
+        } else {
+          fore(e, t[2]) s.insert(e);
+        }
+      } else {
+        fore(e, t[1]) s.insert(e);
+        fore(e, t[2]) s.insert(e);
       }
     }
-    ll ans = arr.get(curn, cur - 1);
-    if (ans > 0) cout << ans; else cout << -1;
-    cout << " ";
   }
 
+  cout << "! " << *s.begin() << "\n"; cout.flush();
+  STR(ans);
+  if (ans != ":)") cout << "! " << *prev(s.end()) << "\n"; cout.flush();
 }
 
 signed main() {
