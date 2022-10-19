@@ -159,16 +159,39 @@ void solve() {
   rep(i, 2, n) t ^= a[i];
   ll sum = a[0] + a[1], mi = a[0];
 
-  OUTBIN(a[0], 50);
-  OUTBIN(a[1], 50);
-  OUTBIN(t, 50);
+  // OUTBIN(a[0], 50);
+  // OUTBIN(a[1], 50);
+  // OUTBIN(t, 50);
 
   ll diff = sum - t;
   if (diff & 1) OUTRET(-1);
 
   diff /= 2;
-  debug(t, diff);
+  // OUTBIN(diff, 50);
+
   // 桁DP diffがand (a[0] - x) (a[1] + x)のandがdiffとなるような最小のxを下から決める桁dp
+  map<LT, ll> dp;
+  function<ll(ll, ll, ll)> dfs = [&](ll a, ll b, ll c) {
+    if ((a & b) == 0 && c == 0) return 0ll;
+    if (dp.find({a, b, c}) != dp.end()) return dp[{a, b, c}];
+
+    ll xok = (a & 1) & (b & 1);
+    ll xdok = (a - 1 & 1) & (b + 1 & 1);
+    ll ret = LINF;
+    if (c & 1) {
+      if (xok) chmin(ret, dfs(a >> 1, b >> 1, c >> 1) * 2);
+      if (xdok && a > 0) chmin(ret, dfs(a - 1 >> 1, b + 1 >> 1, c >> 1) * 2 + 1);
+    } else {
+      if (!xok) chmin(ret, dfs(a >> 1, b >> 1, c >> 1) * 2);
+      if (!xdok && a > 0) chmin(ret, dfs(a - 1 >> 1, b + 1 >> 1, c >> 1) * 2 + 1);
+    }
+    // debug(b, x, xok, xdok, ret);
+    chmin(ret, LINF);
+    return dp[{a, b, c}] = ret;
+  };
+  ll ans = dfs(a[0], a[1], diff);
+  if (ans == LINF || ans >= a[0]) OUT(-1); else OUT(ans);
+  // debug(dp);
 }
 
 signed main() {

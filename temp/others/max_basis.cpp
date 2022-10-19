@@ -45,14 +45,14 @@ struct MaxBasis {
 // XOR 基底を求める
 //   - O(B (N + logB))   B はビット長
 //   - 掃き出し法と同じように MSB の降順にする（不要なら消す）
-template<class T>
-vector<T> xor_basis(const vector<T>& A) {
+template<class T> struct xor_basis {
   vector<T> basis;
-  for (T a : A) {
+  bool add(T a) {
     for (const T& b : basis) { a = min(a, a ^ b); }
-    if (a) { basis.push_back(a); }
+    if (a) { basis.push_back(a); sort(basis.rbegin(), basis.rend()); return true; } else return false;
   }
-  // MSB の降順にソートしておく
-  sort(basis.rbegin(), basis.rend());
-  return basis;
-}
+  bool presentable(T a) {
+    for (const T& b : basis) { a = min(a, a ^ b); }
+    if (a) return false; else return true;
+  }
+};

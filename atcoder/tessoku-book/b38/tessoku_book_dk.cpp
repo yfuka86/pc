@@ -148,14 +148,8 @@ void solve() {
   STR(s);
 
   vl h(n, 1);
-
-  rep(i, n - 1) {
-    if (s[i] == 'A') chmax(h[i + 1], h[i] + 1);
-  }
-  rep_r(i, n - 1) {
-    if (s[i] == 'B') chmax(h[i], h[i + 1] + 1);
-  }
-
+  rep(i, n - 1) if (s[i] == 'A') chmax(h[i + 1], h[i] + 1);
+  rep_r(i, n - 1) if (s[i] == 'B') chmax(h[i], h[i + 1] + 1);
   OUT(sum_of(h));
 }
 

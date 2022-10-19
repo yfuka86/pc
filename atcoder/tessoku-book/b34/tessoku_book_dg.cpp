@@ -152,6 +152,20 @@ void solve() {
     ans ^= grundy[a[i] % 5];
   }
   OUT(ans ? "First" : "Second");
+
+
+  {
+    ll n = 100; vl a = {2,4,6,9};
+    vl dp(n);
+    rep(i, n) {
+      vl t;
+      fore(aa, a) {
+        if (i - aa >= 0) t.pb(dp[i - aa]);
+      }
+      dp[i] = mex(t);
+    }
+    // debug(dp);
+  }
 }
 
 signed main() {

@@ -135,8 +135,7 @@ void solve() {
 
   sort(all(a));
 
-  vvmi dp(n + 1, vmi(k + 1, 0));
-  dp[0][0] = 1;
+  vvmi dp(n + 1, vmi(k + 1, 0)); dp[0][0] = 1;
   rep(i, n) {
     ll lower = lbs(a, a[i]);
     // debug(i + 1 - lower, lower);

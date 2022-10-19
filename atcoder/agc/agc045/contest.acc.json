@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "agc045",
+    "title": "AtCoder Grand Contest 045",
+    "url": "https://atcoder.jp/contests/agc045"
+  },
+  "tasks": [
+    {
+      "id": "agc045_a",
+      "label": "A",
+      "title": "Xor Battle",
+      "url": "https://atcoder.jp/contests/agc045/tasks/agc045_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "agc045_a.cpp"
+      }
+    },
+    {
+      "id": "agc045_b",
+      "label": "B",
+      "title": "01 Unbalanced",
+      "url": "https://atcoder.jp/contests/agc045/tasks/agc045_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "agc045_b.cpp"
+      }
+    },
+    {
+      "id": "agc045_c",
+      "label": "C",
+      "title": "Range Set",
+      "url": "https://atcoder.jp/contests/agc045/tasks/agc045_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "agc045_c.cpp"
+      }
+    },
+    {
+      "id": "agc045_d",
+      "label": "D",
+      "title": "Lamps and Buttons",
+      "url": "https://atcoder.jp/contests/agc045/tasks/agc045_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "agc045_d.cpp"
+      }
+    },
+    {
+      "id": "agc045_e",
+      "label": "E",
+      "title": "Fragile Balls",
+      "url": "https://atcoder.jp/contests/agc045/tasks/agc045_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "agc045_e.cpp"
+      }
+    },
+    {
+      "id": "agc045_f",
+      "label": "F",
+      "title": "Division into Multiples",
+      "url": "https://atcoder.jp/contests/agc045/tasks/agc045_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "agc045_f.cpp"
+      }
+    }
+  ]
+}
