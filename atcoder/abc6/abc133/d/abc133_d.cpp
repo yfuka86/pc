@@ -154,7 +154,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); VL(a,n);
+
+  ll sum = 0;
+  rep(i, n) {
+    if (i & 1) sum -= a[i]; else sum += a[i];
+  }
+
+  vl ans(n); ans[0] = sum;
+  rep(i, 1, n) {
+    ans[i] = (a[i - 1] - ans[i - 1] / 2) * 2;
+  }
+  OUTARRAY(ans);
 }
 
 signed main() {

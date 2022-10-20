@@ -151,7 +151,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  vs c(2); IN(c);
+  reverse(all(c[1]));
+  if (c[0] == c[1]) OUT("YES"); else OUT("NO");
 }
 
 signed main() {
