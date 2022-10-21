@@ -1,0 +1,1 @@
+map<ll, ll> factorize(ll N) { map<ll, ll> res; for (ll a = 2; a * a <= N; ++a) { if (N % a != 0) continue; ll ex = 0; while (N % a == 0) { ++ex; N /= a; } res[a]= ex; } if (N != 1) res[N] = 1; return res; }
