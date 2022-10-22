@@ -155,38 +155,37 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, m); STR(s);
+  LL(n, m); VL(a, n);
+  VL(x, m);
+  // RandGen rg; ll n = 10, m = 10;
+  // vl a = rg.vecl(n, -10, 10);
+  // vl x = rg.vecl(m, -10, 10);
 
-  reverse(all(s));
+  vl as = csum(a);
+  vl asma = as;
+  rep(i, n) { chmax(asma[i + 1], asma[i]); }
 
-  vl dp(n + 1, LINF); dp[0] = 0;
-  vl from(n + 1, -1);
-  queue<ll> que; que.push(0);
-  while(!que.empty()) {
-    ll v = que.front(); que.pop();
-    rep(i, 1, m + 1) {
-      if (v + i > n || s[v + i] == '1') continue;
-      if (chmin(dp[v + i], dp[v] + 1)) {
-        que.push(v + i);
-        from[v + i] = v;
-      } else break;
+  ll cycle = as.back();
+  ll offset = asma.back();
+
+  vl ans(m);
+  rep(i, m) {
+    if (x[i] <= offset) {
+      ans[i] = lower_bound(all(asma), x[i]) - asma.begin() - 1;
+    } else {
+      if (cycle <= 0) { ans[i] = -1; continue; }
+      ll cycnt = ceil((x[i] - offset), cycle);
+      ll rem = x[i] - cycle * cycnt;
+      ll off = lower_bound(all(asma), rem) - asma.begin() - 1;
+      ans[i] = cycnt * n + off;
     }
-  }
-  debug(dp);
-
-  if (dp[n] == LINF) OUTRET(-1);
-  vl ans;
-  ll cur = n;
-  while (cur != -1) {
-    if (from[cur] >= 0) ans.pb(cur - from[cur]);
-    cur = from[cur];
   }
   OUTARRAY(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

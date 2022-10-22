@@ -155,33 +155,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, m); STR(s);
+  LL(t);
+  VL(a, t);
 
-  reverse(all(s));
-
-  vl dp(n + 1, LINF); dp[0] = 0;
-  vl from(n + 1, -1);
-  queue<ll> que; que.push(0);
-  while(!que.empty()) {
-    ll v = que.front(); que.pop();
-    rep(i, 1, m + 1) {
-      if (v + i > n || s[v + i] == '1') continue;
-      if (chmin(dp[v + i], dp[v] + 1)) {
-        que.push(v + i);
-        from[v + i] = v;
-      } else break;
+  set<ll> S;
+  rep(a, 1, 10001) {
+    S.insert(a * a * a);
+  }
+  rep(i, t) {
+    bool valid = false;
+    fore(x, S) {
+      if (S.find(a[i] - x) != S.end()) { OUT("YES"); valid = true; break; }
     }
+    if (!valid) OUT("NO");
   }
-  debug(dp);
-
-  if (dp[n] == LINF) OUTRET(-1);
-  vl ans;
-  ll cur = n;
-  while (cur != -1) {
-    if (from[cur] >= 0) ans.pb(cur - from[cur]);
-    cur = from[cur];
-  }
-  OUTARRAY(ans);
 }
 
 signed main() {

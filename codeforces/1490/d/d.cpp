@@ -155,38 +155,22 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, m); STR(s);
-
-  reverse(all(s));
-
-  vl dp(n + 1, LINF); dp[0] = 0;
-  vl from(n + 1, -1);
-  queue<ll> que; que.push(0);
-  while(!que.empty()) {
-    ll v = que.front(); que.pop();
-    rep(i, 1, m + 1) {
-      if (v + i > n || s[v + i] == '1') continue;
-      if (chmin(dp[v + i], dp[v] + 1)) {
-        que.push(v + i);
-        from[v + i] = v;
-      } else break;
-    }
-  }
-  debug(dp);
-
-  if (dp[n] == LINF) OUTRET(-1);
-  vl ans;
-  ll cur = n;
-  while (cur != -1) {
-    if (from[cur] >= 0) ans.pb(cur - from[cur]);
-    cur = from[cur];
-  }
+  LL(n); VL(a, n, 1);
+  vl ans(n);
+  function<void(ll, ll, ll)> dfs = [&](ll l, ll r, ll d) {
+    auto it = max_element(a.begin() + l, a.begin() + r);
+    ll id = it - a.begin();
+    ans[id] = d;
+    if (l < id) dfs(l, id, d + 1);
+    if (id + 1 < r) dfs(id + 1, r, d + 1);
+  };
+  dfs(0, n, 0);
   OUTARRAY(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

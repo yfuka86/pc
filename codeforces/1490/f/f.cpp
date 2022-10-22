@@ -155,38 +155,30 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, m); STR(s);
+  LL(n); VL(a, n);
 
-  reverse(all(s));
+  map<ll, ll> cnt;
+  rep(i, n) cnt[a[i]]++;
 
-  vl dp(n + 1, LINF); dp[0] = 0;
-  vl from(n + 1, -1);
-  queue<ll> que; que.push(0);
-  while(!que.empty()) {
-    ll v = que.front(); que.pop();
-    rep(i, 1, m + 1) {
-      if (v + i > n || s[v + i] == '1') continue;
-      if (chmin(dp[v + i], dp[v] + 1)) {
-        que.push(v + i);
-        from[v + i] = v;
-      } else break;
-    }
+  vl cnts;
+  fore(_, c, cnt) cnts.pb(c);
+  sort(all(cnts));
+
+  if (cnts.size() == 1) OUTRET(0);
+
+  // debug(cnts);
+  ll m = cnts.size();
+  vl cs = csum(cnts);
+  ll ans = cs[m] - (cnts[0] * m);
+  rep(i, m - 1) {
+    chmin(ans, cs[i + 1] + (cs[m] - cs[i + 1]) - cnts[i + 1] * (m - 1 - i));
   }
-  debug(dp);
-
-  if (dp[n] == LINF) OUTRET(-1);
-  vl ans;
-  ll cur = n;
-  while (cur != -1) {
-    if (from[cur] >= 0) ans.pb(cur - from[cur]);
-    cur = from[cur];
-  }
-  OUTARRAY(ans);
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
