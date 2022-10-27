@@ -30,7 +30,7 @@ struct Timer {
 
 vector<pair<int, int>> rand_tree(ll n) {
   RandGen rg; vl p = rg.vecperm(n); vector<pair<int, int>> ret;
-  for (int i = 1; i < n; ++i) ret.pb(p[rg.l(0, i)], p[i]);
+  for (int i = 1; i < n; ++i) ret.pb({p[rg.l(0, i)], p[i]});
   return ret;
 }
 

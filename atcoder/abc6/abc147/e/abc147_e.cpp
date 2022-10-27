@@ -154,7 +154,30 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(h, w);
+  VV(ll, a, h, w);
+  VV(ll, b, h, w);
+
+  ll ma = 16000;
+  ll inid = abs(a[0][0] - b[0][0]);
+  v3(ll, dp, h, w, ma + 1); dp[0][0][8000 + inid] = 1; dp[0][0][8000 - inid] = 1;
+
+  rep(i, h) rep(j, w) rep(k, ma + 1) {
+    ll d = abs(a[i][j] - b[i][j]);
+    if (i > 0 && dp[i - 1][j][k]) {
+      if (k + d <= ma) dp[i][j][k + d] = 1;
+      if (0 <= k - d) dp[i][j][k - d] = 1;
+    }
+    if (j > 0 && dp[i][j - 1][k]) {
+      if (k + d <= ma) dp[i][j][k + d] = 1;
+      if (0 <= k - d) dp[i][j][k - d] = 1;
+    }
+  }
+  ll ans = LINF;
+  rep(i, ma + 1) {
+    if (dp[h - 1][w - 1][i]) chmin(ans, abs(i - 8000));
+  }
+  OUT(ans);
 }
 
 signed main() {

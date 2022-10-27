@@ -169,7 +169,7 @@ void solve() {
   diff /= 2;
   // OUTBIN(diff, 50);
 
-  // 桁DP diffがand (a[0] - x) (a[1] + x)のandがdiffとなるような最小のxを下から決める桁dp
+  // 桁DP (a[0] - x) (a[1] + x)のandがdiffとなるような最小のxを下から決める桁dp
   map<LT, ll> dp;
   function<ll(ll, ll, ll)> dfs = [&](ll a, ll b, ll c) {
     if ((a & b) == 0 && c == 0) return 0ll;

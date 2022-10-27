@@ -17,7 +17,7 @@ struct HeavyLightDecomposition {
     size[cur] = 1;
     for (auto& dst : g[cur]) {
       if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
-      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
+      depth[dst] = depth[cur] + dst.cost; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
     }
   }
   void dfs_hld(int cur) {

@@ -34,6 +34,10 @@ S e() { return LINF; }
 struct S {ll idx, x;};
 S op(S l, S r) { if (l.x <= r.x) return l; else return r; }
 S e() { return {-1, LINF}; }
+// indexつきmax(値が同じなら左優先)
+struct S {ll idx, x;};
+S op(S l, S r) { if (l.x < r.x) return r; else return l; }
+S e() { return {-1, -LINF}; }
 
 segtree<S, op, e> seg(a);
 

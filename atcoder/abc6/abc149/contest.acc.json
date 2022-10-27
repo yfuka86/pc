@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "abc149",
+    "title": "AtCoder Beginner Contest 149",
+    "url": "https://atcoder.jp/contests/abc149"
+  },
+  "tasks": [
+    {
+      "id": "abc149_a",
+      "label": "A",
+      "title": "Strings",
+      "url": "https://atcoder.jp/contests/abc149/tasks/abc149_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc149_a.cpp"
+      }
+    },
+    {
+      "id": "abc149_b",
+      "label": "B",
+      "title": "Greedy Takahashi",
+      "url": "https://atcoder.jp/contests/abc149/tasks/abc149_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc149_b.cpp"
+      }
+    },
+    {
+      "id": "abc149_c",
+      "label": "C",
+      "title": "Next Prime",
+      "url": "https://atcoder.jp/contests/abc149/tasks/abc149_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc149_c.cpp"
+      }
+    },
+    {
+      "id": "abc149_d",
+      "label": "D",
+      "title": "Prediction and Restriction",
+      "url": "https://atcoder.jp/contests/abc149/tasks/abc149_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc149_d.cpp"
+      }
+    },
+    {
+      "id": "abc149_e",
+      "label": "E",
+      "title": "Handshake",
+      "url": "https://atcoder.jp/contests/abc149/tasks/abc149_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc149_e.cpp"
+      }
+    },
+    {
+      "id": "abc149_f",
+      "label": "F",
+      "title": "Surrounded Nodes",
+      "url": "https://atcoder.jp/contests/abc149/tasks/abc149_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc149_f.cpp"
+      }
+    }
+  ]
+}

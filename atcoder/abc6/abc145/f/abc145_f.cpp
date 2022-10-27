@@ -155,7 +155,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k); VL(h, n);
+  h.insert(h.begin(), 0); h.pb(0);
+
+  vv(ll, dp, n + 2, k + 1, LINF); dp[0][0] = 0;
+
+  rep(i, n + 1) rep(j, k + 1) {
+    rep(to, i + 1, n + 2) {
+      if (j + (to - i - 1) <= k) chmin(dp[to][j + (to - i - 1)], dp[i][j] + max(0, h[to] - h[i]));
+    }
+  }
+  // debug(dp);
+  ll ans = LINF;
+  rep(i, k + 1) chmin(ans, dp[n + 1][i]);
+  OUT(ans);
 }
 
 signed main() {

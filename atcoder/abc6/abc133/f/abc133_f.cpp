@@ -106,6 +106,7 @@ int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; ret
 pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
 ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
+vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
 vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
 template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
 template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int msb(T x){ if (sizeof(x) == 4) return 31 - __builtin_clz(x); else return 63 - __builtin_clzll(x); }
@@ -153,8 +154,161 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+// https://nyaannyaan.github.io/library/tree/heavy-light-decomposition.hpp
+
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+template <typename G>
+struct HeavyLightDecomposition {
+ private:
+  void dfs_sz(int cur) {
+    size[cur] = 1;
+    for (auto& dst : g[cur]) {
+      if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
+      depth[dst] = depth[cur] + dst.cost;
+      par[dst] = cur;
+      dfs_sz(dst);
+      size[cur] += size[dst];
+      if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
+    }
+  }
+  void dfs_hld(int cur) {
+    down[cur] = id++; drev[down[cur]] = cur;
+    for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
+    up[cur] = id;
+  }
+  // [u, v)
+  vector<pair<int, int>> ascend(int u, int v) const {
+    vector<pair<int, int>> res;
+    while (nxt[u] != nxt[v]) { res.emplace_back(down[u], down[nxt[u]]); u = par[nxt[u]]; }
+    if (u != v) res.emplace_back(down[u], down[v] + 1); return res;
+  }
+  // (u, v]
+  vector<pair<int, int>> descend(int u, int v) const {
+    if (u == v) return {};
+    if (nxt[u] == nxt[v]) return {{down[u] + 1, down[v]}};
+    auto res = descend(u, par[nxt[v]]);
+    res.emplace_back(down[nxt[v]], down[v]);
+    return res;
+  }
+ public:
+  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
+  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
+  void build(int root) { dfs_sz(root); dfs_hld(root); }
+  pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
+  template <typename F>
+  void path_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) { int s = a + 1, t = b; s > t ? f(t, s) : f(s, t); }
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) { int s = a, t = b + 1; s > t ? f(t, s) : f(s, t); }
+  }
+  template <typename F>
+  void path_noncommutative_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) f(a + 1, b);
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) f(a, b + 1);
+  }
+  template <typename F>
+  void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
+  int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
+  int la(int a, int d) { assert(depth[a] >= d); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
+  int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
+};
+
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
-  LL(n);
+  LL(n, q);
+  VEC4(ll, a, b, c, d, n - 1);
+
+  map<ll, ll> f;
+  rep(i, n - 1) {
+    --a[i]; --b[i];
+    f[c[i]]++;
+  }
+
+  ll sq = sqrtll(n - 1).fi;
+  vl big;
+  fore(k, cn, f) {
+    if (f[k] >= sq) {
+      big.pb(k); f[k] = big.size() - 1;
+    } else f[k] = -1;
+  }
+
+  vvlt edge(n);
+  rep(i, n - 1) {
+    if (f[c[i]] < 0) {
+      edge[c[i]].pb({a[i], b[i], d[i]});
+    }
+  }
+
+  Graph<ll> G(n);
+  rep(i, n - 1) G.add_edge(a[i], b[i], d[i]);
+  HeavyLightDecomposition<Graph<ll>> hld(G);
+  vv(ll, dep, n, big.size());
+  vv(ll, dep2, n, big.size());
+  function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    fore(to, G[v]) {
+      if (to == p) continue;
+      rep(i, big.size()) {
+        dep[to][i] = dep[v][i] + (big[i] == c[to.idx] ? to.cost : 0);
+        dep2[to][i] = dep2[v][i] + (big[i] == c[to.idx] ? 1 : 0);
+      }
+      dfs(to, v);
+    }
+  };
+  dfs(0, -1);
+  // debug(dep);
+
+  rep(i, q) {
+    LL(x, y, u, v); --u; --v;
+    ll ans = hld.dist(u, v);
+    if (f.count(x) && f[x] >= 0) {
+      ll c = f[x]; // 色 bigのindexが入っている
+      ll ccost = dep[u][c] + dep[v][c] - dep[hld.lca(u, v)][c] * 2;
+      ll ccnt = dep2[u][c] + dep2[v][c] - dep2[hld.lca(u, v)][c] * 2;
+      OUT(ans - ccost + ccnt * y);
+    } else {
+      ll lc = hld.lca(u, v), lcd = hld.depth[lc], ud = hld.depth[u], vd = hld.depth[v];
+      fore(a, b, d, edge[x]) {
+        ll ad = hld.depth[a], bd = hld.depth[b];
+        if (lcd > ad || lcd > bd) continue;
+        if (ud >= ad && ud >= bd ) {
+          if (hld.la(u, ad) == a && hld.la(u, bd) == b) {
+            ans += y - d;
+            continue;
+          }
+        }
+        if (vd >= ad && vd >= bd) {
+          if (hld.la(v, ad) == a && hld.la(v, bd) == b) {
+            ans += y - d;
+            continue;
+          }
+        }
+      }
+      OUT(ans);
+    }
+  }
 }
 
 signed main() {

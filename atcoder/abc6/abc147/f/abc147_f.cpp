@@ -106,6 +106,7 @@ int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; ret
 pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
 ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
+vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
 vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
 template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
 template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int msb(T x){ if (sizeof(x) == 4) return 31 - __builtin_clz(x); else return 63 - __builtin_clzll(x); }
@@ -134,27 +135,84 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+
+struct Rngset {
+  map<ll, ll> ranges;
+  Rngset() : ranges() {}
+
+  void on(ll l, ll r) {
+    assert(l < r);
+    auto lt = ranges.lower_bound(l);
+    auto rt = ranges.upper_bound(r);
+    if (lt != ranges.begin() && l <= prev(lt)->se) { l = prev(lt)->fi; lt--; }
+    if (rt != ranges.begin() && r <= prev(rt)->se) { r = prev(rt)->se; }
+    while(lt != rt) { lt = ranges.erase(lt); }
+    ranges[l] = r;
+  }
+};
+
+ll solve(ll n, ll x, ll d) {
+  if (x == 0 && d == 0) return 1;
+  if (d == 0) return n + 1;
+
+  vl off(n);
+  if (d < 0) { x = -x; d = abs(d); }
+  rep(i, n) {
+    off[i] = x * (i + 1) % d;
+    if (off[i] < 0) off[i] += d;
+  }
+
+  vl sum(n); iota(all(sum), 0);
+  vl cs = csum(sum);
+
+  map<ll, Rngset> dp;
+  dp[0].on(0, d);
+  rep(i, n) {
+    ll c = x * (i + 1);
+    ll l = c + cs[i + 1] * d;
+    ll r = c + (cs[n] - cs[n - i - 1] + 1) * d;
+    // debug(c, l, r);
+    dp[off[i]].on(l, r);
+  }
+
+  ll ans = 0;
+  fore(_, rngs, dp) {
+    fore(l, r, rngs.ranges) {
+      ans += (r - l) / d;
+    }
+  }
+
+  return ans;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+ll naive(ll n, ll x, ll d) {
+  unordered_map<ll, ll> dp, dpt;
+  dp[0] = 1;
+  rep(i, n) {
+    fore(k, _, dp) {
+      dpt[k + x + d * i] = 1;
+    }
+    fore(k, _, dpt) {
+      dp[k] = 1;
+    }
+    dpt.clear();
+  }
+  return dp.size();
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = 10, x = rg.l(-1e2, 1e2), d = rg.l(-1e2, 1e2);
+    auto so = solve(n, x, d); auto na = naive(n, x, d);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      debug(n, x, d); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  LL(n);
+  LL(n, x, d);
+  OUT(solve(n, x, d));
 }
 
 signed main() {
