@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc269",
+    "title": "UNICORN Programming Contest 2022(AtCoder Beginner Contest 269)",
+    "url": "https://atcoder.jp/contests/abc269"
+  },
+  "tasks": [
+    {
+      "id": "abc269_a",
+      "label": "A",
+      "title": "Anyway Takahashi",
+      "url": "https://atcoder.jp/contests/abc269/tasks/abc269_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc269_a.cpp"
+      }
+    },
+    {
+      "id": "abc269_b",
+      "label": "B",
+      "title": "Rectangle Detection",
+      "url": "https://atcoder.jp/contests/abc269/tasks/abc269_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc269_b.cpp"
+      }
+    },
+    {
+      "id": "abc269_c",
+      "label": "C",
+      "title": "Submask",
+      "url": "https://atcoder.jp/contests/abc269/tasks/abc269_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc269_c.cpp"
+      }
+    },
+    {
+      "id": "abc269_d",
+      "label": "D",
+      "title": "Do use hexagon grid",
+      "url": "https://atcoder.jp/contests/abc269/tasks/abc269_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc269_d.cpp"
+      }
+    },
+    {
+      "id": "abc269_e",
+      "label": "E",
+      "title": "Last Rook",
+      "url": "https://atcoder.jp/contests/abc269/tasks/abc269_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc269_e.cpp"
+      }
+    },
+    {
+      "id": "abc269_f",
+      "label": "F",
+      "title": "Numbered Checker",
+      "url": "https://atcoder.jp/contests/abc269/tasks/abc269_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc269_f.cpp"
+      }
+    },
+    {
+      "id": "abc269_g",
+      "label": "G",
+      "title": "Reversible Cards 2",
+      "url": "https://atcoder.jp/contests/abc269/tasks/abc269_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc269_g.cpp"
+      }
+    },
+    {
+      "id": "abc269_h",
+      "label": "Ex",
+      "title": "Antichain",
+      "url": "https://atcoder.jp/contests/abc269/tasks/abc269_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc269_h.cpp"
+      }
+    }
+  ]
+}
