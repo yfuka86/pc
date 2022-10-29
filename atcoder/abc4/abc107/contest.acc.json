@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc107",
+    "title": "AtCoder Beginner Contest 107",
+    "url": "https://atcoder.jp/contests/abc107"
+  },
+  "tasks": [
+    {
+      "id": "abc107_a",
+      "label": "A",
+      "title": "Train",
+      "url": "https://atcoder.jp/contests/abc107/tasks/abc107_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc107_a.cpp"
+      }
+    },
+    {
+      "id": "abc107_b",
+      "label": "B",
+      "title": "Grid Compression",
+      "url": "https://atcoder.jp/contests/abc107/tasks/abc107_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc107_b.cpp"
+      }
+    },
+    {
+      "id": "arc101_a",
+      "label": "C",
+      "title": "Candles",
+      "url": "https://atcoder.jp/contests/abc107/tasks/arc101_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc101_a.cpp"
+      }
+    },
+    {
+      "id": "arc101_b",
+      "label": "D",
+      "title": "Median of Medians",
+      "url": "https://atcoder.jp/contests/abc107/tasks/arc101_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc101_b.cpp"
+      }
+    }
+  ]
+}

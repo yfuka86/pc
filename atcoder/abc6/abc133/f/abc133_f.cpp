@@ -114,8 +114,8 @@ template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int l
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T = ll> T sum_of(const vector<T> &v, int l = 0, int r = INF) { return accumulate(rng_of(v, l, min(r, (int)v.size())), T(0)); }
-ll max(int x, ll y) { return max((ll)x, y); } ll max(ll x, int y) { return max(x, (ll)y); }
-ll min(int x, ll y) { return min((ll)x, y); } ll min(ll x, int y) { return min(x, (ll)y); }
+template<class... T> constexpr auto min(T... a){ return min(initializer_list<common_type_t<T...>>{a...}); }
+template<class... T> constexpr auto max(T... a){ return max(initializer_list<common_type_t<T...>>{a...}); }
 ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
 // 操作系
 template<class T> void rotate(vector<vector<T>> &a) { ll n = a.size(), m = a[0].size(); vector<vector<T>> ret(m, vector<T>(n, 0)); rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j]; a = ret; }
@@ -221,7 +221,10 @@ struct HeavyLightDecomposition {
   template <typename F>
   void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
   int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
-  int la(int a, int d) { assert(depth[a] >= d); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
+  int la(int a, int d) { assert(0 <= d && d <= depth[a]);
+    while (depth[nxt[a]] > d) a = par[nxt[a]];
+    return drev[down[a] - (depth[a] - d)];
+  }
   int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
 
@@ -242,35 +245,35 @@ void solve() {
   VEC4(ll, a, b, c, d, n - 1);
 
   map<ll, ll> f;
-  rep(i, n - 1) {
+  for(ll i = 0; i < n - 1; i++) {
     --a[i]; --b[i];
     f[c[i]]++;
   }
 
   ll sq = sqrtll(n - 1).fi;
   vl big;
-  fore(k, cn, f) {
+  for(auto& [k, cn]: f) {
     if (f[k] >= sq) {
       big.pb(k); f[k] = big.size() - 1;
     } else f[k] = -1;
   }
 
   vvlt edge(n);
-  rep(i, n - 1) {
+  for(ll i = 0; i < n - 1; i++) {
     if (f[c[i]] < 0) {
       edge[c[i]].pb({a[i], b[i], d[i]});
     }
   }
 
-  Graph<ll> G(n);
-  rep(i, n - 1) G.add_edge(a[i], b[i], d[i]);
-  HeavyLightDecomposition<Graph<ll>> hld(G);
+  Graph<ll> G(n), G1(n);
+  for(ll i = 0; i < n - 1; i++) { G.add_edge(a[i], b[i], d[i]); G1.add_edge(a[i], b[i], 1); }
+  HeavyLightDecomposition<Graph<ll>> hld(G), hld1(G1);
   vv(ll, dep, n, big.size());
   vv(ll, dep2, n, big.size());
   function<void(ll, ll)> dfs = [&](ll v, ll p) {
-    fore(to, G[v]) {
+    for(auto &to: G[v]) {
       if (to == p) continue;
-      rep(i, big.size()) {
+      for(ll i = 0; i < (ll)big.size(); i++) {
         dep[to][i] = dep[v][i] + (big[i] == c[to.idx] ? to.cost : 0);
         dep2[to][i] = dep2[v][i] + (big[i] == c[to.idx] ? 1 : 0);
       }
@@ -279,6 +282,7 @@ void solve() {
   };
   dfs(0, -1);
   // debug(dep);
+  debug(hld.par);
 
   rep(i, q) {
     LL(x, y, u, v); --u; --v;
@@ -289,18 +293,18 @@ void solve() {
       ll ccnt = dep2[u][c] + dep2[v][c] - dep2[hld.lca(u, v)][c] * 2;
       OUT(ans - ccost + ccnt * y);
     } else {
-      ll lc = hld.lca(u, v), lcd = hld.depth[lc], ud = hld.depth[u], vd = hld.depth[v];
-      fore(a, b, d, edge[x]) {
-        ll ad = hld.depth[a], bd = hld.depth[b];
+      ll lc = hld1.lca(u, v), lcd = hld1.depth[lc], ud = hld1.depth[u], vd = hld1.depth[v];
+      for(auto[a, b, d]: edge[x]) {
+        ll ad = hld1.depth[a], bd = hld1.depth[b];
         if (lcd > ad || lcd > bd) continue;
-        if (ud >= ad && ud >= bd ) {
-          if (hld.la(u, ad) == a && hld.la(u, bd) == b) {
+        if (ud >= ad && ud >= bd) {
+          if (hld1.la(u, ad) == a && hld1.la(u, bd) == b) {
             ans += y - d;
             continue;
           }
         }
         if (vd >= ad && vd >= bd) {
-          if (hld.la(v, ad) == a && hld.la(v, bd) == b) {
+          if (hld1.la(v, ad) == a && hld1.la(v, bd) == b) {
             ans += y - d;
             continue;
           }

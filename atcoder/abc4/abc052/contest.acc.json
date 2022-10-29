@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc052",
+    "title": "AtCoder Beginner Contest 052",
+    "url": "https://atcoder.jp/contests/abc052"
+  },
+  "tasks": [
+    {
+      "id": "abc052_a",
+      "label": "A",
+      "title": "Two Rectangles",
+      "url": "https://atcoder.jp/contests/abc052/tasks/abc052_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc052_a.cpp"
+      }
+    },
+    {
+      "id": "abc052_b",
+      "label": "B",
+      "title": "Increment Decrement",
+      "url": "https://atcoder.jp/contests/abc052/tasks/abc052_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc052_b.cpp"
+      }
+    },
+    {
+      "id": "arc067_a",
+      "label": "C",
+      "title": "Factors of Factorial",
+      "url": "https://atcoder.jp/contests/abc052/tasks/arc067_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc067_a.cpp"
+      }
+    },
+    {
+      "id": "arc067_b",
+      "label": "D",
+      "title": "Walk and Teleport",
+      "url": "https://atcoder.jp/contests/abc052/tasks/arc067_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc067_b.cpp"
+      }
+    }
+  ]
+}

@@ -177,7 +177,11 @@ void solve() {
   vector<set<ll>> smin(n);
 
   function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    fore(to, G[v]) {
+      if (to == p) continue;
+      dfs()
 
+    }
   };
 }
 

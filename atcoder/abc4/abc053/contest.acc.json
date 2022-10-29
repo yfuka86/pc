@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc053",
+    "title": "AtCoder Beginner Contest 053",
+    "url": "https://atcoder.jp/contests/abc053"
+  },
+  "tasks": [
+    {
+      "id": "abc053_a",
+      "label": "A",
+      "title": "ABC/ARC",
+      "url": "https://atcoder.jp/contests/abc053/tasks/abc053_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc053_a.cpp"
+      }
+    },
+    {
+      "id": "abc053_b",
+      "label": "B",
+      "title": "A to Z String",
+      "url": "https://atcoder.jp/contests/abc053/tasks/abc053_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc053_b.cpp"
+      }
+    },
+    {
+      "id": "arc068_a",
+      "label": "C",
+      "title": "X: Yet Another Die Game",
+      "url": "https://atcoder.jp/contests/abc053/tasks/arc068_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc068_a.cpp"
+      }
+    },
+    {
+      "id": "arc068_b",
+      "label": "D",
+      "title": "Card Eater",
+      "url": "https://atcoder.jp/contests/abc053/tasks/arc068_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc068_b.cpp"
+      }
+    }
+  ]
+}

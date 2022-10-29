@@ -28,20 +28,20 @@ struct Timer {
 // }
 // if (!timer.before(1.5)) cout << "Infinity" << "\n";
 
-vector<pair<int, int>> rand_tree(ll n) {
-  RandGen rg; vl p = rg.vecperm(n); vector<pair<int, int>> ret;
+vlp rand_tree(ll n) {
+  RandGen rg; vl p = rg.vecperm(n); vlp ret;
   for (int i = 1; i < n; ++i) ret.pb({p[rg.l(0, i)], p[i]});
   return ret;
 }
 
-vector<pair<int, int>> rand_undir_graph(ll n, ll m) {
+vlp rand_undir_graph(ll n, ll m) {
   assert(n - 1 <= m && m <= n * (n - 1) / 2);
-  set<pair<int, int>> S;
-  for (auto p: rand_tree(n)) S.insert(p);
+  set<LP> S;
+  for (auto p: rand_tree(n)) S.insert({p.fi, p.se});
 
-  RandGen rg; vector<pair<int, int>> ret;
+  RandGen rg; vlp ret;
   if (n * (n - 1) / 4 < m) {
-    vector<pair<int, int>> t;
+    vlp t;
     rep(v, n) rep(u, v) if (S.find({u, v}) == S.end()) t.pb({u, v});
     rg.shuffle(t); rep(i, m - n + 1) S.insert(t[i]);
   } else {
@@ -51,6 +51,6 @@ vector<pair<int, int>> rand_undir_graph(ll n, ll m) {
     }
   }
   assert(S.size() == m);
-  for (auto p: S) ret.insert(p);
+  for (auto p: S) ret.pb(p);
   return ret;
 }

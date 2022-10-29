@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc102",
+    "title": "AtCoder Beginner Contest 102",
+    "url": "https://atcoder.jp/contests/abc102"
+  },
+  "tasks": [
+    {
+      "id": "abc102_a",
+      "label": "A",
+      "title": "Multiple of 2 and N",
+      "url": "https://atcoder.jp/contests/abc102/tasks/abc102_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc102_a.cpp"
+      }
+    },
+    {
+      "id": "abc102_b",
+      "label": "B",
+      "title": "Maximum Difference",
+      "url": "https://atcoder.jp/contests/abc102/tasks/abc102_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc102_b.cpp"
+      }
+    },
+    {
+      "id": "arc100_a",
+      "label": "C",
+      "title": "Linear Approximation",
+      "url": "https://atcoder.jp/contests/abc102/tasks/arc100_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc100_a.cpp"
+      }
+    },
+    {
+      "id": "arc100_b",
+      "label": "D",
+      "title": "Equal Cut",
+      "url": "https://atcoder.jp/contests/abc102/tasks/arc100_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc100_b.cpp"
+      }
+    }
+  ]
+}

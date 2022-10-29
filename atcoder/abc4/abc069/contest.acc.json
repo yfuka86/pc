@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc069",
+    "title": "AtCoder Beginner Contest 069",
+    "url": "https://atcoder.jp/contests/abc069"
+  },
+  "tasks": [
+    {
+      "id": "abc069_a",
+      "label": "A",
+      "title": "K-City",
+      "url": "https://atcoder.jp/contests/abc069/tasks/abc069_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc069_a.cpp"
+      }
+    },
+    {
+      "id": "abc069_b",
+      "label": "B",
+      "title": "i18n",
+      "url": "https://atcoder.jp/contests/abc069/tasks/abc069_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc069_b.cpp"
+      }
+    },
+    {
+      "id": "arc080_a",
+      "label": "C",
+      "title": "4-adjacent",
+      "url": "https://atcoder.jp/contests/abc069/tasks/arc080_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc080_a.cpp"
+      }
+    },
+    {
+      "id": "arc080_b",
+      "label": "D",
+      "title": "Grid Coloring",
+      "url": "https://atcoder.jp/contests/abc069/tasks/arc080_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc080_b.cpp"
+      }
+    }
+  ]
+}

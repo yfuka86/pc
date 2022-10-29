@@ -17,7 +17,7 @@ struct HeavyLightDecomposition {
     size[cur] = 1;
     for (auto& dst : g[cur]) {
       if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
-      depth[dst] = depth[cur] + dst.cost; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
+      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
     }
   }
   void dfs_hld(int cur) {
@@ -61,6 +61,6 @@ struct HeavyLightDecomposition {
   template <typename F>
   void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
   int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
-  int la(int a, int d) { assert(depth[a] >= d); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
+  int la(int a, int d) { assert(0 <= d && d <= depth[a]); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
   int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
