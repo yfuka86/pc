@@ -173,12 +173,8 @@ ld distance(const Segment& s, const Point& p) {
   return abs(cross(s.to - s.from, p - s.from)) / (s.to - s.from).abs();
 }
 ld is_intersected(const Segment& a, const Segment& b) {
-  return (cross(a.to - a.from, b.from - a.from) *
-              cross(a.to - a.from, b.to - a.from) <
-          EPS) &&
-          (cross(b.to - b.from, a.from - b.from) *
-              cross(b.to - b.from, a.to - b.from) <
-          EPS);
+  return (cross(a.to - a.from, b.from - a.from) * cross(a.to - a.from, b.to - a.from) < EPS) &&
+         (cross(b.to - b.from, a.from - b.from) * cross(b.to - b.from, a.to - b.from) < EPS);
 }
 
 Point intersection_point(const Segment& a, const Segment& b) {

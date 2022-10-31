@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc275",
+    "title": "AtCoder Beginner Contest 275",
+    "url": "https://atcoder.jp/contests/abc275"
+  },
+  "tasks": [
+    {
+      "id": "abc275_a",
+      "label": "A",
+      "title": "Find Takahashi",
+      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc275_a.cpp"
+      }
+    },
+    {
+      "id": "abc275_b",
+      "label": "B",
+      "title": "ABC-DEF",
+      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc275_b.cpp"
+      }
+    },
+    {
+      "id": "abc275_c",
+      "label": "C",
+      "title": "Counting Squares",
+      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc275_c.cpp"
+      }
+    },
+    {
+      "id": "abc275_d",
+      "label": "D",
+      "title": "Yet Another Recursive Function",
+      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc275_d.cpp"
+      }
+    },
+    {
+      "id": "abc275_e",
+      "label": "E",
+      "title": "Sugoroku 4",
+      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc275_e.cpp"
+      }
+    },
+    {
+      "id": "abc275_f",
+      "label": "F",
+      "title": "Erase Subarrays",
+      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc275_f.cpp"
+      }
+    },
+    {
+      "id": "abc275_g",
+      "label": "G",
+      "title": "Infinite Knapsack",
+      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc275_g.cpp"
+      }
+    },
+    {
+      "id": "abc275_h",
+      "label": "Ex",
+      "title": "Monster",
+      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc275_h.cpp"
+      }
+    }
+  ]
+}

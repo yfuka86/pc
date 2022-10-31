@@ -189,15 +189,6 @@ void solve() {
 
   rep(i, N) {
     rep(j, N + 1) {
-      // rep2(k, 1, N - i + 1) {
-      //   ll add = 0;
-      //   if (k < 10) add = 2;
-      //   else if (k < 100) add = 3;
-      //   else if (k < 1000) add = 4;
-      //   else add = 5;
-      //   dp[i + k][j + add] += dp[i][j] * (i == 0 ? 26 : 25) % P;
-      //   dp[i + k][j + add] %= P;
-      // }
       if (i >= 2) { dp[i][j] += (dpsum[i - 2][j] - dpsum[i - 2][max<ll>(0, j - 9)]) * (i - 2 == 0 ? 26 : 25); }
       if (i >= 3) { dp[i][j] += (dpsum[i - 3][max<ll>(0, j - 9)] - dpsum[i - 3][max<ll>(0, j - 99)]) * (i - 3 == 0 ? 26 : 25); }
       if (i >= 4) { dp[i][j] += (dpsum[i - 4][max<ll>(0, j - 99)] - dpsum[i - 4][max<ll>(0, j - 999)]) * (i - 4 == 0 ? 26 : 25); }

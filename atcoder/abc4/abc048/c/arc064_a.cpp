@@ -154,7 +154,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, x);
+  VL(a, n);
+
+  ll ans = 0;
+  rep(i, n) {
+    if (a[i] > x) { ans += a[i] - x; a[i] = x; }
+    if (i > 0 && a[i - 1] + a[i] > x) {
+      ans += a[i - 1] + a[i] - x;
+      a[i] -= a[i - 1] + a[i] - x;
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {

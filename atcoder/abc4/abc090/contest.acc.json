@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc090",
+    "title": "AtCoder Beginner Contest 090",
+    "url": "https://atcoder.jp/contests/abc090"
+  },
+  "tasks": [
+    {
+      "id": "abc090_a",
+      "label": "A",
+      "title": "Diagonal String",
+      "url": "https://atcoder.jp/contests/abc090/tasks/abc090_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc090_a.cpp"
+      }
+    },
+    {
+      "id": "abc090_b",
+      "label": "B",
+      "title": "Palindromic Numbers",
+      "url": "https://atcoder.jp/contests/abc090/tasks/abc090_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc090_b.cpp"
+      }
+    },
+    {
+      "id": "arc091_a",
+      "label": "C",
+      "title": "Flip,Flip, and Flip......",
+      "url": "https://atcoder.jp/contests/abc090/tasks/arc091_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc091_a.cpp"
+      }
+    },
+    {
+      "id": "arc091_b",
+      "label": "D",
+      "title": "Remainder Reminder",
+      "url": "https://atcoder.jp/contests/abc090/tasks/arc091_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc091_b.cpp"
+      }
+    }
+  ]
+}

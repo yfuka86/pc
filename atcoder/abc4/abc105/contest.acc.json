@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc105",
+    "title": "AtCoder Beginner Contest 105",
+    "url": "https://atcoder.jp/contests/abc105"
+  },
+  "tasks": [
+    {
+      "id": "abc105_a",
+      "label": "A",
+      "title": "AtCoder Crackers",
+      "url": "https://atcoder.jp/contests/abc105/tasks/abc105_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc105_a.cpp"
+      }
+    },
+    {
+      "id": "abc105_b",
+      "label": "B",
+      "title": "Cakes and Donuts",
+      "url": "https://atcoder.jp/contests/abc105/tasks/abc105_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc105_b.cpp"
+      }
+    },
+    {
+      "id": "abc105_c",
+      "label": "C",
+      "title": "Base -2 Number",
+      "url": "https://atcoder.jp/contests/abc105/tasks/abc105_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc105_c.cpp"
+      }
+    },
+    {
+      "id": "abc105_d",
+      "label": "D",
+      "title": "Candy Distribution",
+      "url": "https://atcoder.jp/contests/abc105/tasks/abc105_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc105_d.cpp"
+      }
+    }
+  ]
+}
