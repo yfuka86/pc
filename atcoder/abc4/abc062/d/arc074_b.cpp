@@ -135,17 +135,69 @@ bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size()
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+  vl a1(n), a2(n), a3(n);
+  rep(i, n) {
+    a1[i] = a[i];
+    a2[i] = a[i + n];
+    a3[i] = a[i + n * 2];
+  }
+
+
+  vl left(n + 1), right(n + 1);
+
+  {
+    ll sum = 0;
+    multiset<ll> s;
+    rep(i, n) { s.insert(a1[i]); sum += a1[i]; }
+    left[0] = sum;
+    rep(i, n) {
+      s.insert(a2[i]); sum += a2[i];
+      sum -= *s.begin(); s.erase(s.begin());
+      left[i + 1] = sum;
+    }
+  }
+
+  {
+    ll sum = 0;
+    multiset<ll> s;
+    rep(i, n) { s.insert(a3[i]); sum += a3[i]; }
+    right[n] = sum;
+    rep_r(i, n) {
+      debug(s);
+      s.insert(a2[i]); sum += a2[i];
+      sum -= *prev(s.end()); s.erase(prev(s.end()));
+      right[i] = sum;
+    }
+  }
+
+
+  ll ans = -LINF, id = -1;
+  rep(i, n + 1) {
+    if (chmax(ans, left[i] - right[i])) id = i;
+  }
+  return ans;
 }
 
 ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+  ll ans = -LINF;
+  ll a1, a2;
+  rep(S, 1 << n * 3) {
+    if (__builtin_popcount(S) != n * 2) continue;
+    vl t1, t2;
+    rep(i, n * 3) {
+      if (S & 1 << i) {
+        if (t1.size() < n) t1.pb(a[i]); else t2.pb(a[i]);
+      }
+    }
+    if (chmax(ans, sum_of(t1) - sum_of(t2))) { a1 = sum_of(t1); a2 = sum_of(t2); }
+  }
+  return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
+    ll n = 4;
+    vl a = rg.vecl(n * 3, 1, 1e2);
     auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
       debug(n, a); debug(so); debug(na);
@@ -155,6 +207,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  VL(a, n * 3);
+  OUT(solve(n, a));
 }
 
 signed main() {

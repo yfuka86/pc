@@ -32,6 +32,19 @@ pair<ll, LP> diameter(Graph<ll> &G) {
   dfs(0, -1, 0); ll s = deepest.second; deepest = mp(0, 0); dfs(s, -1, 0);
   return mp(deepest.first, mp(s, deepest.second)); }
 
+
+// 部分木のサイズ
+vl sz(n);
+function<void(ll, ll)> dfs = [&](ll v, ll p) {
+  sz[v] += 1;
+  fore(to, G[v]) {
+    if (to == p) continue;
+    dfs(to, v);
+    sz[v] += sz[to];
+  }
+};
+dfs(0, -1);
+
 vector<ll> bfs(Graph<ll> &G, ll start) {
   queue<ll> que; vl cost(G.size(), LINF);
   cost[start] = 0; que.push(start);

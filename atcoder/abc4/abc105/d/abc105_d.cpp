@@ -154,7 +154,15 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, m); VL(a, n);
+  vl as = csum(a);
+
+  map<ll, ll> f;
+  rep(i, n + 1) f[as[i] % m]++;
+
+  ll ans = 0;
+  fore(_, c, f) ans += c * (c - 1) / 2;
+  OUT(ans);
 }
 
 signed main() {

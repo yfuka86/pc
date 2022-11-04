@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "arc026",
+    "title": "AtCoder Regular Contest 026",
+    "url": "https://atcoder.jp/contests/arc026"
+  },
+  "tasks": [
+    {
+      "id": "arc026_1",
+      "label": "A",
+      "title": "ダイナミックなポーズ",
+      "url": "https://atcoder.jp/contests/arc026/tasks/arc026_1",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc026_1.cpp"
+      }
+    },
+    {
+      "id": "arc026_2",
+      "label": "B",
+      "title": "完全数",
+      "url": "https://atcoder.jp/contests/arc026/tasks/arc026_2",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc026_2.cpp"
+      }
+    },
+    {
+      "id": "arc026_3",
+      "label": "C",
+      "title": "蛍光灯",
+      "url": "https://atcoder.jp/contests/arc026/tasks/arc026_3",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc026_3.cpp"
+      }
+    },
+    {
+      "id": "arc026_4",
+      "label": "D",
+      "title": "道を直すお仕事",
+      "url": "https://atcoder.jp/contests/arc026/tasks/arc026_4",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc026_4.cpp"
+      }
+    }
+  ]
+}

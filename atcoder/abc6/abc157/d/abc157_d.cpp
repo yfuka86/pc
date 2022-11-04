@@ -167,24 +167,23 @@ struct UnionFind {
 //------------------------------------------------------------------------------
 
 void solve() {
-  LL(n, m, k);
+  LL(n,m,k);
   UnionFind uf(n);
-  vl ans(n);
+  vl fri(n), blo(n);
   rep(i, m) {
     LL(a, b); --a; --b;
-    ans[a]--; ans[b]--;
     uf.unite(a, b);
+    fri[a]++; fri[b]++;
   }
-  rep(i, n) {
-    ans[i] += uf.size(i) - 1;
-  }
+
   rep(i, k) {
     LL(c, d); --c; --d;
-    if (uf.same(c, d)) {
-      ans[c]--; ans[d]--;
-    }
+    if (uf.same(c, d)) { blo[c]++; blo[d]++; }
   }
-  OUTARRAY(ans);
+
+  rep(i, n) {
+    cout << uf.size(i) - fri[i] - blo[i] - 1 << " ";
+  } cout << "\n";
 }
 
 signed main() {

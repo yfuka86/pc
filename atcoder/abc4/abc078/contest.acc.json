@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc078",
+    "title": "AtCoder Beginner Contest 078",
+    "url": "https://atcoder.jp/contests/abc078"
+  },
+  "tasks": [
+    {
+      "id": "abc078_a",
+      "label": "A",
+      "title": "HEX",
+      "url": "https://atcoder.jp/contests/abc078/tasks/abc078_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc078_a.cpp"
+      }
+    },
+    {
+      "id": "abc078_b",
+      "label": "B",
+      "title": "ISU",
+      "url": "https://atcoder.jp/contests/abc078/tasks/abc078_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc078_b.cpp"
+      }
+    },
+    {
+      "id": "arc085_a",
+      "label": "C",
+      "title": "HSI",
+      "url": "https://atcoder.jp/contests/abc078/tasks/arc085_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc085_a.cpp"
+      }
+    },
+    {
+      "id": "arc085_b",
+      "label": "D",
+      "title": "ABS",
+      "url": "https://atcoder.jp/contests/abc078/tasks/arc085_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc085_b.cpp"
+      }
+    }
+  ]
+}

@@ -154,63 +154,51 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-#include <atcoder/mincostflow>
+#include <atcoder/maxflow>
 using namespace atcoder;
 
 void solve() {
   LL(h, w);
   vs s(h); IN(s);
 
-  ll cnt = 0;
-
-  mcf_graph<ll, ll> mcf(h * w * 3 + 2);
-  ll S = h * w * 3, T = S + 1;
-  ll off1 = h * w, off2 = off1 * 2;
-
-  auto add = [&](ll i, ll j, ll ca, ll co) {
-    mcf.add_edge(i, j, ca, co);
-  };
-
-  vv(ll, ecx, h, w);
-  vv(bool, visx, h, w);
-  vv(ll, ecy, h, w);
-  vv(bool, visy, h, w);
+  vlp ver, hor;
   rep(i, h) rep(j, w) {
-    if (s[i][j] == '.') { cnt++;
-      rep(di, h - i) {
-        if (s[i + di][j] == '#' || visx[i + di][j]) break;
-        ecx[i][j]++;
-        visx[i + di][j] = 1;
-        add(i * w + j, off2 + (i + di) * w + j, 1, 0);
-      }
-      rep(dj, w - j) {
-        if (s[i][j + dj] == '#' || visy[i][j + dj]) break;
-        ecy[i][j]++;
-        visy[i][j + dj] = 1;
-        add(off1 + i * w + j, off2 + i * w + (j + dj), 1, 0);
-      }
-    }
+    if (s[i][j] == '#') continue;
+    if (i == 0 || s[i - 1][j] == '#') ver.pb({i, j});
+    if (j == 0 || s[i][j - 1] == '#') hor.pb({i, j});
+  }
+  map<LP, ll> vmp, hmp;
+  rep(i, ver.size()) vmp[ver[i]] = i;
+  rep(i, hor.size()) hmp[hor[i]] = i;
+  // debug(vmp, hmp);
+
+  ll n = vmp.size(), m = hmp.size();
+  mf_graph<ll> mf(n + m + 2);
+  ll S = n + m, T = S + 1;
+
+  rep(i, n) {
+    mf.add_edge(S, i, 1);
+    mf.add_edge(i, T, 0);
+  }
+  rep(i, m) {
+    mf.add_edge(S, n + i, 0);
+    mf.add_edge(n + i, T, 1);
   }
 
-  rep(i, h * w) {
-    add(S, i, 300, 300 - ecx[i / w][i % w]);
+  ll inf = 500;
+  rep(i, h) rep(j, w) {
+    if (s[i][j] == '#') continue;
+    ll di = i;
+    while (di > 0 && s[di - 1][j] == '.') di--;
+    ll vid = vmp[{di, j}];
+    ll dj = j;
+    while (dj > 0 && s[i][dj - 1] == '.') dj--;
+    ll hid = hmp[{i, dj}];
+    // debug(vid, hid);
+    mf.add_edge(vid, n + hid, inf);
   }
-  rep(i, h * w) {
-    add(S, i + off1, 300, 300 - ecy[i / w][i % w]);
-  }
-  rep(i, h * w) {
-    if (s[i / w][i % w] == '#') continue;
-    add(off2 + i, T, 1, 0);
-  }
-  auto [cap, cost] = mcf.flow(S,T);
 
-  ll csum = 0;
-  fore(e, mcf.edges()) {
-    // debug(e.from, e.to, e.cap, e.flow, e.cost);
-    if (e.cost && e.flow) csum++;
-  }
-  OUT(csum);
-  // OUT(cap, cost);
+  OUT(mf.flow(S, T));
 }
 
 signed main() {

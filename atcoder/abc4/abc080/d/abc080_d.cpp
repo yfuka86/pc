@@ -154,7 +154,38 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, c);
+
+  vvl channel(c);
+  rep(i, n) {
+    LL(s, t, cc); cc--;
+    channel[cc].pb(s);
+    channel[cc].pb(t);
+  }
+  rep(i, c) {
+    sort(all(channel[i]));
+    vl t;
+    rep(j, channel[i].size()) {
+      if (j < channel[i].size() - 1 && channel[i][j] == channel[i][j + 1]) {
+        j++;
+      } else {
+        t.pb(channel[i][j]);
+      }
+    }
+    channel[i] = t;
+  }
+
+  vl imos(100010);
+  rep(i, c) {
+    rep(j, channel[i].size() / 2) {
+      imos[channel[i][j * 2] - 1]++;
+      imos[channel[i][j * 2 + 1]]--;
+    }
+  }
+  rep(i, 100005) {
+    imos[i + 1] += imos[i];
+  }
+  OUT(*max_element(all(imos)));
 }
 
 signed main() {

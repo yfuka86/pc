@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "arc058",
+    "title": "AtCoder Regular Contest 058",
+    "url": "https://atcoder.jp/contests/arc058"
+  },
+  "tasks": [
+    {
+      "id": "arc058_a",
+      "label": "C",
+      "title": "Iroha's Obsession",
+      "url": "https://atcoder.jp/contests/arc058/tasks/arc058_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc058_a.cpp"
+      }
+    },
+    {
+      "id": "arc058_b",
+      "label": "D",
+      "title": "Iroha and a Grid",
+      "url": "https://atcoder.jp/contests/arc058/tasks/arc058_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc058_b.cpp"
+      }
+    },
+    {
+      "id": "arc058_c",
+      "label": "E",
+      "title": "Iroha and Haiku",
+      "url": "https://atcoder.jp/contests/arc058/tasks/arc058_c",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc058_c.cpp"
+      }
+    },
+    {
+      "id": "arc058_d",
+      "label": "F",
+      "title": "Iroha Loves Strings",
+      "url": "https://atcoder.jp/contests/arc058/tasks/arc058_d",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc058_d.cpp"
+      }
+    }
+  ]
+}

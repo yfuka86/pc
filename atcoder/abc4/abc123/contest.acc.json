@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc123",
+    "title": "AtCoder Beginner Contest 123",
+    "url": "https://atcoder.jp/contests/abc123"
+  },
+  "tasks": [
+    {
+      "id": "abc123_a",
+      "label": "A",
+      "title": "Five Antennas",
+      "url": "https://atcoder.jp/contests/abc123/tasks/abc123_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc123_a.cpp"
+      }
+    },
+    {
+      "id": "abc123_b",
+      "label": "B",
+      "title": "Five Dishes",
+      "url": "https://atcoder.jp/contests/abc123/tasks/abc123_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc123_b.cpp"
+      }
+    },
+    {
+      "id": "abc123_c",
+      "label": "C",
+      "title": "Five Transportations",
+      "url": "https://atcoder.jp/contests/abc123/tasks/abc123_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc123_c.cpp"
+      }
+    },
+    {
+      "id": "abc123_d",
+      "label": "D",
+      "title": "Cake 123",
+      "url": "https://atcoder.jp/contests/abc123/tasks/abc123_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc123_d.cpp"
+      }
+    }
+  ]
+}

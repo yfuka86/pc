@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc068",
+    "title": "AtCoder Beginner Contest 068",
+    "url": "https://atcoder.jp/contests/abc068"
+  },
+  "tasks": [
+    {
+      "id": "abc068_a",
+      "label": "A",
+      "title": "ABCxxx",
+      "url": "https://atcoder.jp/contests/abc068/tasks/abc068_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc068_a.cpp"
+      }
+    },
+    {
+      "id": "abc068_b",
+      "label": "B",
+      "title": "Break Number",
+      "url": "https://atcoder.jp/contests/abc068/tasks/abc068_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc068_b.cpp"
+      }
+    },
+    {
+      "id": "arc079_a",
+      "label": "C",
+      "title": "Cat Snuke and a Voyage",
+      "url": "https://atcoder.jp/contests/abc068/tasks/arc079_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc079_a.cpp"
+      }
+    },
+    {
+      "id": "arc079_b",
+      "label": "D",
+      "title": "Decrease (Contestant ver.)",
+      "url": "https://atcoder.jp/contests/abc068/tasks/arc079_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc079_b.cpp"
+      }
+    }
+  ]
+}

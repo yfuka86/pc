@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc083",
+    "title": "AtCoder Beginner Contest 083",
+    "url": "https://atcoder.jp/contests/abc083"
+  },
+  "tasks": [
+    {
+      "id": "abc083_a",
+      "label": "A",
+      "title": "Libra",
+      "url": "https://atcoder.jp/contests/abc083/tasks/abc083_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc083_a.cpp"
+      }
+    },
+    {
+      "id": "abc083_b",
+      "label": "B",
+      "title": "Some Sums",
+      "url": "https://atcoder.jp/contests/abc083/tasks/abc083_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc083_b.cpp"
+      }
+    },
+    {
+      "id": "arc088_a",
+      "label": "C",
+      "title": "Multiple Gift",
+      "url": "https://atcoder.jp/contests/abc083/tasks/arc088_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc088_a.cpp"
+      }
+    },
+    {
+      "id": "arc088_b",
+      "label": "D",
+      "title": "Wide Flip",
+      "url": "https://atcoder.jp/contests/abc083/tasks/arc088_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc088_b.cpp"
+      }
+    }
+  ]
+}

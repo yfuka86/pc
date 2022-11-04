@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc092",
+    "title": "AtCoder Beginner Contest 092",
+    "url": "https://atcoder.jp/contests/abc092"
+  },
+  "tasks": [
+    {
+      "id": "abc092_a",
+      "label": "A",
+      "title": "Traveling Budget",
+      "url": "https://atcoder.jp/contests/abc092/tasks/abc092_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc092_a.cpp"
+      }
+    },
+    {
+      "id": "abc092_b",
+      "label": "B",
+      "title": "Chocolate",
+      "url": "https://atcoder.jp/contests/abc092/tasks/abc092_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc092_b.cpp"
+      }
+    },
+    {
+      "id": "arc093_a",
+      "label": "C",
+      "title": "Traveling Plan",
+      "url": "https://atcoder.jp/contests/abc092/tasks/arc093_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc093_a.cpp"
+      }
+    },
+    {
+      "id": "arc093_b",
+      "label": "D",
+      "title": "Grid Components",
+      "url": "https://atcoder.jp/contests/abc092/tasks/arc093_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc093_b.cpp"
+      }
+    }
+  ]
+}

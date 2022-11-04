@@ -154,7 +154,31 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); VL(a, n);
+
+  vl as = csum(a);
+
+  ll ans = LINF;
+  rep(i, 2, n - 1) {
+    ll left = as[i], right = as[n] - as[i];
+
+    vlp pl, pr;
+    auto lt = upper_bound(rng_of(as, 0, i), left / 2);
+    if (lt != as.begin() + i) pl.pb({left - *lt, *lt});
+    if (prev(lt) != as.begin()) pl.pb({left - *prev(lt), *prev(lt)});
+
+    auto rt = upper_bound(rng_of(as, i, n), as[i] + right / 2);
+    if (rt != as.end()) pr.pb({as[n] - *rt, *rt - as[i]});
+    if (prev(rt) != as.begin() + i) pr.pb({as[n] - *prev(rt), *prev(rt) - as[i]});
+
+    rep(i, pl.size()) rep(j, pr.size()) {
+      vl t;
+      auto [x, y] = pl[i]; t.pb(x); t.pb(y);
+      auto [x2,y2] = pr[j]; t.pb(x2); t.pb(y2);
+      chmin(ans, *max_element(all(t)) - *min_element(all(t)));
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {

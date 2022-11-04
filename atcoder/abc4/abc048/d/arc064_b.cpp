@@ -153,8 +153,59 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+void enum_check(ll N, ll from, ll to, function<bool(vl&)> check, bool inc = false) { // size, [from, to)
+  to--; vl st(N, from);
+  while (1) {
+    assert(st.size() == N); if (!check(st)) break;
+    while (st.size() && st.back() == to) st.pop_back(); if (st.size() == 0) break;
+    st.back()++;
+    while (st.size() < N) if (inc) st.pb(st.back()); else st.pb(from);
+  }
+}
+
 void solve() {
-  LL(n);
+  STR(s);
+
+  if (0) {
+    map<vl, ll> mp;
+    function<ll(vl)> dfs = [&](vl v) {
+      if (mp.count(v)) return mp[v];
+
+      ll n = v.size();
+      if (v[0] == 0 || v.back() == 0) return LINF;
+      rep(i, n - 1) if (v[i] == v[i + 1]) return LINF;
+      if (n == 1) return mp[v] = 0;
+
+      vl t;
+      rep(i, n) {
+        vl tv = v;
+        tv.erase(tv.begin() + i);
+        t.pb(dfs(tv));
+      }
+      return mp[v] = mex(t);
+    };
+
+    rep(n, 1, 6) {
+      enum_check(n, 0, n, [&](vl &v) {
+        dfs(v);
+        return true;
+      });
+    }
+
+    rep(i, 1, 6) {
+      fore(v, c, mp) {
+        if (v.size() == i) debug(v, c);
+      }
+    }
+  }
+
+  if (s[0] == s.back()) {
+    if (s.size() & 1) OUT("Second"); else OUT("First");
+  } else {
+    if (s.size() & 1) OUT("First"); else OUT("Second");
+  }
+
+
 }
 
 signed main() {
