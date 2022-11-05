@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "ttpc2022",
+    "title": "東京工業大学プログラミングコンテスト2022",
+    "url": "https://atcoder.jp/contests/ttpc2022"
+  },
+  "tasks": [
+    {
+      "id": "ttpc2022_a",
+      "label": "A",
+      "title": "Next TTPC 2",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "ttpc2022_a.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_b",
+      "label": "B",
+      "title": "Magical Wallet",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "ttpc2022_b.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_c",
+      "label": "C",
+      "title": "Five Med Sum",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "ttpc2022_c.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_d",
+      "label": "D",
+      "title": "XOR Tree Path",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "ttpc2022_d.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_e",
+      "label": "E",
+      "title": "Name Value",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "ttpc2022_e.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_f",
+      "label": "F",
+      "title": "Make Convex Sequence",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "ttpc2022_f.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_g",
+      "label": "G",
+      "title": "Count Arithmetic Progression",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "ttpc2022_g.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_h",
+      "label": "H",
+      "title": "Colorful Graph",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "ttpc2022_h.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_i",
+      "label": "I",
+      "title": "XOR Reachable",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "ttpc2022_i.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_j",
+      "label": "J",
+      "title": "Jewel Game",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "ttpc2022_j.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_k",
+      "label": "K",
+      "title": "Peaceful Results",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "ttpc2022_k.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_l",
+      "label": "L",
+      "title": "Range NEQ",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "ttpc2022_l.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_m",
+      "label": "M",
+      "title": "Many Products",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "ttpc2022_m.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_n",
+      "label": "N",
+      "title": "Expanded Hull",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "ttpc2022_n.cpp"
+      }
+    },
+    {
+      "id": "ttpc2022_o",
+      "label": "O",
+      "title": "Parallel Processing",
+      "url": "https://atcoder.jp/contests/ttpc2022/tasks/ttpc2022_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "ttpc2022_o.cpp"
+      }
+    }
+  ]
+}
