@@ -155,45 +155,53 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+void enum_check(ll N, ll from, ll to, function<bool(vl&)> check, bool inc = false) { // size, [from, to)
+  to--; vl st(N, from);
+  while (1) {
+    assert(st.size() == N); if (!check(st)) break;
+    while (st.size() && st.back() == to) st.pop_back(); if (st.size() == 0) break;
+    st.back()++;
+    while (st.size() < N) if (inc) st.pb(st.back()); else st.pb(from);
+  }
+}
+
 void solve() {
-  LL(n); VL(t, n); VL(v, n);
-  rep(i, n) { t[i] *= 2; v[i] *= 2; }
+  LL(n); VL(a, n);
 
-  ll m = sum_of(t);
-  vlp dp(m);
-  rep(i, m) {
-    if (i < m / 2) dp[i] = {i, 1};
-    else dp[i] = {m - i, -1};
-  }
-  // debug(dp);
-  ll cur = 0;
-  rep(i, n) {
-    ll l = cur, r = cur + t[i];
-    rep(t, l, r) {
-      chmin(dp[t], mp(v[i], 0ll));
-    }
-    rep(t, max(0, l - 300), l) {
-      chmin(dp[t], mp(v[i] + (l - t), -1ll));
-    }
-    rep(t, r, min(m, r + 300)) {
-      chmin(dp[t], mp(v[i] + (t - r), 1ll));
-    }
+  if (0) {
+    map<vl, ll> mp;
 
-    cur += t[i];
+    function<ll(vl)> dfs = [&](vl v) {
+      if (mp.count(v)) return mp[v];
+      if (v[0] == 0) return mp[v] = 0ll;
+
+      vl t;
+      rep(i, 1, v.size()) {
+        vl tv = v;
+        tv[0]--; swap(tv[0], tv[i]);
+        t.pb(dfs(tv));
+      }
+      return mp[v] = mex(t);
+    };
+
+    enum_check(3, 0, 6, [&](vl &v) {
+      dfs(v);
+      return true;
+    });
+
+    fore(v, g, mp) {
+      bool valid = true;
+      fore(e, v) if (e == 0) valid = false;
+      if (valid) debug(v, g);
+    }
   }
 
-  ld ans = 0;
-  rep(i, m) {
-    if (dp[i].se == 0) ans += dp[i].fi;
-    else if (dp[i].se == 1) ans += (ld)dp[i].fi + 0.5;
-    else ans += (ld)dp[i].fi - 0.5;
-  }
-  OUT(ans * 0.25);
+  if (a[0] == *min_element(all(a))) OUT("Bob"); else OUT("Alice");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

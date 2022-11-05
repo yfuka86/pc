@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "abc049",
+    "title": "AtCoder Beginner Contest 049",
+    "url": "https://atcoder.jp/contests/abc049"
+  },
+  "tasks": [
+    {
+      "id": "abc049_a",
+      "label": "A",
+      "title": "UOIAUAI",
+      "url": "https://atcoder.jp/contests/abc049/tasks/abc049_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc049_a.cpp"
+      }
+    },
+    {
+      "id": "abc049_b",
+      "label": "B",
+      "title": "Thin",
+      "url": "https://atcoder.jp/contests/abc049/tasks/abc049_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc049_b.cpp"
+      }
+    },
+    {
+      "id": "arc065_a",
+      "label": "C",
+      "title": "Daydream",
+      "url": "https://atcoder.jp/contests/abc049/tasks/arc065_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc065_a.cpp"
+      }
+    },
+    {
+      "id": "arc065_b",
+      "label": "D",
+      "title": "Connectivity",
+      "url": "https://atcoder.jp/contests/abc049/tasks/arc065_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc065_b.cpp"
+      }
+    }
+  ]
+}

@@ -156,39 +156,22 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(t, n); VL(v, n);
-  rep(i, n) { t[i] *= 2; v[i] *= 2; }
+  LL(n);
 
-  ll m = sum_of(t);
-  vlp dp(m);
-  rep(i, m) {
-    if (i < m / 2) dp[i] = {i, 1};
-    else dp[i] = {m - i, -1};
-  }
-  // debug(dp);
-  ll cur = 0;
-  rep(i, n) {
-    ll l = cur, r = cur + t[i];
-    rep(t, l, r) {
-      chmin(dp[t], mp(v[i], 0ll));
-    }
-    rep(t, max(0, l - 300), l) {
-      chmin(dp[t], mp(v[i] + (l - t), -1ll));
-    }
-    rep(t, r, min(m, r + 300)) {
-      chmin(dp[t], mp(v[i] + (t - r), 1ll));
-    }
-
-    cur += t[i];
+  map<ll, ld> mp;
+  rep(i, 1, 20001) {
+    mp[i] = (ld)i / sum_of(digits(i));
   }
 
-  ld ans = 0;
-  rep(i, m) {
-    if (dp[i].se == 0) ans += dp[i].fi;
-    else if (dp[i].se == 1) ans += (ld)dp[i].fi + 0.5;
-    else ans += (ld)dp[i].fi - 0.5;
+  fore(key, f, mp) {
+    auto it = mp.upper_bound(key);
+    bool valid = true;
+    while (it != mp.end()) {
+      if (it->se < f) { valid = false; break; }
+      it++;
+    }
+    if (valid) debug(key, f);
   }
-  OUT(ans * 0.25);
 }
 
 signed main() {

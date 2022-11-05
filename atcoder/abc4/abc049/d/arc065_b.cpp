@@ -155,40 +155,40 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
-  LL(n); VL(t, n); VL(v, n);
-  rep(i, n) { t[i] *= 2; v[i] *= 2; }
+  LL(n, k, l);
 
-  ll m = sum_of(t);
-  vlp dp(m);
-  rep(i, m) {
-    if (i < m / 2) dp[i] = {i, 1};
-    else dp[i] = {m - i, -1};
+  UnionFind uf1(n), uf2(n);
+  rep(i, k) {
+    LL(p, q); --p; --q;
+    uf1.unite(p,q);
   }
-  // debug(dp);
-  ll cur = 0;
-  rep(i, n) {
-    ll l = cur, r = cur + t[i];
-    rep(t, l, r) {
-      chmin(dp[t], mp(v[i], 0ll));
-    }
-    rep(t, max(0, l - 300), l) {
-      chmin(dp[t], mp(v[i] + (l - t), -1ll));
-    }
-    rep(t, r, min(m, r + 300)) {
-      chmin(dp[t], mp(v[i] + (t - r), 1ll));
-    }
+  rep(i, l) {
+    LL(r, s); --r; --s;
+    uf2.unite(r,s);
+  }
+  map<ll, vl> mp;
+  rep(i, n) mp[uf1.root(i)].pb(i);
 
-    cur += t[i];
+  vl ans(n);
+  fore(root, g, mp) {
+    map<ll, ll> cnt;
+    fore(v, g) cnt[uf2.root(v)]++;
+    fore(v, g) ans[v] = cnt[uf2.root(v)];
   }
-
-  ld ans = 0;
-  rep(i, m) {
-    if (dp[i].se == 0) ans += dp[i].fi;
-    else if (dp[i].se == 1) ans += (ld)dp[i].fi + 0.5;
-    else ans += (ld)dp[i].fi - 0.5;
-  }
-  OUT(ans * 0.25);
+  OUTARRAY(ans);
 }
 
 signed main() {

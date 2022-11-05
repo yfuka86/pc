@@ -156,39 +156,48 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(t, n); VL(v, n);
-  rep(i, n) { t[i] *= 2; v[i] *= 2; }
+  LL(n, q);
+  VL(a, n);
 
-  ll m = sum_of(t);
-  vlp dp(m);
-  rep(i, m) {
-    if (i < m / 2) dp[i] = {i, 1};
-    else dp[i] = {m - i, -1};
-  }
-  // debug(dp);
-  ll cur = 0;
-  rep(i, n) {
-    ll l = cur, r = cur + t[i];
-    rep(t, l, r) {
-      chmin(dp[t], mp(v[i], 0ll));
-    }
-    rep(t, max(0, l - 300), l) {
-      chmin(dp[t], mp(v[i] + (l - t), -1ll));
-    }
-    rep(t, r, min(m, r + 300)) {
-      chmin(dp[t], mp(v[i] + (t - r), 1ll));
-    }
+  vl cs = csum(a);
+  vl as(n + 1);
+  rep(i, n) as[i + 1] = as[i] ^ a[i];
+  debug(as);
 
-    cur += t[i];
+  vector<map<ll, vl>> idx(2);
+  rep(i, n + 1) {
+    if (i & 1) {
+      idx[1][as[i]].pb(i);
+    } else {
+      idx[0][as[i]].pb(i);
+    }
   }
+  debug(idx);
 
-  ld ans = 0;
-  rep(i, m) {
-    if (dp[i].se == 0) ans += dp[i].fi;
-    else if (dp[i].se == 1) ans += (ld)dp[i].fi + 0.5;
-    else ans += (ld)dp[i].fi - 0.5;
+  rep(i, q) {
+    LL(l, r); --l;
+
+    if (cs[r] == cs[l]) { OUT(0); continue; }
+
+    if (r - l <= 2) {
+      OUT(-1);
+    } else {
+      if ((r - l) & 1) { // 奇数区間
+        if (as[r] == as[l]) OUT(1); else OUT(-1);
+      } else { // 偶数区間
+        if (as[r] != as[l]) OUT(-1);
+        else {
+          if (a[l] == 0 || a[r - 1] == 0) OUT(1);
+          else {
+            // lが奇ならr以下で同数の偶数idxを探す
+            auto it = lower_bound(all(idx[!(l & 1)][as[l]]), l);
+            if (it == idx[!(l & 1)][as[l]].end() || *it > r) OUT(-1);
+            else OUT(2);
+          }
+        }
+      }
+    }
   }
-  OUT(ans * 0.25);
 }
 
 signed main() {

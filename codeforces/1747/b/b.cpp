@@ -156,44 +156,33 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(t, n); VL(v, n);
-  rep(i, n) { t[i] *= 2; v[i] *= 2; }
+  LL(n);
 
-  ll m = sum_of(t);
-  vlp dp(m);
-  rep(i, m) {
-    if (i < m / 2) dp[i] = {i, 1};
-    else dp[i] = {m - i, -1};
-  }
-  // debug(dp);
-  ll cur = 0;
+  set<ll> b, a;
   rep(i, n) {
-    ll l = cur, r = cur + t[i];
-    rep(t, l, r) {
-      chmin(dp[t], mp(v[i], 0ll));
-    }
-    rep(t, max(0, l - 300), l) {
-      chmin(dp[t], mp(v[i] + (l - t), -1ll));
-    }
-    rep(t, r, min(m, r + 300)) {
-      chmin(dp[t], mp(v[i] + (t - r), 1ll));
-    }
-
-    cur += t[i];
+    b.insert(i * 3 + 1);
+    a.insert(i * 3 + 2);
   }
 
-  ld ans = 0;
-  rep(i, m) {
-    if (dp[i].se == 0) ans += dp[i].fi;
-    else if (dp[i].se == 1) ans += (ld)dp[i].fi + 0.5;
-    else ans += (ld)dp[i].fi - 0.5;
+  vlp ans;
+  while (*b.begin() < *prev(a.end())) {
+    ll bi = *b.begin();
+    ll ai = *prev(a.end());
+    b.erase(b.begin());
+    a.erase(prev(a.end()));
+    ans.pb({bi, ai});
+    b.insert(ai);
+    a.insert(bi);
   }
-  OUT(ans * 0.25);
+  OUT(ans.size());
+  fore(l, r, ans) {
+    OUT(l + 1, r + 1);
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
