@@ -14,7 +14,7 @@ struct Median {
   //   - O(log N)
   void insert(const T& x) {
     if (empty()) { _size = 1; c1 = c2 = x; return; }
-
+f
     if (_size & 1) {  // 奇数個
       assert(c1 == c2);
       if (x <= c1) {

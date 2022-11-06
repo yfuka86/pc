@@ -156,39 +156,27 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(k);
-
-  map<ll, ld> mp;
-
-  rep(i, 1, 10) {
-    mp[i] = (ld)i / sum_of(digits(i));
+  LL(n); VL(a, n);
+  ll gc = 0;
+  rep(i, n) {
+    gc = gcd(gc, a[i]);
   }
+  // debug(gc);
 
-  rep(p, 1, 16) {
-    ll p10 = POW(10, p);
-    rep(i, 1, (p > 5 ? 1000 : 100)) {
-      ll num = p10 * i + p10 - 1;
-      mp[num] = (ld)num / sum_of(digits(num));
+  ll ans = 0;
+  rep(i, n) {
+    ll t = a[i] / gc;
+    while (t % 2 == 0) {
+      t /= 2;
+      ans++;
     }
-  }
-
-  vl ans;
-  fore(key, f, mp) {
-    auto it = mp.upper_bound(key);
-    bool valid = true;
-    while (it != mp.end()) {
-      if (it->se < f) { valid = false; break; }
-      it++;
+    while (t % 3 == 0) {
+      t /= 3;
+      ans++;
     }
-    if (valid) {
-      // debug(key, f);
-      ans.pb(key);
-    }
+    if (t != 1) OUTRET(-1);
   }
-
-  rep(i, k) {
-    OUT(ans[i]);
-  }
+  OUT(ans);
 }
 
 signed main() {

@@ -156,39 +156,30 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(k);
+  LL(h, w);
+  vs g(h); IN(g);
 
-  map<ll, ld> mp;
-
-  rep(i, 1, 10) {
-    mp[i] = (ld)i / sum_of(digits(i));
+  LP s;
+  rep(i, h) rep(j, w) {
+    if (g[i][j] == 'S') s = {i, j};
   }
 
-  rep(p, 1, 16) {
-    ll p10 = POW(10, p);
-    rep(i, 1, (p > 5 ? 1000 : 100)) {
-      ll num = p10 * i + p10 - 1;
-      mp[num] = (ld)num / sum_of(digits(num));
+  bool ans = false;
+  vv(bool, vis, h, w);
+  function<void(LP, ll)> dfs = [&](LP p, ll dep) {
+    auto [x, y] = p;
+    vis[x][y] = true;
+    rep(d, 4) {
+      ll di = x + dx[d];
+      ll dj = y + dy[d];
+      if (incl(di, 0, h) && incl(dj, 0, w) && g[di][dj] != '#') {
+        if (mp(di, dj) == s && dep >= 3) ans = true;
+        if (!vis[di][dj]) dfs({di, dj}, dep + 1);
+      }
     }
-  }
-
-  vl ans;
-  fore(key, f, mp) {
-    auto it = mp.upper_bound(key);
-    bool valid = true;
-    while (it != mp.end()) {
-      if (it->se < f) { valid = false; break; }
-      it++;
-    }
-    if (valid) {
-      // debug(key, f);
-      ans.pb(key);
-    }
-  }
-
-  rep(i, k) {
-    OUT(ans[i]);
-  }
+  };
+  dfs(s, 0);
+  if (ans) OUT("Yes"); else OUT("No");
 }
 
 signed main() {
