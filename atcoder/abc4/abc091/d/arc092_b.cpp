@@ -155,8 +155,59 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+vl merge(vl &a, vl &b) {
+  vl ret; ll ai = 0, bi = 0;
+  while (ai < a.size() && bi < b.size()) {
+    if (a[ai] < b[bi]) { ret.emplace_back(a[ai]); ++ai; }
+    else { ret.emplace_back(b[bi]); ++bi; }
+  }
+  while (ai < a.size()) { ret.emplace_back(a[ai]); ++ai; }
+  while (bi < b.size()) { ret.emplace_back(b[bi]); ++bi; }
+  return ret;
+}
+
 void solve() {
-  LL(n);
+  LL(n); VL(a,n); VL(b,n);
+
+  ll ans = 0;
+
+  sort(all(b));
+  rep_r(i, 30) {
+    ll m = 1 << (i + 1);
+
+    vl bt; ll i1 = 0, i2 = lower_bound(all(b), m) - b.begin(), mid = i2;
+    rep(i, n) { a[i] &= m - 1; b[i] &= m - 1; }
+    while (i1 < mid && i2 < n) {
+      if (b[i1] < b[i2]) { bt.emplace_back(b[i1]); ++i1; }
+      else { bt.emplace_back(b[i2]); ++i2; }
+    }
+    while (i1 < mid) { bt.emplace_back(b[i1]); ++i1; }
+    while (i2 < n) { bt.emplace_back(b[i2]); ++i2; }
+    b = bt;
+
+    sort(rall(a));
+
+    ll l1 = m / 2, r1 = m, l2 = m / 2 * 3, r2 = m * 2;
+    ll cnt = 0;
+    {
+      ll ri = 0, li = 0;
+      rep(i, n) { ll x = a[i];
+        while (ri < n && b[ri] < r1 - x) ri++;
+        while (li < n && b[li] < l1 - x) li++;
+        cnt += ri - li;
+      }
+    }
+    {
+      ll ri = 0, li = 0;
+      rep(i, n) { ll x = a[i];
+        while (ri < n && b[ri] < r2 - x) ri++;
+        while (li < n && b[li] < l2 - x) li++;
+        cnt += ri - li;
+      }
+    }
+    if (cnt & 1) ans |= 1 << i;
+  }
+  OUT(ans);
 }
 
 signed main() {

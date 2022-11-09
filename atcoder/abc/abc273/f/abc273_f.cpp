@@ -12,7 +12,7 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define _overload5(a, b, c, d, e, name, ...) name
 #define _overload4(a, b, c, d, name, ...) name
 #define _overload3(a, b, c, name, ...) name
-#define _rep0(n) for(ll i = 0; (ll)(i) < n; ++i)
+#define _rep0(n) for(ll i = 0; i < (ll)(n); ++i)
 #define _rep1(i, n) for(ll i = 0; i < (ll)(n); ++i)
 #define _rep2(i, a, b) for(ll i = (ll)(a); i < (ll)(b); ++i)
 #define _rep3(i, a, b, c) for(ll i = (ll)(a); i < (ll)(b); i += (ll)(c))
@@ -39,7 +39,6 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define vv(type, name, h, ...) vector<vector<type>> name(h, vector<type>(__VA_ARGS__))
 #define v3(type, name, h, w, ...) vector<vector<vector<type>>> name(h, vector<vector<type>>(w, vector<type>(__VA_ARGS__)))
 #define v4(type, name, a, b, c, ...) vector<vector<vector<vector<type>>>> name(a, vector<vector<vector<type>>>(b, vector<vector<type>>(c, vector<type>(__VA_ARGS__))))
-
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
@@ -106,6 +105,7 @@ int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; ret
 pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
 ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
+vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
 vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
 template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
 template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int msb(T x){ if (sizeof(x) == 4) return 31 - __builtin_clz(x); else return 63 - __builtin_clzll(x); }
@@ -113,8 +113,10 @@ template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int l
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T = ll> T sum_of(const vector<T> &v, int l = 0, int r = INF) { return accumulate(rng_of(v, l, min(r, (int)v.size())), T(0)); }
-ll max(int x, ll y) { return max((ll)x, y); } ll max(ll x, int y) { return max(x, (ll)y); }
-ll min(int x, ll y) { return min((ll)x, y); } ll min(ll x, int y) { return min(x, (ll)y); }
+template<class... T> constexpr auto min(T... a){ return min(initializer_list<common_type_t<T...>>{a...}); }
+template<class... T> constexpr auto mine(T... a) { return min(a..., LINF, LINF); }
+template<class... T> constexpr auto max(T... a){ return max(initializer_list<common_type_t<T...>>{a...}); }
+template<class... T> constexpr auto maxe(T... a) { return max(a..., -LINF, -LINF); }
 ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
 // 操作系
 template<class T> void rotate(vector<vector<T>> &a) { ll n = a.size(), m = a[0].size(); vector<vector<T>> ret(m, vector<T>(n, 0)); rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j]; a = ret; }
@@ -154,9 +156,40 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, x);
-  VL(y, n); VL(z, n);
+  LL(n, x); VL(y, n); VL(z, n);
+  if (x < 0) { x = -x; rep(i, n) { y[i] = -y[i]; z[i] = -z[i]; } }
 
+  vl dict = y; dict.insert(dict.end(), z.begin(), z.end()); dict.pb(x); dict.pb(0);
+  auto [mp, rmp] = compmap(dict);
+  ll s = mp[0];
+  map<ll, ll> ham;
+  rep(i, n) ham[mp[y[i]]] = mp[z[i]];
+  // debug(mp, ham);
+
+  // dp[左端][右端][どっちにいる]
+  ll m = 2 * n + 2;
+  v3(ll, dp, m, m, 2, LINF);
+  dp[s][s][0] = 0;
+
+  rep(len, m) rep(i, m) { ll j = i + len; if (j >= m) break;
+    if (min(dp[i][j][0], dp[i][j][1]) == LINF) continue;
+    if (i > 0) {
+      if (!(ham.count(i - 1) && !incl(ham[i - 1], i - 1, j + 1))) {
+        chmin(dp[i - 1][j][0], dp[i][j][0] + rmp[i] - rmp[i - 1]);
+        chmin(dp[i - 1][j][0], dp[i][j][1] + rmp[j] - rmp[i - 1]);
+      }
+    }
+    if (j < m - 1) {
+      if (!(ham.count(j + 1) && !incl(ham[j + 1], i, j + 2))) {
+        chmin(dp[i][j + 1][1], dp[i][j][0] + rmp[j + 1] - rmp[i]);
+        chmin(dp[i][j + 1][1], dp[i][j][1] + rmp[j + 1] - rmp[j]);
+      }
+    }
+  }
+
+  ll ans = LINF;
+  rep(i, s + 1) chmin(ans, dp[i][mp[x]][1]);
+  if (ans == LINF) OUT(-1); else OUT(ans);
 }
 
 signed main() {
