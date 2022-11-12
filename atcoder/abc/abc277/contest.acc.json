@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc277",
+    "title": "Daiwa Securities Co. Ltd. Programming Contest 2022 Autumn (AtCoder Beginner Contest 277)",
+    "url": "https://atcoder.jp/contests/abc277"
+  },
+  "tasks": [
+    {
+      "id": "abc277_a",
+      "label": "A",
+      "title": "^{-1}",
+      "url": "https://atcoder.jp/contests/abc277/tasks/abc277_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc277_a.cpp"
+      }
+    },
+    {
+      "id": "abc277_b",
+      "label": "B",
+      "title": "Playing Cards Validation",
+      "url": "https://atcoder.jp/contests/abc277/tasks/abc277_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc277_b.cpp"
+      }
+    },
+    {
+      "id": "abc277_c",
+      "label": "C",
+      "title": "Ladder Takahashi",
+      "url": "https://atcoder.jp/contests/abc277/tasks/abc277_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc277_c.cpp"
+      }
+    },
+    {
+      "id": "abc277_d",
+      "label": "D",
+      "title": "Takahashi's Solitaire",
+      "url": "https://atcoder.jp/contests/abc277/tasks/abc277_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc277_d.cpp"
+      }
+    },
+    {
+      "id": "abc277_e",
+      "label": "E",
+      "title": "Crystal Switches",
+      "url": "https://atcoder.jp/contests/abc277/tasks/abc277_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc277_e.cpp"
+      }
+    },
+    {
+      "id": "abc277_f",
+      "label": "F",
+      "title": "Sorting a Matrix",
+      "url": "https://atcoder.jp/contests/abc277/tasks/abc277_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc277_f.cpp"
+      }
+    },
+    {
+      "id": "abc277_g",
+      "label": "G",
+      "title": "Random Walk to Millionaire",
+      "url": "https://atcoder.jp/contests/abc277/tasks/abc277_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc277_g.cpp"
+      }
+    },
+    {
+      "id": "abc277_h",
+      "label": "Ex",
+      "title": "Constrained Sums",
+      "url": "https://atcoder.jp/contests/abc277/tasks/abc277_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc277_h.cpp"
+      }
+    }
+  ]
+}
