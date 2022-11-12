@@ -51,6 +51,17 @@ struct RandGen {
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
 
+
+// 入出力マクロの上に
+#include <atcoder/convolution>
+#include <atcoder/modint>
+using namespace atcoder;
+using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+const ll mod = 998244353;
+istream& operator>>(istream& in, mint &a) { long long e; in >> e; a = e; return in; }
+ostream& operator<<(ostream& out, mint &a) { return out << a.val(); }
+//------------------------------------------------------------------------------
+
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -58,7 +69,7 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << const_cast<T &>(t); }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
 template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T, typename U, typename V, typename S> void dump(const tuple<T, U, V, S>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << " "; dump(get<3>(t)); dout << ")"; }
@@ -71,7 +82,6 @@ void trace() { dout << "\n"; } template<typename Head, typename... Tail> void tr
 #else
 #define debug(...) do {dout<<#__VA_ARGS__<<" = ";trace(__VA_ARGS__); } while(0)
 #endif
-
 
 // 入出力系
 #define LL(...) ll __VA_ARGS__; IN(__VA_ARGS__)
@@ -91,7 +101,7 @@ template <class T> void scan(T &a) { cin >> a; }
 template <class T, class S> void scan(pair<T, S> &p) { scan(p.first), scan(p.second); }
 template <class T> void scan(vector<T> &a) { for(auto &i : a) scan(i); }
 void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...tail) { scan(head); IN(tail...); }
-#define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
+#define OUTRET(...) { OUT(__VA_ARGS__), return; }
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
@@ -159,15 +169,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 
-// 入出力マクロの上に
-#include <atcoder/convolution>
-#include <atcoder/modint>
-using namespace atcoder;
-using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-const ll mod = 998244353;
-istream& operator>>(istream& in, mint &a) { long long e; in >> e; a = e; return in; }
-ostream& operator<<(ostream& out, mint &a) { return out << a.val(); }
-//------------------------------------------------------------------------------
+
 
 const int max_n = 1 << 20;
 mint fact[max_n], factinv[max_n];
@@ -202,16 +204,15 @@ void solve() {
     a[m * 2 - i * 2] += comb(m, i).pow(2) * fact[i] * fact[i];
     a[m * 2 - i] += comb(m, i) * fact[i];
   }
-  rep(i, a.size()) {
-      cout << a[i].val() << " ";
-    } cout << "\n";
+  // rep(i, a.size()) {
+  //     cout << a[i].val() << " ";
+  //   } cout << "\n";
 
   vmi ans = {1};
   rep(i, n - 1) {
     ans = convolution(ans, a);
-    rep(i, ans.size()) {
-      cout << ans[i].val() << " ";
-    } cout << "\n";
+    // OUTARRAY(ans);
+    debug(ans);
   }
 }
 

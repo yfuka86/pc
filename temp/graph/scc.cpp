@@ -1,3 +1,5 @@
+// https://nyaannyaan.github.io/library/graph/strongly-connected-components.hpp
+
 // Strongly Connected Components
 // DAG of SC graph   ... scc.dag (including multiedges)
 // new node of k     ... scc[k]
@@ -16,8 +18,8 @@ struct StronglyConnectedComponents {
   StronglyConnectedComponents(G &_g) : g(_g), used(g.size(), 0) { build(); }
 
   int operator[](int k) { return comp[k]; }
-
   vector<int> &belong(int i) { return blng[i]; }
+  size_t size() const { return dag.size(); }
 
  private:
   void dfs(int idx) {

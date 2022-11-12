@@ -99,7 +99,7 @@ struct fft_info {
 template <class mint>
 void ntt(vector<mint>& a, bool inverse) {
   int n = int(a.size());
-  int h = topbit(n);
+  int h = msb(n);
   assert(n == 1 << h);
   static const fft_info<mint> info;
   if (!inverse) {
@@ -117,7 +117,7 @@ void ntt(vector<mint>& a, bool inverse) {
             a[i + offset] = l + r;
             a[i + offset + p] = l - r;
           }
-          rot *= info.rate2[topbit(~s & -~s)];
+          rot *= info.rate2[msb(~s & -~s)];
         }
         len++;
       } else {
@@ -140,7 +140,7 @@ void ntt(vector<mint>& a, bool inverse) {
             a[i + offset + 2 * p] = a0 + na2 + a1na3imag;
             a[i + offset + 3 * p] = a0 + na2 + (mod2 - a1na3imag);
           }
-          rot *= info.rate3[topbit(~s & -~s)];
+          rot *= info.rate3[msb(~s & -~s)];
         }
         len += 2;
       }
@@ -164,7 +164,7 @@ void ntt(vector<mint>& a, bool inverse) {
                   * irot.x;
             ;
           }
-          irot *= info.irate2[topbit(~s & -~s)];
+          irot *= info.irate2[msb(~s & -~s)];
         }
         len--;
       } else {
@@ -193,7 +193,7 @@ void ntt(vector<mint>& a, bool inverse) {
                 = (a0 + (mint::get_mod() - a1) + (mint::get_mod() - a2na3iimag))
                   * irot3.x;
           }
-          irot *= info.irate3[topbit(~s & -~s)];
+          irot *= info.irate3[msb(~s & -~s)];
         }
         len -= 2;
       }

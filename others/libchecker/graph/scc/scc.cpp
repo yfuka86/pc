@@ -57,7 +57,7 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << const_cast<T &>(t); }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
 template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T, typename U, typename V, typename S> void dump(const tuple<T, U, V, S>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << " "; dump(get<3>(t)); dout << ")"; }
@@ -155,13 +155,105 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+// Strongly Connected Components
+// DAG of SC graph   ... scc.dag (including multiedges)
+// new node of k     ... scc[k]
+// inv of scc[k] = i ... scc.belong(i)
+template <typename G>
+struct StronglyConnectedComponents {
+ private:
+  const G &g;
+  vector<vector<int>> rg;
+  vector<int> comp, order;
+  vector<char> used;
+  vector<vector<int>> blng;
+
+ public:
+  vector<vector<int>> dag;
+  StronglyConnectedComponents(G &_g) : g(_g), used(g.size(), 0) { build(); }
+
+  int operator[](int k) { return comp[k]; }
+  vector<int> &belong(int i) { return blng[i]; }
+  size_t size() const { return dag.size(); }
+
+ private:
+  void dfs(int idx) {
+    if (used[idx]) return;
+    used[idx] = true;
+    for (auto to : g[idx]) dfs(int(to));
+    order.push_back(idx);
+  }
+
+  void rdfs(int idx, int cnt) {
+    if (comp[idx] != -1) return;
+    comp[idx] = cnt;
+    for (int to : rg[idx]) rdfs(to, cnt);
+  }
+
+  void build() {
+    for (int i = 0; i < (int)g.size(); i++) dfs(i);
+    reverse(begin(order), end(order));
+    used.clear();
+    used.shrink_to_fit();
+
+    comp.resize(g.size(), -1);
+
+    rg.resize(g.size());
+    for (int i = 0; i < (int)g.size(); i++) {
+      for (auto e : g[i]) {
+        rg[(int)e].emplace_back(i);
+      }
+    }
+    int ptr = 0;
+    for (int i : order)
+      if (comp[i] == -1) rdfs(i, ptr), ptr++;
+    rg.clear();
+    rg.shrink_to_fit();
+    order.clear();
+    order.shrink_to_fit();
+
+    dag.resize(ptr);
+    blng.resize(ptr);
+    for (int i = 0; i < (int)g.size(); i++) {
+      blng[comp[i]].push_back(i);
+      for (auto &to : g[i]) {
+        int x = comp[i], y = comp[to];
+        if (x == y) continue;
+        dag[x].push_back(y);
+      }
+    }
+  }
+};
+
+
 void solve() {
-  LL(n);
+  LL(n, m);
+  Graph<ll> G(n);
+  rep(i, m) {
+    LL(a, b); G.add_directed_edge(a, b);
+  }
+
+  StronglyConnectedComponents scc(G);
+  OUT(scc.size());
+  rep(i, scc.size()) {
+    auto v = scc.belong(i);
+    cout << v.size() << " "; OUTARRAY(v);
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

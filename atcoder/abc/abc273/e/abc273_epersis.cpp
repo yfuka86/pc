@@ -12,7 +12,7 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define _overload5(a, b, c, d, e, name, ...) name
 #define _overload4(a, b, c, d, name, ...) name
 #define _overload3(a, b, c, name, ...) name
-#define _rep0(n) for(ll i = 0; i < (ll)(n); ++i)
+#define _rep0(n) for(ll i = 0; (ll)(i) < n; ++i)
 #define _rep1(i, n) for(ll i = 0; i < (ll)(n); ++i)
 #define _rep2(i, a, b) for(ll i = (ll)(a); i < (ll)(b); ++i)
 #define _rep3(i, a, b, c) for(ll i = (ll)(a); i < (ll)(b); i += (ll)(c))
@@ -39,6 +39,7 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define vv(type, name, h, ...) vector<vector<type>> name(h, vector<type>(__VA_ARGS__))
 #define v3(type, name, h, w, ...) vector<vector<vector<type>>> name(h, vector<vector<type>>(w, vector<type>(__VA_ARGS__)))
 #define v4(type, name, a, b, c, ...) vector<vector<vector<vector<type>>>> name(a, vector<vector<vector<type>>>(b, vector<vector<type>>(c, vector<type>(__VA_ARGS__))))
+
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
@@ -57,7 +58,7 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << const_cast<T &>(t); }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
 template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T, typename U, typename V, typename S> void dump(const tuple<T, U, V, S>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << " "; dump(get<3>(t)); dout << ")"; }
@@ -105,7 +106,6 @@ int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; ret
 pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
 ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
-vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
 vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
 template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
 template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int msb(T x){ if (sizeof(x) == 4) return 31 - __builtin_clz(x); else return 63 - __builtin_clzll(x); }
@@ -113,10 +113,8 @@ template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int l
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T = ll> T sum_of(const vector<T> &v, int l = 0, int r = INF) { return accumulate(rng_of(v, l, min(r, (int)v.size())), T(0)); }
-template<class... T> constexpr auto min(T... a){ return min(initializer_list<common_type_t<T...>>{a...}); }
-template<class... T> constexpr auto mine(T... a) { return min(a..., LINF, LINF); }
-template<class... T> constexpr auto max(T... a){ return max(initializer_list<common_type_t<T...>>{a...}); }
-template<class... T> constexpr auto maxe(T... a) { return max(a..., -LINF, -LINF); }
+ll max(int x, ll y) { return max((ll)x, y); } ll max(ll x, int y) { return max(x, (ll)y); }
+ll min(int x, ll y) { return min((ll)x, y); } ll min(ll x, int y) { return min(x, (ll)y); }
 ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
 // 操作系
 template<class T> void rotate(vector<vector<T>> &a) { ll n = a.size(), m = a[0].size(); vector<vector<T>> ret(m, vector<T>(n, 0)); rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j]; a = ret; }
@@ -155,13 +153,127 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+#pragma once
+
+template <typename T, int shift = 4>
+struct PersistentArray {
+  struct Node {
+    Node *ns[1 << shift];
+    Node() { memset(ns, 0, sizeof(ns)); }
+    Node(const Node &other) { memcpy(ns, other.ns, sizeof(ns)); }
+    Node(const Node *other) { memcpy(ns, other->ns, sizeof(ns)); }
+  };
+  inline Node *my_new() { return new Node(); }
+  inline Node *my_new(const Node &other) { return new Node(other); }
+  inline Node *my_new(const Node *other) { return new Node(other); }
+  inline T *my_new_leaf(const T &val) { return new T{val}; }
+
+  using i64 = long long;
+  static constexpr int mask = (1 << shift) - 1;
+  Node *root;
+  int depth;
+  T ID;
+
+  PersistentArray() {}
+
+  PersistentArray(i64 MAX, T ID_ = T(0)) : root(my_new()), depth(0), ID(ID_) {
+    while (MAX) ++depth, MAX >>= shift;
+  }
+
+  PersistentArray(const vector<T> &v, T ID_ = T(0))
+      : root(my_new()), depth(0), ID(ID_) {
+    i64 MAX = v.size();
+    while (MAX) ++depth, MAX >>= shift;
+    for (int i = 0; i < (int)v.size(); i++) {
+      Node *n = root;
+      for (int k = i, d = depth; d; d--) {
+        if (!(n->ns[k & mask])) {
+          if (d == 1)
+            n->ns[k & mask] = reinterpret_cast<Node *>(my_new_leaf(v[i]));
+          else
+            n->ns[k & mask] = my_new();
+        }
+        n = n->ns[k & mask];
+        k >>= shift;
+      }
+    }
+  }
+
+  T get(Node *n, i64 k) const {
+    for (int i = depth; i; --i) {
+      n = n ? n->ns[k & mask] : nullptr;
+      k >>= shift;
+    }
+    return n ? *reinterpret_cast<T *>(n) : ID;
+  }
+  T get(i64 k) const { return get(root, k); }
+
+  Node *update(Node *n, i64 k, const T &val) {
+    stack<pair<Node *, int>> st;
+    for (int i = depth; i; --i) {
+      st.emplace(n, k & mask);
+      n = n ? n->ns[k & mask] : nullptr;
+      k >>= shift;
+    }
+    Node *chd = reinterpret_cast<Node *>(my_new_leaf(val));
+    while (!st.empty()) {
+      Node *par;
+      int k;
+      tie(par, k) = st.top();
+      st.pop();
+      Node *nxt = par ? my_new(par) : my_new();
+      nxt->ns[k] = chd;
+      chd = nxt;
+    }
+    return root = chd;
+  }
+  Node *update(i64 k, const T &val) { return update(root, k, val); }
+};
+
+/**
+ * @brief 永続配列
+ */
+
+
 void solve() {
-  LL(n);
+  LL(q);
+
+  ll cur = 0;
+  PersistentArray<ll> arr(vl(500000));
+  using Node = decltype(arr)::Node;
+  Node *curn = arr.root;
+  unordered_map<ll, Node*> mp;
+  unordered_map<ll, ll> mpi;
+  rep(i, q) {
+    STR(s);
+    if (s == "DELETE") {
+      if (cur != 0) {
+        curn = arr.update(curn, --cur, 0);
+      }
+    } else {
+      LL(x);
+      if (s == "ADD") {
+        curn = arr.update(curn, cur, x); cur++;
+      }
+      if (s == "SAVE") {
+        mp[x] = curn;
+        mpi[x] = cur;
+      }
+      if (s == "LOAD") {
+        curn = mp[x];
+        cur = mpi[x];
+      }
+    }
+    ll ans = arr.get(curn, cur - 1);
+    if (ans > 0) cout << ans; else cout << -1;
+    cout << " ";
+  }
+
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
