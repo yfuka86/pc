@@ -166,7 +166,7 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 vl topo_sort(Graph<ll> G) {
-  ll n = G.size(); vl deg(n), ret; priority_queue<ll, vl, greater<ll>> que;
+  ll n = G.size(); vl deg(n), ret; mpq<ll> que;
   rep(i, n) for (Edge e: G[i]) deg[e.to]++; rep(i, n) if (deg[i] == 0) que.push(i);
   while (!que.empty()) { ll v = que.top(); que.pop(); ret.pb(v);
     for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); } G[v].clear(); }
@@ -188,25 +188,31 @@ void solve() {
     if (mi != LINF) rng.pb({mi, ma});
   }
   sort(all(rng));
-
-  ll cur = 0;
-  fore(l, r, rng) {
-    if (l < cur) OUTRET("No");
-    cur = r;
-  }
-
-  vvlp sorted(h);
-  rep(i, h) rep(j, w) {
-    if (a[i][j] != 0) sorted[i].pb({a[i][j], j});
-  }
-  rep(i, h) sort(all(sorted[i]));
-
-
-  Graph<ll> G(w);
-  rep(i, h) {
-    rep(j, sorted[i].size() - 1) {
-      G.add_directed_edge(sorted[i][j].se, sorted[i][j + 1].se);
+  {
+    ll cur = 0;
+    fore(l, r, rng) {
+      if (l < cur) OUTRET("No");
+      cur = r;
     }
+  }
+
+  Graph<ll> G(w + h * w + 1000000);
+  ll cur = 0;
+  rep(i, h) {
+    map<ll, vl> sorted;
+    rep(j, w) {
+      if (a[i][j]) sorted[a[i][j]].pb(j);
+    }
+    fore(val, v, sorted) {
+      G.add_directed_edge(w + cur, w + cur + 1);
+      fore(e, v) {
+        // debug(w + cur, e);
+        G.add_directed_edge(w + cur, e);
+        G.add_directed_edge(e, w + cur + 1);
+      }
+      cur++;
+    }
+    cur++;
   }
   auto v = topo_sort(G);
   if (v.size()) OUT("Yes"); else OUT("No");
