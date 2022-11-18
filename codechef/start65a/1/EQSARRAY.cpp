@@ -136,83 +136,40 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-string solve(string s, ll k) {
-  ll n = s.size();
-
-  map<char, vl> dict; rep(i, n) dict[s[i]].pb(i);
-  vl next(n + 1, -1);
-  fore(c, v, dict) {
-    rep_r(i, v.size() - 1) {
-      next[v[i]] = v[i + 1] + 1;
-    }
-  }
-
-  vl dp(n + 2, 0);
-  dp[n] = 1;
-  rep_r(i, n) {
-    dp[i] = min(LINF, dp[i + 1] * 2 - (next[i] != -1 ? dp[next[i]] : 0));
-  }
-  if (dp[0] <= k) return "Eel";
-
-  string ans = "";
-  ll cur = -1;
-  while (k > 0) {
-    k--;
-    ll sum = 0;
-    rep(i, 26){
-      char c = 'a' + i;
-      auto it = upper_bound(all(dict[c]), cur);
-      if (it == dict[c].end()) continue;
-      if (sum + dp[*it + 1] > k) {
-        ans += 'a' + i;
-        k -= sum;
-        cur = *it;
-        break;
-      }
-      sum += dp[*it + 1];
-    }
-  }
-  debug(next);
-  debug(dp);
-  return ans;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-string naive(string s, ll k) {
-  ll n = s.size();
-  set<string> cand;
-  rep(S, 1, 1 << n) {
-    string tmp;
-    rep(i, n) if (S & 1 << i) tmp.pb(s[i]);
-    cand.insert(tmp);
-  }
-  if (cand.size() < k) return "Eel";
-  debug(cand);
-  auto it = cand.begin();
-  rep(_, k - 1) it++;
-  return *it;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 5;
-    string s = rg.straz(n);
-    ll k = rg.l(1, 60);
-    auto so = solve(s, k); auto na = naive(s, k);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(s, k); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  STR(s);
-  LL(k);
-  OUT(solve(s,k));
+  LL(n, k);
+  VL(a, n);
+
+  if (n == 1 && a[0] == k) OUTRET("Yes");
+
+  rep(i, n - 1) {
+    if (a[i] == k) OUTRET("Yes");
+  }
+  OUT("No");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

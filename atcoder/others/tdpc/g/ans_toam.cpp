@@ -136,78 +136,65 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-string solve(string s, ll k) {
-  ll n = s.size();
-
-  map<char, vl> dict; rep(i, n) dict[s[i]].pb(i);
-  vl next(n + 1, -1);
-  fore(c, v, dict) {
-    rep_r(i, v.size() - 1) {
-      next[v[i]] = v[i + 1] + 1;
-    }
-  }
-
-  vl dp(n + 2, 0);
-  dp[n] = 1;
-  rep_r(i, n) {
-    dp[i] = min(LINF, dp[i + 1] * 2 - (next[i] != -1 ? dp[next[i]] : 0));
-  }
-  if (dp[0] <= k) return "Eel";
-
-  string ans = "";
-  ll cur = -1;
-  while (k > 0) {
-    k--;
-    ll sum = 0;
-    rep(i, 26){
-      char c = 'a' + i;
-      auto it = upper_bound(all(dict[c]), cur);
-      if (it == dict[c].end()) continue;
-      if (sum + dp[*it + 1] > k) {
-        ans += 'a' + i;
-        k -= sum;
-        cur = *it;
-        break;
-      }
-      sum += dp[*it + 1];
-    }
-  }
-  debug(next);
-  debug(dp);
-  return ans;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-string naive(string s, ll k) {
-  ll n = s.size();
-  set<string> cand;
-  rep(S, 1, 1 << n) {
-    string tmp;
-    rep(i, n) if (S & 1 << i) tmp.pb(s[i]);
-    cand.insert(tmp);
-  }
-  if (cand.size() < k) return "Eel";
-  debug(cand);
-  auto it = cand.begin();
-  rep(_, k - 1) it++;
-  return *it;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 5;
-    string s = rg.straz(n);
-    ll k = rg.l(1, 60);
-    auto so = solve(s, k); auto na = naive(s, k);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(s, k); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  STR(s);
-  LL(k);
-  OUT(solve(s,k));
+  string s;
+  ll k;
+  cin>>s>>k;
+  int n=s.size();
+
+  vector<vi> nxt(n+1,vi(26,n+1));
+  vector<ll> dp(n+2,0LL);
+  dp[n]=1;
+  for(int i=n-1;i>=0;i--){
+    nxt[i]=nxt[i+1];
+    int a=s[i]-'a';
+    dp[i]=min(LINF,2*dp[i+1]-dp[nxt[i][a]]);
+    nxt[i][a]=i+1;
+  }
+  if(dp[0]<=k){
+    cout<<"Eel"<<endl;
+    return;
+  }
+  OUTMAT(nxt);
+  debug(dp);
+
+  string ans="";
+  int tmp=0;
+  while(k>0){
+    k-=1;
+    ll res=0;
+    int t=0;
+    rep(i,26){
+      t=i;
+      if(res+dp[nxt[tmp][i]]>k){
+        break;
+      }
+      res+=dp[nxt[tmp][i]];
+    }
+    ans+='a'+t;
+    k-=res;
+    tmp=nxt[tmp][t];
+  }
+  cout<<ans<<endl;
 }
 
 signed main() {
@@ -216,3 +203,4 @@ signed main() {
   while (t--) solve();
   // while (t--) compare();
 }
+

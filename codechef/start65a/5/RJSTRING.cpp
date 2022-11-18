@@ -136,78 +136,128 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-string solve(string s, ll k) {
-  ll n = s.size();
-
-  map<char, vl> dict; rep(i, n) dict[s[i]].pb(i);
-  vl next(n + 1, -1);
-  fore(c, v, dict) {
-    rep_r(i, v.size() - 1) {
-      next[v[i]] = v[i + 1] + 1;
-    }
-  }
-
-  vl dp(n + 2, 0);
-  dp[n] = 1;
-  rep_r(i, n) {
-    dp[i] = min(LINF, dp[i + 1] * 2 - (next[i] != -1 ? dp[next[i]] : 0));
-  }
-  if (dp[0] <= k) return "Eel";
-
-  string ans = "";
-  ll cur = -1;
-  while (k > 0) {
-    k--;
-    ll sum = 0;
-    rep(i, 26){
-      char c = 'a' + i;
-      auto it = upper_bound(all(dict[c]), cur);
-      if (it == dict[c].end()) continue;
-      if (sum + dp[*it + 1] > k) {
-        ans += 'a' + i;
-        k -= sum;
-        cur = *it;
-        break;
-      }
-      sum += dp[*it + 1];
-    }
-  }
-  debug(next);
-  debug(dp);
-  return ans;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-string naive(string s, ll k) {
-  ll n = s.size();
-  set<string> cand;
-  rep(S, 1, 1 << n) {
-    string tmp;
-    rep(i, n) if (S & 1 << i) tmp.pb(s[i]);
-    cand.insert(tmp);
-  }
-  if (cand.size() < k) return "Eel";
-  debug(cand);
-  auto it = cand.begin();
-  rep(_, k - 1) it++;
-  return *it;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 5;
-    string s = rg.straz(n);
-    ll k = rg.l(1, 60);
-    auto so = solve(s, k); auto na = naive(s, k);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(s, k); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
+
+template <size_t X = 26, char margin = 'a', typename T = ll>
+struct Trie {
+public:
+  vector<vector<int>> nxt; vector<bool> end; vector<int> cs, fail; vector<T> node_v;
+  Trie() { init_node(-1); }
+  size_t size() const { return nxt.size(); }
+
+  int add_node(int v, int n, bool isend = false, T val = T()) {
+    assert(fail.size() == 0);
+    int ret = -1;
+    if (nxt[v][n] == -1) ret = nxt[v][n] = init_node(n);
+    else ret = nxt[v][n];
+    if (isend) { end[ret] = 1; node_v[ret] += val; }
+    return ret;
+  }
+  int add(vector<int> &s, T val = T()) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) v = add_node(v, s[i], i == n - 1, val); return v; }
+  int add(string &s, T val = T()) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) v = add_node(v, s[i] - margin, i == n - 1, val); return v; }
+
+  int walk(int v, int n) { return nxt[v][n]; }
+  int search(vector<int> &s) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) { v = walk(v, s[i]); if (v == -1) return v; } return v; }
+  int search(string &s) { int n = s.size(), v = 0; for (int i = 0; i < n; ++i) { v = walk(v, s[i] - margin); if (v == -1) return v; } return v; }
+
+  void build_fail() {
+    fail.assign(nxt.size(), 0);
+    vector<int> bfs; bfs.emplace_back(0);
+    queue<int> que; que.push(0);
+    while (!que.empty()) {
+      int v = que.front(); que.pop();
+      node_v[v] = node_v[v] + node_v[fail[v]];
+      for (int s = 0; s < X; ++s) {
+        if (nxt[v][s] == -1) continue;
+        int w = nxt[v][s];
+        que.push(w);
+        bfs.emplace_back(w);
+        if (v == 0) continue;
+        int f = fail[v];
+        while (f && nxt[f][s] == -1) f = fail[f];
+        fail[w] = (nxt[f][s] == -1 ? 0 : nxt[f][s]);
+      }
+    }
+    for (auto v: bfs) {
+      for (int s = 0; s < X; ++s) if (nxt[v][s] == -1) {
+        int f = fail[v];
+        nxt[v][s] = nxt[f][s];
+        if (nxt[v][s] == -1) nxt[v][s] = 0;
+      }
+    }
+  }
+  inline const vector<int> &operator[](const int &k) { return nxt[k]; }
+
+private:
+  int init_node(int n) {
+    nxt.emplace_back(vector<int>(X, -1));
+    cs.emplace_back(n);
+    end.emplace_back(0);
+    node_v.emplace_back(T());
+    return nxt.size() - 1;
+  }
+};
+
+
 void solve() {
+  LL(n);
   STR(s);
+  VL(c, 26);
   LL(k);
-  OUT(solve(s,k));
+  vs p(k); IN(p);
+
+  sort(all(p));
+  ll off = lower_bound(all(p), s) - p.begin();
+
+  vb ans(k + 1);
+  ans[off] = 1;
+
+  vs suf;
+  Trie trie;
+  rep(i, off, k) {
+    if (p[i].substr(0, n) > s) break;
+    suf.pb(p[i].substr(n));
+    trie.add(suf.back());
+  }
+
+  ll cur = 0;
+  string tmp = "";
+  function<void(ll)> dfs = [&](ll v) {
+    rep(i, 26) {
+      if (c[i] > 0) {
+        c[i]--;
+        tmp.pb('a' + i);
+        ll d = lower_bound(all(suf), tmp) - suf.begin();
+        ans[off + d] = 1;
+        if (trie.nxt[v][i] != -1) dfs(trie.nxt[v][i]);
+        tmp.pop_back();
+        c[i]++;
+      }
+    }
+  };
+  dfs(0);
+
+  rep(i, k + 1) {
+    if (ans[i]) OUT("Yes"); else OUT("No");
+  }
 }
 
 signed main() {

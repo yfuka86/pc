@@ -136,83 +136,84 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-string solve(string s, ll k) {
-  ll n = s.size();
-
-  map<char, vl> dict; rep(i, n) dict[s[i]].pb(i);
-  vl next(n + 1, -1);
-  fore(c, v, dict) {
-    rep_r(i, v.size() - 1) {
-      next[v[i]] = v[i + 1] + 1;
-    }
-  }
-
-  vl dp(n + 2, 0);
-  dp[n] = 1;
-  rep_r(i, n) {
-    dp[i] = min(LINF, dp[i + 1] * 2 - (next[i] != -1 ? dp[next[i]] : 0));
-  }
-  if (dp[0] <= k) return "Eel";
-
-  string ans = "";
-  ll cur = -1;
-  while (k > 0) {
-    k--;
-    ll sum = 0;
-    rep(i, 26){
-      char c = 'a' + i;
-      auto it = upper_bound(all(dict[c]), cur);
-      if (it == dict[c].end()) continue;
-      if (sum + dp[*it + 1] > k) {
-        ans += 'a' + i;
-        k -= sum;
-        cur = *it;
-        break;
-      }
-      sum += dp[*it + 1];
-    }
-  }
-  debug(next);
-  debug(dp);
-  return ans;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-string naive(string s, ll k) {
-  ll n = s.size();
-  set<string> cand;
-  rep(S, 1, 1 << n) {
-    string tmp;
-    rep(i, n) if (S & 1 << i) tmp.pb(s[i]);
-    cand.insert(tmp);
-  }
-  if (cand.size() < k) return "Eel";
-  debug(cand);
-  auto it = cand.begin();
-  rep(_, k - 1) it++;
-  return *it;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 5;
-    string s = rg.straz(n);
-    ll k = rg.l(1, 60);
-    auto so = solve(s, k); auto na = naive(s, k);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(s, k); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
+
 void solve() {
-  STR(s);
-  LL(k);
-  OUT(solve(s,k));
+  LL(n);
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    LL(u, v); --u; --v;
+    G.add_edge(u, v);
+  }
+  VL(a, n);
+
+  vl dp(n); vv(ll, dpf, n, 20);
+  function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    vl t(20);
+    fore(to, G[v]) {
+      if (to == p) continue;
+      dfs(to, v);
+      rep(i, 20) t[i] += dpf[to][i];
+      dp[v] += dp[to];
+    }
+    dp[v] -= t[0]; dp[v] /= 2; dp[v] += a[v];
+    t.erase(t.begin()); t.pb(0);
+    rep(i, 20) t[i] += a[v] >> i & 1;
+    dpf[v] = t;
+  };
+  dfs(0, -1);
+  // debug(dp);
+
+  vl dp2(n); vv(ll, dpf2, n, 20);
+  function<void(ll, ll, ll, vl)> dfs2 = [&](ll v, ll p, ll pdp, vl pdpf) {
+    dp2[v] = dp[v] + (pdp - pdpf[0]) / 2;
+    vl t = dpf[v];
+    rep(i, 19) t[i] += pdpf[i + 1];
+    fore(to, G[v]) {
+      if (to == p) continue;
+      ll diff = dp2[v] - (dp[to] - dpf[to][0]) / 2;
+      vl diffv = t;
+      rep(i, 19) diffv[i] -= dpf[to][i + 1];
+      dfs2(to, v, diff, diffv);
+    }
+  };
+  vl t(20);
+  dfs2(0, -1, 0, t);
+
+  OUTARRAY(dp2);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
