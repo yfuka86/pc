@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc278",
+    "title": "AtCoder Beginner Contest 278",
+    "url": "https://atcoder.jp/contests/abc278"
+  },
+  "tasks": [
+    {
+      "id": "abc278_a",
+      "label": "A",
+      "title": "Shift",
+      "url": "https://atcoder.jp/contests/abc278/tasks/abc278_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc278_a.cpp"
+      }
+    },
+    {
+      "id": "abc278_b",
+      "label": "B",
+      "title": "Misjudge the Time",
+      "url": "https://atcoder.jp/contests/abc278/tasks/abc278_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc278_b.cpp"
+      }
+    },
+    {
+      "id": "abc278_c",
+      "label": "C",
+      "title": "FF",
+      "url": "https://atcoder.jp/contests/abc278/tasks/abc278_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc278_c.cpp"
+      }
+    },
+    {
+      "id": "abc278_d",
+      "label": "D",
+      "title": "All Assign Point Add",
+      "url": "https://atcoder.jp/contests/abc278/tasks/abc278_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc278_d.cpp"
+      }
+    },
+    {
+      "id": "abc278_e",
+      "label": "E",
+      "title": "Grid Filling",
+      "url": "https://atcoder.jp/contests/abc278/tasks/abc278_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc278_e.cpp"
+      }
+    },
+    {
+      "id": "abc278_f",
+      "label": "F",
+      "title": "Shiritori",
+      "url": "https://atcoder.jp/contests/abc278/tasks/abc278_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc278_f.cpp"
+      }
+    },
+    {
+      "id": "abc278_g",
+      "label": "G",
+      "title": "Generalized Subtraction Game",
+      "url": "https://atcoder.jp/contests/abc278/tasks/abc278_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc278_g.cpp"
+      }
+    },
+    {
+      "id": "abc278_h",
+      "label": "Ex",
+      "title": "make 1",
+      "url": "https://atcoder.jp/contests/abc278/tasks/abc278_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc278_h.cpp"
+      }
+    }
+  ]
+}
