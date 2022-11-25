@@ -154,18 +154,63 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+
 
 void solve() {
-  LL(n);
-  VEC3(ld, a, b, c, n);
+  LL(n, a, b); --a; --b;
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    LL(u,v,w); --u; --v;
+    G.add_edge(u, v, w);
+  }
 
-  ld ok = LINF, ng = 0;
-  rep(i, 50)
+  vl costa(n, LINF), costb(n, LINF);
+  costa[a] = 0; costb[b] = 0;
+  function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    fore(to, G[v]) {
+      if (to == p) continue;
+      if (to == b && (costa[v] ^ to.cost) != 0) continue;
+      costa[to] = costa[v] ^ to.cost;
+      dfs(to, v);
+    }
+  };
+  dfs(a, -1);
+  function<void(ll, ll)> dfs2 = [&](ll v, ll p) {
+    fore(to, G[v]) {
+      if (to == p) continue;
+      costb[to] = costb[v] ^ to.cost;
+      dfs2(to, v);
+    }
+  };
+  dfs2(b, -1);
+
+  // debug(costa); debug(costb);
+
+  set<ll> S;
+  rep(i, n) if (i != b) S.insert(costb[i]);
+  debug(S);
+
+  if (costa[b] == 0) OUTRET("YES");
+  rep(i, n) {
+    if (costa[i] == LINF) continue;
+    if (S.find(costa[i]) != S.end()) OUTRET("YES");
+  }
+
+  OUT("NO");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

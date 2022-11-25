@@ -156,16 +156,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC3(ld, a, b, c, n);
+  LL(n); VL(p, n - 1);
+  map<ll, ll> mp;
+  mp[0]++;
+  rep(i, n - 1) {
+    mp[p[i]]++;
+  }
 
-  ld ok = LINF, ng = 0;
-  rep(i, 50)
+  vl op;
+  fore(_, cnt, mp) op.pb(cnt);
+  sort(rall(op));
+
+  ll ans = binary_search([&](ll mid) {
+    if (mid < mp.size()) return false;
+
+    ll oprem = mid - mp.size();
+    ll rem = 0;
+    rep(i, op.size()) {
+      rem += max(0, i + op[i] - mid);
+    }
+    return oprem >= rem;
+  }, n, 0);
+
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

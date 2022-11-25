@@ -156,16 +156,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC3(ld, a, b, c, n);
+  LL(n); VL(a, n);
 
-  ld ok = LINF, ng = 0;
-  rep(i, 50)
+  ll mi = *min_element(all(a));
+
+  rep(i, n) a[i] -= mi;
+  ll l = LINF, r = -LINF;
+  rep(i, n) if (a[i] == 0) { chmin(l, i); chmax(r, i); }
+
+  rep(i, l - 1) if (a[i] < a[i + 1]) OUTRET("NO");
+  rep(i, r, n - 1) if (a[i] > a[i + 1]) OUTRET("NO");
+  rep(i, l, r + 1) if (a[i] != 0) OUTRET("NO");
+
+  OUT("YES");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

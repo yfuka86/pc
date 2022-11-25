@@ -156,16 +156,23 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC3(ld, a, b, c, n);
+  LL(n); VL(s, n);
 
-  ld ok = LINF, ng = 0;
-  rep(i, 50)
+  ll ma = *max_element(all(s));
+  vl st = s;
+  st.erase(max_element(all(st)));
+  ll ma2 = *max_element(all(st));
+
+  vl ans(n);
+  rep(i, n) {
+    if (s[i] != ma) ans[i] = s[i] - ma; else ans[i] = s[i] - ma2;
+  }
+  OUTARRAY(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

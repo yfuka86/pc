@@ -156,16 +156,26 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC3(ld, a, b, c, n);
+  LL(n, c, d); VL(a, n);
+  sort(rall(a));
 
-  ld ok = LINF, ng = 0;
-  rep(i, 50)
+  if (a[0] * d < c) OUTRET("Impossible");
+  if (c <= sum_of(a, 0, min(d, n))) OUTRET("Infinity");
+
+  vl as = csum(a);
+
+  ll ans = binary_search([&](ll mid) {
+    ll sum = 0;
+    sum += as[min(mid, n)] * (d / mid);
+    sum += as[min(d % mid, n)];
+    return sum >= c;
+  }, 1, LINF);
+  OUT(ans - 1);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

@@ -96,7 +96,8 @@ template<class T, class S = ll> void OUTMAT(vector<vector<T>>& v, S offset = S(0
 template<typename T> void OUTBIN(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); OUTARRAY(v); cout.flush(); cin >> a; }
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
-//   a = query[0] ? A() : A();
+//   ll c = 1000000000;
+//   a = gcd(c + query[0], c + query[1]);
 // }
 template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
 // 数値系
@@ -156,16 +157,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC3(ld, a, b, c, n);
-
-  ld ok = LINF, ng = 0;
-  rep(i, 50)
+  ll cur = 1;
+  ll ans = 0;
+  rep(i, 1, 31) {
+    ll diff = 1 << i;
+    ll a;
+    IQUERY({cur, cur + diff}, a);
+    if (a != diff) {
+      cur += diff / 2;
+    } else {
+      ans += diff / 2;
+    }
+  }
+  IANSWER({ans});
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

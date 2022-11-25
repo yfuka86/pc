@@ -155,17 +155,115 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  LL(n);
-  VEC3(ld, a, b, c, n);
+// https://nyaannyaan.github.io/library/misc/mo.hpp
+struct Mo {
+  int width;
+  vector<int> left, right, order;
 
-  ld ok = LINF, ng = 0;
-  rep(i, 50)
+  Mo(int N, int Q) : order(Q) {
+    width = max<int>(1, 1.0 * N / max<double>(1.0, sqrt(Q * 2.0 / 3.0)));
+    iota(begin(order), end(order), 0);
+  }
+
+  void insert(int l, int r) { /* [l, r) */
+    left.emplace_back(l);
+    right.emplace_back(r);
+  }
+
+  template <typename AL, typename AR, typename DL, typename DR, typename REM>
+  void run(const AL &add_left, const AR &add_right, const DL &delete_left,
+           const DR &delete_right, const REM &rem) {
+    assert(left.size() == order.size());
+    sort(begin(order), end(order), [&](int a, int b) {
+      int ablock = left[a] / width, bblock = left[b] / width;
+      if (ablock != bblock) return ablock < bblock;
+      if (ablock & 1) return right[a] < right[b];
+      return right[a] > right[b];
+    });
+    int nl = 0, nr = 0;
+    for (auto idx : order) {
+      while (nl > left[idx]) add_left(--nl);
+      while (nr < right[idx]) add_right(nr++);
+      while (nl < left[idx]) delete_left(nl++);
+      while (nr > right[idx]) delete_right(--nr);
+      rem(idx);
+    }
+  }
+};
+
+void solve() {
+  LL(n); VL(a, n);
+
+  vvl trie; trie.pb({-1, -1});
+  rep(i, n) {
+    ll cur = 0;
+    rep_r(b, 30) {
+      if (a[i] & 1 << b) {
+        if (trie[cur][1] == -1) {
+          trie[cur][1] = trie.size();
+          trie.pb({-1, -1});
+        }
+        cur = trie[cur][1];
+      } else {
+        if (trie[cur][0] == -1) {
+          trie[cur][0] = trie.size();
+          trie.pb({-1, -1});
+        }
+        cur = trie[cur][0];
+      }
+    }
+  }
+
+  LL(q);
+  Mo mo(n, q);
+  vl ans(q);
+  rep(i, q) {
+    LL(l, r); --l;
+    mo.insert(l, r);
+  }
+
+  vl dp(trie.size());
+
+  auto add = [&](ll i) {
+    ll cur = 0;
+    rep_r(b, 30) {
+      if (a[i] & 1 << b) {
+        cur = trie[cur][1];
+      } else {
+        cur = trie[cur][0];
+      }
+      dp[cur]++;
+    }
+  };
+  auto del = [&](ll i) {
+    ll cur = 0;
+    rep_r(b, 30) {
+      if (a[i] & 1 << b) {
+        cur = trie[cur][1];
+      } else {
+        cur = trie[cur][0];
+      }
+      dp[cur]--;
+    }
+  };
+  auto rem = [&](int idx) {
+    ll cur = 0;
+    rep_r(b, 30) {
+      if (trie[cur][0] != -1 && dp[trie[cur][0]] >= 2) {
+        cur = trie[cur][0];
+      } else {
+        ans[idx] |= 1 << b;
+        cur = trie[cur][1];
+      }
+    }
+  };
+  mo.run(add, add, del, del, rem);
+  OUTARRAY(ans, 0, "\n");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

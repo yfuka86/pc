@@ -155,17 +155,51 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+ll inv_num(vl& v) { // comp(v);
+  BIT<int> bs(v.size()); ll ans = 0;
+  rep(i, v.size()) { ans += i - bs.sum(v[i] + 1); bs.add(v[i], 1); } return ans; }
+// ----------------------------------------------------------------------
+
+
 void solve() {
   LL(n);
-  VEC3(ld, a, b, c, n);
-
-  ld ok = LINF, ng = 0;
-  rep(i, 50)
+  VL(a, n);
+  ll ans = 0;
+  chmax(ans, inv_num(a));
+  {
+    vl t = a;
+    rep(i, n) if (t[i] == 0) { t[i] = 1; break; }
+    chmax(ans, inv_num(t));
+  }
+  {
+    vl t = a;
+    rep_r(i, n) if (t[i] == 1) { t[i] = 0; break; }
+    chmax(ans, inv_num(t));
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
