@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc279",
+    "title": "TOYOTA SYSTEMS Programming Contest 2022(AtCoder Beginner Contest 279)",
+    "url": "https://atcoder.jp/contests/abc279"
+  },
+  "tasks": [
+    {
+      "id": "abc279_a",
+      "label": "A",
+      "title": "wwwvvvvvv",
+      "url": "https://atcoder.jp/contests/abc279/tasks/abc279_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc279_a.cpp"
+      }
+    },
+    {
+      "id": "abc279_b",
+      "label": "B",
+      "title": "LOOKUP",
+      "url": "https://atcoder.jp/contests/abc279/tasks/abc279_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc279_b.cpp"
+      }
+    },
+    {
+      "id": "abc279_c",
+      "label": "C",
+      "title": "RANDOM",
+      "url": "https://atcoder.jp/contests/abc279/tasks/abc279_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc279_c.cpp"
+      }
+    },
+    {
+      "id": "abc279_d",
+      "label": "D",
+      "title": "Freefall",
+      "url": "https://atcoder.jp/contests/abc279/tasks/abc279_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc279_d.cpp"
+      }
+    },
+    {
+      "id": "abc279_e",
+      "label": "E",
+      "title": "Cheating Amidakuji",
+      "url": "https://atcoder.jp/contests/abc279/tasks/abc279_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc279_e.cpp"
+      }
+    },
+    {
+      "id": "abc279_f",
+      "label": "F",
+      "title": "BOX",
+      "url": "https://atcoder.jp/contests/abc279/tasks/abc279_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc279_f.cpp"
+      }
+    },
+    {
+      "id": "abc279_g",
+      "label": "G",
+      "title": "At Most 2 Colors",
+      "url": "https://atcoder.jp/contests/abc279/tasks/abc279_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc279_g.cpp"
+      }
+    },
+    {
+      "id": "abc279_h",
+      "label": "Ex",
+      "title": "Sum of Prod of Min",
+      "url": "https://atcoder.jp/contests/abc279/tasks/abc279_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc279_h.cpp"
+      }
+    }
+  ]
+}
