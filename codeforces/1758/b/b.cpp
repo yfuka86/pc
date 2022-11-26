@@ -157,35 +157,23 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
-  VL(a, n);
-
-  if (0) {
-    ll n = 10;
-    RandGen rg; vl a = rg.vecl(n, 1, 20);
-    sort(all(a));
-    debug(a);
-
-    rep(i, n) {
-      if (a[i] * 2 < a.back()) continue;
-      vl t(n);
-      rep(j, n) {
-        t[j] = a[i] * 2 - a[j];
-      }
-      debug(t);
+  if (n & 1) {
+    vl ans(n, 1); OUTARRAY(ans);
+    return;
+  } else {
+    if (n == 2) {
+      OUT(1, 3);
+    } else {
+      vl ans = {13, 2, 8, 1};
+      rep(_, n - 4) ans.pb(6);
+      OUTARRAY(ans);
     }
   }
-
-  ll ans = a[n - 1];
-  ll diff = a[n - 1] - a[0];
-  rep(i, n - 1) {
-    diff = gcd(diff, a[i + 1] - a[i]);
-  }
-  OUT(a[0] % diff + a[n - 1] - a[0]);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

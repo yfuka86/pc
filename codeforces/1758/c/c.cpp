@@ -136,56 +136,106 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+vl solve(ll n, ll x) {
+  if (n % x) return {-1};
+
+  vl ans(n + 1, -1); ans[1] = x; ans[n] = 1;
+  rep(i, 2, n) {
+    ans[i] = i;
+  }
+
+  if (n != x) {
+    vl idx;
+    idx.pb(x);
+
+    ll cur = x;
+    while (1) {
+      bool ok = false;
+      for(ll i = cur * 2; i < n; i += cur) {
+        if (n % i == 0) {
+          idx.pb(i);
+          cur = i;
+          ok = true;
+          break;
+        }
+      }
+      if (!ok) break;
+    }
+
+    vl val;
+    val = idx;
+    val.erase(val.begin()); val.pb(n);
+
+    // debug(idx, val);
+
+    rep(i, idx.size()) {
+      ans[idx[i]] = val[i];
+    }
+  }
+  ans.erase(ans.begin());
+  return ans;
+
+  // map<ll, vl> dict;
+  // rep(i, 2, n + 1) {
+  //   if (i == x) continue;
+  //   fore(div, divisor(i)) { if (div == 1) continue;
+  //     dict[div].pb(i);
+  //   }
+  // }
+  // debug(dict);
+
+  // vl ans(n, -1); ans[0] = x; ans[n - 1] = 1;
+  // vb used(n + 1);
+  // rep_r(i, 1, n - 1) {
+  //   ll p = i + 1;
+  //   while (ans[i] == -1) {
+  //     if (dict[p].size() == 0) return {-1};
+  //     ll id = dict[p].back(); dict[p].pop_back();
+  //     if (!used[id]) {
+  //       used[id] = 1;
+  //       ans[i] = id;
+  //     }
+  //   }
+  // }
+  // return ans;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+vl naive(ll n, ll x) {
+  vl ans(n); iota(all(ans), 1);
+  do {
+    bool valid = true;
+    if (ans[0] != x) continue;
+    if (ans[n - 1] != 1) continue;
+    rep(i, 1, n - 1) {
+      if (!valid) break;
+      if (ans[i] % (i + 1)) { valid = false; break; }
+    }
+    if (valid) return ans;
+  } while (next_permutation(all(ans)));
+  return {-1};
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = 8;
+    ll x = rg.l(2, n + 1);
+    auto so = solve(n, x); auto na = naive(n, x);
+    debug(so);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      debug(n, x); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  LL(n);
-  VL(a, n);
-
-  if (0) {
-    ll n = 10;
-    RandGen rg; vl a = rg.vecl(n, 1, 20);
-    sort(all(a));
-    debug(a);
-
-    rep(i, n) {
-      if (a[i] * 2 < a.back()) continue;
-      vl t(n);
-      rep(j, n) {
-        t[j] = a[i] * 2 - a[j];
-      }
-      debug(t);
-    }
-  }
-
-  ll ans = a[n - 1];
-  ll diff = a[n - 1] - a[0];
-  rep(i, n - 1) {
-    diff = gcd(diff, a[i + 1] - a[i]);
-  }
-  OUT(a[0] % diff + a[n - 1] - a[0]);
+  LL(n, x);
+  vl ans = solve(n, x);
+  OUTARRAY(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

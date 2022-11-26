@@ -160,7 +160,22 @@ void solve() {
   VEC3(ld, a, b, c, n);
 
   ld ok = LINF, ng = 0;
-  rep(i, 50)
+  rep(_, 100) {
+    ld mid = (ok + ng) / 2;
+
+    ld l = 0, r = LINF;
+    rep(i, n) {
+      if (max(a[i], b[i]) * mid < c[i]) { r = -1; break; }
+      ld diff = abs(b[i] - a[i]);
+      if (b[i] - a[i] > 0) {
+        chmax(l, (c[i] - a[i] * mid) / diff);
+      } else {
+        chmin(r, (a[i] * mid - c[i]) / diff);
+      }
+    }
+    if (l <= r) ok = mid; else ng = mid;
+  }
+  OUT(ok);
 }
 
 signed main() {
