@@ -156,7 +156,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); VL(a, n);
+
+  map<ll, ll> cnt;
+  rep(i, n) {
+    cnt[a[i]]++;
+  }
+
+  ll ans = n / 2;
+  ll sum = 0;
+  fore(_, c, cnt) {
+    sum += c;
+    chmax(ans, sum * (n - sum));
+  }
+  OUT(ans);
 }
 
 signed main() {

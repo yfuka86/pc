@@ -161,12 +161,7 @@ void solve() {
 
   ll e = n - 1, m = e / 2;
 
-  if (k > m) {
-    ll kd = n - k;
-    if (m % kd) OUTRET(-1);
-  } else {
-    if (m % k) OUTRET(-1);
-  }
+
   assert(false);
 }
 

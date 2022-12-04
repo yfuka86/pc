@@ -184,7 +184,6 @@ void solve() {
       revb[a[i + 1] - 1] = jj;
       revb[a[i + 1]] = ii;
     }
-
   }
 }
 

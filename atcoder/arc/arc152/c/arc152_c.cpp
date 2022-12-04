@@ -165,22 +165,27 @@ void solve() {
     sort(all(a));
     debug(a);
 
-    rep(i, n) {
-      if (a[i] * 2 < a.back()) continue;
+
+    rep(_, n) {
       vl t(n);
       rep(j, n) {
-        t[j] = a[i] * 2 - a[j];
+        t[j] = a.back() * 2 - a[j];
       }
       debug(t);
+      reverse(all(t));
+      a = t;
     }
   }
 
-  ll ans = a[n - 1];
+  // ll ans = a[n - 1];
   ll diff = a[n - 1] - a[0];
+  ll m = a[n - 1] % diff;
+
+  ll gc = diff;
   rep(i, n - 1) {
-    diff = gcd(diff, a[i + 1] - a[i]);
+    gc = gcd(gc, (a[i + 1] - a[0]) * 2);
   }
-  OUT(a[0] % diff + a[n - 1] - a[0]);
+  OUT(diff + m % gc);
 }
 
 signed main() {

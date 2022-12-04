@@ -164,9 +164,16 @@ void solve() {
 
   vl ansi(m, 0);
   rep(i, m) {
-
+    if (b[a[i] - 1] == 0) ansi[i] = b[a[i]];
+    if (b[a[i]] == 0) ansi[i] = b[a[i] - 1];
+    swap(b[a[i] - 1], b[a[i]]);
+    rev[b[a[i] - 1]] = a[i] - 1;
+    rev[b[a[i]]] = a[i];
   }
 
+  rep(i, m) {
+    OUT(rev[ansi[i]] + 1);
+  }
 }
 
 signed main() {

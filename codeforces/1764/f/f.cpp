@@ -157,11 +157,29 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+
+  vv(ll, dist, n, n);
+  rep(i, n) {
+    rep(j, i + 1) {
+      LL(x);
+      dist[i][j] = x;
+      dist[j][i] = x;
+    }
+  }
+  debug(dist);
+
+  vlp p;
+  rep(i, n) p.pb({dist[i][i], i});
+  sort(all(p));
+
+  rep(i, n - 1) {
+    p[i] p[i + 1]
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

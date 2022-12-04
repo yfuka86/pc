@@ -184,35 +184,55 @@ ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
 
 
 void solve() {
   LL(n, m, h);
   VV(ll, a, n, m);
 
-  vl col(n), row(m);
-  rep(i, n) {
-    ll cur = -1;
-    rep(j, m) {
-      if (a[i][j] != -1) {
-        if (cur != -1) {
-          row.add_edge(cur, j, a[i][j] - a[i][cur]);
-        }
-        cur = j;
-      }
-    }
+  vv(LP, e, n + m);
+  rep(i, n) rep(j, m) {
+    if (a[i][j] == -1) continue;
+    e[i].pb({a[i][j], n + j});
+    e[n + j].pb({a[i][j], i});
   }
 
+  bool ok = true; ll cnt = 0;
+  vl c(n + m, -1);
+  rep(i, n + m) {
+    if (c[i] != -1) continue;
 
+    queue<ll> que;
+    que.push(i);
+    while (!que.empty()) {
+      ll v = que.front(); que.pop();
+      fore(p, e[v]) {
+        ll w = p.se;
+        if (c[w] == -1) {
+          c[w] = (p.fi + h - c[v]) % h;
+          que.push(w);
+        } else if ((c[v] + c[w]) % h != p.fi) {
+          ok = false;
+        }
+      }
+    }
+    cnt++;
+  }
+  // debug(ok);
+
+  if (!ok) OUT(0);
+  else OUT(mint(h).pow(cnt - 1));
 }
 
 signed main() {

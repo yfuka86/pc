@@ -156,7 +156,28 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); VL(a, n);
+  if (0) {
+    ll n = 5, ma = 20;
+    RandGen rg; vl a = rg.vecl(n, 1, ma); uniq(a);
+    n = a.size();
+
+    vl used(ma);
+    rep(i, n) used[a[i]] = 1;
+    rep(_, ma) {
+      rep(i, ma) rep(j, i) {
+        if (used[i] && used[j]) used[i - j] = 1;
+      }
+    }
+    debug(a);
+    debug(used);
+  }
+
+  ll gc = a[0];
+  rep(i, n) {
+    gc = gcd(gc, a[i]);
+  }
+  OUT(a[n - 1] / gc);
 }
 
 signed main() {

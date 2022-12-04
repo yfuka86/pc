@@ -1,3 +1,5 @@
+// https://nyaannyaan.github.io/library/data-structure/union-find-with-potential.hpp
+
 template <class T>
 struct UnionFindWithPotential {
   vector<int> dat;

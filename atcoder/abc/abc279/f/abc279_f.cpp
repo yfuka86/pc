@@ -155,50 +155,54 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
+
 void solve() {
   LL(n, q);
 
-  map<ll, set<ll>> box;
-  rep(i, n) box[i].insert(i);
+  UnionFind uf(n + q);
+  // root -> 箱番号
+  vl f(n + q), inv(n + q); iota(all(f), 0); iota(all(inv), 0);
 
-  vl boxf(n); iota(all(boxf), 0);
-  vl revf(n); iota(all(revf), 0);
-  vl boxi(n); iota(all(boxi), 0);
+  auto merge = [&](ll x, ll y) {
+    if (inv[y] == -1) return;
+    if (inv[x] == -1) {
+      f[uf.root(inv[y])] = x;
+      inv[x] = uf.root(inv[y]);
+      inv[y] = -1;
+      return;
+    }
+    uf.unite(inv[x], inv[y]);
+    f[uf.root(inv[x])] = x;
+    inv[x] = uf.root(inv[x]);
+    inv[y] = -1;
+  };
 
   ll cur = n;
   rep(i, q) {
     LL(t);
     if (t == 1) {
       LL(x, y); --x; --y;
-      if (box[x].size() < box[y].size()) {
-        set<ll> tmp = box[x];
-        box[x] = move(box[y]);
-        fore(ball, tmp) {
-          box[x].insert(ball);
-          boxi[ball] = revf[y];
-        }
-        ll rx = revf[x], ry = revf[y];
-        // debug(rx, ry);
-        swap(boxf[rx], boxf[ry]);
-        revf[boxf[ry]] = ry;
-        revf[boxf[rx]] = rx;
-      } else {
-        fore(ball, box[y]) {
-          box[x].insert(ball);
-          boxi[ball] = revf[x];
-        }
-      }
-      box[y].clear();
+      merge(x, y);
     } else if (t == 2) {
       LL(x); --x;
-      box[x].insert(cur);
-      boxi.pb(revf[x]);
+      merge(x, cur);
       cur++;
     } else {
       LL(x); --x;
-      OUT(boxf[boxi[x]] + 1);
+      OUT(f[uf.root(x)] + 1);
     }
-    // debug(box, boxi, boxf, revf);
   }
 }
 
