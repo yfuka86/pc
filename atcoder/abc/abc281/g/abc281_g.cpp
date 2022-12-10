@@ -155,62 +155,312 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static constexpr int get_mod() { return mod; }
+struct Barrett {
+  using u32 = unsigned int;
+  using i64 = long long;
+  using u64 = unsigned long long;
+  u32 m;
+  u64 im;
+  Barrett() : m(), im() {}
+  Barrett(int n) : m(n), im(u64(-1) / m + 1) {}
+  constexpr inline i64 quo(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? x - 1 : x;
+  }
+  constexpr inline i64 rem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? r + m : r;
+  }
+  constexpr inline pair<i64, int> quorem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    if (m <= r) return {x - 1, r + m};
+    return {x, r};
+  }
+  constexpr inline i64 pow(u64 n, i64 p) {
+    u32 a = rem(n), r = m == 1 ? 0 : 1;
+    while (p) {
+      if (p & 1) r = rem(u64(r) * a);
+      a = rem(u64(a) * a);
+      p >>= 1;
+    }
+    return r;
+  }
 };
-using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-//------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
 
-// dpなど用差分更新累積和（更新範囲が限られてないとクエリO(n)）
-template<typename T>
-struct incr_csum {
-  int n, upd = 1e9; vector<T> a, asum;
-  explicit incr_csum(int _n): n(_n), a(n, T(0)), asum(n + 1, T(0)) {}
-  explicit incr_csum(const vector<T> &v): n(v.size()) { a = v; asum(n + 1); update_all(); }
-  // 関数以外の代入禁止
-  T &operator[](int k) { if (upd != INF && upd < k) { for(int i = upd; i < k; ++i) asum[i + 1] = asum[i] + a[i]; upd = k; } return asum[k]; }
-  T set(int k, T x) { if (a[k] != x) chmin(upd, k); return a[k] = x; }
-  T add(int k, T x) { if (x != 0) chmin(upd, k); return a[k] += x; }
-  T sum(int l, int r) { return (*this)[r] - (*this)[l]; }
-  void update_all() { for(int i = 0; i < n; ++i) asum[i + 1] = asum[i] + a[i]; upd = -1; }
+struct ArbitraryModInt {
+  int x;
+
+  ArbitraryModInt() : x(0) {}
+
+  ArbitraryModInt(int64_t y) {
+    int z = y % get_mod();
+    if (z < 0) z += get_mod();
+    x = z;
+  }
+
+  ArbitraryModInt &operator+=(const ArbitraryModInt &p) {
+    if ((x += p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator-=(const ArbitraryModInt &p) {
+    if ((x += get_mod() - p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator*=(const ArbitraryModInt &p) {
+    x = rem((unsigned long long)x * p.x);
+    return *this;
+  }
+
+  ArbitraryModInt &operator/=(const ArbitraryModInt &p) {
+    *this *= p.inverse();
+    return *this;
+  }
+
+  ArbitraryModInt operator-() const { return ArbitraryModInt(-x); }
+
+  ArbitraryModInt operator+(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) += p;
+  }
+
+  ArbitraryModInt operator-(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) -= p;
+  }
+
+  ArbitraryModInt operator*(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) *= p;
+  }
+
+  ArbitraryModInt operator/(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) /= p;
+  }
+
+  bool operator==(const ArbitraryModInt &p) const { return x == p.x; }
+
+  bool operator!=(const ArbitraryModInt &p) const { return x != p.x; }
+
+  ArbitraryModInt inverse() const {
+    int a = x, b = get_mod(), u = 1, v = 0, t;
+    while (b > 0) {
+      t = a / b;
+      swap(a -= t * b, b);
+      swap(u -= t * v, v);
+    }
+    return ArbitraryModInt(u);
+  }
+
+  ArbitraryModInt pow(int64_t n) const {
+    ArbitraryModInt ret(1), mul(x);
+    while (n > 0) {
+      if (n & 1) ret *= mul;
+      mul *= mul;
+      n >>= 1;
+    }
+    return ret;
+  }
+
+  friend ostream &operator<<(ostream &os, const ArbitraryModInt &p) {
+    return os << p.x;
+  }
+
+  friend istream &operator>>(istream &is, ArbitraryModInt &a) {
+    int64_t t;
+    is >> t;
+    a = ArbitraryModInt(t);
+    return (is);
+  }
+
+  int get() const { return x; }
+
+  inline unsigned int rem(unsigned long long p) { return barrett().rem(p); }
+
+  static inline Barrett &barrett() {
+    static Barrett b;
+    return b;
+  }
+
+  static inline int &get_mod() {
+    static int mod = 0;
+    return mod;
+  }
+
+  static void set_mod(int md) {
+    assert(0 < md && md <= (1LL << 30) - 1);
+    get_mod() = md;
+    barrett() = Barrett(md);
+  }
 };
+
+using mint = ArbitraryModInt;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+
+#include <atcoder/math>
+#define PRIME_POWER_BINOMIAL_M_MAX ((1LL << 30) - 1)
+#define PRIME_POWER_BINOMIAL_N_MAX 20000000
+
+struct prime_power_binomial {
+  int p, q, M;
+  vector<int> fac, ifac, inv;
+  int delta;
+  Barrett bm, bp;
+
+  prime_power_binomial(int _p, int _q) : p(_p), q(_q) {
+    assert(1 < p && p <= PRIME_POWER_BINOMIAL_M_MAX);
+    assert(_q > 0);
+    long long m = 1;
+    while (_q--) {
+      m *= p;
+      assert(m <= PRIME_POWER_BINOMIAL_M_MAX);
+    }
+    M = m;
+    bm = Barrett(M), bp = Barrett(p);
+    enumerate();
+    delta = (p == 2 && q >= 3) ? 1 : M - 1;
+  }
+
+  void enumerate() {
+    int MX = min<int>(M, PRIME_POWER_BINOMIAL_N_MAX + 10);
+    fac.resize(MX);
+    ifac.resize(MX);
+    inv.resize(MX);
+    fac[0] = ifac[0] = inv[0] = 1;
+    fac[1] = ifac[1] = inv[1] = 1;
+    for (int i = 2; i < MX; i++) {
+      if (i % p == 0) {
+        fac[i] = fac[i - 1];
+        fac[i + 1] = bm.rem(1LL * fac[i - 1] * (i + 1));
+        i++;
+      } else {
+        fac[i] = bm.rem(1LL * fac[i - 1] * i);
+      }
+    }
+    ifac[MX - 1] = bm.pow(fac[MX - 1], M / p * (p - 1) - 1);
+    for (int i = MX - 2; i > 1; --i) {
+      if (i % p == 0) {
+        ifac[i] = bm.rem(1LL * ifac[i + 1] * (i + 1));
+        ifac[i - 1] = ifac[i];
+        i--;
+      } else {
+        ifac[i] = bm.rem(1LL * ifac[i + 1] * (i + 1));
+      }
+    }
+  }
+
+  long long Lucas(long long n, long long m) {
+    int res = 1;
+    while (n) {
+      int n0, m0;
+      tie(n, n0) = bp.quorem(n);
+      tie(m, m0) = bp.quorem(m);
+      if (n0 < m0) return 0;
+      res = bm.rem(1LL * res * fac[n0]);
+      int buf = bm.rem(1LL * ifac[n0 - m0] * ifac[m0]);
+      res = bm.rem(1LL * res * buf);
+    }
+    return res;
+  }
+
+  long long C(long long n, long long m) {
+    if (n < m || n < 0 || m < 0) return 0;
+    if (q == 1) return Lucas(n, m);
+    long long r = n - m;
+    int e0 = 0, eq = 0, i = 0;
+    int res = 1;
+    while (n) {
+      res = bm.rem(1LL * res * fac[bm.rem(n)]);
+      res = bm.rem(1LL * res * ifac[bm.rem(m)]);
+      res = bm.rem(1LL * res * ifac[bm.rem(r)]);
+      n = bp.quo(n);
+      m = bp.quo(m);
+      r = bp.quo(r);
+      int eps = n - m - r;
+      e0 += eps;
+      if (e0 >= q) return 0;
+      if (++i >= q) eq += eps;
+    }
+    if (eq & 1) res = bm.rem(1LL * res * delta);
+    res = bm.rem(1LL * res * bm.pow(p, e0));
+    return res;
+  }
+};
+// constraints:
+// (M <= 1e7 and max(N) <= 1e18) or (M < 2^30 and max(N) <= 2e7)
+struct arbitrary_mod_binomial {
+  int mod;
+  vector<int> M;
+  vector<prime_power_binomial> cs;
+
+  arbitrary_mod_binomial(long long md) : mod(md) {
+    assert(1 <= md);
+    assert(md <= PRIME_POWER_BINOMIAL_M_MAX);
+    for (int i = 2; i * i <= md; i++) {
+      if (md % i == 0) {
+        int j = 0, k = 1;
+        while (md % i == 0) md /= i, j++, k *= i;
+        M.push_back(k);
+        cs.emplace_back(i, j);
+        assert(M.back() == cs.back().M);
+      }
+    }
+    if (md != 1) {
+      M.push_back(md);
+      cs.emplace_back(md, 1);
+    }
+    assert(M.size() == cs.size());
+  }
+
+  long long C(long long n, long long m) {
+    if (mod == 1) return 0;
+    vector<long long> rem, d;
+    for (int i = 0; i < (int)cs.size(); i++) {
+      rem.push_back(cs[i].C(n, m));
+      d.push_back(M[i]);
+    }
+    return atcoder::crt(rem, d).first;
+  }
+};
+
 
 void solve() {
-  LL(n, k, c);
+  LL(n, m);
+  mint::set_mod(m);
 
-  incr_csum<mint> dp(n);
-  mint dp1 = c;
-  rep(i, 1, n) {
-    if (i - k + 1 >= 0) dp1 += dp.sum(i - k + 1, i - k + 2);
-    // 2色混ざっている状態から直前と違う色を選ぶ遷移 +
-    // 1色から2色混ざった状態になる遷移（dp1にギリギリvalidなものを足している）
-    // （1色になる遷移はdp1にそのまま保持）
-    dp.add(i, dp.sum(max(0, i - k + 2), i) + dp1 * (c - 1));
+  arbitrary_mod_binomial C(m);
+
+  vmi p2(1000001);
+  p2[0] = 1;
+  rep(i, 1000000) p2[i + 1] = p2[i] * 2;
+
+  vv(mint, com, 1000, 1000);
+  rep(i, 1000) rep(j, 1000) {
+    com[i][j] = C.C(i, j);
   }
-  OUT(dp.sum(0, n) + c);
+
+  vv(mint, p2jk, 1000, 1000);
+  rep(j, 1000) rep(k, 1000) {
+    p2jk[j][k] = (p2[j] - 1).pow(k);
+  }
+
+  vv(mint, dp, n, n + 1);
+  dp[1][1] = 1;
+  rep(i, 1, n) rep(j, 1, n) rep(k, 1, n) { // i個目の頂点がこの深さの最初のもの k個選ぶ
+    // 残り頂点数
+    ll rem = n - 1 - i;
+    if (i + k < n) {
+      // debug(i, rem, k, C.C(rem, k));
+      dp[i + k][k] += dp[i][j] * com[rem][k] * p2jk[j][k] * p2[k * (k - 1) / 2];
+    }
+  }
+
+  mint ans = 0;
+  rep(i, n) {
+    ans += dp[n - 1][i] * (mint(2).pow(i) - 1);
+  }
+  OUT(ans);
 }
 
 signed main() {

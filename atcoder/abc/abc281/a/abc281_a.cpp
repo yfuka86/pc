@@ -155,62 +155,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static constexpr int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-//------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
-
-// dpなど用差分更新累積和（更新範囲が限られてないとクエリO(n)）
-template<typename T>
-struct incr_csum {
-  int n, upd = 1e9; vector<T> a, asum;
-  explicit incr_csum(int _n): n(_n), a(n, T(0)), asum(n + 1, T(0)) {}
-  explicit incr_csum(const vector<T> &v): n(v.size()) { a = v; asum(n + 1); update_all(); }
-  // 関数以外の代入禁止
-  T &operator[](int k) { if (upd != INF && upd < k) { for(int i = upd; i < k; ++i) asum[i + 1] = asum[i] + a[i]; upd = k; } return asum[k]; }
-  T set(int k, T x) { if (a[k] != x) chmin(upd, k); return a[k] = x; }
-  T add(int k, T x) { if (x != 0) chmin(upd, k); return a[k] += x; }
-  T sum(int l, int r) { return (*this)[r] - (*this)[l]; }
-  void update_all() { for(int i = 0; i < n; ++i) asum[i + 1] = asum[i] + a[i]; upd = -1; }
-};
-
 void solve() {
-  LL(n, k, c);
-
-  incr_csum<mint> dp(n);
-  mint dp1 = c;
-  rep(i, 1, n) {
-    if (i - k + 1 >= 0) dp1 += dp.sum(i - k + 1, i - k + 2);
-    // 2色混ざっている状態から直前と違う色を選ぶ遷移 +
-    // 1色から2色混ざった状態になる遷移（dp1にギリギリvalidなものを足している）
-    // （1色になる遷移はdp1にそのまま保持）
-    dp.add(i, dp.sum(max(0, i - k + 2), i) + dp1 * (c - 1));
+  LL(n);
+  rep_r(i, n + 1) {
+    OUT(i);
   }
-  OUT(dp.sum(0, n) + c);
 }
 
 signed main() {
