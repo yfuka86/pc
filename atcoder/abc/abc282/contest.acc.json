@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc282",
+    "title": "HHKB Programming Contest 2022 Winter(AtCoder Beginner Contest 282)",
+    "url": "https://atcoder.jp/contests/abc282"
+  },
+  "tasks": [
+    {
+      "id": "abc282_a",
+      "label": "A",
+      "title": "Generalized ABC",
+      "url": "https://atcoder.jp/contests/abc282/tasks/abc282_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc282_a.cpp"
+      }
+    },
+    {
+      "id": "abc282_b",
+      "label": "B",
+      "title": "Let's Get a Perfect Score",
+      "url": "https://atcoder.jp/contests/abc282/tasks/abc282_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc282_b.cpp"
+      }
+    },
+    {
+      "id": "abc282_c",
+      "label": "C",
+      "title": "String Delimiter",
+      "url": "https://atcoder.jp/contests/abc282/tasks/abc282_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc282_c.cpp"
+      }
+    },
+    {
+      "id": "abc282_d",
+      "label": "D",
+      "title": "Make Bipartite 2",
+      "url": "https://atcoder.jp/contests/abc282/tasks/abc282_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc282_d.cpp"
+      }
+    },
+    {
+      "id": "abc282_e",
+      "label": "E",
+      "title": "Choose Two and Eat One",
+      "url": "https://atcoder.jp/contests/abc282/tasks/abc282_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc282_e.cpp"
+      }
+    },
+    {
+      "id": "abc282_f",
+      "label": "F",
+      "title": "Union of Two Sets",
+      "url": "https://atcoder.jp/contests/abc282/tasks/abc282_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc282_f.cpp"
+      }
+    },
+    {
+      "id": "abc282_g",
+      "label": "G",
+      "title": "Similar Permutation",
+      "url": "https://atcoder.jp/contests/abc282/tasks/abc282_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc282_g.cpp"
+      }
+    },
+    {
+      "id": "abc282_h",
+      "label": "Ex",
+      "title": "Min + Sum",
+      "url": "https://atcoder.jp/contests/abc282/tasks/abc282_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc282_h.cpp"
+      }
+    }
+  ]
+}
