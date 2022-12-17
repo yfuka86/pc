@@ -18,3 +18,10 @@ auto div_simple(T &f, mint a, mint b, int n){
     }
   }
 };
+
+// 負の二項定理
+// (1 - f) ^ -k の級数のf^n次の係数までを求める
+vmi negative_comb(ll n, ll k) {
+  vmi ret(n + 1); rep(i, n + 1) ret[i] = comb(i + k - 1, k - 1);
+  return ret;
+}

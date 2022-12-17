@@ -12,7 +12,7 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define _overload5(a, b, c, d, e, name, ...) name
 #define _overload4(a, b, c, d, name, ...) name
 #define _overload3(a, b, c, name, ...) name
-#define _rep0(n) for(ll i = 0; (ll)(i) < n; ++i)
+#define _rep0(n) for(ll i = 0; i < (ll)(n); ++i)
 #define _rep1(i, n) for(ll i = 0; i < (ll)(n); ++i)
 #define _rep2(i, a, b) for(ll i = (ll)(a); i < (ll)(b); ++i)
 #define _rep3(i, a, b, c) for(ll i = (ll)(a); i < (ll)(b); i += (ll)(c))
@@ -39,7 +39,6 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define vv(type, name, h, ...) vector<vector<type>> name(h, vector<type>(__VA_ARGS__))
 #define v3(type, name, h, w, ...) vector<vector<vector<type>>> name(h, vector<vector<type>>(w, vector<type>(__VA_ARGS__)))
 #define v4(type, name, a, b, c, ...) vector<vector<vector<vector<type>>>> name(a, vector<vector<vector<type>>>(b, vector<vector<type>>(c, vector<type>(__VA_ARGS__))))
-
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
@@ -58,7 +57,7 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << const_cast<T &>(t); }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
 template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T, typename U, typename V, typename S> void dump(const tuple<T, U, V, S>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << " "; dump(get<3>(t)); dout << ")"; }
@@ -92,8 +91,8 @@ void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...t
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
-template<typename T> void OUTARRAY(vector<T>& v, T offset = T(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
-template<typename T> void OUTMAT(vector<vector<T>>& v, T offset = T(0)) { rep(i, v.size()) { OUTARRAY(v[i], offset); } }
+template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
+template<class T, class S = ll> void OUTMAT(vector<vector<T>>& v, S offset = S(0)) { rep(i, v.size()) { OUTARRAY(v[i], offset); } }
 template<typename T> void OUTBIN(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
 template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { cout << str; vector<Q> v(q); OUTARRAY(v); cout.flush(); cin >> a; }
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
@@ -105,6 +104,8 @@ int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
 pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
 ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
+vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
 vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
 template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
 template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int msb(T x){ if (sizeof(x) == 4) return 31 - __builtin_clz(x); else return 63 - __builtin_clzll(x); }
@@ -112,8 +113,10 @@ template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int l
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T = ll> T sum_of(const vector<T> &v, int l = 0, int r = INF) { return accumulate(rng_of(v, l, min(r, (int)v.size())), T(0)); }
-ll max(int x, ll y) { return max((ll)x, y); } ll max(ll x, int y) { return max(x, (ll)y); }
-ll min(int x, ll y) { return min((ll)x, y); } ll min(ll x, int y) { return min(x, (ll)y); }
+template<class... T> constexpr auto min(T... a){ return min(initializer_list<common_type_t<T...>>{a...}); }
+template<class... T> constexpr auto mine(T... a) { return min(a..., LINF, LINF); }
+template<class... T> constexpr auto max(T... a){ return max(initializer_list<common_type_t<T...>>{a...}); }
+template<class... T> constexpr auto maxe(T... a) { return max(a..., -LINF, -LINF); }
 ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
 // 操作系
 template<class T> void rotate(vector<vector<T>> &a) { ll n = a.size(), m = a[0].size(); vector<vector<T>> ret(m, vector<T>(n, 0)); rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j]; a = ret; }
@@ -152,20 +155,66 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-
 void solve() {
   LL(n); VL(a, n);
+  // RandGen rg;
+  // n = 100; a = rg.vecl(n, 0, 4);
 
-  rep(i, 1, n - 1) {
-    if (a[i] % gcd(a[i - 1], a[i + 1])) OUTRET("NO");
+  if (0) {
+    set<vl> sta;
+    ll aa = 0;
+    rep(l, n) rep(r, l + 1, n + 1) {
+      vvl v;
+      rep(i, l, r) {
+        bool done = false;
+        fore(_v, v) {
+          if (_v.back() & a[i]) { done = true; _v.pb(a[i]); break; }
+        }
+        if (!done) v.pb({a[i]});
+      }
+      aa += v.size();
+      vvl t; vl suf; rep(i, v.size()) if (v[i][0] != 0) { t.pb(v[i]); suf.pb(v[i].back()); }
+      sta.insert(suf);
+      // debug(l, r, t);
+    }
+    debug(sta.size());
+    debug(sta);
+    debug(aa);
   }
 
-  OUT("YES");
+  map<vl, ll> dp, dpt;
+
+  ll ans = 0;
+  ll cur = 0;
+  rep(i, n) {
+    if (a[i] == 0) {
+      ans += (i + 1) * (n - i);
+      cur++;
+    } else {
+      fore(_v, cnt, dp) {
+        vl v = _v;
+        bool done = false;
+        rep(j, v.size()) {
+          if (v[j] & a[i]) { done = true; v[j] = a[i]; break; }
+        }
+        if (!done) { v.pb(a[i]); ans += cnt * (n - i); }
+        dpt[v] += cnt;
+      }
+      ans += (n - i) * (1 + cur);
+      dpt[{a[i]}] += 1 + cur;
+      cur = 0;
+      dp = dpt;
+      dpt.clear();
+      // debug(dp);
+      // debug(ans);
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
