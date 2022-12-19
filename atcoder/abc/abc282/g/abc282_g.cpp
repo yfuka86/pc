@@ -300,8 +300,10 @@ typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; t
 
 
 void solve() {
-  LL(n, k, p);
+  LL(n, K, p);
   mint::set_mod(p);
+
+
 }
 
 signed main() {

@@ -155,51 +155,62 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// return value : pair<graph, root>
-template <typename T>
-pair<vector<vector<int>>, int> CartesianTree(vector<T> &a) {
-  int N = (int)a.size();
-  vector<vector<int>> g(N);
-  vector<int> p(N, -1), st;
-  st.reserve(N);
-  for (int i = 0; i < N; i++) {
-    int prv = -1;
-    while (!st.empty() && a[i] < a[st.back()]) {
-      prv = st.back();
-      st.pop_back();
-    }
-    if (prv != -1) p[prv] = i;
-    if (!st.empty()) p[i] = st.back();
-    st.push_back(i);
-  }
-  int root = -1;
-  for (int i = 0; i < N; i++) {
-    if (p[i] != -1)
-      g[p[i]].push_back(i);
-    else
-      root = i;
-  }
-  return make_pair(g, root);
-}
-
 void solve() {
-  LL(n); VL(a, n);
+  LL(n, m);
+  VV(ll, a, n, m);
 
-  auto [g, root] = CartesianTree(a);
-  function<void(ll, ll)> dfs = [&](ll v, ll p) {
-    fore(to, g[v]) {
-      if (to == p) continue;
-      ans[to] = v;
-      dfs(to, v);
+  ll t = 0;
+  rep(i, n) rep(j, m) if (a[i][j]) t++;
+  if (t % n) OUTRET(-1);
+
+  ll need = t / n;
+
+  vl cnt(n);
+  vvl rem(m);
+  rep(i, n) {
+    rep(j, m) {
+      if (a[i][j]) cnt[i]++;
     }
-  };
+    if (cnt[i] > need) {
+      rep(j, m) {
+        if (a[i][j]) rem[j].pb(i);
+      }
+    }
+  }
+  // debug(cnt);
+  // debug(rem);
 
+  vlt ans;
+  rep(i, n) {
+    ll j = 0;
+    while(cnt[i] < need) {
+      if (a[i][j] == 0) {
+        ll from = -1;
+        while (from == -1 && rem[j].size()) {
+          ll cand = rem[j].back(); rem[j].pop_back();
+          if (cnt[cand] > need) {
+            cnt[cand]--;
+            from = cand;
+          }
+        }
+        if (from != -1) {
+          ans.pb({i, from, j});
+          cnt[i]++;
+        }
+      }
+      j++;
+    }
+  }
+
+  OUT(ans.size());
+  fore(i, j, k, ans) {
+    OUT(i + 1, j + 1, k + 1);
+  }
 }
-
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

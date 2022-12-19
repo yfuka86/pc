@@ -10,7 +10,7 @@ auto mul_simple(T &f, mint a, mint b, int n){
 // fからa + b * x^nを割る
 template<typename T>
 auto div_simple(T &f, mint a, mint b, int n){
-  if (a == 0) { f.erase(f.begin()); f.pb(0); rep(i, f.size()) f[i] /= b; }
+  if (a == 0) { f.erase(f.begin()); f.pb(0); rep(i, f.size()) f[i] /= b; } // TODO: fix(bug)
   else {
     rep(i, f.size()) {
       f[i] /= a;

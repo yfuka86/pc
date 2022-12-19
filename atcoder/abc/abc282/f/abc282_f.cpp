@@ -155,20 +155,47 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template< typename T >
+struct SparseTable {
+  vector< vector< T > > st; vector< int > lookup;
+  SparseTable(const vector< T > &v) {
+    int b = 0; while((1 << b) <= v.size()) ++b; st.assign(b, vector< T >(1 << b));
+    for(int i = 0; i < v.size(); i++) st[0][i] = v[i];
+    for(int i = 1; i < b; i++) for(int j = 0; j + (1 << i) <= (1 << b); j++) st[i][j] = min(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
+    lookup.resize(v.size() + 1); for(int i = 2; i < lookup.size(); i++) lookup[i] = lookup[i >> 1] + 1; }
+  inline T rmq(int l, int r) { int b = lookup[r - l]; return min(st[b][l], st[b][r - (1 << b)]); }
+};
+
+
 void solve() {
   LL(n);
 
-  cout << n << "\n";
+  vl a(n);
+  SparseTable st(a);
+
+  map<LP, ll> mp;
+  ll cur = 0;
+  rep(b, st.st.size()) {
+    vl &v = st.st[b];
+    rep(i, v.size()) {
+      if (i + (1 << b) > n) break;
+      mp[{b, i}] = cur;
+      cur++;
+    }
+  }
+
+  cout << mp.size() << "\n";
   cout.flush();
-  rep(i, n) {
-    cout << i + 1 << " " << i + 1 << "\n";
+  fore(p, _, mp) {
+    OUT(p.se + 1, p.se + (1 << p.fi));
     cout.flush();
   }
 
   LL(q);
   rep(i, q) {
-    LL(l, r);
-    cout << l << " " << r << "\n";
+    LL(l, r); --l;
+    ll b = st.lookup[r - l];
+    OUT(mp[{b, l}] + 1, mp[{b, r - (1 << b)}] + 1);
     cout.flush();
   }
 }

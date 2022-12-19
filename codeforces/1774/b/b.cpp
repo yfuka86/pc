@@ -155,51 +155,27 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// return value : pair<graph, root>
-template <typename T>
-pair<vector<vector<int>>, int> CartesianTree(vector<T> &a) {
-  int N = (int)a.size();
-  vector<vector<int>> g(N);
-  vector<int> p(N, -1), st;
-  st.reserve(N);
-  for (int i = 0; i < N; i++) {
-    int prv = -1;
-    while (!st.empty() && a[i] < a[st.back()]) {
-      prv = st.back();
-      st.pop_back();
-    }
-    if (prv != -1) p[prv] = i;
-    if (!st.empty()) p[i] = st.back();
-    st.push_back(i);
-  }
-  int root = -1;
-  for (int i = 0; i < N; i++) {
-    if (p[i] != -1)
-      g[p[i]].push_back(i);
-    else
-      root = i;
-  }
-  return make_pair(g, root);
-}
-
 void solve() {
-  LL(n); VL(a, n);
+  LL(n, m, k);
+  VL(a, m);
 
-  auto [g, root] = CartesianTree(a);
-  function<void(ll, ll)> dfs = [&](ll v, ll p) {
-    fore(to, g[v]) {
-      if (to == p) continue;
-      ans[to] = v;
-      dfs(to, v);
+  ll block = n / k;
+  ll rem = n % k;
+
+  sort(rall(a));
+  rep(i, m) {
+    if (a[i] > block + 1) OUTRET("NO");
+    if (a[i] == block + 1) {
+      if (rem == 0) OUTRET("NO");
+      rem--;
     }
-  };
-
+  }
+  OUT("YES");
 }
-
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
