@@ -63,13 +63,32 @@ struct incr_csum {
   void update_all() { for(int i = 0; i < n; ++i) asum[i + 1] = asum[i] + a[i]; upd = -1; }
 };
 
+template<typename T>
+struct csum2d {
+  int h, w, cur = 0; vector<vector<T>> a, asum;
+  explicit csum2d(int _h, int _w): h(_h), w(_w), a(h, vector(w, T(0))), asum(h + 1, vector<T>(w + 1, T(0))) {}
+  explicit csum2d(vector<vector<T>> &v): h(v.size()), w(v[0].size()) { a = v; asum.assign(h + 1, vector<T>(w + 1, T(0))); update_all(); }
+  // 関数以外の代入禁止
+  vector<T> &operator[](int k) { if (cur < k) for(int i = cur; i < k; ++i) update_column(i); return asum[k]; }
+  void set(int x, int y, T k) { if (a[x][y] != k) chmin(cur, x); a[x][y] = k; }
+  T query(int x1, int y1, int x2, int y2) { return asum[x2][y2] + asum[x1][y1] - asum[x1][y2] - asum[x2][y1]; }
+  void update_column(int i) { for(int j = 0; j < w; ++j) asum[i + 1][j + 1] += asum[i + 1][j] + asum[i][j + 1] + a[i][j] - asum[i][j]; chmax(cur, i + 1); }
+  void update_all() { for(int i = 0; i < h; ++i) update_column(i); }
+};
 
-// 二次元累積和（一応）
-vvl csum2d(vvl &a) {
-  ll H = a.size(), W = a[0].size(); vvl sum(H + 1, vl(W + 1, 0));
-  rep(i, H) rep(j, W) sum[i + 1][j + 1] += sum[i + 1][j] + sum[i][j + 1] + a[i][j] - sum[i][j];
-  return sum;
-}
+template<typename T>
+struct imos2d {
+  int h, w; vector<vector<T>> a;
+  imos2d(int _h, int _w): h(_h), w(_w) { a.assign(h + 1, vector<T>(w + 1, T(0))); }
+  vector<T> &operator[](int k) { return a[k]; }
+  void add(int x1, int y1, int x2, int y2, T x) {
+    a[x1][y1] += x; a[x2][y2] += x; a[x1][y2] -= x; a[x2][y1] -= x;
+  }
+  void build() {
+    for(int i = 0; i < h; ++i) for(int j = 0; j < w; ++j) a[i + 1][j] += a[i][j];
+    for(int i = 0; i < h; ++i) for(int j = 0; j < w; ++j) a[i][j + 1] += a[i][j];
+  }
+};
 
 // 三次元imos
 struct imos3d {

@@ -183,19 +183,39 @@ pair<vector<vector<int>>, int> CartesianTree(vector<T> &a) {
 }
 
 void solve() {
-  LL(n); VL(a, n);
+  LL(n, s); VL(a, n); VL(b, n);
+  vl bs = csum(b);
 
-  auto [g, root] = CartesianTree(a);
-  function<void(ll, ll)> dfs = [&](ll v, ll p) {
-    fore(to, g[v]) {
-      if (to == p) continue;
-      ans[to] = v;
-      dfs(to, v);
+  vlp p(n);
+  rep(i, n) p[i] = {a[i], i};
+
+  auto [g, root] = CartesianTree(p);
+
+  ll ans = 0;
+
+  function<void(ll, ll, ll)> dfs = [&](ll mid, ll l, ll r) {
+    if (mid * 2 < l + r) {
+      rep(i, l, mid + 1) {
+        ll rr =  upper_bound(all(bs), bs[i] + s - a[mid]) - bs.begin();
+        ll lim = min(r, max(mid, rr - 1));
+        ans += lim - mid;
+      }
+    } else {
+      rep(i, mid, r) {
+        ll rr = lower_bound(all(bs), bs[i + 1] - s + a[mid]) - bs.begin();
+        ll lim = min(mid, max(l - 1, rr - 1));
+        ans += mid - lim;
+      }
+    }
+
+    fore(to, g[mid]) {
+      if (to < mid) dfs(to, l, mid);
+      else dfs(to, mid + 1, r);
     }
   };
-
+  dfs(root, 0, n);
+  OUT(ans);
 }
-
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);

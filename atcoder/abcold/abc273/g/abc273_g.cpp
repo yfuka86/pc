@@ -12,7 +12,7 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define _overload5(a, b, c, d, e, name, ...) name
 #define _overload4(a, b, c, d, name, ...) name
 #define _overload3(a, b, c, name, ...) name
-#define _rep0(n) for(ll i = 0; (ll)(i) < n; ++i)
+#define _rep0(n) for(ll i = 0; i < (ll)(n); ++i)
 #define _rep1(i, n) for(ll i = 0; i < (ll)(n); ++i)
 #define _rep2(i, a, b) for(ll i = (ll)(a); i < (ll)(b); ++i)
 #define _rep3(i, a, b, c) for(ll i = (ll)(a); i < (ll)(b); i += (ll)(c))
@@ -39,7 +39,6 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define vv(type, name, h, ...) vector<vector<type>> name(h, vector<type>(__VA_ARGS__))
 #define v3(type, name, h, w, ...) vector<vector<vector<type>>> name(h, vector<vector<type>>(w, vector<type>(__VA_ARGS__)))
 #define v4(type, name, a, b, c, ...) vector<vector<vector<vector<type>>>> name(a, vector<vector<vector<type>>>(b, vector<vector<type>>(c, vector<type>(__VA_ARGS__))))
-
 struct RandGen {
   using ud = uniform_int_distribution<ll>; mt19937 mt; RandGen() : mt(chrono::steady_clock::now().time_since_epoch().count()) {}
   ll l(ll a, ll b) { ud d(a, b - 1); return d(mt); }
@@ -58,7 +57,7 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << const_cast<T &>(t); }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
 template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T, typename U, typename V, typename S> void dump(const tuple<T, U, V, S>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << " "; dump(get<3>(t)); dout << ")"; }
@@ -106,6 +105,7 @@ int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; ret
 pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
 ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
+vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
 vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
 template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
 template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int msb(T x){ if (sizeof(x) == 4) return 31 - __builtin_clz(x); else return 63 - __builtin_clzll(x); }
@@ -113,8 +113,10 @@ template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int l
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T = ll> T sum_of(const vector<T> &v, int l = 0, int r = INF) { return accumulate(rng_of(v, l, min(r, (int)v.size())), T(0)); }
-ll max(int x, ll y) { return max((ll)x, y); } ll max(ll x, int y) { return max(x, (ll)y); }
-ll min(int x, ll y) { return min((ll)x, y); } ll min(ll x, int y) { return min(x, (ll)y); }
+template<class... T> constexpr auto min(T... a){ return min(initializer_list<common_type_t<T...>>{a...}); }
+template<class... T> constexpr auto mine(T... a) { return min(a..., LINF, LINF); }
+template<class... T> constexpr auto max(T... a){ return max(initializer_list<common_type_t<T...>>{a...}); }
+template<class... T> constexpr auto maxe(T... a) { return max(a..., -LINF, -LINF); }
 ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
 // 操作系
 template<class T> void rotate(vector<vector<T>> &a) { ll n = a.size(), m = a[0].size(); vector<vector<T>> ret(m, vector<T>(n, 0)); rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j]; a = ret; }
@@ -175,8 +177,8 @@ using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; 
 const int max_n = (1 << 20) + 1;
 mint fact[max_n], factinv[max_n];
 void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
 //------------------------------------------------------------------------------
 ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
@@ -184,54 +186,40 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 
 void solve() {
   LL(n);
-  VL(r, n); VL(c, n);
-  vl rr;
+  VL(r, n);
+  VL(c, n);
+
+  if (sum_of(r) != sum_of(c)) OUTRET(0);
+
+  ll c1 = 0, c2 = 0;
+  rep(i, n) if (c[i] == 1) c1++; else if (c[i] == 2) c2++;
+
+  vv(mint, dp, c1 + c2 * 2 + 1, c2 + 1);
+  dp[c1][c2] = 1;
+
+  ll cur = c1 + c2 * 2;
+
   rep(i, n) {
-    if (r[i]) rr.pb(r[i]);
-  }
-  vl rs = csum(rr);
-  vl cnt(3);
-  rep(i, n) cnt[c[i]]++;
-  ll sum = sum_of(cnt);
-
-  // dp[cで1の行数][cで2だが今1の行数]
-  ll c1 = cnt[1], c2 = cnt[2];
-  vv(mint, dp, c1 + 1, c2 + 1);
-  vv(mint, dpt, c1 + 1, c2 + 1);
-  dp[0][0] = 1;
-  rep(i, rr.size()) {
-    ll sofar = rs[i];
-    // debug(sofar);
-    rep_r(j, c1 + 1) {
-      if (sofar - j < 0) continue;
-      ll j2 = sofar - j;
-      if (j2 > c2) continue;
-
-      ll already2 = sofar - (j + j2) / 2;
-      ll rem1 = (c1 - j);
-      ll rem2 = (c2 - already2 - j2);
-
-      if (rr[i] == 1) {
-        if (j + 1 <= c1) dpt[j + 1][j2] += dp[j][j2] * rem1;
-        if (j2 + 1 <= c2) dpt[j][j2 + 1] += dp[j][j2] * rem2;
-        if (0 < j2) dpt[j][j2 - 1] += dp[j][j2] * j2;
+    ll diff = r[i];
+    if (diff == 0) continue;
+    for(ll j1 = cur; j1 >= 0; --j1) {
+      if ((cur - j1) & 1) continue;
+      if ((cur - j1) / 2 > c2) break;
+      ll j2 = (cur - j1) / 2;
+      mint from = dp[j1][j2];
+      if (diff == 1) {
+        if (j2 > 0) dp[j1 + 1][j2 - 1] += from * j2;
+        if (j1 > 0) dp[j1 - 1][j2] += from * j1;
       } else {
-        dpt[j][j2] += dp[j][j2] * (c2 - already2 - j2); // そのまま2
-        if (j + 2 <= c1) dpt[j + 2][j2] += dp[j][j2] * rem1 * (rem1 - 1) / 2;
-
-        if (j2 + 2 <= c2) dpt[j][j2 + 2] += dp[j][j2] * rem2 * (rem2 - 1) / 2;
-        if (j2 > 1) dpt[j][j2 - 2] += dp[j][j2] * j2 * (j2 - 1) / 2;
-
-        if (j + 1 <= c1 && j2 + 1 <= c2) dpt[j + 1][j2 + 1] += dp[j][j2] * rem2 * rem1;
-        if (j + 1 <= c1 && j2 > 0) dpt[j + 1][j2 - 1] += dp[j][j2] * j2 * rem1;
+        if (j1 > 1) dp[j1 - 2][j2] += from * j1*(j1-1)/2; // 1を2つ消費
+        if (j2 > 0) dp[j1][j2 - 1] += from * (j2*j1 + j2); // 2を1つ1に変え、1を消費 + 2をそのまま消費する
+        if (j2 > 1) dp[j1 + 2][j2 - 2] += from * j2*(j2-1)/2; // 2を2つ1に変える
       }
     }
-    dp = dpt;
-    dpt.assign(n + 1, vmi(c2 + 1));
-    debug(dp);
+    cur -= diff;
   }
 
-  OUT(dp[c1][0]);
+  OUT(dp[0][0]);
 }
 
 signed main() {
