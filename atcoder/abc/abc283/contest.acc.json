@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc283",
+    "title": "UNIQUE VISION Programming Contest 2022 Winter(AtCoder Beginner Contest 283)",
+    "url": "https://atcoder.jp/contests/abc283"
+  },
+  "tasks": [
+    {
+      "id": "abc283_a",
+      "label": "A",
+      "title": "Power",
+      "url": "https://atcoder.jp/contests/abc283/tasks/abc283_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc283_a.cpp"
+      }
+    },
+    {
+      "id": "abc283_b",
+      "label": "B",
+      "title": "First Query Problem",
+      "url": "https://atcoder.jp/contests/abc283/tasks/abc283_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc283_b.cpp"
+      }
+    },
+    {
+      "id": "abc283_c",
+      "label": "C",
+      "title": "Cash Register",
+      "url": "https://atcoder.jp/contests/abc283/tasks/abc283_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc283_c.cpp"
+      }
+    },
+    {
+      "id": "abc283_d",
+      "label": "D",
+      "title": "Scope",
+      "url": "https://atcoder.jp/contests/abc283/tasks/abc283_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc283_d.cpp"
+      }
+    },
+    {
+      "id": "abc283_e",
+      "label": "E",
+      "title": "Don't Isolate Elements",
+      "url": "https://atcoder.jp/contests/abc283/tasks/abc283_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc283_e.cpp"
+      }
+    },
+    {
+      "id": "abc283_f",
+      "label": "F",
+      "title": "Permutation Distance",
+      "url": "https://atcoder.jp/contests/abc283/tasks/abc283_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc283_f.cpp"
+      }
+    },
+    {
+      "id": "abc283_g",
+      "label": "G",
+      "title": "Partial Xor Enumeration",
+      "url": "https://atcoder.jp/contests/abc283/tasks/abc283_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc283_g.cpp"
+      }
+    },
+    {
+      "id": "abc283_h",
+      "label": "Ex",
+      "title": "Popcount Sum",
+      "url": "https://atcoder.jp/contests/abc283/tasks/abc283_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc283_h.cpp"
+      }
+    }
+  ]
+}
