@@ -136,80 +136,131 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, ll x, ll y, vl a) {
-  sort(all(a));
-  rep(i, n) a[i] -= i;
-  rep(i, n - 1) chmax(a[i + 1], a[i]);
-  // debug(a);
-
-  auto it = upper_bound(all(a), x);
-  ll cur = it - a.begin();
-  if (cur == n) return y - x;
-  if (cur * 2 <= n) {
-    ll t = x;
-    rep(i, n) {
-      if (a[i] <= x) t++;
-      if (t >= y) return i + 1;
-    }
-    return -1;
-  } else {
-    ll t = x;
-    ll ans = LINF;
-    ll off = 0;
-    while (cur < n) {
-      ll cycle = cur * 2 - n;
-      ll nxt = a[cur];
-      {
-        // if (y - cur - t < 0) chmin(ans, off + y - t);
-        // else {
-          ll times = ceil((y - cur - t), cycle);
-          chmin(ans, off + n * times + (y - cycle * times - t));
-        // }
-      }
-      ll times = ceil(nxt - t, cycle);
-      t += times * cycle;
-      off += times * n;
-
-      auto it = upper_bound(all(a), t);
-      cur = it - a.begin();
-    }
-    chmin(ans, off + y - t);
-    return max(y - x, ans);
-  }
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll n, ll x, ll y, vl a) {
-  sort(all(a));
-
-  ll cur = x, ans = 0;
-  while (1) {
-    ll from = cur;
-    rep(i, n) {
-      ans++;
-      if (cur >= a[i]) cur++;
-      else cur--;
-      if (cur >= y) return ans;
-    }
-    if (cur <= from) return -1;
-  }
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll n = 10;
-    ll x = 70, y = rg.l(x + 1, 3e2);
     vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n,x, y, a); auto na = naive(n,x,y,a);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, x, y, a); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
+ll comb(ll n, ll k) {
+  ll ret = 1;
+  rep(i, k) {
+    ret *= (n - i);
+    ret /= (i + 1);
+  }
+  return ret;
+}
+
+
+// XOR 基底を求める
+//   - O(B (N + logB))   B はビット長
+//   - 掃き出し法と同じように MSB の降順にする（不要なら消す）
+template<class T> struct xor_basis {
+  vector<T> basis;
+  bool add(T a) {
+    for (const T& b : basis) { a = min(a, a ^ b); }
+    if (a) { basis.push_back(a); sort(basis.rbegin(), basis.rend()); return true; } else return false;
+  }
+  bool presentable(T a) {
+    for (const T& b : basis) { a = min(a, a ^ b); }
+    if (a) return false; else return true;
+  }
+};
+
+ll mexs(set<ll> &v) {
+  ll n = v.size(); vb S(n + 1);
+  for (auto a: v) if (a <= n) S[a] = 1;
+  ll ret = 0; while (S[ret]) ret++; return ret;
+}
+
 void solve() {
-  LL(n, x, y);
-  VL(a, n);
-  OUT(solve(n, x, y, a));
+  LL(n, m, k);
+  STR(s);
+  // debug(comb(n + m - 2, n - 1), 1 << k);
+
+  vl li = {1,2,1,3,1,2,1,4,1,2,1,3,1,2,1,5,1,2,1,3,1,2,1,4,1,2,1,3,1,2,1};
+
+  auto rl = RLE(s);
+  ll ma = 0;
+
+  vvl ans;
+  rep(i, 1, rl.size()) {
+    auto [_, len] = rl[i];
+
+    vl t;
+
+
+    if ((i > 2 && ans.back().size() == 1 && ans[ans.size() - 2].size() == 1) ||
+        (i > 1 && ans.back().size() >= 2 && ans.back()[ans.back().size() - 2] == ma && !(i > 2 && ans[ans.size() - 2].back() == ma))
+    ) {
+      vl temp(li.begin() + 1, li.begin() + len + 1);
+      rep(i, len) temp[i] += ma - 1;
+      t = temp;
+    } else {
+      vl temp(li.begin(), li.begin() + len);
+      rep(i, len) temp[i] += ma;
+      t = temp;
+    }
+    if (i > 1) chmax(ma, ans.back().back());
+    rep(i, len - 1) chmax(ma, t[i]);
+    ans.pb(t);
+  }
+  // debug(ans);
+  fore(e, ans.back()) chmax(ma, e);
+
+  if (ma <= k) OUT("Yes"); else OUT("No");
+
+  return;
+
+  vv(ll, g, n, m, 1);
+  ll x = 0, y = 0; g[x][y] = 0;
+  rep(i, n + m - 2) {
+    if (s[i] == 'R') y++; else x++;
+    g[x][y] = 0;
+  }
+  OUTMAT(g);
+  OUT();
+
+  vv(ll, res, n, m);
+  vv(set<ll>, dp, n, m);
+  dp[0][0].insert(0);
+
+  map<ll, ll> p2;
+  rep(i, 60) {
+    p2[POW(2, i)] = i + 1;
+  }
+
+  rep(i, n) rep(j, m) {
+    set<ll> t;
+    if (i > 0) fore(e, dp[i - 1][j]) t.insert(e);
+    if (j > 0) fore(e, dp[i][j - 1]) t.insert(e);
+    if (g[i][j] != 0 && ((i < n - 1 && g[i + 1][j] == 0) || (j < m - 1 && g[i][j + 1] == 0))) {
+      if (t.find(0) != t.end()) {
+        res[i][j] = mexs(t);
+      }
+    }
+    fore(e, t) {
+      dp[i][j].insert(e ^ res[i][j]);
+    }
+  }
+
+  vv(ll, res2, n, m);
+  rep(i, n) rep(j, m) res2[i][j] = p2[res[i][j]];
+  OUTMAT(res2);
+  OUT();
 }
 
 signed main() {

@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "agc060",
+    "title": "AtCoder Grand Contest 060",
+    "url": "https://atcoder.jp/contests/agc060"
+  },
+  "tasks": [
+    {
+      "id": "agc060_a",
+      "label": "A",
+      "title": "No Majority",
+      "url": "https://atcoder.jp/contests/agc060/tasks/agc060_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "agc060_a.cpp"
+      }
+    },
+    {
+      "id": "agc060_b",
+      "label": "B",
+      "title": "Unique XOR Path",
+      "url": "https://atcoder.jp/contests/agc060/tasks/agc060_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "agc060_b.cpp"
+      }
+    },
+    {
+      "id": "agc060_c",
+      "label": "C",
+      "title": "Large Heap",
+      "url": "https://atcoder.jp/contests/agc060/tasks/agc060_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "agc060_c.cpp"
+      }
+    },
+    {
+      "id": "agc060_d",
+      "label": "D",
+      "title": "Same Descent Set",
+      "url": "https://atcoder.jp/contests/agc060/tasks/agc060_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "agc060_d.cpp"
+      }
+    },
+    {
+      "id": "agc060_e",
+      "label": "E",
+      "title": "Number of Cycles",
+      "url": "https://atcoder.jp/contests/agc060/tasks/agc060_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "agc060_e.cpp"
+      }
+    },
+    {
+      "id": "agc060_f",
+      "label": "F",
+      "title": "Spanning Trees of Interval Graph",
+      "url": "https://atcoder.jp/contests/agc060/tasks/agc060_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "agc060_f.cpp"
+      }
+    }
+  ]
+}

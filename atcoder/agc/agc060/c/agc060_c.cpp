@@ -136,85 +136,32 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, ll x, ll y, vl a) {
-  sort(all(a));
-  rep(i, n) a[i] -= i;
-  rep(i, n - 1) chmax(a[i + 1], a[i]);
-  // debug(a);
-
-  auto it = upper_bound(all(a), x);
-  ll cur = it - a.begin();
-  if (cur == n) return y - x;
-  if (cur * 2 <= n) {
-    ll t = x;
-    rep(i, n) {
-      if (a[i] <= x) t++;
-      if (t >= y) return i + 1;
-    }
-    return -1;
-  } else {
-    ll t = x;
-    ll ans = LINF;
-    ll off = 0;
-    while (cur < n) {
-      ll cycle = cur * 2 - n;
-      ll nxt = a[cur];
-      {
-        // if (y - cur - t < 0) chmin(ans, off + y - t);
-        // else {
-          ll times = ceil((y - cur - t), cycle);
-          chmin(ans, off + n * times + (y - cycle * times - t));
-        // }
-      }
-      ll times = ceil(nxt - t, cycle);
-      t += times * cycle;
-      off += times * n;
-
-      auto it = upper_bound(all(a), t);
-      cur = it - a.begin();
-    }
-    chmin(ans, off + y - t);
-    return max(y - x, ans);
-  }
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll n, ll x, ll y, vl a) {
-  sort(all(a));
-
-  ll cur = x, ans = 0;
-  while (1) {
-    ll from = cur;
-    rep(i, n) {
-      ans++;
-      if (cur >= a[i]) cur++;
-      else cur--;
-      if (cur >= y) return ans;
-    }
-    if (cur <= from) return -1;
-  }
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll n = 10;
-    ll x = 70, y = rg.l(x + 1, 3e2);
     vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n,x, y, a); auto na = naive(n,x,y,a);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, x, y, a); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  LL(n, x, y);
-  VL(a, n);
-  OUT(solve(n, x, y, a));
+  LL(n);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

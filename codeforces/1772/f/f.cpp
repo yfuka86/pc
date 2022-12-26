@@ -164,12 +164,79 @@ template< typename T = ll > struct Graph {
   void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-vl topo_sort(Graph<ll> G) {
-  ll n = G.size(); vl deg(n), ret; mpq<ll> que;
-  rep(i, n) for (Edge e: G[i]) deg[e.to]++; rep(i, n) if (deg[i] == 0) que.push(i);
-  while (!que.empty()) { ll v = que.top(); que.pop(); ret.pb(v);
-    for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); } G[v].clear(); }
-  if (accumulate(all(deg), 0LL) != 0) return {}; else return ret; }
+
+// https://nyaannyaan.github.io/library/graph/strongly-connected-components.hpp
+
+// Strongly Connected Components
+// DAG of SC graph   ... scc.dag (including multiedges)
+// new node of k     ... scc[k]
+// inv of scc[k] = i ... scc.belong(i)
+template <typename G>
+struct StronglyConnectedComponents {
+ private:
+  const G &g;
+  vector<vector<int>> rg;
+  vector<int> comp, order;
+  vector<char> used;
+  vector<vector<int>> blng;
+
+ public:
+  vector<vector<int>> dag;
+  StronglyConnectedComponents(G &_g) : g(_g), used(g.size(), 0) { build(); }
+
+  int operator[](int k) { return comp[k]; }
+  vector<int> &belong(int i) { return blng[i]; }
+  size_t size() const { return dag.size(); }
+
+ private:
+  void dfs(int idx) {
+    if (used[idx]) return;
+    used[idx] = true;
+    for (auto to : g[idx]) dfs(int(to));
+    order.push_back(idx);
+  }
+
+  void rdfs(int idx, int cnt) {
+    if (comp[idx] != -1) return;
+    comp[idx] = cnt;
+    for (int to : rg[idx]) rdfs(to, cnt);
+  }
+
+  void build() {
+    for (int i = 0; i < (int)g.size(); i++) dfs(i);
+    reverse(begin(order), end(order));
+    used.clear();
+    used.shrink_to_fit();
+
+    comp.resize(g.size(), -1);
+
+    rg.resize(g.size());
+    for (int i = 0; i < (int)g.size(); i++) {
+      for (auto e : g[i]) {
+        rg[(int)e].emplace_back(i);
+      }
+    }
+    int ptr = 0;
+    for (int i : order)
+      if (comp[i] == -1) rdfs(i, ptr), ptr++;
+    rg.clear();
+    rg.shrink_to_fit();
+    order.clear();
+    order.shrink_to_fit();
+
+    dag.resize(ptr);
+    blng.resize(ptr);
+    for (int i = 0; i < (int)g.size(); i++) {
+      blng[comp[i]].push_back(i);
+      for (auto &to : g[i]) {
+        int x = comp[i], y = comp[to];
+        if (x == y) continue;
+        dag[x].push_back(y);
+      }
+    }
+  }
+};
+
 
 
 void solve() {
@@ -185,25 +252,68 @@ void solve() {
     }
   }
 
-  map<ll, vl> dup;
-  rep(i, k + 1) rep(j, i) {
-    if (ps[i] == ps[j]) dup[]
-  }
+  auto check = [&](vs &a, vs &b) {
+    vlp op;
+    rep(i, n) rep(j, m) {
+      if (a[i][j] != b[i][j]) {
+        bool ok = true;
+        rep(d, 4) {
+          ll di = i + dx[d], dj = j + dy[d];
+          if (incl(di, 0, n) && incl(dj, 0, m)) {
+            if (a[di][dj] == a[i][j]) ok = false;
+          } else ok = false;
+        }
+        if (!ok) return vlp(1, {-1, -1}); else op.pb({i, j});
+      }
+    }
+    return op;
+  };
 
   Graph<ll> G(k + 1);
+  map<LP, vlp> op;
+
   rep(i, k + 1) rep(j, k + 1) { // i -> jの辺
-    if (cnt[i] - 1 == cnt[j]) {
-      bool valid = true;
-
-    } else if (cnt[i] + 1 == cnt[j]) {
-
+    if (i == j) continue;
+    if (cnt[i] == cnt[j] && ps[i] == ps[j]) G.add_directed_edge(i, j);
+    else {
+      auto p = check(ps[i], ps[j]);
+      if (p[0].fi != -1) {
+        // debug(i, j);
+        G.add_directed_edge(i, j);
+        op[{i,j}]=p;
+      }
     }
   }
 
+  StronglyConnectedComponents<Graph<ll>> scc(G);
 
+  vlt ans;
 
+  ll first = scc.belong(0)[0] + 1;
+  rep(i, 1, scc.belong(0).size()) {
+    ans.pb({2, scc.belong(0)[i] + 1, -1});
+  }
 
+  rep(i, 1, scc.dag.size()) {
+    auto v = op[{scc.belong(i - 1)[0], scc.belong(i)[0]}];
+    fore(p, v) {
+      ans.pb({1, p.fi + 1, p.se + 1});
+    }
+    rep(j, scc.belong(i).size()) {
+      ans.pb({2, scc.belong(i)[j] + 1, -1});
+    }
+  }
 
+  OUT(first);
+  OUT(ans.size());
+  rep(i, ans.size()) {
+    auto [a, b, c] = ans[i];
+    if (a == 1) {
+      OUT(a, b, c);
+    } else {
+      OUT(a, b);
+    }
+  }
 }
 
 signed main() {

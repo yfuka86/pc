@@ -136,85 +136,86 @@ void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i)
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll n, ll x, ll y, vl a) {
-  sort(all(a));
-  rep(i, n) a[i] -= i;
-  rep(i, n - 1) chmax(a[i + 1], a[i]);
-  // debug(a);
-
-  auto it = upper_bound(all(a), x);
-  ll cur = it - a.begin();
-  if (cur == n) return y - x;
-  if (cur * 2 <= n) {
-    ll t = x;
-    rep(i, n) {
-      if (a[i] <= x) t++;
-      if (t >= y) return i + 1;
-    }
-    return -1;
-  } else {
-    ll t = x;
-    ll ans = LINF;
-    ll off = 0;
-    while (cur < n) {
-      ll cycle = cur * 2 - n;
-      ll nxt = a[cur];
-      {
-        // if (y - cur - t < 0) chmin(ans, off + y - t);
-        // else {
-          ll times = ceil((y - cur - t), cycle);
-          chmin(ans, off + n * times + (y - cycle * times - t));
-        // }
-      }
-      ll times = ceil(nxt - t, cycle);
-      t += times * cycle;
-      off += times * n;
-
-      auto it = upper_bound(all(a), t);
-      cur = it - a.begin();
-    }
-    chmin(ans, off + y - t);
-    return max(y - x, ans);
-  }
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll n, ll x, ll y, vl a) {
-  sort(all(a));
-
-  ll cur = x, ans = 0;
-  while (1) {
-    ll from = cur;
-    rep(i, n) {
-      ans++;
-      if (cur >= a[i]) cur++;
-      else cur--;
-      if (cur >= y) return ans;
-    }
-    if (cur <= from) return -1;
-  }
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
     ll n = 10;
-    ll x = 70, y = rg.l(x + 1, 3e2);
     vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n,x, y, a); auto na = naive(n,x,y,a);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, x, y, a); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+
 void solve() {
-  LL(n, x, y);
-  VL(a, n);
-  OUT(solve(n, x, y, a));
+  LL(n);
+  STR(s);
+
+  v3(mint, dp, n + 1, 27, 27);
+  dp[0][26][26] = 1;
+
+  rep(i, n) {
+    if (s[i] == '?') {
+      rep(j, 27) rep(k, 27) rep(c, 26) {
+        if (c == j || c == k) continue;
+        dp[i + 1][k][c] += dp[i][j][k];
+      }
+    } else {
+      ll c = s[i] - 'a';
+      rep(j, 27) rep(k, 27) {
+        if (c == j || c == k) continue;
+        dp[i + 1][k][c] += dp[i][j][k];
+      }
+    }
+  }
+  mint ans = 0;
+  rep(i, 26) rep(j, 26) {
+    ans += dp[n][i][j];
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
