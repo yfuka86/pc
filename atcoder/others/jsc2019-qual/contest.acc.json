@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "jsc2019-qual",
+    "title": "Japanese Student Championship 2019 Qualification",
+    "url": "https://atcoder.jp/contests/jsc2019-qual"
+  },
+  "tasks": [
+    {
+      "id": "jsc2019_qual_a",
+      "label": "A",
+      "title": "Takahashi Calendar",
+      "url": "https://atcoder.jp/contests/jsc2019-qual/tasks/jsc2019_qual_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "jsc2019_qual_a.cpp"
+      }
+    },
+    {
+      "id": "jsc2019_qual_b",
+      "label": "B",
+      "title": "Kleene Inversion",
+      "url": "https://atcoder.jp/contests/jsc2019-qual/tasks/jsc2019_qual_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "jsc2019_qual_b.cpp"
+      }
+    },
+    {
+      "id": "jsc2019_qual_c",
+      "label": "C",
+      "title": "Cell Inversion",
+      "url": "https://atcoder.jp/contests/jsc2019-qual/tasks/jsc2019_qual_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "jsc2019_qual_c.cpp"
+      }
+    },
+    {
+      "id": "jsc2019_qual_d",
+      "label": "D",
+      "title": "Classified",
+      "url": "https://atcoder.jp/contests/jsc2019-qual/tasks/jsc2019_qual_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "jsc2019_qual_d.cpp"
+      }
+    },
+    {
+      "id": "jsc2019_qual_e",
+      "label": "E",
+      "title": "Card Collector",
+      "url": "https://atcoder.jp/contests/jsc2019-qual/tasks/jsc2019_qual_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "jsc2019_qual_e.cpp"
+      }
+    },
+    {
+      "id": "jsc2019_qual_f",
+      "label": "F",
+      "title": "Candy Retribution",
+      "url": "https://atcoder.jp/contests/jsc2019-qual/tasks/jsc2019_qual_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "jsc2019_qual_f.cpp"
+      }
+    }
+  ]
+}

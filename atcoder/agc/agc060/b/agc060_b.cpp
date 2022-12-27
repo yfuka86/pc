@@ -167,7 +167,14 @@ ll comb(ll n, ll k) {
 void solve() {
   LL(n, m, k);
   STR(s);
-
+  ll cur = 0;
+  rep(i, n + m - 2) {
+    if (i < n + m - 3 && s[i] != s[i + 1]) {
+      cur++;
+      i++;
+    }
+  }
+  if (cur <= k) OUT("Yes"); else OUT("No");
 }
 
 signed main() {

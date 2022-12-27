@@ -57,7 +57,7 @@ template<typename T> struct is_specialize<T, typename conditional<false,typename
 template<typename T> struct is_specialize<T, typename conditional<false,decltype(T::first), void>::type>:true_type{};
 template<typename T> struct is_specialize<T, enable_if_t<is_integral<T>::value, void>>:true_type{};
 void dump(const char &t) { dout<<t; } void dump(const string &t) { dout<<t; } void dump(const bool &t) { dout<<(t ? "true" : "false"); }
-template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << t; }
+template<typename T, enable_if_t<!is_specialize<T>::value, nullptr_t> =nullptr> void dump(const T&t) { dout << const_cast<T &>(t); }
 template<typename T> void dump(const T&t, enable_if_t<is_integral<T>::value>* =nullptr) { string tmp;if(t==infinity<T>::val||t==infinity<T>::MAX)tmp="inf";if(is_signed<T>::value&&(t==infinity<T>::mval||t==infinity<T>::MIN))tmp="-inf";if(tmp.empty())tmp=to_string(t);dout<<tmp; }
 template<typename T, typename U, typename V> void dump(const tuple<T, U, V>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << ")"; }
 template<typename T, typename U, typename V, typename S> void dump(const tuple<T, U, V, S>&t) { dout<<"("; dump(get<0>(t)); dout<<" "; dump(get<1>(t)); dout << " "; dump(get<2>(t)); dout << " "; dump(get<3>(t)); dout << ")"; }
@@ -114,7 +114,9 @@ template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? c
 template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? floor(-x, -y) : (x > 0 ? x / y : (x - y + 1) / y)); }
 template<typename T = ll> T sum_of(const vector<T> &v, int l = 0, int r = INF) { return accumulate(rng_of(v, l, min(r, (int)v.size())), T(0)); }
 template<class... T> constexpr auto min(T... a){ return min(initializer_list<common_type_t<T...>>{a...}); }
+template<class... T> constexpr auto mine(T... a) { return min(a..., LINF, LINF); }
 template<class... T> constexpr auto max(T... a){ return max(initializer_list<common_type_t<T...>>{a...}); }
+template<class... T> constexpr auto maxe(T... a) { return max(a..., -LINF, -LINF); }
 ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
 // 操作系
 template<class T> void rotate(vector<vector<T>> &a) { ll n = a.size(), m = a[0].size(); vector<vector<T>> ret(m, vector<T>(n, 0)); rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j]; a = ret; }
@@ -155,21 +157,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n); VL(a, n);
-  rep(i, n) a[i] -= i;
-
-  sort(all(a));
-  rep_r(i, n) a[i] -= a[0];
-  // debug(a);
-
-  ll ans = sum_of(a);
-  ll cur = 0, sum = sum_of(a);
   rep(i, n) {
-    ll diff = (a[i] - cur);
-    sum += diff * i;
-    sum -= diff * (n - i);
-    cur = a[i];
-    chmin(ans, sum);
+    a[i] -= i;
   }
+  sort(all(a));
+
+  ll b = a[n / 2];
+  ll ans = 0;
+  rep(i, n) ans += abs(a[i] - b);
   OUT(ans);
 }
 
