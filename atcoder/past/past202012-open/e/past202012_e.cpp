@@ -134,17 +134,7 @@ vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(
 template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
 void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i) x ^= 1ll << b;  }
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
-// グラフ系
-template< typename T = ll > struct Edge {
-  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
-  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
-template< typename T = ll > struct Graph {
-  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
-  size_t size() const { return g.size(); }
-  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
-  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
+const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
 ll solve(ll n, vl a) {
   ll ans = n - a[0]; return ans;
@@ -166,12 +156,41 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(h, w);
+  vs _s(h), _t(h); IN(_s); IN(_t);
+
+
+  vv(ll, s, 40, 40, 1);
+  vv(ll, t, h, w, 0);
+
+  rep(i, h) rep(j, w) {
+    if (_s[i][j] == '.') s[i + 15][j + 15] = 0;
+    if (_t[i][j] == '#') t[i][j] = 1;
+  }
+
+  bool ans = false;
+  auto check = [&]() {
+    rep(si, 40) rep(sj, 40) {
+      if (si + t.size() >= 40 || sj + t[0].size() >= 40) continue;
+      bool valid = true;
+      rep(ti, t.size()) rep(tj, t[0].size()) {
+        if (s[si + ti][sj + tj] && t[ti][tj]) valid = false;
+      }
+      if (valid) return true;
+    }
+    return false;
+  };
+
+  rep(i, 4) {
+    if (check()) OUTRET("Yes");
+    rotate(t);
+  }
+  OUT("No");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

@@ -166,12 +166,53 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  STR(s); LL(x);
+  vl ss(s.size());
+  rep(i, s.size()) {
+    if (s[i] - '0' < 10) ss[i] = 1; else ss[i] = 0;
+  }
+  auto rl = RLE(ss);
+
+  vs str; vl sz;
+  str.pb(""); sz.pb(0);
+
+  ll cur = 0;
+  fore(t, len, rl) {
+    string tmp = s.substr(cur, len);
+    cur += len;
+    if (t == 0) { // alphabet
+      str.pb(tmp); sz.pb(sz.back() + tmp.size());
+    } else { // number
+      fore(c, tmp) {
+        ll t = c - '0';
+        str.pb(""); sz.pb(sz.back() * (t + 1));
+        if (sz.back() >= x) break;
+      }
+    }
+    if (sz.back() >= x) break;
+  }
+  debug(str, sz);
+
+  x--;
+  while (str.size()) {
+    if (str.back().size()) {
+      ll off = sz.back() - x;
+      if (off <= str.back().size()) {
+        OUTRET(str.back()[str.back().size() - off]);
+      } else {
+        str.pop_back(); sz.pop_back();
+      }
+    } else {
+      str.pop_back(); sz.pop_back();
+      if (str.size()) x = x % sz.back();
+    }
+    // debug(str, sz, x);
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

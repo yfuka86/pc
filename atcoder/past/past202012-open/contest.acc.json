@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "past202012-open",
+    "title": "第五回 アルゴリズム実技検定 過去問",
+    "url": "https://atcoder.jp/contests/past202012-open"
+  },
+  "tasks": [
+    {
+      "id": "past202012_a",
+      "label": "A",
+      "title": "OX Game",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "past202012_a.cpp"
+      }
+    },
+    {
+      "id": "past202012_b",
+      "label": "B",
+      "title": "Overwrite",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "past202012_b.cpp"
+      }
+    },
+    {
+      "id": "past202012_c",
+      "label": "C",
+      "title": "Hexatridecimal",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "past202012_c.cpp"
+      }
+    },
+    {
+      "id": "past202012_d",
+      "label": "D",
+      "title": "Leading Zeros",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "past202012_d.cpp"
+      }
+    },
+    {
+      "id": "past202012_e",
+      "label": "E",
+      "title": "Stamp",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "past202012_e.cpp"
+      }
+    },
+    {
+      "id": "past202012_f",
+      "label": "F",
+      "title": "Dangerous Chemicals",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "past202012_f.cpp"
+      }
+    },
+    {
+      "id": "past202012_g",
+      "label": "G",
+      "title": "Snake",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "past202012_g.cpp"
+      }
+    },
+    {
+      "id": "past202012_h",
+      "label": "H",
+      "title": "Conveyor",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "past202012_h.cpp"
+      }
+    },
+    {
+      "id": "past202012_i",
+      "label": "I",
+      "title": "Evacuation Plan",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "past202012_i.cpp"
+      }
+    },
+    {
+      "id": "past202012_j",
+      "label": "J",
+      "title": "Long Long String",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "past202012_j.cpp"
+      }
+    },
+    {
+      "id": "past202012_k",
+      "label": "K",
+      "title": "Pitching",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "past202012_k.cpp"
+      }
+    },
+    {
+      "id": "past202012_l",
+      "label": "L",
+      "title": "Collecting T",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "past202012_l.cpp"
+      }
+    },
+    {
+      "id": "past202012_m",
+      "label": "M",
+      "title": "Shipping Sticks",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "past202012_m.cpp"
+      }
+    },
+    {
+      "id": "past202012_n",
+      "label": "N",
+      "title": "Travel Agency",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "past202012_n.cpp"
+      }
+    },
+    {
+      "id": "past202012_o",
+      "label": "O",
+      "title": "Notification",
+      "url": "https://atcoder.jp/contests/past202012-open/tasks/past202012_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "past202012_o.cpp"
+      }
+    }
+  ]
+}

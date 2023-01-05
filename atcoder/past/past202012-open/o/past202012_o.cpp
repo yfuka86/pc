@@ -166,12 +166,52 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, m);
+  Graph<ll> G(n);
+
+  ll b = sqrtll(n).fi;
+  vl deg(n);
+
+  rep(i, m) {
+    LL(u,v); --u;--v;
+    G.add_edge(u, v);
+    deg[u]++; deg[v]++;
+  }
+
+  vvl stars(n);
+  rep(i, n) {
+    fore(to, G[i]) {
+      if (deg[to] >= b) stars[i].pb(to);
+    }
+  }
+
+  vl starno(n), ownno(n);
+  vl read(n);
+
+  LL(q);
+  rep(i, q) {
+    LL(t, x); --x;
+    if (t == 1) {
+      if (deg[x] >= b) starno[x]++;
+      else {
+        fore(to, G[x]) {
+          ownno[to]++;
+        }
+      }
+    } else {
+      ll sum = ownno[x];
+      fore(st, stars[x]) {
+        sum += starno[st];
+      }
+      OUT(sum - read[x]);
+      read[x] = sum;
+    }
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
