@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "past202206-open",
+    "title": "第11回 アルゴリズム実技検定 過去問",
+    "url": "https://atcoder.jp/contests/past202206-open"
+  },
+  "tasks": [
+    {
+      "id": "past202206_a",
+      "label": "A",
+      "title": "The Tortoise and the Hare",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "past202206_a.cpp"
+      }
+    },
+    {
+      "id": "past202206_b",
+      "label": "B",
+      "title": "Two Letters",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "past202206_b.cpp"
+      }
+    },
+    {
+      "id": "past202206_c",
+      "label": "C",
+      "title": "Order",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "past202206_c.cpp"
+      }
+    },
+    {
+      "id": "past202206_d",
+      "label": "D",
+      "title": "Similar Strings",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "past202206_d.cpp"
+      }
+    },
+    {
+      "id": "past202206_e",
+      "label": "E",
+      "title": "Strange Sequence",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "past202206_e.cpp"
+      }
+    },
+    {
+      "id": "past202206_f",
+      "label": "F",
+      "title": "Gun Shooting",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "past202206_f.cpp"
+      }
+    },
+    {
+      "id": "past202206_g",
+      "label": "G",
+      "title": "Is it a tree?",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "past202206_g.cpp"
+      }
+    },
+    {
+      "id": "past202206_h",
+      "label": "H",
+      "title": "Two Knapsacks",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "past202206_h.cpp"
+      }
+    },
+    {
+      "id": "past202206_i",
+      "label": "I",
+      "title": "Clean up",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "past202206_i.cpp"
+      }
+    },
+    {
+      "id": "past202206_j",
+      "label": "J",
+      "title": "Holidays",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "past202206_j.cpp"
+      }
+    },
+    {
+      "id": "past202206_k",
+      "label": "K",
+      "title": "Subsequence",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "past202206_k.cpp"
+      }
+    },
+    {
+      "id": "past202206_l",
+      "label": "L",
+      "title": "Almost LCS",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "past202206_l.cpp"
+      }
+    },
+    {
+      "id": "past202206_m",
+      "label": "M",
+      "title": "Reversal",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "past202206_m.cpp"
+      }
+    },
+    {
+      "id": "past202206_n",
+      "label": "N",
+      "title": "Building Plan",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "past202206_n.cpp"
+      }
+    },
+    {
+      "id": "past202206_o",
+      "label": "O",
+      "title": "Area Queries",
+      "url": "https://atcoder.jp/contests/past202206-open/tasks/past202206_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "past202206_o.cpp"
+      }
+    }
+  ]
+}
