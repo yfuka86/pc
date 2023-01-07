@@ -165,13 +165,206 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+struct Barrett {
+  using u32 = unsigned int;
+  using i64 = long long;
+  using u64 = unsigned long long;
+  u32 m;
+  u64 im;
+  Barrett() : m(), im() {}
+  Barrett(int n) : m(n), im(u64(-1) / m + 1) {}
+  constexpr inline i64 quo(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? x - 1 : x;
+  }
+  constexpr inline i64 rem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? r + m : r;
+  }
+  constexpr inline pair<i64, int> quorem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    if (m <= r) return {x - 1, r + m};
+    return {x, r};
+  }
+  constexpr inline i64 pow(u64 n, i64 p) {
+    u32 a = rem(n), r = m == 1 ? 0 : 1;
+    while (p) {
+      if (p & 1) r = rem(u64(r) * a);
+      a = rem(u64(a) * a);
+      p >>= 1;
+    }
+    return r;
+  }
+};
+
+struct ArbitraryModInt {
+  int x;
+
+  ArbitraryModInt() : x(0) {}
+
+  ArbitraryModInt(int64_t y) {
+    int z = y % get_mod();
+    if (z < 0) z += get_mod();
+    x = z;
+  }
+
+  ArbitraryModInt &operator+=(const ArbitraryModInt &p) {
+    if ((x += p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator-=(const ArbitraryModInt &p) {
+    if ((x += get_mod() - p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
+
+  ArbitraryModInt &operator*=(const ArbitraryModInt &p) {
+    x = rem((unsigned long long)x * p.x);
+    return *this;
+  }
+
+  ArbitraryModInt &operator/=(const ArbitraryModInt &p) {
+    *this *= p.inverse();
+    return *this;
+  }
+
+  ArbitraryModInt operator-() const { return ArbitraryModInt(-x); }
+
+  ArbitraryModInt operator+(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) += p;
+  }
+
+  ArbitraryModInt operator-(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) -= p;
+  }
+
+  ArbitraryModInt operator*(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) *= p;
+  }
+
+  ArbitraryModInt operator/(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) /= p;
+  }
+
+  bool operator==(const ArbitraryModInt &p) const { return x == p.x; }
+
+  bool operator!=(const ArbitraryModInt &p) const { return x != p.x; }
+
+  ArbitraryModInt inverse() const {
+    int a = x, b = get_mod(), u = 1, v = 0, t;
+    while (b > 0) {
+      t = a / b;
+      swap(a -= t * b, b);
+      swap(u -= t * v, v);
+    }
+    return ArbitraryModInt(u);
+  }
+
+  ArbitraryModInt pow(int64_t n) const {
+    ArbitraryModInt ret(1), mul(x);
+    while (n > 0) {
+      if (n & 1) ret *= mul;
+      mul *= mul;
+      n >>= 1;
+    }
+    return ret;
+  }
+
+  friend ostream &operator<<(ostream &os, const ArbitraryModInt &p) {
+    return os << p.x;
+  }
+
+  friend istream &operator>>(istream &is, ArbitraryModInt &a) {
+    int64_t t;
+    is >> t;
+    a = ArbitraryModInt(t);
+    return (is);
+  }
+
+  int get() const { return x; }
+
+  inline unsigned int rem(unsigned long long p) { return barrett().rem(p); }
+
+  static inline Barrett &barrett() {
+    static Barrett b;
+    return b;
+  }
+
+  static inline int &get_mod() {
+    static int mod = 0;
+    return mod;
+  }
+
+  static void set_mod(int md) {
+    assert(0 < md && md <= (1LL << 30) - 1);
+    get_mod() = md;
+    barrett() = Barrett(md);
+  }
+};
+
+using mint = ArbitraryModInt;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
+
+void enum_check(ll N, ll from, ll to, function<bool(vl&)> check, bool inc = false) { // size, [from, to)
+  to--; vl st(N, from);
+  while (1) {
+    assert(st.size() == N); if (!check(st)) break;
+    while (st.size() && st.back() == to) st.pop_back(); if (st.size() == 0) break;
+    st.back()++;
+    while (st.size() < N) if (inc) st.pb(st.back()); else st.pb(from);
+  }
+}
+
+
 void solve() {
-  LL(n);
+  LL(n, m);
+  mint::set_mod(m);
+
+  vmi p(n + 1);
+  p[1] = n;
+  rep(i, 1, n) p[i + 1] = p[i] * (n - i);
+
+  mint ans = 0;
+  rep(i, 1, n + 1) { // size(path + cycle) == i
+    // この状態のありうるpathの長さだけ数えればいい(2 -> 3, 3 -> 6)などの場合、それぞればらけて出現するので
+    ans += mint(i * (i - 1) / 2) * p[i] * mint(n).pow(n - i);
+  }
+  OUT(ans);
+
+  if (0) {
+    rep(e, 1, 8) {
+      map<ll, ll> mp;
+      ll ans = 0;
+      enum_check(e, 0, e, [&](vl p) {
+        rep(i, e) {
+          vl vis(e); set<ll> path;
+          function<void(ll)> dfs = [&](ll v) {
+            path.insert(v);
+            vis[v]++;
+            if (vis[v] > 2) return;
+            dfs(p[v]);
+          };
+          dfs(i);
+          ll sz = 0;
+          fore(v, path) {
+            if (vis[v] == 1) sz++;
+          }
+          ans += sz;
+        }
+        return true;
+      });
+      debug(mp);
+      debug(e, ans);
+    }
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

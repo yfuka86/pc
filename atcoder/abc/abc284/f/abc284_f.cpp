@@ -128,7 +128,7 @@ template<class T, class U> bool chmax(T &a, const U &b) { if (b > a) { a = b; re
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 ll binary_search(function<bool(ll)> check, ll ok, ll ng, bool safe=true) { if (safe) { assert(check(ok)); assert(!check(ng)); } while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
-template<class T> vector<T> csum(vector<T> &a) { vector<T> ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
+template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
@@ -165,13 +165,114 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+/**
+ * @brief Rolling-Hash(ローリングハッシュ)
+ * @see https://qiita.com/keymoon/items/11fac5627672a6d6a9f6
+ * @docs docs/rolling-hash.md
+ */
+struct RollingHash {
+  static const uint64_t mod = (1ull << 61ull) - 1;
+  using uint128_t = __uint128_t;
+  vector< uint64_t > power;
+  const uint64_t base;
+
+  static inline uint64_t add(uint64_t a, uint64_t b) {
+    if((a += b) >= mod) a -= mod;
+    return a;
+  }
+
+  static inline uint64_t mul(uint64_t a, uint64_t b) {
+    uint128_t c = (uint128_t) a * b;
+    return add(c >> 61, c & mod);
+  }
+
+  static inline uint64_t generate_base() {
+    mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
+    uniform_int_distribution< uint64_t > rand(1, RollingHash::mod - 1);
+    return rand(mt);
+  }
+
+  inline void expand(size_t sz) {
+    if(power.size() < sz + 1) {
+      int pre_sz = (int) power.size();
+      power.resize(sz + 1);
+      for(int i = pre_sz - 1; i < sz; i++) {
+        power[i + 1] = mul(power[i], base);
+      }
+    }
+  }
+
+  explicit RollingHash(uint64_t base = generate_base()) : base(base), power{1} {}
+
+  vector< uint64_t > build(const string &s) const {
+    int sz = s.size();
+    vector< uint64_t > hashed(sz + 1);
+    for(int i = 0; i < sz; i++) {
+      hashed[i + 1] = add(mul(hashed[i], base), s[i]);
+    }
+    return hashed;
+  }
+
+  template< typename T >
+  vector< uint64_t > build(const vector< T > &s) const {
+    int sz = s.size();
+    vector< uint64_t > hashed(sz + 1);
+    for(int i = 0; i < sz; i++) {
+      hashed[i + 1] = add(mul(hashed[i], base), s[i]);
+    }
+    return hashed;
+  }
+
+  uint64_t query(const vector< uint64_t > &s, int l, int r) {
+    expand(r - l);
+    return add(s[r], mod - mul(s[l], power[r - l]));
+  }
+
+  uint64_t combine(uint64_t h1, uint64_t h2, size_t h2len) {
+    expand(h2len);
+    return add(mul(h1, power[h2len]), h2);
+  }
+
+  int lcp(const vector< uint64_t > &a, int l1, int r1, const vector< uint64_t > &b, int l2, int r2) {
+    int len = min(r1 - l1, r2 - l2);
+    int low = 0, high = len + 1;
+    while(high - low > 1) {
+      int mid = (low + high) / 2;
+      if(query(a, l1, l1 + mid) == query(b, l2, l2 + mid)) low = mid;
+      else high = mid;
+    }
+    return low;
+  }
+};
+
+
 void solve() {
   LL(n);
+  STR(t);
+  string rt = t;
+  reverse(all(rt));
+  RollingHash rh;
+
+  auto th = rh.build(t);
+  auto rth = rh.build(rt);
+
+  rep(i, n + 1) {
+    auto h1 = rh.query(th, 0, i);
+    auto h2 = rh.query(th, i + n, n * 2);
+    auto hmid = rh.query(rth, n - i, n * 2 - i);
+    auto hcom = rh.combine(h1, h2, n - i);
+    if (hcom == hmid) {
+      cout << t.substr(0, i) << t.substr(n + i) << "\n";
+      OUT(i);
+      return;
+    }
+  }
+  OUT(-1);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

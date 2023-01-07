@@ -1,3 +1,5 @@
+// montgomery64のset_modで1 << 62だったゆえにREが起こっていた
+
 // https://nyaannyaan.github.io/library/inner/inner_math.hpp
 namespace inner {
   using i32 = int32_t; using u32 = uint32_t; using i64 = int64_t; using u64 = uint64_t;
@@ -66,7 +68,7 @@ struct montgomery64 {
   using mint = montgomery64; using i64 = int64_t; using u64 = uint64_t; using u128 = __uint128_t;
   static u64 mod; static u64 r; static u64 n2;
   static u64 get_r() { u64 ret = mod; for (i64 i = 0; i < 5; ++i) ret *= 2 - mod * ret; return ret; }
-  static void set_mod(u64 m) { assert(m < (1LL << 62)); assert((m & 1) == 1); mod = m; n2 = -u128(m) % m; r = get_r(); assert(r * mod == 1); }
+  static void set_mod(u64 m) { assert(m < (1LL << 63)); assert((m & 1) == 1); mod = m; n2 = -u128(m) % m; r = get_r(); assert(r * mod == 1); }
   u64 a;
   montgomery64() : a(0) {}
   montgomery64(const int64_t &b) : a(reduce((u128(b) + mod) * n2)){};
