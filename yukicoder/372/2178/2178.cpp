@@ -165,8 +165,49 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+void enum_check(ll N, ll from, ll to, function<bool(vl&)> check, bool inc = false) { // size, [from, to)
+  to--; vl st(N, from);
+  while (1) {
+    assert(st.size() == N); if (!check(st)) break;
+    while (st.size() && st.back() == to) st.pop_back(); if (st.size() == 0) break;
+    st.back()++;
+    while (st.size() < N) if (inc) st.pb(st.back()); else st.pb(from);
+  }
+}
+
 void solve() {
-  LL(n);
+  LL(n, k);
+  vs s(n); IN(s);
+
+  map<vl, ll> mp;
+  enum_check(k, 0, 5, [&](vl v) {
+    mp[v] = 0;
+    return true;
+  });
+
+  vvl items;
+  rep(i, n) {
+    vl t;
+    rep(j, k) t.pb(s[i][j] - '0');
+    mp[t]++;
+    items.pb(t);
+  }
+
+  rep(i, k) {
+    for(auto it = mp.rbegin(); it != mp.rend(); it++) {
+      vl t = it->fi;
+      if (t[i] > 0) {
+        t[i]--;
+        mp[t] += it->se;
+      }
+    }
+  }
+
+  ll ans = 0;
+  rep(i, n) {
+    if (mp[items[i]] > 1) ans++;
+  }
+  OUT(ans);
 }
 
 signed main() {

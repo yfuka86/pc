@@ -165,8 +165,44 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
+
 void solve() {
   LL(n);
+  VEC3(ll, x, y, t, n);
+  vl dist(n); rep(i, n) dist[i] = x[i] * x[i] + y[i] * y[i];
+
+  vector<tuple<ld, ll, ll>> e;
+  rep(i, n) rep(j, i) {
+    if (t[i] == t[j]) {
+      ll dy = y[i] - y[j], dx = x[i] - x[j];
+      e.pb({dy * dy + dx * dx, i, j});
+    } else {
+      ld d = dist[i] + dist[j] - sqrtll((ld)dist[i] * dist[j] * 4).fi;
+      e.pb({d, i, j});
+    }
+  }
+  sort(all(e));
+
+  ll ans = binary_search([&](ll mid) {
+    UnionFind uf(n);
+    fore(dist, u, v, e) {
+      if (dist <= mid) uf.unite(u, v);
+    }
+    return uf.same(0, n - 1);
+  }, LINF, -1);
+  OUT(ans);
 }
 
 signed main() {
