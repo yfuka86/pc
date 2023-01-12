@@ -146,53 +146,126 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, ll m, vl a) {
-  ll lc = 1;
-  rep(i, n) {
-    lc = lcm(lc, a[i] / 2);
-    if (lc > m) return 0;
-  }
-  rep(i, n) {
-    if ((lc / (a[i] / 2)) % 2 == 0) return 0;
-  }
-  return m / lc - m / (lc * 2);
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll n, ll m, vl a) {
-  ll ans = 0;
-  rep(i, 1, m + 1) {
-    bool valid = true;
-    rep(j, n) {
-      if (i % (a[j] / 2)) valid = false;
-      ll div = i / (a[j] / 2);
-      if (!(div & 1)) valid = false;
-    }
-    if (valid) ans++;
-  }
-  return ans;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10, m = 100000;
-    vl a = rg.vecl(n, 1, 20);
-    rep(i, n) a[i] *= 2;
-    auto so = solve(n, m, a); auto na = naive(n, m, a);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, m, a); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
+// https://nyaannyaan.github.io/library/tree/heavy-light-decomposition.hpp
+template <typename G>
+struct HeavyLightDecomposition {
+ private:
+  void dfs_sz(int cur) {
+    size[cur] = 1;
+    for (auto& dst : g[cur]) {
+      if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
+      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
+    }
+  }
+  void dfs_hld(int cur) {
+    down[cur] = id++; drev[down[cur]] = cur;
+    for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
+    up[cur] = id;
+  }
+  // [u, v)
+  vector<pair<int, int>> ascend(int u, int v) const {
+    vector<pair<int, int>> res;
+    while (nxt[u] != nxt[v]) { res.emplace_back(down[u], down[nxt[u]]); u = par[nxt[u]]; }
+    if (u != v) res.emplace_back(down[u], down[v] + 1); return res;
+  }
+  // (u, v]
+  vector<pair<int, int>> descend(int u, int v) const {
+    if (u == v) return {};
+    if (nxt[u] == nxt[v]) return {{down[u] + 1, down[v]}};
+    auto res = descend(u, par[nxt[v]]);
+    res.emplace_back(down[nxt[v]], down[v]);
+    return res;
+  }
+ public:
+  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
+  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
+  void build(int root) { dfs_sz(root); dfs_hld(root); }
+  pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
+  template <typename F>
+  void path_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) { int s = a + 1, t = b; s > t ? f(t, s) : f(s, t); }
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) { int s = a, t = b + 1; s > t ? f(t, s) : f(s, t); }
+  }
+  template <typename F>
+  void path_noncommutative_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) f(a + 1, b);
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) f(a, b + 1);
+  }
+  template <typename F>
+  void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
+  int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
+  int la(int a, int d) { assert(0 <= d && d <= depth[a]); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
+  int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
+};
+
+pair<ll, LP> diameter(Graph<ll> &G) {
+  LP deepest = mp(0, 0); function<void(ll, ll, ll)> dfs = [&](ll v, ll p, ll d) { chmax(deepest, mp(d, v)); for (auto to: G[v]) if (to != p) dfs(to, v, d + to.cost); };
+  dfs(0, -1, 0); ll s = deepest.second; deepest = mp(0, 0); dfs(s, -1, 0);
+  return mp(deepest.first, mp(s, deepest.second)); }
+
 void solve() {
-  LL(n, m);
-  VL(a, n);
-  OUT(solve(n, m, a));
+  LL(n);
+  Graph<ll> G(n);
+  vl deg(n);
+  rep(i, n - 1) {
+    LL(u, v); --u; --v;
+    G.add_edge(u, v);
+    deg[u]++; deg[v]++;
+  }
+
+  vv(ll, dp, n, 2); // dp[頂点][パスの端点であるか＝繋げるか] = 必要数
+  function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    ll de = deg[v] - (v != 0);
+
+    ll c0 = 0, c1 = 0;
+
+    fore(to, G[v]) {
+      if (to == p) continue;
+      dfs(to, v);
+
+      if (c0 < 2 && dp[to][1] < dp[to][0] + 1) {
+        dp[v][0] += dp[to][1];
+        c0++;
+      } else dp[v][0] += dp[to][0] + 1;
+
+      if (c1 < 1 && dp[to][1] < dp[to][0] + 1) {
+        dp[v][1] += dp[to][1];
+        c1++;
+      } else dp[v][1] += dp[to][0] + 1;
+    }
+  };
+  dfs(0, -1);
+  // debug(dp);
+
+  OUT(dp[0][0]);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

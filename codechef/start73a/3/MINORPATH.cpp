@@ -146,53 +146,97 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, ll m, vl a) {
-  ll lc = 1;
-  rep(i, n) {
-    lc = lcm(lc, a[i] / 2);
-    if (lc > m) return 0;
-  }
-  rep(i, n) {
-    if ((lc / (a[i] / 2)) % 2 == 0) return 0;
-  }
-  return m / lc - m / (lc * 2);
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll n, ll m, vl a) {
-  ll ans = 0;
-  rep(i, 1, m + 1) {
-    bool valid = true;
-    rep(j, n) {
-      if (i % (a[j] / 2)) valid = false;
-      ll div = i / (a[j] / 2);
-      if (!(div & 1)) valid = false;
-    }
-    if (valid) ans++;
-  }
-  return ans;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10, m = 100000;
-    vl a = rg.vecl(n, 1, 20);
-    rep(i, n) a[i] *= 2;
-    auto so = solve(n, m, a); auto na = naive(n, m, a);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, m, a); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+ll inv_num(vl& v) { // comp(v);
+  BIT<int> bs(v.size()); ll ans = 0;
+  rep(i, v.size()) { ans += i - bs.sum(v[i] + 1); bs.add(v[i], 1); } return ans; }
+// ----------------------------------------------------------------------
+
+template<typename T = ll>
+struct RangeAdd: BIT<T> {
+  RangeAdd(int _n = 0) : BIT<T>(_n) {}
+  T get(int i) { return this->sum(i + 1); }
+  void range_add(int l, int r, T x) {
+    this->add(l, x); this->add(r, -x);
+  }
+};
+
+
 void solve() {
-  LL(n, m);
+  LL(n);
   VL(a, n);
-  OUT(solve(n, m, a));
+  vl at = a;
+
+  {
+    RangeAdd<ll> bt(n);
+    bt.range_add(0, 1, 1);
+    rep(i, n) if (bt.get(i)) bt.range_add(i + 1, min(i + 1 + a[i], n), 1);
+    if (!bt.get(n - 1)) OUTRET(-1);
+  }
+
+  ll ans = a[0] | a[n - 1], topbit = 22;
+  while (1) {
+    if (topbit == 0) break;
+    rep(i, n) {
+      at[i] &= ~ans;
+    }
+
+    rep(mb, topbit) {
+      RangeAdd<ll> bt(n);
+      bt.range_add(0, 1, 1);
+      ll thres = 1 << mb;
+      rep(i, n) {
+        if (bt.get(i) && at[i] < thres) bt.range_add(i + 1, min(i + 1 + a[i], n), 1);
+      }
+      if (bt.get(n - 1)) {
+        if (mb != 0) ans |= 1 << mb - 1;
+        topbit = mb;
+        break;
+      }
+    }
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
