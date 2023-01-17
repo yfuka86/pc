@@ -128,13 +128,23 @@ template<class T, class U> bool chmax(T &a, const U &b) { if (b > a) { a = b; re
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 ll binary_search(function<bool(ll)> check, ll ok, ll ng, bool safe=true) { if (safe) { assert(check(ok)); assert(!check(ng)); } while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
-template<class T> vector<T> csum(vector<T> &a) { vl ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
+template<class T> vector<T> csum(vector<T> &a) { vector<T> ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
 void change_bit(ll &x, int b, int i) { assert(b < 63); if (!!(x & 1ll << b) ^ i) x ^= 1ll << b;  }
 bool is_palindrome(string s) { rep(i, (s.size() + 1) / 2) if (s[i] != s[s.size() - 1 - i]) { return false; } return true; }
-const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
+// グラフ系
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
+const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
 ll solve(ll n, vl a) {
   ll ans = n - a[0]; return ans;
@@ -155,24 +165,98 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-#include <atcoder/math>
-using namespace atcoder;
+//------------------------------------------------------------------------------
+template <class S, S (*op)(S, S), S (*e)()> struct segtree {
+  public:
+  segtree() : segtree(0) {}
+  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
+  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
+  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
+  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
+  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
+  S all_prod() const { return d[1]; }
+  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
+  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
+    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
+  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
+  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
+    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
+  private:
+  int _n, size, log; std::vector<S> d;
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+};
+//------------------------------------------------------------------------------
+
+using S = vl;
+S op(S l, S r) {
+  rep(i, 26) l[i] += r[i];
+  return l;
+}
+S e() { return vl(26, 0); }
+
+struct S2 {
+  bool valid; ll from, to;
+};
+S2 op2(S2 l, S2 r) {
+  if (l.from == -1) return r;
+  if (r.from == -1) return l;
+
+  if (!l.valid || !r.valid) return { false, l.from, r.to };
+  if (l.to <= r.from) {
+    return { true, l.from, r.to };
+  } else {
+    return { false, l.from, r.to };
+  }
+}
+S2 e2() { return { true, -1, -1 }; }
 
 void solve() {
-  LL(n, m, r);
+  LL(n);
+  STR(s);
+  LL(q);
 
-  ll ans = 0;
-  rep(b, 31) { // 30ビット目まで
-    ll nn = (n - r) / m + 1;
-    ll off = 1ll << b;
-    ans += floor_sum(nn, off * 2, m, r + off) - floor_sum(nn, off * 2, m, r);
+  vv(ll, v, n, 26);
+  vector<S2> v2(n);
+  rep(i, n) {
+    v[i][s[i] - 'a']++;
+    v2[i] = {true, s[i] - 'a', s[i] - 'a'};
   }
-  OUT(ans);
+  segtree<S, op, e> seg(v);
+  segtree<S2, op2, e2> seg2(v2);
+
+  rep(i, q) {
+    LL(t);
+    if (t == 1) {
+      LL(x); --x; CHR(c);
+      vl v(26, 0);
+      v[c - 'a']++;
+      seg.set(x, v);
+      seg2.set(x, {true, c - 'a', c - 'a'});
+    } else {
+      LL(l, r); --l;
+      vl all = seg.all_prod();
+      vl p = seg.prod(l, r);
+      S2 x = seg2.prod(l, r);
+      if (!x.valid) OUT("No");
+      else {
+        bool valid = true;
+        ll from = 1000000, to = -1;
+        rep(i, 26) {
+          if (p[i]) chmin(from, i);
+          if (p[i]) chmax(to, i);
+        }
+        rep(i, from + 1, to) {
+          if (p[i] != all[i]) valid = false;
+        }
+        if (valid) OUT("Yes"); else OUT("No");
+      }
+    }
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

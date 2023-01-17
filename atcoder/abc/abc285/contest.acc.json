@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc285",
+    "title": "AtCoder Beginner Contest 285",
+    "url": "https://atcoder.jp/contests/abc285"
+  },
+  "tasks": [
+    {
+      "id": "abc285_a",
+      "label": "A",
+      "title": "Edge Checker 2",
+      "url": "https://atcoder.jp/contests/abc285/tasks/abc285_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc285_a.cpp"
+      }
+    },
+    {
+      "id": "abc285_b",
+      "label": "B",
+      "title": "Longest Uncommon Prefix",
+      "url": "https://atcoder.jp/contests/abc285/tasks/abc285_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc285_b.cpp"
+      }
+    },
+    {
+      "id": "abc285_c",
+      "label": "C",
+      "title": "abc285_brutmhyhiizp",
+      "url": "https://atcoder.jp/contests/abc285/tasks/abc285_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc285_c.cpp"
+      }
+    },
+    {
+      "id": "abc285_d",
+      "label": "D",
+      "title": "Change Usernames",
+      "url": "https://atcoder.jp/contests/abc285/tasks/abc285_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc285_d.cpp"
+      }
+    },
+    {
+      "id": "abc285_e",
+      "label": "E",
+      "title": "Work or Rest",
+      "url": "https://atcoder.jp/contests/abc285/tasks/abc285_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc285_e.cpp"
+      }
+    },
+    {
+      "id": "abc285_f",
+      "label": "F",
+      "title": "Substring of Sorted String",
+      "url": "https://atcoder.jp/contests/abc285/tasks/abc285_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc285_f.cpp"
+      }
+    },
+    {
+      "id": "abc285_g",
+      "label": "G",
+      "title": "Tatami",
+      "url": "https://atcoder.jp/contests/abc285/tasks/abc285_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc285_g.cpp"
+      }
+    },
+    {
+      "id": "abc285_h",
+      "label": "Ex",
+      "title": "Avoid Square Number",
+      "url": "https://atcoder.jp/contests/abc285/tasks/abc285_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc285_h.cpp"
+      }
+    }
+  ]
+}
