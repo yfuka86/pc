@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc129",
+    "title": "AtCoder Regular Contest 129",
+    "url": "https://atcoder.jp/contests/arc129"
+  },
+  "tasks": [
+    {
+      "id": "arc129_a",
+      "label": "A",
+      "title": "Smaller XOR",
+      "url": "https://atcoder.jp/contests/arc129/tasks/arc129_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc129_a.cpp"
+      }
+    },
+    {
+      "id": "arc129_b",
+      "label": "B",
+      "title": "Range Point Distance",
+      "url": "https://atcoder.jp/contests/arc129/tasks/arc129_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc129_b.cpp"
+      }
+    },
+    {
+      "id": "arc129_c",
+      "label": "C",
+      "title": "Multiple of 7",
+      "url": "https://atcoder.jp/contests/arc129/tasks/arc129_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc129_c.cpp"
+      }
+    },
+    {
+      "id": "arc129_d",
+      "label": "D",
+      "title": "-1+2-1",
+      "url": "https://atcoder.jp/contests/arc129/tasks/arc129_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc129_d.cpp"
+      }
+    },
+    {
+      "id": "arc129_e",
+      "label": "E",
+      "title": "Yet Another Minimization",
+      "url": "https://atcoder.jp/contests/arc129/tasks/arc129_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc129_e.cpp"
+      }
+    },
+    {
+      "id": "arc129_f",
+      "label": "F",
+      "title": "Let's Play Tag",
+      "url": "https://atcoder.jp/contests/arc129/tasks/arc129_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc129_f.cpp"
+      }
+    }
+  ]
+}
