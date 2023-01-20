@@ -3,8 +3,10 @@
 #include <atcoder/modint>
 using namespace atcoder;
 using mint = modint1000000007; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-istream& operator>>(istream &in, mint &a) { long long e; in >> e; a = e; return in; }
-ostream& operator<<(ostream &out, mint &a) { return out << a.val(); }
+istream& operator>>(istream& in, mint &a) { long long e; in >> e; a = e; return in; }
+ostream& operator<<(ostream& out, mint &a) { return out << a.val(); }
+istream& operator>>(istream& in, mint a) { long long e; in >> e; a = e; return in; }
+ostream& operator<<(ostream& out, mint a) { return out << a.val(); }
 using namespace atcoder;
 
 // https://judge.yosupo.jp/submission/87815

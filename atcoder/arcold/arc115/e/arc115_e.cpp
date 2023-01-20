@@ -165,7 +165,7 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 1000000007;
+const ll mod = 998244353;
 //------------------------------------------------------------------------------
 template< int mod > struct ModInt {
   int x; ModInt() : x(0) {}
@@ -194,9 +194,40 @@ ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
+template <class T> struct Hist {
+  stack<pair<int, T>> st;
+  T tot;
+  Hist(T e = 0) { tot = e; }
+  void add(int h, T w) {
+    while (!st.empty() && st.top().first <= h) {
+      auto [nh, nw] = st.top();
+      tot -= nw * nh;
+      w += nw;
+      st.pop();
+    }
+    tot += w * h;
+    st.emplace(h, w);
+  }
+};
+
+
 void solve() {
-  LL(n, m);
+  LL(n);
   VL(a, n);
+
+  vv(mint, dp, n + 1, 2);
+  dp[0][0] = 1;
+
+  vv(Hist<mint>, sum, 2, 2);
+
+  rep(i, n) {
+    rep(j, 2) rep(k, 2) sum[j][k].add(-a[i], 0);
+    sum[i & 1][0].add(-a[i], dp[i][0]);
+    sum[i & 1][1].add(-a[i], dp[i][1]);
+
+    rep(j, 2) rep(k, 2) dp[i + 1][(i&1)^j^k] += -sum[j][k].tot;
+  }
+  OUT(dp[n][0] - dp[n][1]);
 }
 
 signed main() {

@@ -6,6 +6,8 @@ using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>
 const ll mod = 998244353;
 istream& operator>>(istream& in, mint &a) { long long e; in >> e; a = e; return in; }
 ostream& operator<<(ostream& out, mint &a) { return out << a.val(); }
+istream& operator>>(istream& in, mint a) { long long e; in >> e; a = e; return in; }
+ostream& operator<<(ostream& out, mint a) { return out << a.val(); }
 //------------------------------------------------------------------------------
 const int max_n = (1 << 20) + 1;
 mint fact[max_n], factinv[max_n];
