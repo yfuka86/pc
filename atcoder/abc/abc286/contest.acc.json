@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc286",
+    "title": "UL Systems Programming Contest 2023(AtCoder Beginner Contest 286)",
+    "url": "https://atcoder.jp/contests/abc286"
+  },
+  "tasks": [
+    {
+      "id": "abc286_a",
+      "label": "A",
+      "title": "Range Swap",
+      "url": "https://atcoder.jp/contests/abc286/tasks/abc286_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc286_a.cpp"
+      }
+    },
+    {
+      "id": "abc286_b",
+      "label": "B",
+      "title": "Cat",
+      "url": "https://atcoder.jp/contests/abc286/tasks/abc286_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc286_b.cpp"
+      }
+    },
+    {
+      "id": "abc286_c",
+      "label": "C",
+      "title": "Rotate and Palindrome",
+      "url": "https://atcoder.jp/contests/abc286/tasks/abc286_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc286_c.cpp"
+      }
+    },
+    {
+      "id": "abc286_d",
+      "label": "D",
+      "title": "Money in Hand",
+      "url": "https://atcoder.jp/contests/abc286/tasks/abc286_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc286_d.cpp"
+      }
+    },
+    {
+      "id": "abc286_e",
+      "label": "E",
+      "title": "Souvenir",
+      "url": "https://atcoder.jp/contests/abc286/tasks/abc286_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc286_e.cpp"
+      }
+    },
+    {
+      "id": "abc286_f",
+      "label": "F",
+      "title": "Guess The Number 2",
+      "url": "https://atcoder.jp/contests/abc286/tasks/abc286_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc286_f.cpp"
+      }
+    },
+    {
+      "id": "abc286_g",
+      "label": "G",
+      "title": "Unique Walk",
+      "url": "https://atcoder.jp/contests/abc286/tasks/abc286_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc286_g.cpp"
+      }
+    },
+    {
+      "id": "abc286_h",
+      "label": "Ex",
+      "title": "Don't Swim",
+      "url": "https://atcoder.jp/contests/abc286/tasks/abc286_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc286_h.cpp"
+      }
+    }
+  ]
+}

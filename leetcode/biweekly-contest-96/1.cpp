@@ -39,3 +39,16 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define vv(type, name, h, ...) vector<vector<type>> name(h, vector<type>(__VA_ARGS__))
 #define v3(type, name, h, w, ...) vector<vector<vector<type>>> name(h, vector<vector<type>>(w, vector<type>(__VA_ARGS__)))
 #define v4(type, name, a, b, c, ...) vector<vector<vector<vector<type>>>> name(a, vector<vector<vector<type>>>(b, vector<vector<type>>(c, vector<type>(__VA_ARGS__))))
+template<class T, class U> bool chmin(T &a, const U &b) { if (b < a) { a = b; return 1;} return 0; }
+template<class T, class U> bool chmax(T &a, const U &b) { if (b > a) { a = b; return 1;} return 0; }
+
+class Solution {
+public:
+  int getCommon(vector<int>& nums1, vector<int>& nums2) {
+    ll ans = LINF;
+    map<ll, ll> cnt;
+    fore(e, nums1) cnt[e]++;
+    fore(e, nums2) if (cnt.count(e)) chmin(ans, e);
+    if (ans == LINF) return -1; else return ans;
+  }
+};
