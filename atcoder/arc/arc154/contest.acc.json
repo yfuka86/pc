@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc154",
+    "title": "AtCoder Regular Contest 154",
+    "url": "https://atcoder.jp/contests/arc154"
+  },
+  "tasks": [
+    {
+      "id": "arc154_a",
+      "label": "A",
+      "title": "Swap Digit",
+      "url": "https://atcoder.jp/contests/arc154/tasks/arc154_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc154_a.cpp"
+      }
+    },
+    {
+      "id": "arc154_b",
+      "label": "B",
+      "title": "New Place",
+      "url": "https://atcoder.jp/contests/arc154/tasks/arc154_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc154_b.cpp"
+      }
+    },
+    {
+      "id": "arc154_c",
+      "label": "C",
+      "title": "Roller",
+      "url": "https://atcoder.jp/contests/arc154/tasks/arc154_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc154_c.cpp"
+      }
+    },
+    {
+      "id": "arc154_d",
+      "label": "D",
+      "title": "A + B > C ?",
+      "url": "https://atcoder.jp/contests/arc154/tasks/arc154_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc154_d.cpp"
+      }
+    },
+    {
+      "id": "arc154_e",
+      "label": "E",
+      "title": "Reverse and Inversion",
+      "url": "https://atcoder.jp/contests/arc154/tasks/arc154_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc154_e.cpp"
+      }
+    },
+    {
+      "id": "arc154_f",
+      "label": "F",
+      "title": "Dice Game",
+      "url": "https://atcoder.jp/contests/arc154/tasks/arc154_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc154_f.cpp"
+      }
+    }
+  ]
+}
