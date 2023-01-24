@@ -166,7 +166,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n); VL(a, n);
+
+  vvl d(n); rep(i, n) d[i] = digits(a[i]);
+
+  debug(d);
 }
 
 signed main() {

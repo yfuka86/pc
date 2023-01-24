@@ -1,5 +1,3 @@
-#pragma once
-
 template <typename Node>
 struct RBSTBase {
   using Ptr = Node *;

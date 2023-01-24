@@ -165,50 +165,224 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-//2021/12/22-ac----------------------------------------------------------------
-template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S), F (*composition)(F, F), F (*id)()>
-struct lazy_segtree {
-  public:
-  lazy_segtree() : lazy_segtree(0) {}
-  explicit lazy_segtree(int n) : lazy_segtree(std::vector<S>(n, e())) {}
-  explicit lazy_segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); lz = std::vector<F>(size, id()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
-  void set(int p, S x) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
-  S get(int p) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); return d[p]; }
-  S prod(int l, int r) { assert(0 <= l && l <= r && r <= _n); if (l == r) return e(); l += size; r += size; for (int i = log; i >= 1; i--) { if (((l >> i) << i) != l) push(l >> i); if (((r >> i) << i) != r) push((r - 1) >> i); } S sml = e(), smr = e();
-    while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
-  S all_prod() { return d[1]; }
-  void apply(int p, F f) { assert(0 <= p && p < _n); p += size; for (int i = log; i >= 1; i--) push(p >> i); d[p] = mapping(f, d[p]); for (int i = 1; i <= log; i++) update(p >> i); }
-  void apply(int l, int r, F f) { assert(0 <= l && l <= r && r <= _n); if (l == r) return; l += size; r += size; for (int i = log; i >= 1; i--) { if (((l >> i) << i) != l) push(l >> i); if (((r >> i) << i) != r) push((r - 1) >> i); }
-    { int l2 = l, r2 = r; while (l < r) { if (l & 1) all_apply(l++, f); if (r & 1) all_apply(--r, f); l >>= 1; r >>= 1; } l = l2; r = r2; } for (int i = 1; i <= log; i++) { if (((l >> i) << i) != l) update(l >> i); if (((r >> i) << i) != r) update((r - 1) >> i); } }
-  template <bool (*g)(S)> int max_right(int l) { return max_right(l, [](S x) { return g(x); }); }
-  template <class G> int max_right(int l, G g) { assert(0 <= l && l <= _n); assert(g(e())); if (l == _n) return _n; l += size; for (int i = log; i >= 1; i--) push(l >> i); S sm = e();
-    do { while (l % 2 == 0) l >>= 1; if (!g(op(sm, d[l]))) { while (l < size) { push(l); l = (2 * l); if (g(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
-  template <bool (*g)(S)> int min_left(int r) { return min_left(r, [](S x) { return g(x); }); }
-  template <class G> int min_left(int r, G g) { assert(0 <= r && r <= _n); assert(g(e())); if (r == 0) return 0; r += size; for (int i = log; i >= 1; i--) push((r - 1) >> i); S sm = e();
-    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!g(op(d[r], sm))) { while (r < size) { push(r); r = (2 * r + 1); if (g(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
-  private:
-  int _n, size, log; std::vector<S> d; std::vector<F> lz;
-  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
-  void all_apply(int k, F f) { d[k] = mapping(f, d[k]); if (k < size) lz[k] = composition(f, lz[k]); }
-  void push(int k) { all_apply(2 * k, lz[k]); all_apply(2 * k + 1, lz[k]); lz[k] = id(); }
+template <typename Node>
+struct RBSTBase {
+  using Ptr = Node *;
+  template <typename... Args>
+  inline Ptr my_new(Args... args) {
+    return new Node(args...);
+  }
+  inline void my_del(Ptr t) { delete t; }
+  inline Ptr make_tree() const { return nullptr; }
+
+  // for avoiding memory leak, activate below
+  /*
+  using Ptr = shared_ptr<Node>;
+  template <typename... Args>
+  inline Ptr my_new(Args... args) {
+    return make_shared<Node>(args...);
+  }
+  inline void my_del(Ptr t) {}
+  Ptr make_tree() {return Ptr();}
+  */
+
+  int size(Ptr t) const { return count(t); }
+
+  Ptr merge(Ptr l, Ptr r) {
+    if (!l || !r) return l ? l : r;
+    if (int((rng() * (l->cnt + r->cnt)) >> 32) < l->cnt) {
+      push(l);
+      l->r = merge(l->r, r);
+      return update(l);
+    } else {
+      push(r);
+      r->l = merge(l, r->l);
+      return update(r);
+    }
+  }
+
+  pair<Ptr, Ptr> split(Ptr t, int k) {
+    if (!t) return {nullptr, nullptr};
+    push(t);
+    if (k <= count(t->l)) {
+      auto s = split(t->l, k);
+      t->l = s.second;
+      return {s.first, update(t)};
+    } else {
+      auto s = split(t->r, k - count(t->l) - 1);
+      t->r = s.first;
+      return {update(t), s.second};
+    }
+  }
+
+  Ptr build(int l, int r, const vector<decltype(Node::key)> &v) {
+    if (l + 1 == r) return my_new(v[l]);
+    int m = (l + r) >> 1;
+    Ptr pm = my_new(v[m]);
+    if (l < m) pm->l = build(l, m, v);
+    if (m + 1 < r) pm->r = build(m + 1, r, v);
+    return update(pm);
+  }
+
+  Ptr build(const vector<decltype(Node::key)> &v) {
+    return build(0, (int)v.size(), v);
+  }
+
+  template <typename... Args>
+  void insert(Ptr &t, int k, const Args &... args) {
+    auto x = split(t, k);
+    t = merge(merge(x.first, my_new(args...)), x.second);
+  }
+
+  void erase(Ptr &t, int k) {
+    auto x = split(t, k);
+    auto y = split(x.second, 1);
+    my_del(y.first);
+    t = merge(x.first, y.second);
+  }
+
+ protected:
+  static uint64_t rng() {
+    static uint64_t x_ = 88172645463325252ULL;
+    return x_ ^= x_ << 7, x_ ^= x_ >> 9, x_ & 0xFFFFFFFFull;
+  }
+
+  inline int count(const Ptr t) const { return t ? t->cnt : 0; }
+
+  virtual void push(Ptr) = 0;
+
+  virtual Ptr update(Ptr) = 0;
 };
 
-// テンプレ
-struct S{ ll sz, idx; }; using F = ll;
-S op(S l, S r) { return {}; }
-S e() { return {0, 0}; }
-S mapping(F f, S x) { if (f == -1) return x; }
-F composition(F f, F g) { if (f == -1) return g; else return f; }
-F id() { return -1; }
+/**
+ * @brief 乱択平衡二分木(基底クラス)
+ */
+
+// https://nyaannyaan.github.io/library/rbst/lazy-reversible-rbst.hpp
+
+template <typename T, typename E>
+struct LazyReversibleRBSTNode {
+  typename RBSTBase<LazyReversibleRBSTNode>::Ptr l, r;
+  T key, sum;
+  E lazy;
+  int cnt;
+  bool rev;
+
+  LazyReversibleRBSTNode(const T &t = T(), const E &e = E())
+      : l(), r(), key(t), sum(t), lazy(e), cnt(1), rev(false) {}
+};
+
+template <typename T, typename E, T (*f)(T, T), T (*g)(T, E), E (*h)(E, E),
+          T (*ts)(T)>
+struct LazyReversibleRBST : RBSTBase<LazyReversibleRBSTNode<T, E>> {
+  using Node = LazyReversibleRBSTNode<T, E>;
+  using base = RBSTBase<LazyReversibleRBSTNode<T, E>>;
+  using base::merge;
+  using base::split;
+  using typename base::Ptr;
+
+  LazyReversibleRBST() = default;
+
+  void toggle(Ptr t) {
+    swap(t->l, t->r);
+    t->sum = ts(t->sum);
+    t->rev ^= true;
+  }
+
+  T fold(Ptr &t, int a, int b) {
+    auto x = split(t, a);
+    auto y = split(x.second, b - a);
+    auto ret = sum(y.first);
+    t = merge(x.first, merge(y.first, y.second));
+    return ret;
+  }
+
+  void reverse(Ptr &t, int a, int b) {
+    auto x = split(t, a);
+    auto y = split(x.second, b - a);
+    toggle(y.first);
+    t = merge(x.first, merge(y.first, y.second));
+  }
+
+  void apply(Ptr &t, int a, int b, const E &e) {
+    auto x = split(t, a);
+    auto y = split(x.second, b - a);
+    propagate(y.first, e);
+    t = merge(x.first, merge(y.first, y.second));
+  }
+
+ protected:
+  inline T sum(const Ptr t) const { return t ? t->sum : T(); }
+
+  Ptr update(Ptr t) override {
+    push(t);
+    t->cnt = 1;
+    t->sum = t->key;
+    if (t->l) t->cnt += t->l->cnt, t->sum = f(t->l->sum, t->sum);
+    if (t->r) t->cnt += t->r->cnt, t->sum = f(t->sum, t->r->sum);
+    return t;
+  }
+
+  void push(Ptr t) override {
+    if (t->rev) {
+      if (t->l) toggle(t->l);
+      if (t->r) toggle(t->r);
+      t->rev = false;
+    }
+    if (t->lazy != E()) {
+      if (t->l) propagate(t->l, t->lazy);
+      if (t->r) propagate(t->r, t->lazy);
+      t->lazy = E();
+    }
+  }
+
+  void propagate(Ptr t, const E &x) {
+    t->lazy = h(t->lazy, x);
+    t->key = g(t->key, x);
+    t->sum = g(t->sum, x);
+  }
+};
+
+/**
+ * @brief 遅延伝搬反転可能乱択平衡二分木
+ * @docs docs/rbst/lazy-reversible-rbst.md
+ */
+
+
+using T = ll;
+using E = ll;
+T f(T a, T b) { return a + b; } // モナドの和
+T g(T a, E b) { return a; } // 関数などの処理
+E fg(E a, E b) { return a; } // 関数の合成
+T ts(T a) { return a; }
 
 void solve() {
   LL(h, w);
   vs a(h); IN(a);
   LL(q);
-  VEC2(ll, a, b, q);
+  vl xi(h), yi(w); iota(all(xi), 0); iota(all(yi), 0);
+  LazyReversibleRBST<T, E, f, g, fg, ts> rbst;
+  auto xt = rbst.build(xi);
+  auto yt = rbst.build(yi);
 
+  rep(i, q) {
+    LL(a, b);
+    rbst.reverse(xt, 0, a);
+    rbst.reverse(xt, a, h);
+    rbst.reverse(yt, 0, b);
+    rbst.reverse(yt, b, w);
+  }
 
-}
+  vl mpx(h), mpy(w);
+  rep(i, h) mpx[i] = rbst.fold(xt, i, i + 1);
+  rep(i, w) mpy[i] = rbst.fold(yt, i, i + 1);
+
+  vs b(h, string(w, '$'));
+  rep(i, h) rep(j, w) {
+    b[i][j] = a[mpx[i]][mpy[j]];
+  }
+  rep(i, h) OUT(b[i]);
+};
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);

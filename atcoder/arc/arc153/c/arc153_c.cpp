@@ -167,53 +167,63 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n); VL(a, n);
+  vl as(n);
+  rep_r(i, n) as[i] = (i < n - 1 ? as[i + 1] : 0) + a[i];
 
-  if (n == 1) { OUT("Yes"); OUTRET(0); }
+  vl b(n, 1);
+  ll sum = 0;
 
-  if (a.front() == a.back()) {
-    vl ans(n, -1);
-    if (n > 2) iota(ans.begin() + 1, ans.end() - 1, 0);
+  auto adjust = [&](ll mo) {
+    mo = abs(mo);
+    ll rem = sum % mo; if (rem < 0) rem += mo;
+    if (rem == 0) return;
+    ll op = as[n - 1] < 0 ? rem : mo - rem;
+    b[n - 1] += op;
+    sum += as[n - 1] * op;
+  };
 
-    ans[n - 1] = 1e11;
-    ll sum = 0;
-    rep(i, 1, n) sum += ans[i] * a[i];
-    ans[0] = -abs(sum);
-
-    // {
-    //   ll check = 0;
-    //   rep(i, n) {
-    //     check += ans[i] * a[i];
-    //   }
-    //   assert(check == 0);
-    // }
-    OUT("Yes");
-    OUTARRAY(ans);
-    return;
-  }
-
-  rep(i, n - 1) {
-    if (a[i] == a[i + 1]) {
-      ll off = 0, ad = 0;
-      vl ans(n, -1);
-      rep(j, i + 2, n) {
-        off += a[i]
-        ad += a[i] * (j - (i + 1));
+  if (as[0] != 0) {
+    rep(i, 1, n) sum += as[i] * b[i];
+    adjust(as[0]);
+    b[0] = -(sum / as[0]);
+  } else {
+    b[0] = -1e12;
+    rep(i, 2, n) sum += as[i] * b[i];
+    adjust(as[1]);
+    if (-(sum / as[1]) < 1) {
+      ll idx = -1;
+      if (as[1] > 0) {
+        rep(i, 2, n) if (as[i] < 0) idx = i;
+      } else {
+        rep(i, 2, n) if (as[i] > 0) idx = i;
       }
-      rep(j, i) ans[j] = -(i - j);
-      ll sum = 0;
-      rep(j, i) sum += ans[j] * a[j];
+      if (idx == -1) OUTRET("No");
+
+      ll need = ceil(abs(sum + as[1]) + 1, abs(as[idx]));
+      sum += as[idx] * need;
+      b[idx] += need;
     }
+    adjust(as[1]);
+    b[1] = -(sum / as[1]);
   }
 
-
-
-
-  OUT("No");
+  // answer
+  vl x(n);
+  x[0] = b[0];
+  rep(i, 1, n) {
+    x[i] = x[i - 1] + b[i];
+  }
+  OUT("Yes");
+  OUTARRAY(x);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
   int t = 1; // cin >> t;
+
+  // RandGen rg;
+  // ll S = rg.l(0, 1 << n);
+  // rep(i, n) a[i] = (S & 1 << i) ? 1 : -1;
   while (t--) solve();
   // while (t--) compare();
 }
