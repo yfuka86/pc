@@ -1,23 +1,36 @@
 // テンプレに入れた
 // vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
 // ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] = 1; ll ret = 0; while (S[ret]) ret++; return ret; }
+// vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
+// vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
 
 bool is_prime(long long N) { if (N == 1) return false; for (long long i = 2; i * i <= N; ++i) if (N % i == 0) return false; return true; }
-
-vector<ll> primes_below(const ll N) {
-  vector<bool> is_prime(N + 1, true); for(ll i = 2; i * i <= N; i++) { if ((i > 2 && i % 2 == 0) || !is_prime[i]) continue; for(ll j = i * i; j <= N; j += i) is_prime[j] = false; }
-  vector<ll> ret; for(ll i = 2; i <= N; i++) if (is_prime[i]) ret.emplace_back(i); return ret; }
-
+// tortient関数
 vl tortient_enum(const ll n) {
   vl ps = primes_below(n), ret(n + 1); iota(all(ret), 0);
   for (auto &p: ps) for (int i = 1; i * p <= n; ++i) ret[i * p] -= ret[i * p] / p;
   return ret;
 }
+ull euler_phi(ull n) {
+  ull ret = n;
+  for(ll i = 2; i * i <= n; i++) if(n % i == 0) { ret -= ret / i; while(n % i == 0) n /= i; }
+  if(n > 1) ret -= ret / n; return ret; }
 
-map<ll, ll> prime_factorize(ll N) {
-  map<ll, ll> res;
-  for (ll a = 2; a * a <= N; ++a) { if (N % a != 0) continue; ll ex = 0; while (N % a == 0) { ++ex; N /= a; } res[a]= ex; }
-  if (N != 1) res[N] = 1; return res; }
+// 商の列挙（√N）https://ei1333.github.io/luzhiled/snippets/math/quotient-range.html
+template< typename T >
+vector< pair< pair< T, T >, T > > quotient_range(T N) {
+  T M;
+  vector< pair< pair< T, T >, T > > ret;
+  for(M = 1; M * M <= N; M++) {
+    ret.emplace_back(make_pair(M, M), N / M);
+  }
+  for(T i = M; i >= 1; i--) {
+    T L = N / (i + 1) + 1;
+    T R = N / i;
+    if(L <= R && ret.back().first.second < L) ret.emplace_back(make_pair(L, R), N / L);
+  }
+  return ret;
+}
 
 // ap + bq = gcd(a, b)
 LP extGCD(ll a, ll b) {
@@ -33,10 +46,6 @@ LP extGCD(ll a, ll b) {
   return {p11, p12};
 }
 
-ull euler_phi(ull n) {
-  ull ret = n;
-  for(ll i = 2; i * i <= n; i++) if(n % i == 0) { ret -= ret / i; while(n % i == 0) n /= i; }
-  if(n > 1) ret -= ret / n; return ret; }
 
 // mod.cppに依存している
 // a^x ≡ b (mod. m) となる最小の正の整数 x を求める
@@ -81,7 +90,7 @@ vector<int> prime_enumerate(int N) {
   return ret;
 }
 
-// 二点からマンハッタン距離の等しい点（パリティが等しい場合のみ）
+// 二点からマンハッタン距離の等しい点（二点のパリティが等しい場合のみ存在）
 LP manhattan_samedist(LP p1, LP p2, ll dist) {
   auto [x1, y1] = p1;
   auto [x2, y2] = p2;
@@ -101,7 +110,7 @@ LP manhattan_samedist(LP p1, LP p2, ll dist) {
   return mp(x1 + ddx, y1 + ddy);
 }
 
-// 等比数列などの和
+// 等比数列などの和 ABC129-F
 mint geo_sum(mint a, mint r, ll sz) {
   if (sz == 0) return mint(0);
   if (sz == 1) return a;
