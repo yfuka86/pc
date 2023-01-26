@@ -42,6 +42,7 @@ S mapping(F f, S x) { return {x.sum + f * x.sz, x.sz}; }
 F composition(F f, F g) { return f + g; }
 F id() { return 0; }
 
+
 // 区間min
 using S = ll; using F = ll;
 S op(S l, S r) { return min(l, r); }
@@ -54,6 +55,23 @@ F id() { return -1; }
 S mapping(F f, S x) { return f != -1 ? min(f, x) : x; }
 F composition(F f, F g) { if (f == -1) return g; if (g == -1) return f; return min(f, g); }
 F id() { return -1; }
+
+// sumのk乗(ma乗まで) 二項係数を使って展開している
+const ll MA = 6;
+using S = array<mint, MA>;
+using F = ll;
+S op(S l, S r) { rep(i, MA) l[i] += r[i]; return l; }
+S e() { return {0, 0, 0, 0, 0, 0}; }
+S mapping(F f, S x) {
+  rep_r(i, 1, MA) {
+    rep(j, i) {
+      x[i] += x[j] * comb(i, j) * mint(f).pow(i - j); // ここをキャッシュすると早くなる
+    }
+  }
+  return x;
+}
+F composition(F f, F g) { return f + g; }
+F id() { return 0ll; }
 
 // linear_functions sum seg from here
 struct S {
