@@ -185,34 +185,42 @@ void solve() {
   ll ma = 0;
   IQUERY({1, 0}, ma, "");
 
-  vb a(n);
-  while (ma >= (1 << 29)) {
-    ll t = ma;
+  while (ma == (1 << 30) - 1) {
+    RandGen rg; ll r = rg.l(0, 1 << 30);
     rep(i, n) {
-      if (a[i]) continue;
-      IQUERY({i + 1, ma}, t, "");
-      if (t > ma) {
-        IQUERY({i + 1, t}, t, "");
-        a[i] = 1;
-      } else if (t < ma) {
-        ma = t;
-        a[i] = 1;
-        break;
-      }
+      IQUERY({i + 1, r}, ma, "");
+      if (ma != (1 << 30) - 1) break;
     }
   }
 
-  ll t = 0;
-  rep(i, n) {
-    if (a[i]) continue;
-    IQUERY({i + 1, 1ll << 29}, t, "");
-    IQUERY({i + 1, t}, t, "");
-    a[i] = 1;
+  vb a(n);
+  while (ma) {
+    ll k = -1;
+    rep(b, 30) if (!(ma & (1 << b))) k = b;
+
+    assert(k != -1);
+
+    ll nma;
+    if (k == 29) { // 全部なめれば終わり
+      rep(i, n) { if (a[i]) continue;
+        IQUERY({i + 1, 1ll << k}, nma, "");
+        IQUERY({i + 1, nma}, nma, "");
+        a[i] = 1;
+      }
+    } else {
+      rep(i, n) { if (a[i]) continue;
+        IQUERY({i + 1, 1ll << k}, nma, "");
+        if (nma > ma) {
+          IQUERY({i + 1, nma}, nma, "");
+          a[i] = 1;
+        }
+      }
+    }
+
+    IQUERY({1, 0}, ma, "");
+    if (ma == 0) break;
   }
 
-  if (t) assert(false);
-
-  debug(cnt);
   OUT(0); cout.flush();
   LL(ok);
   return;
