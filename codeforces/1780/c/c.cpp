@@ -168,6 +168,48 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 void solve() {
   LL(n, m); VL(_a, n); VL(c, m);
 
+  map<ll, ll> fr;
+  rep(i, n) fr[_a[i]]++;
+  vl a;
+  fore(_, c, fr) a.pb(c);
+
+  ll k = sum_of(c);
+  vb dp(k + 1); dp[0] = 1;
+  vector<set<ll>> from(k + 1);
+
+  rep(i, m) {
+    rep_r(j, k + 1) {
+      if (dp[j] && j + c[i] <= k) {
+        dp[j + c[i]] = 1;
+        fore(fr, from[j]) from[j + c[i]].insert(fr);
+        from[j + c[i]].insert(j);
+      }
+    }
+  }
+
+  vvl trans(k + 1);
+  rep(i, k + 1) {
+    fore(f, from[i]) {
+      trans[f].pb(i);
+    }
+  }
+  rep(i, k + 1) {
+    debug(i, trans[i]);
+  }
+
+  {
+    vl dp(k + 1, -LINF); dp[0] = 0;
+    fore(cnt, a) {
+      rep_r(i, k + 1) {
+        fore(to, trans[i]) {
+          chmax(dp[to], dp[i] + min(to - i, cnt));
+        }
+      }
+    }
+    debug(dp);
+    OUT(*max_element(all(dp)));
+  }
+
 }
 
 signed main() {
