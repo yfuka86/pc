@@ -166,24 +166,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, m); VL(a, n);
-
-  vvl list(m + 1);
-  rep(i, n) {
-    ll l = 0, r = 0;
-    if (a[i] < 0) {
-      l = ceil(-a[i], i + 1);
-      r = ceil(n - a[i], i + 1);
-    } else {
-      r = ceil(n - a[i], i + 1);
-    }
-    rep(j, l, min(m, r) + 1) {
-      list[j].pb(a[i] + j * (i + 1));
-    }
+  LL(a, b, k);
+  rep(i, k / 2) {
+    if (a & 1) a--;
+    b += a / 2; a /= 2;
+    if (b & 1) b--;
+    a += b / 2; b /= 2;
   }
-
-  list.erase(list.begin());
-  rep(i, m) OUT(mex(list[i]));
+  if (k & 1) {
+    if (a & 1) a--;
+    b += a / 2; a /= 2;
+  }
+  OUT(a, b);
 }
 
 signed main() {
