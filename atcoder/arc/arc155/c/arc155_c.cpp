@@ -89,6 +89,8 @@ template <class T, class S> void scan(pair<T, S> &p) { scan(p.first), scan(p.sec
 template <class T> void scan(vector<T> &a) { for(auto &i : a) scan(i); }
 void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...tail) { scan(head); IN(tail...); }
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
+#define YES(ok) { if (ok) { OUTRET("YES"); } else OUTRET("NO"); }
+#define Yes(ok) { if (ok) { OUTRET("Yes"); } else OUTRET("No"); }
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
@@ -248,12 +250,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n); VL(a, n); VL(b, n);
-  if (solve(n, a, b)) OUT("Yes"); else OUT("No");
+  Yes(solve(n, a, b));
 }
 
 signed main() {
-  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
+  cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
   int t = 1; // cin >> t;
-  while (t--) solve();
-  // while (t--) compare();
+  while (t--) if (1) solve(); else compare();
 }
