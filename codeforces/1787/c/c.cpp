@@ -146,114 +146,88 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a, vl b) {
-  vl sa = a, sb = b;
-  sort(all(sa)); sort(all(sb));
-  if (sa != sb) return false;
-
-  vl oddia, oddib;
-  rep(i, n) {
-    if (a[i] & 1) { oddia.pb(i); }
-    if (b[i] & 1) { oddib.pb(i); }
-  }
-
-  ll mia = LINF, mib = LINF;
-  rep(i, oddia.size() - 1) {
-    chmin(mia, oddia[i + 1] - oddia[i]);
-    chmin(mib, oddib[i + 1] - oddib[i]);
-  }
-
-  if (mia <= 2 && mib <= 2) {
-    if (oddia.size() == n) {
-      if (a == b) return true; else return false;
-    } else if (oddia.size() == n - 2) {
-      vl ea, eb;
-      rep(i, n) {
-        if (!(a[i] & 1)) ea.pb(a[i]);
-        if (!(b[i] & 1)) eb.pb(b[i]);
-      }
-      if (ea != eb) { return false; } else return true;
-    } else return true;
-  } else {
-    if (oddia != oddib) return false;
-    // 奇数のidxは揃っている
-    vvl aeven, beven;
-    vl ta, tb;
-    rep(i, n) {
-      if (a[i] & 1) {
-        if (a[i] != b[i]) return false;
-        aeven.pb(ta);
-        beven.pb(tb);
-        ta.clear(); tb.clear();
-      } else {
-        ta.pb(a[i]);
-        tb.pb(b[i]);
-      }
-    }
-    if (ta.size()) {
-      aeven.pb(ta);
-      beven.pb(tb);
-    }
-    rep(i, aeven.size()) {
-      if (aeven[i].size() > 2) {
-        sort(all(aeven[i]));
-        sort(all(beven[i]));
-      }
-      if (aeven[i] != beven[i]) return false;
-    }
-
-    return true;
-  }
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll n, vl a, vl b) {
-  set<vl> s;
-  s.insert(a);
-  queue<vl> que;
-  que.push(a);
-  while (!que.empty()) {
-    auto v = que.front(); que.pop();
-    rep(i, n - 2) {
-      if ((v[i] + v[i + 1] + v[i + 2]) % 2 == 0) {
-        vl t; rep(j, 3) t.pb(v[i + j]);
-        vl id(3); iota(all(id), 0);
-        while(next_permutation(all(id))) {
-          vl tv = v;
-          rep(j, 3) {
-            tv[i + j] = t[id[j]];
-          }
-          if (s.find(tv) == s.end()) {
-            s.insert(tv);
-            que.push(tv);
-          }
-        }
-      }
-    }
-  }
-
-  if (s.find(b) != s.end()) return true; else return false;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 6;
-    vl a = rg.vecl(n, 0, 4);
-    vl b = a; rg.shuffle(b);
-    auto so = solve(n, a, b); auto na = naive(n, a, b);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a, b); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  LL(n); VL(a, n); VL(b, n);
-  if (solve(n, a, b)) OUT("Yes"); else OUT("No");
+  LL(n, s); VL(a, n);
+
+  map<ll, ll> dp, dpt;
+  dp[a[0]] = 0;
+
+  rep(i, 1, n - 1) {
+    ll nma, nmi;
+    if (a[i] == s * 2) {
+      nma = s; nmi = s;
+    } else if (a[i] > s * 2) {
+      nmi = s; nma = a[i] - s;
+    } else {
+      nma = min(s, a[i]); nmi = a[i] - nma;
+    }
+
+    ll mid = a[i] / 2;
+    dpt[nma] = dpt[nmi] = dpt[mid] = dpt[a[i] - mid] = LINF;
+
+    fore(cur, val, dp) {
+      chmin(dpt[nmi], val + cur * nma);
+      chmin(dpt[nma], val + cur * nmi);
+      chmin(dpt[mid], val + cur * (a[i] - mid));
+      chmin(dpt[a[i] - mid], val + cur * mid);
+    }
+    dp = dpt;
+    dpt.clear();
+  }
+
+  ll ans = LINF;
+  fore(cur, val, dp) chmin(ans, val + cur * a[n - 1]);
+  OUT(ans);
+
+  return;
+  ll ma = a[0], masum = 0;
+  ll mi = a[0], misum = 0;
+
+  rep(i, 1, n - 1) {
+    ll nma, nmi;
+    if (a[i] == s * 2) {
+      nma = s; nmi = s;
+    } else if (a[i] > s * 2) {
+      nmi = s; nma = a[i] - s;
+    } else {
+      nma = min(s, a[i]); nmi = a[i] - nma;
+    }
+
+    masum = min(misum + mi * nmi, masum + ma * nmi);
+    misum = min(misum + mi * nma, masum + ma * nma);
+    ma = nma;
+    mi = nmi;
+    debug(masum, ma, misum, mi);
+  }
+
+  masum += ma * a[n - 1];
+  misum += mi * a[n - 1];
+
+  OUT(min(masum, misum));
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }

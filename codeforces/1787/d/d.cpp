@@ -146,114 +146,214 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a, vl b) {
-  vl sa = a, sb = b;
-  sort(all(sa)); sort(all(sb));
-  if (sa != sb) return false;
+// https://nyaannyaan.github.io/library/graph/strongly-connected-components.hpp
 
-  vl oddia, oddib;
+// Strongly Connected Components
+// DAG of SC graph   ... scc.dag (including multiedges)
+// new node of k     ... scc[k]
+// inv of scc[k] = i ... scc.belong(i)
+template <typename G>
+struct StronglyConnectedComponents {
+ private:
+  const G &g;
+  vector<vector<int>> rg;
+  vector<int> comp, order;
+  vector<char> used;
+  vector<vector<int>> blng;
+
+ public:
+  vector<vector<int>> dag;
+  StronglyConnectedComponents(G &_g) : g(_g), used(g.size(), 0) { build(); }
+
+  int operator[](int k) { return comp[k]; }
+  vector<int> &belong(int i) { return blng[i]; }
+  size_t size() const { return dag.size(); }
+
+ private:
+  void dfs(int idx) {
+    if (used[idx]) return;
+    used[idx] = true;
+    for (auto to : g[idx]) dfs(int(to));
+    order.push_back(idx);
+  }
+
+  void rdfs(int idx, int cnt) {
+    if (comp[idx] != -1) return;
+    comp[idx] = cnt;
+    for (int to : rg[idx]) rdfs(to, cnt);
+  }
+
+  void build() {
+    for (int i = 0; i < (int)g.size(); i++) dfs(i);
+    reverse(begin(order), end(order));
+    used.clear();
+    used.shrink_to_fit();
+
+    comp.resize(g.size(), -1);
+
+    rg.resize(g.size());
+    for (int i = 0; i < (int)g.size(); i++) {
+      for (auto e : g[i]) {
+        rg[(int)e].emplace_back(i);
+      }
+    }
+    int ptr = 0;
+    for (int i : order)
+      if (comp[i] == -1) rdfs(i, ptr), ptr++;
+    rg.clear();
+    rg.shrink_to_fit();
+    order.clear();
+    order.shrink_to_fit();
+
+    dag.resize(ptr);
+    blng.resize(ptr);
+    for (int i = 0; i < (int)g.size(); i++) {
+      blng[comp[i]].push_back(i);
+      for (auto &to : g[i]) {
+        int x = comp[i], y = comp[to];
+        if (x == y) continue;
+        dag[x].push_back(y);
+      }
+    }
+  }
+};
+
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
+
+ll solve(ll n, vl a) {
+  Graph<ll> G(n);
+  UnionFind uf(n);
+
   rep(i, n) {
-    if (a[i] & 1) { oddia.pb(i); }
-    if (b[i] & 1) { oddib.pb(i); }
+    if (incl(i + a[i], 0, n)) {
+      G.add_directed_edge(i, i + a[i]);
+      uf.unite(i, i + a[i]);
+    }
   }
 
-  ll mia = LINF, mib = LINF;
-  rep(i, oddia.size() - 1) {
-    chmin(mia, oddia[i + 1] - oddia[i]);
-    chmin(mib, oddib[i + 1] - oddib[i]);
+  auto scc = StronglyConnectedComponents(G);
+
+  vb dp(scc.dag.size()); vl dpsz(scc.dag.size()); // サイクルに到達する成分
+  rep(i, scc.dag.size()) {
+    if (scc.belong(i).size() > 1) dp[i] = 1; else if (a[scc.belong(i)[0]] == 0) dp[i] = 1;
   }
 
-  if (mia <= 2 && mib <= 2) {
-    if (oddia.size() == n) {
-      if (a == b) return true; else return false;
-    } else if (oddia.size() == n - 2) {
-      vl ea, eb;
-      rep(i, n) {
-        if (!(a[i] & 1)) ea.pb(a[i]);
-        if (!(b[i] & 1)) eb.pb(b[i]);
-      }
-      if (ea != eb) { return false; } else return true;
-    } else return true;
+  fore(v, scc.dag) uniq(v);
+
+  rep_r(i, scc.dag.size()) {
+    fore(to, scc.dag[i]) {
+      if (dp[to]) dp[i] = 1;
+    }
+  }
+  rep(i, scc.dag.size()) {
+    dpsz[i] += scc.belong(i).size();
+    fore(to, scc.dag[i]) {
+      dpsz[to] += dpsz[i];
+    }
+  }
+  // debug(dp, dpsz);
+
+  vb cycle(n); vl sz(n);
+  rep(i, scc.dag.size()) {
+    fore(v, scc.belong(i)) {
+      if (dp[i]) cycle[v] = 1;
+      sz[v] = dpsz[i];
+    }
+  }
+  // debug(cycle, sz);
+
+  if (cycle[0]) {
+    ll ng = 0;
+    rep(i, n) if (cycle[i]) ng++;
+
+    vb vis(n);
+    ll cur = 0, ans = 0, cnt = 0;
+    while (!vis[cur]) {
+      vis[cur] = 1;
+      ans += n * 2 + 1 - ng;
+
+      if (G[cur].size()) cur = G[cur][0]; else break;
+    }
+    return ans;
   } else {
-    if (oddia != oddib) return false;
-    // 奇数のidxは揃っている
-    vvl aeven, beven;
-    vl ta, tb;
+    ll ng = 0;
     rep(i, n) {
-      if (a[i] & 1) {
-        if (a[i] != b[i]) return false;
-        aeven.pb(ta);
-        beven.pb(tb);
-        ta.clear(); tb.clear();
-      } else {
-        ta.pb(a[i]);
-        tb.pb(b[i]);
-      }
-    }
-    if (ta.size()) {
-      aeven.pb(ta);
-      beven.pb(tb);
-    }
-    rep(i, aeven.size()) {
-      if (aeven[i].size() > 2) {
-        sort(all(aeven[i]));
-        sort(all(beven[i]));
-      }
-      if (aeven[i] != beven[i]) return false;
+      if (cycle[i] && !uf.same(0, i)) ng++;
     }
 
-    return true;
+    vb vis(n);
+    ll cur = 0, ans = 0, cnt = 0;
+    while (!vis[cur]) {
+      vis[cur] = 1;
+      ans += n * 2 + 1 - sz[cur] - ng;
+      cnt++;
+
+      if (G[cur].size()) cur = G[cur][0]; else break;
+    }
+    ans += (n - cnt) * (n * 2 + 1);
+    return ans;
   }
 }
 
-ll naive(ll n, vl a, vl b) {
-  set<vl> s;
-  s.insert(a);
-  queue<vl> que;
-  que.push(a);
-  while (!que.empty()) {
-    auto v = que.front(); que.pop();
-    rep(i, n - 2) {
-      if ((v[i] + v[i + 1] + v[i + 2]) % 2 == 0) {
-        vl t; rep(j, 3) t.pb(v[i + j]);
-        vl id(3); iota(all(id), 0);
-        while(next_permutation(all(id))) {
-          vl tv = v;
-          rep(j, 3) {
-            tv[i + j] = t[id[j]];
-          }
-          if (s.find(tv) == s.end()) {
-            s.insert(tv);
-            que.push(tv);
-          }
+ll naive(ll n, vl a) {
+  ll ans = 0;
+  rep(i, n) {
+    rep(y, -n, n + 1) {
+      vl ta = a;
+      ta[i] = y;
+      Graph<ll> G(n);
+      rep(i, n) {
+        if (incl(i + ta[i], 0, n)) {
+          G.add_directed_edge(i, i + ta[i]);
         }
       }
+      vb vis(n);
+      bool valid = true;
+      function<void(ll)> dfs = [&](ll v) {
+        vis[v] = true;
+        fore(to, G[v]) {
+          if (vis[to]) valid = false;
+          else dfs(to);
+        }
+      };
+      dfs(0);
+      if (valid) ans++; //else debug(i, y);
     }
   }
-
-  if (s.find(b) != s.end()) return true; else return false;
+  return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 6;
-    vl a = rg.vecl(n, 0, 4);
-    vl b = a; rg.shuffle(b);
-    auto so = solve(n, a, b); auto na = naive(n, a, b);
+    ll n = 3;
+    vl a = rg.vecl(n, -n, n + 1);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a, b); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
+
 void solve() {
-  LL(n); VL(a, n); VL(b, n);
-  if (solve(n, a, b)) OUT("Yes"); else OUT("No");
+  LL(n); VL(a, n);
+  OUT(solve(n, a));
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) solve();
   // while (t--) compare();
 }
