@@ -173,22 +173,17 @@ void solve() {
 
   rep(i, 1, n - 1) {
     ll nma, nmi;
-    if (a[i] == s * 2) {
-      nma = s; nmi = s;
-    } else if (a[i] > s * 2) {
+    if (a[i] > s * 2) {
       nmi = s; nma = a[i] - s;
     } else {
       nma = min(s, a[i]); nmi = a[i] - nma;
     }
 
-    ll mid = a[i] / 2;
-    dpt[nma] = dpt[nmi] = dpt[mid] = dpt[a[i] - mid] = LINF;
+    dpt[nma] = dpt[nmi] = LINF;
 
     fore(cur, val, dp) {
       chmin(dpt[nmi], val + cur * nma);
       chmin(dpt[nma], val + cur * nmi);
-      chmin(dpt[mid], val + cur * (a[i] - mid));
-      chmin(dpt[a[i] - mid], val + cur * mid);
     }
     dp = dpt;
     dpt.clear();

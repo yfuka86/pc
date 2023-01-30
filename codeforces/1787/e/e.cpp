@@ -192,33 +192,23 @@ void solve() {
   if (k & 1 && sum != x) OUTRET("NO");
   if (!(k & 1) && sum != 0) OUTRET("NO");
 
-  if (k == 1) {
-    OUT("YES");
-    cout << n << " ";
-    vl ans(n); iota(all(ans), 1);
-    OUTARRAY(ans);
-    return;
-  }
-
   vvl ans;
+
   set<ll> s; rep(i, 1, n + 1) s.insert(i);
+  rep(i, 1, n + 1) {
+    if (s.find(i) == s.end()) continue;
+    if (i == x) { ans.pb({x}); s.erase(x); }
+    else if (s.find(x ^ i) != s.end()) {
+      ans.pb({i, x ^ i});
+      s.erase(i);
+      s.erase(x ^ i);
+    }
 
-  if (s.find(x) != s.end()) {
-    s.erase(x);
-    ans.pb({x});
+    if (ans.size() >= k) break;
   }
 
-  while (1) {
-    if (s.find(x ^ *s.begin()) == s.end()) OUTRET("NO");
-
-    ans.pb({*s.begin(), x ^ *s.begin()});
-    s.erase(x ^ *s.begin());
-    s.erase(s.begin());
-
-    if (ans.size() == k) break;
-  }
+  if (ans.size() < k) OUTRET("NO");
   fore(e, s) ans.back().pb(e);
-
   /////
   OUT("YES");
   rep(i, k) {

@@ -34,7 +34,23 @@ vlp rand_tree(ll n) {
   return ret;
 }
 
-vlp rand_undir_graph(ll n, ll m) {
+// 連結とは限らない && テストケース用O(N^2)
+vlp rand_dag(ll n, ll m = -1) { RandGen rg;
+  vlp ret; rep(i, n) rep(j, i + 1, n) ret.pb({i, j}); rg.shuffle(ret);
+  if (m == -1) m = rg.l(0, n*(n-1)/2+1);
+  while(ret.size() > m) ret.pop_back();
+  return ret;
+}
+
+// 連結とは限らない && テストケース用O(N^2)
+vlp rand_dg(ll n, ll m = -1) { RandGen rg;
+  vlp ret; rep(i, n) rep(j, n) if (i != j) ret.pb({i, j}); rg.shuffle(ret);
+  if (m == -1) m = rg.l(0, n*(n-1)+1);
+  while(ret.size() > m) ret.pop_back();
+  return ret;
+}
+
+vlp rand_undir_connected_graph(ll n, ll m) {
   assert(n - 1 <= m && m <= n * (n - 1) / 2);
   set<LP> S;
   for (auto p: rand_tree(n)) S.insert({p.fi, p.se});
