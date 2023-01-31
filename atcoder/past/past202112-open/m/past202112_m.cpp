@@ -89,8 +89,8 @@ template <class T, class S> void scan(pair<T, S> &p) { scan(p.first), scan(p.sec
 template <class T> void scan(vector<T> &a) { for(auto &i : a) scan(i); }
 void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...tail) { scan(head); IN(tail...); }
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
-#define YES(ok) { if (ok) { OUT("YES"); } else OUT("NO"); }
-#define Yes(ok) { if (ok) { OUT("Yes"); } else OUT("No"); }
+#define YES(ok) { if (ok) { OUTRET("YES"); } else OUTRET("NO"); }
+#define Yes(ok) { if (ok) { OUTRET("Yes"); } else OUTRET("No"); }
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
@@ -167,12 +167,214 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, sum(i) >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
+template <typename Key, typename Val>
+struct HashMap {
+  using u32 = uint32_t;
+  using u64 = uint64_t;
+
+  u32 cap, s;
+  vector<Key> keys;
+  vector<Val> vals;
+  vector<bool> flag;
+  u64 r;
+  u32 shift;
+  Val DefaultValue;
+
+  static u64 rng() {
+    u64 m = chrono::duration_cast<chrono::nanoseconds>(
+                chrono::high_resolution_clock::now().time_since_epoch())
+                .count();
+    m ^= m >> 16;
+    m ^= m << 32;
+    return m;
+  }
+
+  void reallocate() {
+    cap <<= 1;
+    vector<Key> k(cap);
+    vector<Val> v(cap);
+    vector<bool> f(cap);
+    u32 sh = shift - 1;
+    for (int i = 0; i < (int)flag.size(); i++) {
+      if (flag[i]) {
+        u32 hash = (u64(keys[i]) * r) >> sh;
+        while (f[hash]) hash = (hash + 1) & (cap - 1);
+        k[hash] = keys[i];
+        v[hash] = vals[i];
+        f[hash] = 1;
+      }
+    }
+    keys.swap(k);
+    vals.swap(v);
+    flag.swap(f);
+    --shift;
+  }
+
+  explicit HashMap()
+      : cap(8),
+        s(0),
+        keys(cap),
+        vals(cap),
+        flag(cap),
+        r(rng()),
+        shift(64 - __lg(cap)),
+        DefaultValue(Val()) {}
+
+  Val& operator[](const Key& i) {
+    u32 hash = (u64(i) * r) >> shift;
+    while (true) {
+      if (!flag[hash]) {
+        if (s + s / 4 >= cap) {
+          reallocate();
+          return (*this)[i];
+        }
+        keys[hash] = i;
+        flag[hash] = 1;
+        ++s;
+        return vals[hash] = DefaultValue;
+      }
+      if (keys[hash] == i) return vals[hash];
+      hash = (hash + 1) & (cap - 1);
+    }
+  }
+
+  // exist -> return pointer of Val
+  // not exist -> return nullptr
+  const Val* find(const Key& i) const {
+    u32 hash = (u64(i) * r) >> shift;
+    while (true) {
+      if (!flag[hash]) return nullptr;
+      if (keys[hash] == i) return &(vals[hash]);
+      hash = (hash + 1) & (cap - 1);
+    }
+  }
+
+  // return vector< pair<const Key&, val& > >
+  vector<pair<Key, Val>> enumerate() const {
+    vector<pair<Key, Val>> ret;
+    for (u32 i = 0; i < cap; ++i)
+      if (flag[i]) ret.emplace_back(keys[i], vals[i]);
+    return ret;
+  }
+
+  int size() const { return s; }
+
+  // set default_value
+  void set_default(const Val& val) { DefaultValue = val; }
+};
+
+template <typename S, typename T>
+struct DynamicFenwickTree {
+  S N;
+  HashMap<S, T> data;
+  explicit DynamicFenwickTree() = default;
+  explicit DynamicFenwickTree(S size) { N = size + 1; }
+
+  void add(S k, T x) {
+    for (++k; k < N; k += k & -k) data[k] += x;
+  }
+
+  // [0, k)
+  T sum(S k) const {
+    if (k < 0) return 0;
+    T ret = T();
+    for (; k > 0; k -= k & -k) {
+      const T* p = data.find(k);
+      ret += p ? *p : T();
+    }
+    return ret;
+  }
+
+  // [a, b)
+  T sum(S a, S b) const { return sum(b) - sum(a); }
+
+  T operator[](S k) const { return sum(k + 1) - sum(k); }
+
+  S lower_bound(T w) {
+    if (w <= 0) return 0;
+    S x = 0;
+    for (S k = 1 << __lg(N); k; k >>= 1) {
+      if (x + k <= N - 1 && data[x + k] < w) {
+        w -= data[x + k];
+        x += k;
+      }
+    }
+    return x;
+  }
+};
+
 void solve() {
-  LL(n);
+  LL(n, q);
+  vs s(n); IN(s);
+
+  vs c = s;
+
+  vector<pair<ll, string>> query(q);
+  rep(i, q) {
+    LL(x); STR(t); c.pb(t);
+    query[i] = {x, t};
+  }
+  uniq(c);
+  unordered_map<string, ll> dict;
+  rep(i, c.size()) {
+    dict[c[i]] = i;
+  }
+
+  BIT<ll> bt(c.size());
+  vector<DynamicFenwickTree<ll, ll>> list(c.size());
+  rep(i, c.size()) list[i] = DynamicFenwickTree<ll, ll>(n);
+
+  rep(i, n) {
+    bt.add(dict[s[i]], 1);
+    list[dict[s[i]]].add(i, 1);
+  }
+
+  rep(i, q) {
+    auto [x, t] = query[i];
+    ll r = bt.lower_bound(x);
+    ll c = bt.sum(0, r);
+    if (r == dict[t]) continue;
+
+    ll k = list[r].lower_bound(x - c);
+    list[r].add(k, -1);
+    list[dict[t]].add(k, 1);
+    bt.add(r, -1);
+    bt.add(dict[t], 1);
+    // debug(list);
+  }
+
+  vs ans(n);
+  rep(i, c.size()) {
+    rep(j, list[i].sum(n)) {
+      ans[list[i].lower_bound(j + 1)] = c[i];
+    }
+  }
+  fore(e, ans) {
+    cout << e << " ";
+  } cout << "\n";
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) if (1) solve(); else compare();
 }

@@ -89,8 +89,8 @@ template <class T, class S> void scan(pair<T, S> &p) { scan(p.first), scan(p.sec
 template <class T> void scan(vector<T> &a) { for(auto &i : a) scan(i); }
 void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...tail) { scan(head); IN(tail...); }
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
-#define YES(ok) { if (ok) { OUT("YES"); } else OUT("NO"); }
-#define Yes(ok) { if (ok) { OUT("Yes"); } else OUT("No"); }
+#define YES(ok) { if (ok) { OUTRET("YES"); } else OUTRET("NO"); }
+#define Yes(ok) { if (ok) { OUTRET("Yes"); } else OUTRET("No"); }
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
@@ -148,31 +148,60 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+ll solve(ll n, ll p, vl a) {
+  rep(i, n) a[i] += i;
+
+  vl dp(n, LINF);
+  rep(i, n) {
+    if (a[i] > p) continue; // 小さい必要がある
+    if (a[i] < n - 1) continue; // 大きい必要がある
+    *upper_bound(all(dp), -a[i]) = -a[i];
+  }
+  ll len = lower_bound(all(dp), INF) - dp.begin();
+  return n - len;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+ll naive(ll n, ll p, vl a) {
+  ll ret = n;
+  rep(S, 1 << n) { // 嘘つき決めうち
+    vl t = a; ll cur = p;
+    rep(i, n) {
+      if (S & 1 << i) {
+        t[i] = cur;
+      } else {
+        cur = t[i];
+      }
+      cur--;
+    }
+    debug(t);
+
+    vl sorted = t;
+    uniq(sorted);
+    sort(rall(sorted));
+    if (t == sorted && sorted.back() >= 0) chmin(ret, __builtin_popcount(S));
+  }
+  return ret;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = 5, p = 10;
+    vl a = rg.vecl(n, 0, p + 1);
+    auto so = solve(n, p, a); auto na = naive(n, p, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      debug(n, p, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  LL(n);
+  LL(n, p);
+  VL(a, n);
+  OUT(solve(n, p, a));
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) if (1) solve(); else compare();
 }

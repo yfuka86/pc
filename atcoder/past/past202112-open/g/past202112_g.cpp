@@ -168,11 +168,30 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, q);
+
+  vv(ll, e, n, n, 0);
+  rep(_, q) {
+    LL(t, u, v); --u; --v;
+    if (t == 1) {
+      if (e[u][v]) e[u][v] = e[v][u] = 0;
+      else e[u][v] = e[v][u] = 1;
+    } else {
+      vb vis(n);
+      function<void(ll)> dfs = [&](ll v) {
+        vis[v] = 1;
+        rep(i, n) {
+          if (e[v][i] && !vis[i]) dfs(i);
+        }
+      };
+      dfs(u);
+      Yes(vis[v]);
+    }
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) if (1) solve(); else compare();
 }

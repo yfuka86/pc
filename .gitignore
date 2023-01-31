@@ -1,3 +1,4 @@
 .DS_Store
 .env
 *.dSYM
+boost_1_81_0

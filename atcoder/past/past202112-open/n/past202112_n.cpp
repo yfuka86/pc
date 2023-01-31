@@ -89,8 +89,8 @@ template <class T, class S> void scan(pair<T, S> &p) { scan(p.first), scan(p.sec
 template <class T> void scan(vector<T> &a) { for(auto &i : a) scan(i); }
 void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...tail) { scan(head); IN(tail...); }
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
-#define YES(ok) { if (ok) { OUT("YES"); } else OUT("NO"); }
-#define Yes(ok) { if (ok) { OUT("Yes"); } else OUT("No"); }
+#define YES(ok) { if (ok) { OUTRET("YES"); } else OUTRET("NO"); }
+#define Yes(ok) { if (ok) { OUTRET("Yes"); } else OUTRET("No"); }
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
@@ -167,12 +167,52 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+#include <boost/geometry.hpp>
+#include <boost/geometry/io/io.hpp>
+#include <boost/geometry/geometries/point_xy.hpp>
+#include <boost/geometry/geometries/register/ring.hpp>
+#include <boost/geometry/geometries/register/point.hpp>
+
+class Point {
+public:
+    double _x, _y;
+    Point():_x(),_y(){}
+    Point(double x, double y):_x(x),_y(y){}
+};
+
+BOOST_GEOMETRY_REGISTER_POINT_2D(Point, double, cs::cartesian, _x, _y)
+BOOST_GEOMETRY_REGISTER_RING(std::vector<Point>)
+
+namespace bg = boost::geometry;
+
+template <typename G>
+void test(G const& g1, G const& g2) {
+    std::cout << "----\nIntersecting\n\t" << bg::wkt(g1) << "\n\t" << bg::wkt(g2) << "\nresult: ";
+
+    std::vector<G> polygon_results;
+    bg::intersection<G, G>(g1, g2, polygon_results);
+
+    for (auto polygon : polygon_results)
+        std::cout << bg::wkt(polygon) << "\n";
+}
+
+int main() {
+    using Ring = std::vector<Point>;
+
+    test<Ring>(
+            {{749,  271999},  {270000, 272000}, {270000, -228000},    {750, -227999},     {749,  271999}},
+            {{-230000, -228000}, {-230000,  39250}, {270000,   39250}, {270000, -228000}, {-230000, -228000}});
+    test<Ring>(
+            {{0.075,   27.2},  { 27,   27.2}, { 27, -22.8 }, { 0.075, -22.8 }, { 0.075,  27.2 }},
+            {{ -23, -22.8 }, { -23, 3.925 }, { 27, 3.925 },    { 27, -22.8 },   { -23, -22.8 }});
+}
+
 void solve() {
   LL(n);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) if (1) solve(); else compare();
 }

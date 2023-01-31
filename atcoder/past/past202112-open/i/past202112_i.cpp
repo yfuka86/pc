@@ -89,8 +89,8 @@ template <class T, class S> void scan(pair<T, S> &p) { scan(p.first), scan(p.sec
 template <class T> void scan(vector<T> &a) { for(auto &i : a) scan(i); }
 void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...tail) { scan(head); IN(tail...); }
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
-#define YES(ok) { if (ok) { OUT("YES"); } else OUT("NO"); }
-#define Yes(ok) { if (ok) { OUT("Yes"); } else OUT("No"); }
+#define YES(ok) { if (ok) { OUTRET("YES"); } else OUTRET("NO"); }
+#define Yes(ok) { if (ok) { OUTRET("Yes"); } else OUTRET("No"); }
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
@@ -124,7 +124,7 @@ ll mex(vl& v) { ll n = v.size(); vb S(n + 1); for (auto a: v) if (a <= n) S[a] =
 template<class T> void rotate(vector<vector<T>> &a) { ll n = a.size(), m = a[0].size(); vector<vector<T>> ret(m, vector<T>(n, 0)); rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j]; a = ret; }
 template<typename T> void uniq(vector<T>&a) { sort(all(a)); a.erase(unique(all(a)), a.end()); }
 template<typename T> void comp(vector<T>&a) { vector<T> b = a; uniq(b); rep(i, a.size()) a[i] = lower_bound(all(b), a[i]) - b.begin(); }
-template<class T = ll> pair<unordered_map<ll, ll>, unordered_map<ll, ll>> compmap(vector<T> &a) { vector<T> ca = a; comp(ca); unordered_map<ll, ll> ret, rev; rep(i, ca.size()) { ret[a[i]] = ca[i]; rev[ca[i]] = a[i]; } return mp(ret, rev); }
+template<class T = ll> pair<map<ll, ll>, map<ll, ll>> compmap(vector<T> &a) { vector<T> ca = a; comp(ca); map<ll, ll> ret, rev; rep(i, ca.size()) { ret[a[i]] = ca[i]; rev[ca[i]] = a[i]; } return mp(ret, rev); }
 template<class T, class U> bool chmin(T &a, const U &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T, class U> bool chmax(T &a, const U &b) { if (b > a) { a = b; return 1;} return 0; }
 template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a), b) - a.begin(); };
@@ -167,12 +167,40 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+vector<ll> dijkstra(Graph<ll> &G, ll start) {
+  mpq<LP> que; vl cost(G.size(), LINF);
+  cost[start] = 0; que.push({0, start});
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = cost[v] + to.cost; if (chmin(cost[to], nc)) que.push({nc, to}); }
+  }
+  return cost;
+}
+
 void solve() {
-  LL(n);
+  LL(n, m);
+  VEC3(ll, a, b, c, m);
+
+  vl cand;
+  cand.pb(1); cand.pb(n);
+  rep(i, m) { cand.pb(a[i]); cand.pb(b[i]); }
+  auto [f, revf] = compmap(cand);
+
+  Graph<ll> G(f.size());
+
+  for(auto it = f.begin(); next(it) != f.end(); ++it) {
+    ll w = next(it)->fi - it->fi;
+    G.add_edge(it->se, next(it)->se, w);
+  }
+  rep(i, m) {
+    G.add_edge(f[a[i]], f[b[i]], c[i]);
+  }
+
+  OUT(dijkstra(G, 0)[f.size() - 1]);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) if (1) solve(); else compare();
 }
