@@ -50,6 +50,23 @@ struct RandGen {
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
+// https://nyaannyaan.github.io/library/geometry/geometry.hpp
+using Real = long double;
+using Point = complex<Real>;
+using Points = vector<Point>;
+constexpr Real EPS = 1e-8;  // 問題によって変える！
+constexpr Real pi = 3.141592653589793238462643383279L;
+istream &operator>>(istream &is, Point &p) { Real a, b; is >> a >> b; p = Point(a, b); return is; }
+ostream &operator<<(ostream &os, Point &p) { return os << real(p) << " " << imag(p); }
+inline int sign(const Real &r) { return r <= -EPS ? -1 : r >= EPS ? 1 : 0; }
+inline bool equals(Real a, Real b) { return fabs(b - a) < EPS; }
+Point operator*(const Point &p, const Real &d) { return Point(real(p) * d, imag(p) * d); }
+namespace std {
+  bool operator<(const Point &a, const Point &b) { return a.real() != b.real() ? a.real() < b.real() : a.imag() < b.imag(); }
+} // namespace std
+Real cross(const Point &a, const Point &b) { return real(a) * imag(b) - imag(a) * real(b); }
+Real dot(const Point &a, const Point &b) { return real(a) * real(b) + imag(a) * imag(b); }
+
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -108,7 +125,7 @@ pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x
 ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
 vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
-vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
+// vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
 template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
 template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int msb(T x){ if (sizeof(x) == 4) return 31 - __builtin_clz(x); else return 63 - __builtin_clzll(x); }
 template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int lsb(T x){ if (sizeof(x) == 4) return __builtin_ctz(x); else return __builtin_ctzll(x); }
@@ -167,48 +184,146 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-#include <boost/geometry.hpp>
-#include <boost/geometry/io/io.hpp>
-#include <boost/geometry/geometries/point_xy.hpp>
-#include <boost/geometry/geometries/register/ring.hpp>
-#include <boost/geometry/geometries/register/point.hpp>
-
-class Point {
-public:
-    double _x, _y;
-    Point():_x(),_y(){}
-    Point(double x, double y):_x(x),_y(y){}
+// 偏角ソート
+// 与えられた中心と点集合に対して、偏角のリストを返す
+vector<Real> arg_sort(Point &a , Points ps){
+  vector<Real> ret;
+  for(Point& p : ps) if(a != p) ret.push_back(atan2(p.imag() - a.imag(), p.real() - a.real()));
+  sort(begin(ret) , end(ret));
+  return ret;
 };
-
-BOOST_GEOMETRY_REGISTER_POINT_2D(Point, double, cs::cartesian, _x, _y)
-BOOST_GEOMETRY_REGISTER_RING(std::vector<Point>)
-
-namespace bg = boost::geometry;
-
-template <typename G>
-void test(G const& g1, G const& g2) {
-    std::cout << "----\nIntersecting\n\t" << bg::wkt(g1) << "\n\t" << bg::wkt(g2) << "\nresult: ";
-
-    std::vector<G> polygon_results;
-    bg::intersection<G, G>(g1, g2, polygon_results);
-
-    for (auto polygon : polygon_results)
-        std::cout << bg::wkt(polygon) << "\n";
+// ccw 点の進行方向
+int ccw(const Point &a, Point b, Point c) {
+  b = b - a, c = c - a;
+  if (cross(b, c) > EPS) return +1;   // 反時計回り
+  if (cross(b, c) < -EPS) return -1;  // 時計回り
+  if (dot(b, c) < 0) return +2;       // c-a-bの順で一直線
+  if (norm(b) < norm(c)) return -2;   // a-b-cの順で一直線
+  return 0;                           // a-c-bの順で一直線
+}
+// a-bベクトルとb-cベクトルのなす角度のうち小さい方を返す
+// (ベクトル同士のなす角、すなわち幾何でいうところの「外角」であることに注意！)
+// rem. 凸包に対して反時計回りにこの関数を適用すると、
+// 凸包の大きさにかかわらず和が360度になる(いわゆる外角の和)(AGC021-B)
+Real get_angle(const Point &a, const Point &b, const Point &c) {
+  const Point v(b - a), w(c - b);
+  Real alpha = atan2(v.imag(), v.real()), beta = atan2(w.imag(), w.real());
+  if (alpha > beta) swap(alpha, beta);
+  Real theta = (beta - alpha);
+  return min(theta, 2 * acos(-1) - theta);
+}
+// Line /////////////////////////////////////////////////////////////////////////////
+struct Line {
+  Point a, b;
+  Line() = default;
+  Line(const Point &a, const Point &b) : a(a), b(b) {}
+  Line(const Real &A, const Real &B, const Real &C) { // Ax+By=C
+    if(equals(A, 0)) { assert(!equals(B, 0)); a = Point(0, C / B); b = Point(1, C / B); }
+    else if(equals(B, 0)) { a = Point(C / A, 0); b = Point(C / A, 1); }
+    else { a = Point(0, C / B); b = Point(C / A, 0); }
+  }
+  friend ostream &operator<<(ostream &os, Line &l) { return os << l.a << " to " << l.b; }
+  friend istream &operator>>(istream &is, Line &l) { return is >> l.a >> l.b; }
+};
+using Lines = vector< Line >;
+// 交点
+Point cross_point_ll(const Line &l, const Line &m) {
+  Real A = cross(l.b - l.a, m.b - m.a), B = cross(l.b - l.a, l.b - m.a);
+  if(equals(abs(A), 0) && equals(abs(B), 0)) return m.a;
+  return m.a + (m.b - m.a) * B / A;
 }
 
-int main() {
-    using Ring = std::vector<Point>;
-
-    test<Ring>(
-            {{749,  271999},  {270000, 272000}, {270000, -228000},    {750, -227999},     {749,  271999}},
-            {{-230000, -228000}, {-230000,  39250}, {270000,   39250}, {270000, -228000}, {-230000, -228000}});
-    test<Ring>(
-            {{0.075,   27.2},  { 27,   27.2}, { 27, -22.8 }, { 0.075, -22.8 }, { 0.075,  27.2 }},
-            {{ -23, -22.8 }, { -23, 3.925 }, { 27, 3.925 },    { 27, -22.8 },   { -23, -22.8 }});
+//　反時計回りである自己交差のない多角形のclass
+using Polygon = vector<Point>;
+// 凸包
+Polygon convex_hull(vector<Point> ps) {
+  int n = (int)ps.size(), k = 0;
+  if (n <= 2) return ps;
+  sort(ps.begin(), ps.end());
+  Polygon ch(2 * n);
+  // 反時計周りに凸包を構築していく
+  for (int i = 0; i < n; ch[k++] = ps[i++]) {
+    // 条件分岐内はwhile(k >= 2 && ccw(ch[k-2],ch[k-1],ps[i]) != 1)と等価
+    while (k >= 2 && cross(ch[k - 1] - ch[k - 2], ps[i] - ch[k - 1]) < EPS) --k;
+  }
+  for (int i = n - 2, t = k + 1; i >= 0; ch[k++] = ps[i--]) {
+    while (k >= t && cross(ch[k - 1] - ch[k - 2], ps[i] - ch[k - 1]) < EPS) --k;
+  }
+  ch.resize(k - 1);
+  return ch;
 }
+Polygon convex_polygon_cut(const Polygon &U, const Line &l) {
+  Polygon ret;
+  for(int i = 0; i < U.size(); i++) {
+    const Point &now = U[i];
+    const Point &nxt = U[(i + 1) % U.size()];
+    auto cf = cross(l.a - now, l.b - now);
+    auto cs = cross(l.a - nxt, l.b - nxt);
+    if(sign(cf) >= 0) {
+      ret.emplace_back(now);
+    }
+    if(sign(cf) * sign(cs) < 0) {
+      ret.emplace_back(cross_point_ll(Line(now, nxt), l));
+    }
+  }
+  return ret;
+}
+// 多角形の面積
+Real area(const Polygon &p) { Real A = 0;
+  for (int i = 0; i < (int)p.size(); ++i) A += cross(p[i], p[(i + 1) % p.size()]);
+  return A * 0.5;
+}
+
+struct Circle {
+  Point p; Real r;
+  Circle() = default;
+  Circle(Point _p, Real _r) : p(_p), r(_r) {}
+};
+using Circles = vector<Circle>;
+int intersect(Circle c1, Circle c2) {
+  if (c1.r < c2.r) swap(c1, c2);
+  Real d = abs(c1.p - c2.p);
+  if (c1.r + c2.r < d) return 4;
+  if (equals(c1.r + c2.r, d)) return 3;
+  if (c1.r - c2.r < d) return 2;
+  if (equals(c1.r - c2.r, d)) return 1;
+  return 0;
+}
+pair<Point, Point> crosspoint(const Circle &c1, const Circle &c2) {
+  Real d = abs(c1.p - c2.p);
+  Real x = (c1.r * c1.r + d * d - c2.r * c2.r) / (2 * c1.r * d);
+  if (abs(x) > 1) x = (x > 0 ? 1.0 : -1.0);
+  Real a = acos(x);
+  Real t = atan2(c2.p.imag() - c1.p.imag(), c2.p.real() - c1.p.real());
+  Point p1 = c1.p + Point(cos(t + a) * c1.r, sin(t + a) * c1.r);
+  Point p2 = c1.p + Point(cos(t - a) * c1.r, sin(t - a) * c1.r);
+  return {p1, p2};
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// 以下自分のもの
+// 三点の外接円
+Circle circumcircle(const Point &p1, const Point &p2, const Point &p3) {
+  // TODO 同一直線上チェック（今div == 0でやっている）
+  Real a = abs(p2 - p3), b = abs(p1 - p3), c = abs(p1 - p2);
+  Real a2 = a * a, b2 = b * b, c2 = c * c;
+  Real ca = a2 * (b2 + c2 - a2), cb = b2 * (c2 + a2 - b2), cc = c2 * (a2 + b2 - c2);
+  Real div = (ca + cb + cc);
+  if (div == 0) return Circle{{LINF, LINF}, 0};
+  Point ec = (p1 * ca + p2 * cb + p3 * cc) / div;
+  return Circle{ec, abs(p1 - ec)};
+}
+
 
 void solve() {
-  LL(n);
+  LL(n, m);
+  Polygon S(n), T(m);
+
+  IN(S), IN(T);
+  rep(i, m) {
+    S = convex_polygon_cut(S, Line(T[i], T[(i + 1) % m]));
+  }
+  OUT(area(S));
 }
 
 signed main() {

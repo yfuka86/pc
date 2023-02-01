@@ -7,6 +7,26 @@ struct RotateVector {
   T &operator[](int k) { return vec[(k + offset) % vec.size()]; }
 };
 
+// 回転と反転ができる正方行列
+template<typename T>
+struct view2d {
+  int n, angle = 0, mirror = 0; vector<vector<T>> a;
+  view2d(int _n): n(_n) { a.assign(n, vector<T>(n, T(0))); }
+
+  void rotate() { angle++; angle %= 4; }
+  void revx() { mirror = 1 - mirror; if (angle == 1 || angle == 3) { angle += 2; angle %= 4; } }
+  void revy() { mirror = 1 - mirror; if (angle == 0 || angle == 2) { angle += 2; angle %= 4; } }
+
+  T& get(ll x, ll y) {
+    rep(i, angle) {
+      ll nx = n - 1 - y, ny = x;
+      x = nx; y = ny;
+    }
+    if (mirror) x = n - 1 - x;
+    return a[x][y];
+  }
+};
+
 // ビット列を反転のインデックスのみで保持したいもの
 struct Bitseq {
   vl ranges;
@@ -43,6 +63,7 @@ struct Bitseq {
   }
 };
 
+// レンジの和集合管理
 struct Rngset {
   map<ll, ll> ranges;
   Rngset() : ranges() {}

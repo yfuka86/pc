@@ -167,74 +167,51 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template<typename T>
+struct view2d {
+  int n, angle = 0, mirror = 0; vector<vector<T>> a;
+  view2d(int _n): n(_n) { a.assign(n, vector<T>(n, T(0))); }
+
+  void rotate() { angle++; angle %= 4; }
+  void revx() { mirror = 1 - mirror; if (angle == 1 || angle == 3) { angle += 2; angle %= 4; } }
+  void revy() { mirror = 1 - mirror; if (angle == 0 || angle == 2) { angle += 2; angle %= 4; } }
+
+  T& get(ll x, ll y) {
+    rep(i, angle) {
+      ll nx = n - 1 - y, ny = x;
+      x = nx; y = ny;
+    }
+    if (mirror) x = n - 1 - x;
+    return a[x][y];
+  }
+};
+
 void solve() {
   LL(n, q);
-  vv(ll, ans, n, n); // 0が白
-
-  ll angle = 0, mirror = 0;
+  view2d<ll> g(n);
 
   rep(i, q) {
     LL(t);
     if (t == 1) {
       LL(x, y); --x; --y;
-
-      ll nx=x, ny=y;
-
-      if (mirror) {
-        if (angle == 0) {
-          nx = n - 1 - x;
-          ny = y;
-        } else if (angle == 1) {
-          nx = y;
-          ny = x;
-        } else if (angle == 2) {
-          nx = x;
-          ny = n - 1 - y;
-        } else if (angle == 3) {
-          ny = n - 1 - x;
-          nx = n - 1 - y;
-        }
-      } else {
-        if (angle == 1) {
-          nx = n - 1 - y;
-          ny = x;
-        } else if (angle == 2) {
-          nx = n - 1 - x;
-          ny = n - 1 - y;
-        } else if (angle == 3) {
-          ny = n - 1 - x;
-          nx = y;
-        }
-      }
-
-      ans[nx][ny] = 1 - ans[nx][ny];
+      ll& t = g.get(x, y);
+      t = 1 - t;
     } else if (t == 2) {
       CHR(c);
-      if (c == 'A') angle++; else angle--;
+      if (c == 'A') g.rotate();
+      else rep(_, 3) g.rotate();
     } else {
       CHR(c);
-      mirror = 1 - mirror;
-      if (angle == 1 || angle == 3) {
-        if (c == 'A') angle += 2;
-      } else {
-        if (c == 'B') angle += 2;
-      }
+      if (c == 'A') g.revx();
+      if (c == 'B') g.revy();
     }
-    angle %= 4; if (angle < 0) angle += 4;
   }
 
-  if (mirror) {
-    vv(ll, t, n, n);
-    rep(i, n) rep(j, n) {
-      t[n - 1 - i][j] = ans[i][j];
-    }
-    ans = t;
-  }
-  rep(_, angle) rotate(ans);
   rep(i, n) {
     rep(j, n) {
-      cout << ans[i][j];
-    } cout << "\n";
+      cout << g.get(i, j);
+    }
+    cout << "\n";
   }
 }
 

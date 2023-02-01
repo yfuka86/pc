@@ -9,7 +9,7 @@ struct BIT {
   void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
   //[l, r) 0 <= l < r < n
   T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, sum(i) >= w, none -> n
+  // smallest i, [0, i] >= w, none -> n
   int lower_bound(T w) {
     if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
     for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }

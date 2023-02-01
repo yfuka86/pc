@@ -124,6 +124,6 @@
     "javascript": "node",
     // "cpp": "cd $dir && g++ -std=c++17 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
     // "cpp": "cd $dir && /opt/homebrew/bin/g++-12 -Wl,--stack,10485760 -std=c++17 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
-    "cpp": "cd $dir && /opt/homebrew/bin/g++-12 -std=c++17 -Wall -Wextra -ftrapv -fno-omit-frame-pointer -g2 -D_GLIBCXX_DEBUG -O0 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S --print-memory",
+    "cpp": "cd $dir && /opt/homebrew/bin/g++-12 -std=c++17 -Wall -Wextra -ftrapv -fno-omit-frame-pointer -g2 -D_GLIBCXX_DEBUG -O0 $fileName -I ~/work/pc/ac-library -I ~/work/pc/boost_1_81_0 && [ -d test ] && oj test -D -S --print-memory",
   }
 }
