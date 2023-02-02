@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "tenka1-2017-beginner",
+    "title": "Tenka1 Programmer Beginner Contest",
+    "url": "https://atcoder.jp/contests/tenka1-2017-beginner"
+  },
+  "tasks": [
+    {
+      "id": "tenka1_2017_a",
+      "label": "A",
+      "title": "Accepted...?",
+      "url": "https://atcoder.jp/contests/tenka1-2017-beginner/tasks/tenka1_2017_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "tenka1_2017_a.cpp"
+      }
+    },
+    {
+      "id": "tenka1_2017_b",
+      "label": "B",
+      "title": "Different Distribution",
+      "url": "https://atcoder.jp/contests/tenka1-2017-beginner/tasks/tenka1_2017_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "tenka1_2017_b.cpp"
+      }
+    },
+    {
+      "id": "tenka1_2017_c",
+      "label": "C",
+      "title": "4/N",
+      "url": "https://atcoder.jp/contests/tenka1-2017-beginner/tasks/tenka1_2017_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "tenka1_2017_c.cpp"
+      }
+    },
+    {
+      "id": "tenka1_2017_d",
+      "label": "D",
+      "title": "IntegerotS",
+      "url": "https://atcoder.jp/contests/tenka1-2017-beginner/tasks/tenka1_2017_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "tenka1_2017_d.cpp"
+      }
+    }
+  ]
+}

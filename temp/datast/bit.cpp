@@ -29,3 +29,4 @@ struct RangeAdd: BIT<T> {
     this->add(l, x); this->add(r, -x);
   }
 };
+

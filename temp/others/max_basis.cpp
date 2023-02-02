@@ -48,11 +48,15 @@ struct MaxBasis {
 template<class T> struct xor_basis {
   vector<T> basis;
   bool add(T a) {
-    for (const T& b : basis) { a = min(a, a ^ b); }
+    for (const T& b: basis) { a = min(a, a ^ b); }
     if (a) { basis.push_back(a); sort(basis.rbegin(), basis.rend()); return true; } else return false;
   }
   bool presentable(T a) {
-    for (const T& b : basis) { a = min(a, a ^ b); }
+    for (const T& b: basis) { a = min(a, a ^ b); }
     if (a) return false; else return true;
   }
+  // fromをマージ
+  void merge(xor_basis<T> &from) { for(const T& b: from.basis) add(b); }
+  T get_max(T sum = 0) { for(const T& b: basis) chmax(sum, sum ^ b); return sum; }
+  T get_min(T sum = 0) { for(const T& b: basis) chmin(sum, sum ^ b); return sum; }
 };
