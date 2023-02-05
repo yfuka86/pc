@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc288",
+    "title": "Toyota Programming Contest 2023 Spring Qual A（AtCoder Beginner Contest 288）",
+    "url": "https://atcoder.jp/contests/abc288"
+  },
+  "tasks": [
+    {
+      "id": "abc288_a",
+      "label": "A",
+      "title": "Many A+B Problems",
+      "url": "https://atcoder.jp/contests/abc288/tasks/abc288_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc288_a.cpp"
+      }
+    },
+    {
+      "id": "abc288_b",
+      "label": "B",
+      "title": "Qualification Contest",
+      "url": "https://atcoder.jp/contests/abc288/tasks/abc288_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc288_b.cpp"
+      }
+    },
+    {
+      "id": "abc288_c",
+      "label": "C",
+      "title": "Don’t be cycle",
+      "url": "https://atcoder.jp/contests/abc288/tasks/abc288_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc288_c.cpp"
+      }
+    },
+    {
+      "id": "abc288_d",
+      "label": "D",
+      "title": "Range Add Query",
+      "url": "https://atcoder.jp/contests/abc288/tasks/abc288_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc288_d.cpp"
+      }
+    },
+    {
+      "id": "abc288_e",
+      "label": "E",
+      "title": "Wish List",
+      "url": "https://atcoder.jp/contests/abc288/tasks/abc288_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc288_e.cpp"
+      }
+    },
+    {
+      "id": "abc288_f",
+      "label": "F",
+      "title": "Integer Division",
+      "url": "https://atcoder.jp/contests/abc288/tasks/abc288_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc288_f.cpp"
+      }
+    },
+    {
+      "id": "abc288_g",
+      "label": "G",
+      "title": "3^N Minesweeper",
+      "url": "https://atcoder.jp/contests/abc288/tasks/abc288_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc288_g.cpp"
+      }
+    },
+    {
+      "id": "abc288_h",
+      "label": "Ex",
+      "title": "A Nameless Counting Problem",
+      "url": "https://atcoder.jp/contests/abc288/tasks/abc288_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc288_h.cpp"
+      }
+    }
+  ]
+}
