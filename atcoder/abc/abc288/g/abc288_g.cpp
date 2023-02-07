@@ -169,14 +169,23 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
-  VL(a, POW(3, n));
-
-
-
+  ll m = POW(3, n);
+  VL(a, m);
 
   rep(i, n) {
-
+    ll p3 = POW(3, i);
+    rep(j, m) {
+      if ((j / p3) % 3 == 0) {
+        ll i0 = j, i1 = j + p3, i2 = j + p3 * 2;
+        ll n0 = a[i1] - a[i2];
+        ll n1 = a[i0] + a[i2] - a[i1];
+        ll n2 = a[i1] - a[i0];
+        a[i0] = n0; a[i1] = n1; a[i2] = n2;
+      }
+    }
   }
+
+  OUTARRAY(a);
 }
 
 signed main() {

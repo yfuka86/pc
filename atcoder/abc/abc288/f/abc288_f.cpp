@@ -215,8 +215,35 @@ void solve() {
   LL(n);
   STR(x);
 
-  vmi dp(n + 1);
-  dp[]
+  if (0) { // 愚直
+    vmi strsum(n + 1);
+    rep(i, n) strsum[i + 1] += strsum[i] * 10 + x[i] - '0';
+    vmi p10(n + 1); p10[0] = 1; rep(i, n) p10[i + 1] = p10[i] * 10;
+    auto q = [&](ll l, ll r) {
+      return strsum[r] - strsum[l] * p10[r - l];
+    };
+    vmi dp(n + 1); dp[0] = 1;
+    rep(i, n) {
+      rep(j, i + 1) {
+        dp[i + 1] += dp[j] * q(j, i + 1);
+      }
+    }
+    // debug(dp);
+  }
+
+  {
+    incr_csum<mint> dp(n + 1);
+
+    mint sum = 0;
+    rep(i, n) {
+      ll d = x[i] - '0';
+      sum = sum * 10 + (dp.sum(0, i + 1) + 1) * d;
+      dp.set(i + 1, sum);
+    }
+    OUT(sum);
+  }
+
+  // OUT(dp[n]);
 }
 
 signed main() {

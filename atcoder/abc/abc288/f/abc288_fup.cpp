@@ -50,6 +50,7 @@ struct RandGen {
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
+
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -131,8 +132,6 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 ll binary_search(function<bool(ll)> check, ll ok, ll ng, bool safe=true) { if (safe) { assert(check(ok)); assert(!check(ng)); } while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
 template<class T> vector<T> csum(vector<T> &a) { vector<T> ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
-template<class T> vector<int> argsort(const vector<T> &a) { vector<int> ids(a.size()); iota(all(ids), 0); sort(all(ids), [&](int i, int j) { return a[i] == a[j] ? i < j : a[i] < a[j]; }); return ids; }
-template<class T> vector<T> rearrange(const vector<T> &orig, const vector<int> &rep) { assert(orig.size() == rep.size()); ll n = rep.size(); vector<T> ret(n); rep(i, n) ret[i] = orig[rep[i]]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
@@ -169,12 +168,51 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
 void solve() {
   LL(n);
+  STR(x);
+  vmi dp(n); dp[0] = x[0] - '0';
+  vmi dpsum(n + 1); dpsum[0] = 1; dpsum[1] = dp[0] + 1;
+  rep(i, 1, n) {
+    ll d = x[i] - '0';
+    dp[i] = dp[i - 1] * 10 + dpsum[i] * d;
+    dpsum[i + 1] = dpsum[i] + dp[i];
+  }
+  // debug(dp);
+  OUT(dp[n-1]);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) if (1) solve(); else compare();
 }

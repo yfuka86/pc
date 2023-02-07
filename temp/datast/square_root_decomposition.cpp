@@ -47,3 +47,9 @@ auto update_part = [&](auto b, ll l, ll r, ll x) {
 // 対象ブロック b[b.id], 作用素 x, ( 範囲[b.l, b.r) )
 auto update_all = [&](auto b, ll x) {
 };
+// 対象ブロック b[b.id], 範囲 [l, r)
+auto query_part = [&](auto b, ll l, ll r) {
+};
+// 対象ブロック b[b.id], 範囲 [b.l, b.r)
+auto query_all = [&](auto b) {
+};

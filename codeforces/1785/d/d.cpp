@@ -50,6 +50,17 @@ struct RandGen {
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
+// 入出力マクロの上に
+#include <atcoder/convolution>
+#include <atcoder/modint>
+using namespace atcoder;
+using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+const ll mod = 998244353;
+istream& operator>>(istream& in, mint a) { long long e; in >> e; a = e; return in; }
+ostream& operator<<(ostream& out, mint a) { return out << a.val(); }
+template<class T> istream &operator>>(istream &is, vector<T> &v) { for (auto &e : v) is >> const_cast<T&>(e); return is; }
+template<class T> ostream &operator<<(ostream &os, const vector<T> &v) { for (auto &e : v) os << const_cast<T&>(e) << ' '; return os; }
+//------------------------------------------------------------------------------
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -131,8 +142,6 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 ll binary_search(function<bool(ll)> check, ll ok, ll ng, bool safe=true) { if (safe) { assert(check(ok)); assert(!check(ng)); } while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
 template<class T> vector<T> csum(vector<T> &a) { vector<T> ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
-template<class T> vector<int> argsort(const vector<T> &a) { vector<int> ids(a.size()); iota(all(ids), 0); sort(all(ids), [&](int i, int j) { return a[i] == a[j] ? i < j : a[i] < a[j]; }); return ids; }
-template<class T> vector<T> rearrange(const vector<T> &orig, const vector<int> &rep) { assert(orig.size() == rep.size()); ll n = rep.size(); vector<T> ret(n); rep(i, n) ret[i] = orig[rep[i]]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
@@ -169,12 +178,47 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+// Nlog^2Nで複数配列を効率よくたたみ込むもの
+vmi all_convolution(vvmi &a) {
+  multimap<ll, vmi> que;
+  for (auto &v: a) que.emplace(v.size(), v);
+  while (que.size() > 1) {
+    vmi a = que.begin()->se; que.erase(que.begin());
+    vmi b = que.begin()->se; que.erase(que.begin());
+    vmi c = convolution(a, b);
+    que.emplace(c.size(), c);
+  }
+  return que.begin()->se;
+}
+
+template<typename T>
+void add(vector<T> &a, vector<T> &b) {
+  rep(i, b.size()) a[i] += b[i];
+}
+
 void solve() {
+  init_f();
   LL(n);
+  vvmi dp(n + 1); dp[1] = {0, 0, 2};
+
+  rep(i, 2, n + 1) {
+    mint coef = fact[1 << i - 1] * fact[1 << i - 1];
+    vmi nxt = convolution(dp[i - 1], dp[i - 1]);
+    add(nxt, dp[i - 1]);
+    rep(i, nxt.size()) nxt[i] *= coef;
+    dp[i] = nxt;
+  }
+  debug(dp);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) if (1) solve(); else compare();
 }

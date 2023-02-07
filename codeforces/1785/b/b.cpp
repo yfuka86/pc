@@ -131,8 +131,6 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 ll binary_search(function<bool(ll)> check, ll ok, ll ng, bool safe=true) { if (safe) { assert(check(ok)); assert(!check(ng)); } while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
 template<class T> vector<T> csum(vector<T> &a) { vector<T> ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
-template<class T> vector<int> argsort(const vector<T> &a) { vector<int> ids(a.size()); iota(all(ids), 0); sort(all(ids), [&](int i, int j) { return a[i] == a[j] ? i < j : a[i] < a[j]; }); return ids; }
-template<class T> vector<T> rearrange(const vector<T> &orig, const vector<int> &rep) { assert(orig.size() == rep.size()); ll n = rep.size(); vector<T> ret(n); rep(i, n) ret[i] = orig[rep[i]]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
@@ -169,8 +167,113 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+vl add(vl a, vl b) {
+  rep(i, a.size()) a[i] += b[i];
+  return a;
+}
+
+vl subt(vl a, vl b) {
+  rep(i, a.size()) a[i] -= b[i];
+  return a;
+}
+
 void solve() {
   LL(n);
+  vs s(n); IN(s);
+
+  map<vl, vl> f;
+
+  rep(i, n) {
+    vl t(3);
+    rep(j, 3) {
+      if (s[i][j] == 'w') t[0]++;
+      if (s[i][j] == 'i') t[1]++;
+      if (s[i][j] == 'n') t[2]++;
+    }
+    if (t != vl(3, 1)) f[t].pb(i);
+  }
+
+  vvl v3 = {{3,0,0}, {0,3,0}, {0,0,3}};
+
+  // debug(f);
+  vlp ans; vector<pair<char,char>> ansc;
+  string goal = "win";
+  rep(i, 3) {
+    fore(id, f[v3[i]]) {
+      bool done = false;
+      rep(j, 3) if (i != j && f.count(v3[j]) && f[v3[j]].size()) {
+        ll id2 = f[v3[j]].back(); f[v3[j]].pop_back();
+        ans.pb({id, id2});
+        ansc.pb({goal[i], goal[j]});
+        vl nv = v3[i]; nv[i]--; nv[j]++;
+        vl nv2 = v3[j]; nv2[i]++; nv2[j]--;
+        f[nv].pb(id); f[nv2].pb(id2);
+        done = true;
+        break;
+      }
+      if (!done) {
+        vvl tt = {{1,2},{2,1}};
+        fore(t, tt) {
+          t.insert(t.begin() + i, 0);
+          if (f.count(t) && f[t].size()) {
+            ll id2 = f[t].back(); f[t].pop_back();
+            ans.pb({id, id2});
+            ll from2 = -1; rep(j, 3) if (t[j] == 2) from2 = j;
+            ansc.pb({goal[i], goal[from2]});
+            vl nv = v3[i]; nv[i]--; nv[from2]++;
+            f[nv].pb(id);
+            done = true;
+            break;
+          }
+        }
+      }
+    }
+    f.erase(v3[i]);
+  }
+
+  vvl v2 = {{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {2, 0, 1}, {1, 2, 0}, {2, 1, 0}};
+
+  while (f.size()) {
+    vl t; ll id = -1;
+    rep(i, 6) if (f.count(v2[i]) && f[v2[i]].size()) { t = v2[i]; id = f[v2[i]].back(); f[v2[i]].pop_back(); break; }
+    ll j1 = -1, j2 = -1;
+    rep(j, 3) { if (t[j] == 0) j2 = j; if (t[j] == 2) j1 = j; }
+
+    bool done = false;
+    vl tt = subt({2, 2, 2}, t);
+    if (f.count(tt) && f[tt].size()) {
+      ll id2 = f[tt].back(); f[tt].pop_back();
+      ans.pb({id, id2});
+      ansc.pb({goal[j1], goal[j2]});
+      done = true;
+    }
+
+    if (!done) {
+      rep(j, 6) if (t != v2[j]) {
+        if (v2[j][j2] == 2 && f.count(v2[j]) && f[v2[j]].size()) {
+          ll id2 = f[v2[j]].back(); f[v2[j]].pop_back();
+          ans.pb({id, id2});
+          ansc.pb({goal[j1], goal[j2]});
+
+          vl nx = subt(add(t, v2[j]), {1, 1, 1});
+          f[nx].pb(id2);
+
+          done = true;
+          break;
+        }
+      }
+    }
+    // debug(f);
+
+    rep(i, 6) if (f.count(v2[i]) && f[v2[i]].size() == 0) f.erase(v2[i]);
+  }
+  // debug(f);
+
+  OUT(ans.size());
+  rep(i, ans.size()) {
+    OUT(ans[i].fi + 1, ansc[i].fi, ans[i].se + 1, ansc[i].se);
+  }
+
 }
 
 signed main() {

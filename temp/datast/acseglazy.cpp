@@ -42,6 +42,13 @@ S mapping(F f, S x) { return {x.sum + f * x.sz, x.sz}; }
 F composition(F f, F g) { return f + g; }
 F id() { return 0; }
 
+// sum & min
+struct S{ ll mi, sz, sum; }; using F = ll;
+S op(S l, S r) { return {min(l.mi, r.mi), l.sz + r.sz, l.sum + r.sum}; }
+S e() { return {LINF, 0, 0}; }
+S mapping(F f, S x) { return {x.mi + f, x.sz, x.sum + x.sz * f }; }
+F composition(F f, F g) { return f + g; }
+F id() { return 0; }
 
 // 区間min
 using S = ll; using F = ll;

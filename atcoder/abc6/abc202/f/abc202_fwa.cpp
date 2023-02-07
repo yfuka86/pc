@@ -131,8 +131,6 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 ll binary_search(function<bool(ll)> check, ll ok, ll ng, bool safe=true) { if (safe) { assert(check(ok)); assert(!check(ng)); } while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
 template<class T> vector<T> csum(vector<T> &a) { vector<T> ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
-template<class T> vector<int> argsort(const vector<T> &a) { vector<int> ids(a.size()); iota(all(ids), 0); sort(all(ids), [&](int i, int j) { return a[i] == a[j] ? i < j : a[i] < a[j]; }); return ids; }
-template<class T> vector<T> rearrange(const vector<T> &orig, const vector<int> &rep) { assert(orig.size() == rep.size()); ll n = rep.size(); vector<T> ret(n); rep(i, n) ret[i] = orig[rep[i]]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
@@ -169,12 +167,223 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template<class T> vector<int> argsort(const vector<T> &a) { vector<int> ids(a.size()); iota(all(ids), 0); sort(all(ids), [&](int i, int j) { return a[i] == a[j] ? i < j : a[i] < a[j]; }); return ids; }
+template<class T> vector<T> rearrange(vector<T> &orig, vector<int> &rep) { assert(orig.size() == rep.size()); ll n = rep.size(); vector<T> ret(n); rep(i, n) ret[i] = orig[rep[i]]; return ret; }
+
+// https://nyaannyaan.github.io/library/geometry/geometry.hpp
+using Real = long double;
+using Point = complex<Real>;
+using Points = vector<Point>;
+constexpr Real EPS = 1e-8;  // 問題によって変える！
+constexpr Real pi = 3.141592653589793238462643383279L;
+istream &operator>>(istream &is, Point &p) { Real a, b; is >> a >> b; p = Point(a, b); return is; }
+ostream &operator<<(ostream &os, Point &p) { return os << real(p) << " " << imag(p); }
+inline int sign(const Real &r) { return r <= -EPS ? -1 : r >= EPS ? 1 : 0; }
+inline bool equals(Real a, Real b) { return fabs(b - a) < EPS; }
+Point operator*(const Point &p, const Real &d) { return Point(real(p) * d, imag(p) * d); }
+namespace std {
+  bool operator<(const Point &a, const Point &b) { return a.real() != b.real() ? a.real() < b.real() : a.imag() < b.imag(); }
+} // namespace std
+Real cross(const Point &a, const Point &b) { return real(a) * imag(b) - imag(a) * real(b); }
+Real dot(const Point &a, const Point &b) { return real(a) * real(b) + imag(a) * imag(b); }
+
+// 偏角ソート
+// 与えられた中心と点集合に対して、置換を返す
+vector<int> arg_sort(Points ps, Point a = {0, 0}){
+  vector<pair<Real, int>> tosort;
+  for(int i = 0; i < ps.size(); ++i) {
+    Point p = ps[i]; assert(a != p);
+    tosort.push_back({atan2(p.imag() - a.imag(), p.real() - a.real()), i});
+  }
+  sort(tosort.begin(), tosort.end());
+  vector<int> ret; for(auto [_, id]: tosort) ret.pb(id);
+  return ret;
+};
+// ccw 点の進行方向
+int ccw(const Point &a, Point b, Point c) {
+  b = b - a, c = c - a;
+  if (cross(b, c) > EPS) return +1;   // 反時計回り
+  if (cross(b, c) < -EPS) return -1;  // 時計回り
+  if (dot(b, c) < 0) return +2;       // c-a-bの順で一直線
+  if (norm(b) < norm(c)) return -2;   // a-b-cの順で一直線
+  return 0;                           // a-c-bの順で一直線
+}
+// a-bベクトルとb-cベクトルのなす角度のうち小さい方を返す
+// (ベクトル同士のなす角、すなわち幾何でいうところの「外角」であることに注意！)
+// rem. 凸包に対して反時計回りにこの関数を適用すると、
+// 凸包の大きさにかかわらず和が360度になる(いわゆる外角の和)(AGC021-B)
+Real get_angle(const Point &a, const Point &b, const Point &c) {
+  const Point v(b - a), w(c - b);
+  Real alpha = atan2(v.imag(), v.real()), beta = atan2(w.imag(), w.real());
+  if (alpha > beta) swap(alpha, beta);
+  Real theta = (beta - alpha);
+  return min(theta, 2 * acos(-1) - theta);
+}
+// Line /////////////////////////////////////////////////////////////////////////////
+struct Line {
+  Point a, b;
+  Line() = default;
+  Line(const Point &a, const Point &b) : a(a), b(b) {}
+  Line(const Real &A, const Real &B, const Real &C) { // Ax+By=C
+    if(equals(A, 0)) { assert(!equals(B, 0)); a = Point(0, C / B); b = Point(1, C / B); }
+    else if(equals(B, 0)) { a = Point(C / A, 0); b = Point(C / A, 1); }
+    else { a = Point(0, C / B); b = Point(C / A, 0); }
+  }
+  friend istream &operator>>(istream &is, Line &l) { return is >> l.a >> l.b; }
+};
+using Lines = vector< Line >;
+// 交点
+Point cross_point_ll(const Line &l, const Line &m) {
+  Real A = cross(l.b - l.a, m.b - m.a), B = cross(l.b - l.a, l.b - m.a);
+  if(equals(abs(A), 0) && equals(abs(B), 0)) return m.a;
+  return m.a + (m.b - m.a) * B / A;
+}
+
+//　反時計回りである自己交差のない多角形のclass
+using Polygon = vector<Point>;
+// 凸包
+Polygon convex_hull(vector<Point> ps) {
+  int n = (int)ps.size(), k = 0;
+  if (n <= 2) return ps;
+  sort(ps.begin(), ps.end());
+  Polygon ch(2 * n);
+  // 反時計周りに凸包を構築していく
+  for (int i = 0; i < n; ch[k++] = ps[i++]) {
+    // 条件分岐内はwhile(k >= 2 && ccw(ch[k-2],ch[k-1],ps[i]) != 1)と等価
+    while (k >= 2 && cross(ch[k - 1] - ch[k - 2], ps[i] - ch[k - 1]) < EPS) --k;
+  }
+  for (int i = n - 2, t = k + 1; i >= 0; ch[k++] = ps[i--]) {
+    while (k >= t && cross(ch[k - 1] - ch[k - 2], ps[i] - ch[k - 1]) < EPS) --k;
+  }
+  ch.resize(k - 1);
+  return ch;
+}
+Polygon convex_polygon_cut(const Polygon &U, const Line &l) {
+  Polygon ret;
+  for(int i = 0; i < U.size(); i++) {
+    const Point &now = U[i];
+    const Point &nxt = U[(i + 1) % U.size()];
+    auto cf = cross(l.a - now, l.b - now);
+    auto cs = cross(l.a - nxt, l.b - nxt);
+    if(sign(cf) >= 0) {
+      ret.emplace_back(now);
+    }
+    if(sign(cf) * sign(cs) < 0) {
+      ret.emplace_back(cross_point_ll(Line(now, nxt), l));
+    }
+  }
+  return ret;
+}
+// 多角形の面積
+Real area(const Polygon &p) { Real A = 0;
+  for (int i = 0; i < (int)p.size(); ++i) A += cross(p[i], p[(i + 1) % p.size()]);
+  return A * 0.5;
+}
+
+struct Circle {
+  Point p; Real r;
+  Circle() = default;
+  Circle(Point _p, Real _r) : p(_p), r(_r) {}
+};
+using Circles = vector<Circle>;
+int intersect(Circle c1, Circle c2) {
+  if (c1.r < c2.r) swap(c1, c2);
+  Real d = abs(c1.p - c2.p);
+  if (c1.r + c2.r < d) return 4;
+  if (equals(c1.r + c2.r, d)) return 3;
+  if (c1.r - c2.r < d) return 2;
+  if (equals(c1.r - c2.r, d)) return 1;
+  return 0;
+}
+pair<Point, Point> crosspoint(const Circle &c1, const Circle &c2) {
+  Real d = abs(c1.p - c2.p);
+  Real x = (c1.r * c1.r + d * d - c2.r * c2.r) / (2 * c1.r * d);
+  if (abs(x) > 1) x = (x > 0 ? 1.0 : -1.0);
+  Real a = acos(x);
+  Real t = atan2(c2.p.imag() - c1.p.imag(), c2.p.real() - c1.p.real());
+  Point p1 = c1.p + Point(cos(t + a) * c1.r, sin(t + a) * c1.r);
+  Point p2 = c1.p + Point(cos(t - a) * c1.r, sin(t - a) * c1.r);
+  return {p1, p2};
+}
+
+const ll mod = 1000000007;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+ll crs(const Point &a, const Point &b) { return (ll)round(real(a)) * (ll)round(imag(b)) - (ll)round(imag(a)) * (ll)round(real(b)); }
+
 void solve() {
   LL(n);
+  Points p(n); rep(i, n) cin >> p[i];
+
+  Points v; vlp e;
+
+  rep(from, n) rep(to, n) {
+    if (from != to) { v.pb(p[to] - p[from]); e.pb({from, to}); }
+  }
+  Point o = {0, 0}; auto rep = arg_sort(v, o);
+  v = rearrange(v, rep); e = rearrange(e, rep);
+  debug(e);
+
+  v4(mint, dp, n, n, n, 2); // dp[始点][一つ前の点][直近の点][偶奇]
+
+  // 始点とその前が同じでこれより角度が小さい点の数
+  vv(ll, cnts, n, n);
+
+
+
+  fore(from, to, e) {
+    ll d = (ll)crs(p[from], p[to]) % 2; if (d < 0) d+=2;
+    // 外にある点
+    ll cnt = 0;
+    rep(i, n) if (i != from && i != to && ccw(p[from], p[to], p[i]) < 0) cnt++;
+    // debug(from, to, cnt);
+    dp[from][from][to][d] = mint(1) / mint(2).pow(cnt + 1);
+
+    rep(j, n) {
+      if (to == j) continue;
+      ll coef = ++cnts[j][from];
+      rep(i, n) rep(k, 2) {
+        dp[i][from][to][(k + d) & 1] += dp[i][j][from][k] / mint(2).pow(coef);
+      }
+    }
+  }
+
+  mint ans = 0;
+  rep(i, n) rep(j, n) {
+    ans += dp[i][j][i][0];
+  }
+
+  OUT(ans * mint(2).pow(n));
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) if (1) solve(); else compare();
 }
