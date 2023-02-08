@@ -169,37 +169,73 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+vector<ll> bfs(Graph<ll> &G, ll start) {
+  queue<ll> que; vl cost(G.size(), LINF);
+  cost[start] = 0; que.push(start);
+  while(!que.empty()) {
+    auto v = que.front(); que.pop();
+    // costは1でないといけない
+    for(auto &to: G[v]) { if (chmin(cost[to], cost[v] + to.cost)) que.push(to); }
+  }
+  return cost;
+}
+
+
 void solve() {
   LL(n, m);
-  VL(a, n);
-  map<ll, vlt> tasks;
+  LL(p, b);
+  VL(t, p, 1); VL(bo, b, 1);
+  set<ll> bonus; rep(i, b) bonus.insert(bo[i]);
+
+  Graph<ll> G(n), bG(n);
   rep(i, m) {
-    LL(e, t, p); --e;
-    tasks[e].pb({t, p, i});
+    LL(u, v); --u; --v;
+    G.add_edge(u, v);
+    if (bonus.find(u) != bonus.end() && bonus.find(v) != bonus.end()) bG.add_edge(u, v);
   }
 
-  ll sum = 0;
-  vl ans;
-  rep(i, n) {
-    vl dp(101, LINF); dp[0] = 0;
-    vvl from(101);
-    fore(t, p, id, tasks[i]) {
-      rep_r(i, 100) {
-        ll nx = min(i + p, 100);
-        if (chmin(dp[nx], dp[i] + t)) {
-          from[nx] = from[i];
-          from[nx].pb(id);
-        }
+  queue<ll> que; vl cost(n, LINF);
+  cost[0] = 0; que.push(0);
+  while(!que.empty()) {
+    auto v = que.front(); que.pop();
+    for(auto &to: G[v]) {
+      if (chmin(cost[to], cost[v] + 1)) {
+        if (bonus.find(to) != bonus.end()) que.push(to);
       }
     }
-    sum += dp[100];
-    if (sum > a[i]) { OUTRET(-1); }
-    else {
-      ans.insert(ans.end(), from[100].begin(), from[100].end());
-    }
   }
-  OUT(ans.size());
-  OUTARRAY(ans, 1);
+
+  vl tokencost(p, LINF), tokenrem(p);
+  rep(i, p) tokencost[i] = cost[t[i]];
+
+  rep(i, p) {
+    ll ma = 0;
+    fore(j, G[t[i]]) {
+      if (bonus.find(j) != bonus.end()) {
+        chmax(ma, 1);
+        if (bG[j].size()) chmax(ma, 1000000);
+      }
+    }
+    tokenrem[i] = ma;
+  }
+
+  ll sum = sum_of(tokenrem);
+  rep(i, p) {
+    ll room = sum - tokenrem[i];
+    if (room >= tokencost[i] - 1) OUTRET("YES");
+  }
+  OUT("NO");
 }
 
 signed main() {

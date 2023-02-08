@@ -170,36 +170,25 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, m);
-  VL(a, n);
-  map<ll, vlt> tasks;
-  rep(i, m) {
-    LL(e, t, p); --e;
-    tasks[e].pb({t, p, i});
+  LL(n);
+  VV(ll, p, n, n - 1);
+  vector<queue<ll>> ques(n);
+  rep(i, n) rep(j, n - 1) {
+    ques[i].push(p[i][j]);
   }
 
-  ll sum = 0;
   vl ans;
   rep(i, n) {
-    vl dp(101, LINF); dp[0] = 0;
-    vvl from(101);
-    fore(t, p, id, tasks[i]) {
-      rep_r(i, 100) {
-        ll nx = min(i + p, 100);
-        if (chmin(dp[nx], dp[i] + t)) {
-          from[nx] = from[i];
-          from[nx].pb(id);
-        }
-      }
+    map<ll, ll> cnt;
+    rep(i, n) if (ques[i].size()) cnt[ques[i].front()]++;
+    ll t = -1;
+    fore(k, v, cnt) {
+      if (v == n - 1) t = k;
     }
-    sum += dp[100];
-    if (sum > a[i]) { OUTRET(-1); }
-    else {
-      ans.insert(ans.end(), from[100].begin(), from[100].end());
-    }
+    rep(i, n) if (ques[i].size() && ques[i].front() == t) ques[i].pop();
+    ans.pb(t);
   }
-  OUT(ans.size());
-  OUTARRAY(ans, 1);
+  OUTARRAY(ans);
 }
 
 signed main() {

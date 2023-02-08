@@ -170,36 +170,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, m);
-  VL(a, n);
-  map<ll, vlt> tasks;
-  rep(i, m) {
-    LL(e, t, p); --e;
-    tasks[e].pb({t, p, i});
+  LL(n, s, r);
+  vl ans(n, 1);
+  ans[0] = s - r;
+  ll sum = sum_of(ans);
+  while (sum < s) {
+    rep(i, n) if (ans[i] < ans[0]) { ans[i]++; sum++; break; }
   }
-
-  ll sum = 0;
-  vl ans;
-  rep(i, n) {
-    vl dp(101, LINF); dp[0] = 0;
-    vvl from(101);
-    fore(t, p, id, tasks[i]) {
-      rep_r(i, 100) {
-        ll nx = min(i + p, 100);
-        if (chmin(dp[nx], dp[i] + t)) {
-          from[nx] = from[i];
-          from[nx].pb(id);
-        }
-      }
-    }
-    sum += dp[100];
-    if (sum > a[i]) { OUTRET(-1); }
-    else {
-      ans.insert(ans.end(), from[100].begin(), from[100].end());
-    }
-  }
-  OUT(ans.size());
-  OUTARRAY(ans, 1);
+  OUTARRAY(ans);
 }
 
 signed main() {
