@@ -114,7 +114,9 @@
     "segtree": "cpp",
     "rope": "cpp",
     "slist": "cpp",
-    "*.ipp": "cpp"
+    "*.ipp": "cpp",
+    "format": "cpp",
+    "strstream": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",

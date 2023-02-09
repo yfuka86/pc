@@ -107,24 +107,43 @@ template<class T, enable_if_t<is_integral<T>::value, nullptr_t> = nullptr> int l
 // int lowbit(ll x) { return 63 - __builtin_clzll(x); }
 // int lowbit(ull x) { return 63 - __builtin_clzll(x); }
 
-void solve() {
-  int a; ll b; unsigned int c;
-  rep(i, 16) {
-    debug(i,lowbit(i));
-  }
 
-  a = 1 << 30;
-  b = 1ll << 32;
-  c = 1 << 31;
-  // debug(__builtin_clz(a), __builtin_clz(c));
-  debug(lowbit(b), lowbit(c));
-  debug(a, b, c);
-  debug(sizeof(a), sizeof(b), sizeof(c));
-  set<ll> s;
-  rep(i, 10) s.insert(i);
-  debug(s);
-  debug(LINF);
-  debug(true);
+template<class S, class F, class D, S(*op)(S, F), S(*inv)(S, F)> struct bulkset {
+  map<S, D> data; F f;
+
+  bulkset() { f = F(); }
+  bool count(S x) { return data.count(inv(x, f)); }
+  typename map<S, D>::iterator begin() { return data.begin(); }
+  typename map<S, D>::iterator end() { return data.end(); }
+  typename map<S, D>::iterator find(S x) { return data.find(x); }
+  typename map<S, D>::iterator erase(S x) { return data.erase(inv(x, f)); }
+  inline D &operator[](const S x) { return data[inv(x, f)]; }
+
+  void apply(F x) { f = op(f, x); }
+  void foreach(function<void(S, D)> g) { for(auto &&[k, v]: data) g(op(k, f), v); }
+};
+
+// ll op(ll x, ll f) { return x + f; }
+// ll inv(ll x, ll f) { return x - f; }
+
+ll op(ll x, ll f) { return x ^ f; }
+ll inv(ll x, ll f) { return x ^ f; }
+bulkset<ll, ll, ll, op, inv> bs;
+
+void solve() {
+  bulkset<ll, ll, ll, op, inv> bs;
+
+  debug(bs.f);
+  rep(i, 20) {
+    bs[i] = 1;
+  }
+  bs.apply(2);
+
+  debug(bs[1000]);
+
+  bs.foreach([&](ll k, ll v) {
+    debug(k);
+  });
 }
 
 signed main() {
