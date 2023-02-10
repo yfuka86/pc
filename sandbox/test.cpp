@@ -112,7 +112,7 @@ template<class S, class F, class D, S(*op)(S, F), S(*inv)(S, F)> struct bulkset 
   map<S, D> data; F f;
 
   bulkset() { f = F(); }
-  bool count(S x) { return data.count(inv(x, f)); }
+  int count(S x) { return data.count(inv(x, f)); }
   typename map<S, D>::iterator begin() { return data.begin(); }
   typename map<S, D>::iterator end() { return data.end(); }
   typename map<S, D>::iterator find(S x) { return data.find(x); }
