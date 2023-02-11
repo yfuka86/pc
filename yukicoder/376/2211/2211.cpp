@@ -160,8 +160,8 @@ ll naive(ll n, vl a) {
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 6;
-    vl a = rg.vecperm(n);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
     auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
       debug(n, a); debug(so); debug(na);
@@ -169,85 +169,62 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// ----------------------------------------------------------------------
-template<typename T>
-struct BIT {
-  int n; vector<T> bit;
-  BIT(int _n = 0) : n(_n), bit(n + 1) {}
-  // sum of [0, i), 0 <= i <= n
-  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
-  // 0 <= i < n
-  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
-  //[l, r) 0 <= l < r < n
-  T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, [0, i] >= w, none -> n
-  int lower_bound(T w) {
-    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
-    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
-    return x; }
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
 };
-// ----------------------------------------------------------------------
-ll inv_num(vl& v) { comp(v);
-  BIT<int> bs(v.size()); ll ans = 0;
-  rep(i, v.size()) { ans += i - bs.sum(v[i] + 1); bs.add(v[i], 1); } return ans; }
-// ----------------------------------------------------------------------
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
 
 void solve() {
-  RandGen rg;
-  ll n = 5;
-  vl p(n); iota(all(p), 0);
+  LL(n, m); VL(a, n);
+  const ll MA = 2000000;
+  vl f(MA + 1);
+  rep(i, n) f[a[i]]++;
 
-
-  map<vl, ll> dp;
-  rep(i, n) rep(j, i) {
-    dp[{j, i}] = 1; // sortされているので先行の勝ち
-    dp[{i, j}] = 0;
+  vl ps = primes(MA);
+  // 約数ごとの数
+  for (auto p: ps) {
+    for (ll i = MA / p; i >= 1; --i) {
+      f[i] += f[i * p];
+    }
   }
 
-  function<ll(vl)> dfs = [&](vl a) {
-    ll m = a.size();
-    if (dp.count(a)) return dp[a];
-
-    ll res1 = 0;
-    rep(i, m - 1) {
-      vl t = a;
-      swap(t[i], t[i + 1]);
-      ll res2 = 1;
-      rep(j, i, i + 2) {
-        vl t2 = t;
-        t2.erase(t2.begin() + j);
-        res2 &= dfs(t2);
-      }
-      res1 |= res2;
-    }
-    return dp[a] = res1;
-  };
-
-  dfs({2,0,4,3,1});
-  debug(dp);
-
-
-  do {
-    dfs(p);
-  } while(next_permutation(all(p)));
-
-  map<ll, ll> f;
-  map<LP, ll> cnt;
-  fore(k, res, dp) {
-    if (k.size() != n) continue;
-    vl t = k;
-    f[res]++;
-    cnt[{inv_num(t), res}]++;
-
-    if (inv_num(t) == 4) {
-      debug(t, res);
-    }
-    // if (!res) debug(k);
+  vmi g(MA + 1);
+  rep(i, 1, MA + 1) {
+    g[i] = (mint(2).pow(f[i]) - 1);
   }
-  debug(f);
-  debug(cnt);
+  for (auto p: ps) {
+    for (ll i = 1; i * p <= MA; i++) {
+      g[i] -= g[i*p];
+    }
+  }
 
-  debug(dp);
+  rep(i, 1, m + 1) {
+    OUT(g[i]);
+  }
 }
 
 signed main() {

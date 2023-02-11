@@ -50,6 +50,17 @@ struct RandGen {
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
+// 入出力マクロの上に
+#include <atcoder/convolution>
+#include <atcoder/modint>
+using namespace atcoder;
+using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+const ll mod = 998244353;
+istream& operator>>(istream& in, mint a) { long long e; in >> e; a = e; return in; }
+ostream& operator<<(ostream& out, mint a) { return out << a.val(); }
+template<class T> istream &operator>>(istream &is, vector<T> &v) { for (auto &e : v) is >> const_cast<T&>(e); return is; }
+template<class T> ostream &operator<<(ostream &os, const vector<T> &v) { for (auto &e : v) os << const_cast<T&>(e) << ' '; return os; }
+//------------------------------------------------------------------------------
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -160,8 +171,8 @@ ll naive(ll n, vl a) {
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 6;
-    vl a = rg.vecperm(n);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
     auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
       debug(n, a); debug(so); debug(na);
@@ -169,85 +180,70 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// ----------------------------------------------------------------------
-template<typename T>
-struct BIT {
-  int n; vector<T> bit;
-  BIT(int _n = 0) : n(_n), bit(n + 1) {}
-  // sum of [0, i), 0 <= i <= n
-  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
-  // 0 <= i < n
-  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
-  //[l, r) 0 <= l < r < n
-  T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, [0, i] >= w, none -> n
-  int lower_bound(T w) {
-    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
-    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
-    return x; }
-};
-// ----------------------------------------------------------------------
-ll inv_num(vl& v) { comp(v);
-  BIT<int> bs(v.size()); ll ans = 0;
-  rep(i, v.size()) { ans += i - bs.sum(v[i] + 1); bs.add(v[i], 1); } return ans; }
-// ----------------------------------------------------------------------
+
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+// Nlog^2Nで複数配列を効率よくたたみ込むもの
+vmi all_convolution(vvmi &a) {
+  multimap<ll, vmi> que;
+  for (auto &v: a) que.emplace(v.size(), v);
+  while (que.size() > 1) {
+    vmi a = que.begin()->se; que.erase(que.begin());
+    vmi b = que.begin()->se; que.erase(que.begin());
+    vmi c = convolution(a, b);
+    que.emplace(c.size(), c);
+  }
+  return que.begin()->se;
+}
 
 void solve() {
-  RandGen rg;
-  ll n = 5;
-  vl p(n); iota(all(p), 0);
+  LL(n, m, k); VL(a, n);
 
-
-  map<vl, ll> dp;
-  rep(i, n) rep(j, i) {
-    dp[{j, i}] = 1; // sortされているので先行の勝ち
-    dp[{i, j}] = 0;
+  vvmi b(n);
+  rep(i, n) {
+    vmi t(a[i] % k + 1);
+    t[0] += 1; t[a[i] % k] += 1;
+    b[i] = t;
   }
 
-  function<ll(vl)> dfs = [&](vl a) {
-    ll m = a.size();
-    if (dp.count(a)) return dp[a];
-
-    ll res1 = 0;
-    rep(i, m - 1) {
-      vl t = a;
-      swap(t[i], t[i + 1]);
-      ll res2 = 1;
-      rep(j, i, i + 2) {
-        vl t2 = t;
-        t2.erase(t2.begin() + j);
-        res2 &= dfs(t2);
-      }
-      res1 |= res2;
-    }
-    return dp[a] = res1;
+  auto f = [&](vmi &a, vmi &b) {
+    mint ret = 0;
+    rep(i, k) ret += a[i] * b[(k - i) % k];
+    return ret;
   };
 
-  dfs({2,0,4,3,1});
-  debug(dp);
+  auto g = [&](vmi &a, ll x) {
+    vmi ret(k);
+    rep(i, a.size()) ret[(i + x) % k] += a[i];
+    rep(i, a.size()) ret[i] += a[i];
+    return ret;
+  };
 
+  stack<pair<ll, vmi>> in, out;
+  vmi t0(k); t0[0] = 1;
+  in.push({-1, t0}); out.push({-1, t0});
+  rep_r(i, m) out.push({i, g(out.top().se, a[i])});
 
-  do {
-    dfs(p);
-  } while(next_permutation(all(p)));
+  vmi ans;
+  rep(i, m, n + 1) {
+    ans.pb(f(in.top().se, out.top().se));
+    out.pop();
+    if (i == n) break; // 最後の1区間
 
-  map<ll, ll> f;
-  map<LP, ll> cnt;
-  fore(k, res, dp) {
-    if (k.size() != n) continue;
-    vl t = k;
-    f[res]++;
-    cnt[{inv_num(t), res}]++;
-
-    if (inv_num(t) == 4) {
-      debug(t, res);
+    in.push({i, g(in.top().se, a[i])});
+    if (out.size() == 1) {
+      while (in.size() > 1) {
+        out.push({in.top().fi, g(out.top().se, a[in.top().fi])});
+        in.pop();
+      }
     }
-    // if (!res) debug(k);
   }
-  debug(f);
-  debug(cnt);
 
-  debug(dp);
+  OUTARRAY(ans, mint(-1), "\n");
 }
 
 signed main() {

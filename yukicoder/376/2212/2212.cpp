@@ -160,8 +160,8 @@ ll naive(ll n, vl a) {
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 6;
-    vl a = rg.vecperm(n);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
     auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
       debug(n, a); debug(so); debug(na);
@@ -169,85 +169,38 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// ----------------------------------------------------------------------
-template<typename T>
-struct BIT {
-  int n; vector<T> bit;
-  BIT(int _n = 0) : n(_n), bit(n + 1) {}
-  // sum of [0, i), 0 <= i <= n
-  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
-  // 0 <= i < n
-  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
-  //[l, r) 0 <= l < r < n
-  T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, [0, i] >= w, none -> n
-  int lower_bound(T w) {
-    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
-    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
-    return x; }
-};
-// ----------------------------------------------------------------------
-ll inv_num(vl& v) { comp(v);
-  BIT<int> bs(v.size()); ll ans = 0;
-  rep(i, v.size()) { ans += i - bs.sum(v[i] + 1); bs.add(v[i], 1); } return ans; }
-// ----------------------------------------------------------------------
-
 void solve() {
-  RandGen rg;
-  ll n = 5;
-  vl p(n); iota(all(p), 0);
+  LL(n);
+  vvl a1 = {{7, 14, 0, 8}, {4, 12, 2, 11}, {15, 9, 6, 1}, {13, 10, 5, 3}};
+  vvl a0 = {{0, 1, 2, 3}, {7, 6, 5, 4}, {8, 9, 10, 11}, {15, 14, 13, 12}};
 
+  if (n == 1) OUTRET(-1);
+  if (n == 2) { OUTMAT(a1); return; }
 
-  map<vl, ll> dp;
-  rep(i, n) rep(j, i) {
-    dp[{j, i}] = 1; // sortされているので先行の勝ち
-    dp[{i, j}] = 0;
-  }
+  ll sz = 1 << n;
+  vv(ll, ans, sz, sz);
 
-  function<ll(vl)> dfs = [&](vl a) {
-    ll m = a.size();
-    if (dp.count(a)) return dp[a];
-
-    ll res1 = 0;
-    rep(i, m - 1) {
-      vl t = a;
-      swap(t[i], t[i + 1]);
-      ll res2 = 1;
-      rep(j, i, i + 2) {
-        vl t2 = t;
-        t2.erase(t2.begin() + j);
-        res2 &= dfs(t2);
-      }
-      res1 |= res2;
+  rep(i, sz / 4) rep(j, sz / 4) {
+    ll off = i * sz / 4 + j;
+    rep(x, 4) rep(y, 4) {
+      ans[i * 4 + x][j * 4 + y] = (i == j ? a1[x][y] : a0[x][y]) + off * 16;
     }
-    return dp[a] = res1;
-  };
-
-  dfs({2,0,4,3,1});
-  debug(dp);
-
-
-  do {
-    dfs(p);
-  } while(next_permutation(all(p)));
-
-  map<ll, ll> f;
-  map<LP, ll> cnt;
-  fore(k, res, dp) {
-    if (k.size() != n) continue;
-    vl t = k;
-    f[res]++;
-    cnt[{inv_num(t), res}]++;
-
-    if (inv_num(t) == 4) {
-      debug(t, res);
-    }
-    // if (!res) debug(k);
   }
-  debug(f);
-  debug(cnt);
-
-  debug(dp);
+  OUTMAT(ans);
+  // rep(i, sz) {
+  //   ll sum = 0;
+  //   rep(j, sz) {
+  //     sum ^= ans[i][j];
+  //   }
+  //   debug(i, sum);
+  // }
+  // rep(j, sz) {
+  //   ll sum = 0;
+  //   rep(i, sz) {
+  //     sum ^= ans[i][j];
+  //   }
+  //   debug(j, sum);
+  // }
 }
 
 signed main() {

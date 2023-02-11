@@ -50,6 +50,17 @@ struct RandGen {
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
+// 入出力マクロの上に
+#include <atcoder/convolution>
+#include <atcoder/modint>
+using namespace atcoder;
+using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+const ll mod = 998244353;
+istream& operator>>(istream& in, mint a) { long long e; in >> e; a = e; return in; }
+ostream& operator<<(ostream& out, mint a) { return out << a.val(); }
+template<class T> istream &operator>>(istream &is, vector<T> &v) { for (auto &e : v) is >> const_cast<T&>(e); return is; }
+template<class T> ostream &operator<<(ostream &os, const vector<T> &v) { for (auto &e : v) os << const_cast<T&>(e) << ' '; return os; }
+//------------------------------------------------------------------------------
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -160,8 +171,8 @@ ll naive(ll n, vl a) {
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 6;
-    vl a = rg.vecperm(n);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
     auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
       debug(n, a); debug(so); debug(na);
@@ -169,85 +180,76 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// ----------------------------------------------------------------------
-template<typename T>
-struct BIT {
-  int n; vector<T> bit;
-  BIT(int _n = 0) : n(_n), bit(n + 1) {}
-  // sum of [0, i), 0 <= i <= n
-  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
-  // 0 <= i < n
-  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
-  //[l, r) 0 <= l < r < n
-  T sum(int l, int r) { return sum(r) - sum(l); }
-  // smallest i, [0, i] >= w, none -> n
-  int lower_bound(T w) {
-    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
-    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
-    return x; }
+
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+// Nlog^2Nで複数配列を効率よくたたみ込むもの
+vmi all_convolution(vvmi &a) {
+  multimap<ll, vmi> que;
+  for (auto &v: a) que.emplace(v.size(), v);
+  while (que.size() > 1) {
+    vmi a = que.begin()->se; que.erase(que.begin());
+    vmi b = que.begin()->se; que.erase(que.begin());
+    vmi c = convolution(a, b);
+    que.emplace(c.size(), c);
+  }
+  return que.begin()->se;
+}
+
+
+//------------------------------------------------------------------------------
+template <class S, S (*op)(S, S), S (*e)()> struct segtree {
+  public:
+  segtree() : segtree(0) {}
+  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
+  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
+  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
+  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
+  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
+  S all_prod() const { return d[1]; }
+  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
+  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
+    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
+  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
+  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
+    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
+  private:
+  int _n, size, log; std::vector<S> d;
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
 };
-// ----------------------------------------------------------------------
-ll inv_num(vl& v) { comp(v);
-  BIT<int> bs(v.size()); ll ans = 0;
-  rep(i, v.size()) { ans += i - bs.sum(v[i] + 1); bs.add(v[i], 1); } return ans; }
-// ----------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+ll k;
+using S = vmi;
+S op(S l, S r) {
+  auto ret = convolution(l, r);
+  rep(i, k, ret.size()) {
+    ret[i % k] += ret[i];
+  }
+  if (ret.size() > k) ret.resize(k);
+  return ret;
+}
+S e() { return {1}; }
 
 void solve() {
-  RandGen rg;
-  ll n = 5;
-  vl p(n); iota(all(p), 0);
+  LL(n, m); IN(k); VL(a, n);
 
-
-  map<vl, ll> dp;
-  rep(i, n) rep(j, i) {
-    dp[{j, i}] = 1; // sortされているので先行の勝ち
-    dp[{i, j}] = 0;
+  vvmi v;
+  rep(i, n) {
+    vmi t(a[i] % k + 1); t[0] += 1; t[a[i] % k] += 1;
+    v.pb(t);
   }
+  // debug(v);
+  segtree<S,op,e> seg(v);
 
-  function<ll(vl)> dfs = [&](vl a) {
-    ll m = a.size();
-    if (dp.count(a)) return dp[a];
-
-    ll res1 = 0;
-    rep(i, m - 1) {
-      vl t = a;
-      swap(t[i], t[i + 1]);
-      ll res2 = 1;
-      rep(j, i, i + 2) {
-        vl t2 = t;
-        t2.erase(t2.begin() + j);
-        res2 &= dfs(t2);
-      }
-      res1 |= res2;
-    }
-    return dp[a] = res1;
-  };
-
-  dfs({2,0,4,3,1});
-  debug(dp);
-
-
-  do {
-    dfs(p);
-  } while(next_permutation(all(p)));
-
-  map<ll, ll> f;
-  map<LP, ll> cnt;
-  fore(k, res, dp) {
-    if (k.size() != n) continue;
-    vl t = k;
-    f[res]++;
-    cnt[{inv_num(t), res}]++;
-
-    if (inv_num(t) == 4) {
-      debug(t, res);
-    }
-    // if (!res) debug(k);
+  rep(i, n - m + 1) {
+    // debug(seg.prod(i, i + m));
+    OUT(seg.prod(i, i + m)[0] - 1);
   }
-  debug(f);
-  debug(cnt);
-
-  debug(dp);
 }
 
 signed main() {
