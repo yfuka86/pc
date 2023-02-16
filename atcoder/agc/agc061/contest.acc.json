@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "agc061",
+    "title": "AtCoder Grand Contest 061",
+    "url": "https://atcoder.jp/contests/agc061"
+  },
+  "tasks": [
+    {
+      "id": "agc061_a",
+      "label": "A",
+      "title": "Long Shuffle",
+      "url": "https://atcoder.jp/contests/agc061/tasks/agc061_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "agc061_a.cpp"
+      }
+    },
+    {
+      "id": "agc061_b",
+      "label": "B",
+      "title": "Summation By Construction",
+      "url": "https://atcoder.jp/contests/agc061/tasks/agc061_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "agc061_b.cpp"
+      }
+    },
+    {
+      "id": "agc061_c",
+      "label": "C",
+      "title": "First Come First Serve",
+      "url": "https://atcoder.jp/contests/agc061/tasks/agc061_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "agc061_c.cpp"
+      }
+    },
+    {
+      "id": "agc061_d",
+      "label": "D",
+      "title": "Almost Multiplication Table",
+      "url": "https://atcoder.jp/contests/agc061/tasks/agc061_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "agc061_d.cpp"
+      }
+    },
+    {
+      "id": "agc061_e",
+      "label": "E",
+      "title": "Increment or XOR",
+      "url": "https://atcoder.jp/contests/agc061/tasks/agc061_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "agc061_e.cpp"
+      }
+    },
+    {
+      "id": "agc061_f",
+      "label": "F",
+      "title": "Perfect Strings",
+      "url": "https://atcoder.jp/contests/agc061/tasks/agc061_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "agc061_f.cpp"
+      }
+    }
+  ]
+}
