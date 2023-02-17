@@ -1,3 +1,8 @@
+
+// 幅を持つ増加列のsum
+// -で与えると減少列になる
+// 増加だとその時点のminを与えると全てがならされる
+// 減少だとその時点のmaxを与えると全てが引き上がる
 template <class T> struct Hist {
   stack<pair<int, T>> st;
   T tot;
