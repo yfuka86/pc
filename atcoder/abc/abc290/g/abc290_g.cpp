@@ -169,70 +169,48 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-vector<ll> bfs(Graph<ll> &G, ll start) {
-  queue<ll> que; vl cost(G.size(), LINF);
-  cost[start] = 0; que.push(start);
-  while(!que.empty()) {
-    auto v = que.front(); que.pop();
-    // costは1でないといけない
-    for(auto &to: G[v]) { if (chmin(cost[to], cost[v] + to.cost)) que.push(to); }
-  }
-  return cost;
-}
-
-using BS = bitset<64>;
 void solve() {
-  LL(n, m); VV(ll, grid, n, m);
-  Graph<ll> G(n * m), rG(n * m);
-  rep(i, n) rep(j, m) {
-    if (i < n - 1 && grid[i][j] && grid[i + 1][j]) {
-      G.add_directed_edge(i * m + j, (i + 1) * m + j);
-      rG.add_directed_edge((i + 1) * m + j, i * m + j);
-    }
-    if (j < m - 1 && grid[i][j] && grid[i][j + 1]) {
-      G.add_directed_edge(i * m + j, i * m + j + 1);
-      rG.add_directed_edge(i * m + j + 1, i * m + j);
-    }
+  LL(d, k, x);
+
+  vl cnt(d + 1); cnt[0] = 1;
+  rep(i, d) cnt[i + 1] = cnt[i] * k;
+
+  vl sz = cnt;
+  rep(i, d) sz[i + 1] += sz[i];
+
+  if (sz[d] == x) OUTRET(0);
+
+  unordered_map<ll, ll> dp;
+  function<ll(ll)> dfs = [&](ll cur) {
+    assert(cur >= x);
+    if (cur == x) return 0ll;
+    if (dp.count(cur)) return dp[cur];
+
+    ll mi = LINF;
+
+    ll i = upper_bound(all(sz), cur - x) - sz.begin() - 1;
+    // rep(i, d) {
+      // if (sz[i] >= cur) break;
+      if (sz[i] == x || cur - sz[i] == x) return dp[cur] = 1ll;
+      ll t = (cur - x) / sz[i];
+      if (t) chmin(mi, dfs(cur - sz[i] * t) + t);
+    // }
+    // debug(cur, mi);
+    return dp[cur] = mi;
+  };
+
+  ll ans = LINF;
+  chmin(ans, dfs(sz[d]));
+  rep(i, d) {
+    if (sz[i] >= x) chmin(ans, dfs(sz[i]) + 1);
   }
-  if (bfs(G, 0)[n * m - 1] == LINF) OUT(true);
 
-  vl test;
-  rep(i, n) rep(j, m) {
-    if (i == 0 && j == 0) continue;
-    if (i == n - 1 && j == m - 1) continue;
-    if (grid[i][j]) test.pb(i * m + j);
-  }
-
-  vl mp(n * m, -1);
-  BS all1; all1.flip();
-  vb vis(n * m);
-  vector<BS> dp(n * m);
-  while (test.size()) {
-    rep(i, n * m) dp[i].reset();
-    dp[n * m - 1] = all1;
-    vl t; while (test.size() && t.size() < 64) { t.pb(test.back()); test.pop_back(); }
-    rep(i, t.size()) mp[t[i]] = i;
-
-    queue<ll> que; que.push(n * m - 1);
-    while (!que.empty()) {
-      ll v = que.front(); que.pop();
-      fore(from, rG[v]) {
-        dp[from] |= dp[v];
-        if (mp[from] != -1) dp[from].reset(mp[from]);
-        if (!vis[from]) { que.push(from); vis[from] = 1; }
-      }
-    }
-
-    rep(i, n * m) vis[i] = 0;
-    rep(i, t.size()) mp[t[i]] = -1;
-    if (dp[0].count() < 64) OUTRET(true);
-  }
-  OUT(false);
+  // debug(dp);
+  OUTRET(ans);
 }
-
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

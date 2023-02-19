@@ -182,6 +182,7 @@ void solve() {
     G.add_edge(u, v);
   }
   auto [d, p] = diameter(G);
+
 }
 
 signed main() {

@@ -169,67 +169,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-vector<ll> bfs(Graph<ll> &G, ll start) {
-  queue<ll> que; vl cost(G.size(), LINF);
-  cost[start] = 0; que.push(start);
-  while(!que.empty()) {
-    auto v = que.front(); que.pop();
-    // costは1でないといけない
-    for(auto &to: G[v]) { if (chmin(cost[to], cost[v] + to.cost)) que.push(to); }
-  }
-  return cost;
-}
-
-using BS = bitset<64>;
 void solve() {
-  LL(n, m); VV(ll, grid, n, m);
-  Graph<ll> G(n * m), rG(n * m);
-  rep(i, n) rep(j, m) {
-    if (i < n - 1 && grid[i][j] && grid[i + 1][j]) {
-      G.add_directed_edge(i * m + j, (i + 1) * m + j);
-      rG.add_directed_edge((i + 1) * m + j, i * m + j);
-    }
-    if (j < m - 1 && grid[i][j] && grid[i][j + 1]) {
-      G.add_directed_edge(i * m + j, i * m + j + 1);
-      rG.add_directed_edge(i * m + j + 1, i * m + j);
-    }
-  }
-  if (bfs(G, 0)[n * m - 1] == LINF) OUT(true);
-
-  vl test;
-  rep(i, n) rep(j, m) {
-    if (i == 0 && j == 0) continue;
-    if (i == n - 1 && j == m - 1) continue;
-    if (grid[i][j]) test.pb(i * m + j);
-  }
-
-  vl mp(n * m, -1);
-  BS all1; all1.flip();
-  vb vis(n * m);
-  vector<BS> dp(n * m);
-  while (test.size()) {
-    rep(i, n * m) dp[i].reset();
-    dp[n * m - 1] = all1;
-    vl t; while (test.size() && t.size() < 64) { t.pb(test.back()); test.pop_back(); }
-    rep(i, t.size()) mp[t[i]] = i;
-
-    queue<ll> que; que.push(n * m - 1);
-    while (!que.empty()) {
-      ll v = que.front(); que.pop();
-      fore(from, rG[v]) {
-        dp[from] |= dp[v];
-        if (mp[from] != -1) dp[from].reset(mp[from]);
-        if (!vis[from]) { que.push(from); vis[from] = 1; }
-      }
-    }
-
-    rep(i, n * m) vis[i] = 0;
-    rep(i, t.size()) mp[t[i]] = -1;
-    if (dp[0].count() < 64) OUTRET(true);
-  }
-  OUT(false);
+  LL(n);
 }
-
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);

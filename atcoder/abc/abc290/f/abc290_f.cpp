@@ -50,6 +50,36 @@ struct RandGen {
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
+// 入出力マクロの上に
+#include <atcoder/convolution>
+#include <atcoder/modint>
+using namespace atcoder;
+using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+const ll mod = 998244353;
+istream& operator>>(istream& in, mint a) { long long e; in >> e; a = e; return in; }
+ostream& operator<<(ostream& out, mint a) { return out << a.val(); }
+template<class T> istream &operator>>(istream &is, vector<T> &v) { for (auto &e : v) is >> const_cast<T&>(e); return is; }
+template<class T> ostream &operator<<(ostream &os, const vector<T> &v) { for (auto &e : v) os << const_cast<T&>(e) << ' '; return os; }
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+// Nlog^2Nで複数配列を効率よくたたみ込むもの
+vmi all_convolution(vvmi &a) {
+  multimap<ll, vmi> que;
+  for (auto &v: a) que.emplace(v.size(), v);
+  while (que.size() > 1) {
+    vmi a = que.begin()->se; que.erase(que.begin());
+    vmi b = que.begin()->se; que.erase(que.begin());
+    vmi c = convolution(a, b);
+    que.emplace(c.size(), c);
+  }
+  return que.begin()->se;
+}
+
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -169,67 +199,28 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-vector<ll> bfs(Graph<ll> &G, ll start) {
-  queue<ll> que; vl cost(G.size(), LINF);
-  cost[start] = 0; que.push(start);
-  while(!que.empty()) {
-    auto v = que.front(); que.pop();
-    // costは1でないといけない
-    for(auto &to: G[v]) { if (chmin(cost[to], cost[v] + to.cost)) que.push(to); }
-  }
-  return cost;
-}
-
-using BS = bitset<64>;
 void solve() {
-  LL(n, m); VV(ll, grid, n, m);
-  Graph<ll> G(n * m), rG(n * m);
-  rep(i, n) rep(j, m) {
-    if (i < n - 1 && grid[i][j] && grid[i + 1][j]) {
-      G.add_directed_edge(i * m + j, (i + 1) * m + j);
-      rG.add_directed_edge((i + 1) * m + j, i * m + j);
-    }
-    if (j < m - 1 && grid[i][j] && grid[i][j + 1]) {
-      G.add_directed_edge(i * m + j, i * m + j + 1);
-      rG.add_directed_edge(i * m + j + 1, i * m + j);
-    }
+  LL(t);
+  init_f();
+
+  ll MA = 1000010;
+  vmi f(MA), g(MA);
+
+  rep(i, MA) {
+    if (i >= 2) f[i] = (fact[i - 2] * fact[i]).inv();
+    if (i >= 1) g[i] = mint(i + 1) / fact[i - 1] / fact[i];
   }
-  if (bfs(G, 0)[n * m - 1] == LINF) OUT(true);
+  // debug(f);
+  // debug(g);
 
-  vl test;
-  rep(i, n) rep(j, m) {
-    if (i == 0 && j == 0) continue;
-    if (i == n - 1 && j == m - 1) continue;
-    if (grid[i][j]) test.pb(i * m + j);
+  vmi conv = convolution(f, g);
+
+  while (t--) {
+    LL(n);
+    if (n == 2) OUT(1);
+    else OUT(fact[n] * fact[n - 3] * conv[n]);
   }
-
-  vl mp(n * m, -1);
-  BS all1; all1.flip();
-  vb vis(n * m);
-  vector<BS> dp(n * m);
-  while (test.size()) {
-    rep(i, n * m) dp[i].reset();
-    dp[n * m - 1] = all1;
-    vl t; while (test.size() && t.size() < 64) { t.pb(test.back()); test.pop_back(); }
-    rep(i, t.size()) mp[t[i]] = i;
-
-    queue<ll> que; que.push(n * m - 1);
-    while (!que.empty()) {
-      ll v = que.front(); que.pop();
-      fore(from, rG[v]) {
-        dp[from] |= dp[v];
-        if (mp[from] != -1) dp[from].reset(mp[from]);
-        if (!vis[from]) { que.push(from); vis[from] = 1; }
-      }
-    }
-
-    rep(i, n * m) vis[i] = 0;
-    rep(i, t.size()) mp[t[i]] = -1;
-    if (dp[0].count() < 64) OUTRET(true);
-  }
-  OUT(false);
 }
-
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);

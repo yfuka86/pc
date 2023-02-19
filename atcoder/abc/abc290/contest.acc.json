@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc290",
+    "title": "Toyota Programming Contest 2023 Spring Qual B（AtCoder Beginner Contest 290）",
+    "url": "https://atcoder.jp/contests/abc290"
+  },
+  "tasks": [
+    {
+      "id": "abc290_a",
+      "label": "A",
+      "title": "Contest Result",
+      "url": "https://atcoder.jp/contests/abc290/tasks/abc290_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc290_a.cpp"
+      }
+    },
+    {
+      "id": "abc290_b",
+      "label": "B",
+      "title": "Qual B",
+      "url": "https://atcoder.jp/contests/abc290/tasks/abc290_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc290_b.cpp"
+      }
+    },
+    {
+      "id": "abc290_c",
+      "label": "C",
+      "title": "Max MEX",
+      "url": "https://atcoder.jp/contests/abc290/tasks/abc290_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc290_c.cpp"
+      }
+    },
+    {
+      "id": "abc290_d",
+      "label": "D",
+      "title": "Marking",
+      "url": "https://atcoder.jp/contests/abc290/tasks/abc290_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc290_d.cpp"
+      }
+    },
+    {
+      "id": "abc290_e",
+      "label": "E",
+      "title": "Make it Palindrome",
+      "url": "https://atcoder.jp/contests/abc290/tasks/abc290_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc290_e.cpp"
+      }
+    },
+    {
+      "id": "abc290_f",
+      "label": "F",
+      "title": "Maximum Diameter",
+      "url": "https://atcoder.jp/contests/abc290/tasks/abc290_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc290_f.cpp"
+      }
+    },
+    {
+      "id": "abc290_g",
+      "label": "G",
+      "title": "Edge Elimination",
+      "url": "https://atcoder.jp/contests/abc290/tasks/abc290_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc290_g.cpp"
+      }
+    },
+    {
+      "id": "abc290_h",
+      "label": "Ex",
+      "title": "Bow Meow Optimization",
+      "url": "https://atcoder.jp/contests/abc290/tasks/abc290_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc290_h.cpp"
+      }
+    }
+  ]
+}
