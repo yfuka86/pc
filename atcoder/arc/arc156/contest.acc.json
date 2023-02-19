@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc156",
+    "title": "AtCoder Regular Contest 156",
+    "url": "https://atcoder.jp/contests/arc156"
+  },
+  "tasks": [
+    {
+      "id": "arc156_a",
+      "label": "A",
+      "title": "Non-Adjacent Flip",
+      "url": "https://atcoder.jp/contests/arc156/tasks/arc156_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc156_a.cpp"
+      }
+    },
+    {
+      "id": "arc156_b",
+      "label": "B",
+      "title": "Mex on Blackboard",
+      "url": "https://atcoder.jp/contests/arc156/tasks/arc156_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc156_b.cpp"
+      }
+    },
+    {
+      "id": "arc156_c",
+      "label": "C",
+      "title": "Tree and LCS",
+      "url": "https://atcoder.jp/contests/arc156/tasks/arc156_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc156_c.cpp"
+      }
+    },
+    {
+      "id": "arc156_d",
+      "label": "D",
+      "title": "Xor Sum 5",
+      "url": "https://atcoder.jp/contests/arc156/tasks/arc156_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc156_d.cpp"
+      }
+    },
+    {
+      "id": "arc156_e",
+      "label": "E",
+      "title": "Non-Adjacent Matching",
+      "url": "https://atcoder.jp/contests/arc156/tasks/arc156_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc156_e.cpp"
+      }
+    },
+    {
+      "id": "arc156_f",
+      "label": "F",
+      "title": "Make Same Set",
+      "url": "https://atcoder.jp/contests/arc156/tasks/arc156_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc156_f.cpp"
+      }
+    }
+  ]
+}
