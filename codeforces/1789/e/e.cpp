@@ -199,61 +199,63 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 //------------------------------------------------------------------------------
 
 
-void solve() {
-  LL(h, w);
-  vs s(h); IN(s);
-
-  v3(mint, dp, h, w, 3);
-  dp[0][0][0] = 1; // k^2の項
-
-  rep(i, h) rep(j, w) {
-    if (i > 0) {
-      ll yy = s[i][j] == 'Y' && s[i - 1][j] == 'Y';
-      if (yy) {
-        dp[i][j][0] += dp[i - 1][j][0];
-        dp[i][j][1] += dp[i - 1][j][1] + dp[i - 1][j][0] * 2;
-        dp[i][j][2] += dp[i - 1][j][2] + dp[i - 1][j][1] + dp[i - 1][j][0];
-      } else {
-        rep(k, 3) dp[i][j][k] += dp[i - 1][j][k];
-      }
-    }
-    if (j > 0) {
-      ll yy = s[i][j] == 'Y' && s[i][j - 1] == 'Y';
-      if (yy) {
-        dp[i][j][0] += dp[i][j - 1][0];
-        dp[i][j][1] += dp[i][j - 1][1] + dp[i][j - 1][0] * 2;
-        dp[i][j][2] += dp[i][j - 1][2] + dp[i][j - 1][1] + dp[i][j - 1][0];
-      } else {
-        rep(k, 3) dp[i][j][k] += dp[i][j - 1][k];
-      }
-    }
+template< typename T >
+vector< pair< pair< T, T >, T > > quotient_range(T N) {
+  T M;
+  vector< pair< pair< T, T >, T > > ret;
+  for(M = 1; M * M <= N; M++) {
+    ret.emplace_back(make_pair(M, M), N / M);
   }
-  // debug(dp);
-  OUT(dp[h - 1][w - 1][2]);
+  for(T i = M; i >= 1; i--) {
+    T L = N / (i + 1) + 1;
+    T R = N / i;
+    if(L <= R && ret.back().first.second < L) ret.emplace_back(make_pair(L, R), N / L);
+  }
+  return ret;
+}
 
-  // v3(mint, dp, h, w, h + w, 2);
-  // dp[0][0][0] = 1;
+void solve() {
+  LL(n); VL(s, n);
 
-  // rep(i, h) rep(j, w) {
-  //   rep(k, h + w - 1) {
-  //     if (i > 0) {
-  //       dp[i][j][k + (s[i][j] == 'Y' && s[i - 1][j] == 'Y')] += dp[i - 1][j][k];
-  //     }
-  //     if (j > 0) {
-  //       dp[i][j][k + (s[i][j] == 'Y' && s[i][j - 1] == 'Y')] += dp[i][j - 1][k];
-  //     }
-  //   }
-  // }
+  ll ma = s[n - 1];
 
-  // mint ans = 0;
-  // rep(k, h + w) {
-  //   ans += dp[h - 1][w - 1][k] * k * k;
-  // }
-  // OUT(ans);
+  auto rng = quotient_range(ma);
+  if (ma < 10) debug(rng);
+
+  mint ans = 0;
+  // yはfloor(Sn/x);
+  fore(pa, y, rng) {
+    if (pa.se - pa.fi > 0) {
+      ll cnt = (pa.se - pa.fi) * (pa.se - 1 + pa.fi) / 2;
+      rep(i, n) {
+        if (s[i] < y) continue;
+        ll q = s[i] % y;
+        ll pq = s[i] / y;
+        ll p = pq - q;
+        if (p < 0) continue;
+        ans += cnt;
+      }
+    }
+    if (ma < 10) debug(y, ans);
+
+    ll c = ceil(ma, pa.se);
+    ll f = ma / pa.fi;
+    rep(i, n) {
+      if (s[i] < y) continue;
+
+      if (c == f) {
+        if (s[i] % y == 0) ans += pa.se;
+      } else {
+        if (c + f <= s[i] || s[i] == c || s[i] == f) ans += pa.se;
+      }
+    }
+    if (ma < 10) debug(y, ans);
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

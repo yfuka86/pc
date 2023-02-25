@@ -169,91 +169,62 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static constexpr int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-//------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
 
+using BS = bitset<2000>;
 
 void solve() {
-  LL(h, w);
-  vs s(h); IN(s);
+  LL(n);
+  STR(s);
+  STR(t);
+  // RandGen rg;
+  // ll n = 100;
+  // string s = rg.str(n, "01"), t = rg.str(n, "01");
 
-  v3(mint, dp, h, w, 3);
-  dp[0][0][0] = 1; // k^2の項
 
-  rep(i, h) rep(j, w) {
-    if (i > 0) {
-      ll yy = s[i][j] == 'Y' && s[i - 1][j] == 'Y';
-      if (yy) {
-        dp[i][j][0] += dp[i - 1][j][0];
-        dp[i][j][1] += dp[i - 1][j][1] + dp[i - 1][j][0] * 2;
-        dp[i][j][2] += dp[i - 1][j][2] + dp[i - 1][j][1] + dp[i - 1][j][0];
-      } else {
-        rep(k, 3) dp[i][j][k] += dp[i - 1][j][k];
-      }
+  if (s == t) OUTRET(0);
+
+  BS bs(s), bt(t);
+  if (bs.count() == 0 || bt.count() == 0) OUTRET(-1);
+
+  ll piv = LINF;
+  rep(i, n) if (bt[i]) { piv = i; break; }
+
+  vl ans;
+  BS filter; rep(i, n) filter[i] = 1;
+
+  auto op = [&](ll x) {
+    if (x > 0) {
+      bs ^= bs << x;
+    } else {
+      bs ^= bs >> abs(x);
     }
-    if (j > 0) {
-      ll yy = s[i][j] == 'Y' && s[i][j - 1] == 'Y';
-      if (yy) {
-        dp[i][j][0] += dp[i][j - 1][0];
-        dp[i][j][1] += dp[i][j - 1][1] + dp[i][j - 1][0] * 2;
-        dp[i][j][2] += dp[i][j - 1][2] + dp[i][j - 1][1] + dp[i][j - 1][0];
-      } else {
-        rep(k, 3) dp[i][j][k] += dp[i][j - 1][k];
-      }
-    }
+    bs &= filter;
+    ans.pb(x);
+  };
+
+  if (!bs[piv]) {
+    rep(i, n) if (bs[i]) { op(piv - i); break; }
   }
-  // debug(dp);
-  OUT(dp[h - 1][w - 1][2]);
+  // debug(piv, bs[piv], bt[piv]);
+  // debug(bs);
+  // assert(bs[piv] == bt[piv]);
 
-  // v3(mint, dp, h, w, h + w, 2);
-  // dp[0][0][0] = 1;
+  ll ms = piv;
+  rep(i, piv + 1, n) if (bs[i]) chmax(ms, i);
+  // bsのmsb;
+  rep_r(i, 0, piv) if (bs[i]) op(i - ms);
+  rep(i, piv, n) if (bs[i] != bt[i]) op(i - piv);
 
-  // rep(i, h) rep(j, w) {
-  //   rep(k, h + w - 1) {
-  //     if (i > 0) {
-  //       dp[i][j][k + (s[i][j] == 'Y' && s[i - 1][j] == 'Y')] += dp[i - 1][j][k];
-  //     }
-  //     if (j > 0) {
-  //       dp[i][j][k + (s[i][j] == 'Y' && s[i][j - 1] == 'Y')] += dp[i][j - 1][k];
-  //     }
-  //   }
-  // }
+  rep(i, n) {
+    if (bs[i] != bt[i]) { debug(s, t, ans); return; }
+  }
 
-  // mint ans = 0;
-  // rep(k, h + w) {
-  //   ans += dp[h - 1][w - 1][k] * k * k;
-  // }
-  // OUT(ans);
+  OUT(ans.size());
+  OUTARRAY(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }
