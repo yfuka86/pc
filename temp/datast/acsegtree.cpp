@@ -39,6 +39,21 @@ struct S {ll idx, x;};
 S op(S l, S r) { if (l.x < r.x) return r; else return l; }
 S e() { return {-1, -LINF}; }
 
+// 和が最大の部分列を求める
+struct S {
+  int lmax, rmax, max, sum;
+  S(int a = 0) { lmax = rmax = max = sum = a; }
+};
+S op(S l, S r) {
+  S res;
+  res.lmax = max(l.lmax, l.sum + r.lmax);
+  res.rmax = max(r.rmax, l.rmax + r.sum);
+  res.max = max({l.max, r.max, l.rmax + r.lmax});
+  res.sum = l.sum + r.sum;
+  return res;
+}
+S e() { return S(0); }
+
 segtree<S, op, e> seg(a);
 
 ll ans = seg.max_right<function<bool(S)>>(0,

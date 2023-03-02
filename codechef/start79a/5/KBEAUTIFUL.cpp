@@ -50,6 +50,36 @@ struct RandGen {
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
+// 入出力マクロの上に
+#include <atcoder/convolution>
+#include <atcoder/modint>
+using namespace atcoder;
+using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+const ll mod = 998244353;
+istream& operator>>(istream& in, mint a) { long long e; in >> e; a = e; return in; }
+ostream& operator<<(ostream& out, mint a) { return out << a.val(); }
+template<class T> istream &operator>>(istream &is, vector<T> &v) { for (auto &e : v) is >> const_cast<T&>(e); return is; }
+template<class T> ostream &operator<<(ostream &os, const vector<T> &v) { for (auto &e : v) os << const_cast<T&>(e) << ' '; return os; }
+//------------------------------------------------------------------------------
+const int max_n = (1 << 22) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+// Nlog^2Nで複数配列を効率よくたたみ込むもの
+vmi all_convolution(vvmi &a) {
+  multimap<ll, vmi> que;
+  for (auto &v: a) que.emplace(v.size(), v);
+  while (que.size() > 1) {
+    vmi a = que.begin()->se; que.erase(que.begin());
+    vmi b = que.begin()->se; que.erase(que.begin());
+    vmi c = convolution(a, b);
+    que.emplace(c.size(), c);
+  }
+  return que.begin()->se;
+}
+
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -169,79 +199,54 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static constexpr int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-//------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
-
 void solve() {
-  LL(n);
-  Graph<ll> G(n);
-  rep(i, n - 1) {
-    LL(u, v); --u; --v;
-    G.add_edge(u, v);
+  LL(n, m, k);
+  VL(a, n);
+  mint ans = 0;
+  if (n == k) {
+    rep(op, m + 1) ans += comb(op + n - 1, op);
+  } else {
+    vvl mo(k);
+    rep(i, n) mo[i % k].pb(a[i]);
+
+    ll diffsum = 0;
+    rep(i, k) {
+      ll pma = *max_element(all(mo[i]));
+      fore(j, mo[i]) diffsum += pma - j;
+    }
+
+    m -= diffsum;
+    if (m < 0) OUTRET(0);
+    // k個の組に残りのmを割り当てる
+
+    ll mi = mo[0].size(), ma = mo[k - 1].size();
+    ll mic = 0;
+    rep(i, k) if (mo[i].size() == mi) mic++;
+    if (mi == ma) {
+      rep(op, m / mi + 1) {
+        ans += comb(op + k - 1, op);
+      }
+    } else {
+      vmi miv(m + 1), mav(m + 1);
+      rep(op, m / mi + 1) {
+        miv[op * mi] = comb(op + mic - 1, op);
+      }
+      rep(op, m / ma + 1) {
+        mav[op * ma] = comb(op + (k - mic) - 1, op);
+      }
+      vmi conv = convolution(miv, mav);
+      rep(i, m + 1) {
+        ans += conv[i];
+      }
+    }
+
   }
-
-  vv(mint, dp, n, 2, 1);
-
-  function<void(ll, ll)> dfs = [&](ll v, ll p) {
-    ll m = G[v].size();
-    if (v != 0) m--;
-
-    vmi sum, rsum; sum.pb(1);
-    fore(to, G[v]) {
-      if (to == p) continue;
-      dfs(to, v);
-
-      dp[v][0] *= dp[to][0] + dp[to][1];
-      dp[v][1] *= dp[to][0] + dp[to][1];
-      sum.pb(dp[to][0] + dp[to][1]);
-      rsum.pb(dp[to][0] + dp[to][1]);
-    }
-    rsum.pb(1);
-    reverse(all(rsum));
-
-    rep(i, m) {
-      sum[i + 1] *= sum[i];
-      rsum[i + 1] *= rsum[i];
-    }
-
-    rep(i, m) {
-      ll to = G[v][i];
-      dp[v][1] += dp[to][1] * sum[i] * rsum[m - i - 1];
-    }
-  };
-  dfs(0, -1);
-
-  OUT(dp[0][1]);
+  OUTRET(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  init_f();
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }
