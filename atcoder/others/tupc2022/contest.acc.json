@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "tupc2022",
+    "title": "Tohoku University Programming Contest 2022",
+    "url": "https://atcoder.jp/contests/tupc2022"
+  },
+  "tasks": [
+    {
+      "id": "tupc2022_a",
+      "label": "A",
+      "title": "Sum Sort",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "tupc2022_a.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_b",
+      "label": "B",
+      "title": "Snowy Aobayama",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "tupc2022_b.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_c",
+      "label": "C",
+      "title": "Flip Grid",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "tupc2022_c.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_d",
+      "label": "D",
+      "title": "Zeta Sum",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "tupc2022_d.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_e",
+      "label": "E",
+      "title": "00-11 Rotation",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "tupc2022_e.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_f",
+      "label": "F",
+      "title": "Block Rotation",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "tupc2022_f.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_g",
+      "label": "G",
+      "title": "All Pairs",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "tupc2022_g.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_h",
+      "label": "H",
+      "title": "Next Permutation",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "tupc2022_h.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_i",
+      "label": "I",
+      "title": "Count Setwise Coprime",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "tupc2022_i.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_j",
+      "label": "J",
+      "title": "AMidA",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "tupc2022_j.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_k",
+      "label": "K",
+      "title": "Lebesgue Integral",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "tupc2022_k.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_l",
+      "label": "L",
+      "title": "Inversion High and Low",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "tupc2022_l.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_m",
+      "label": "M",
+      "title": "Fractal Tree Isomorphism",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "tupc2022_m.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_n",
+      "label": "N",
+      "title": "Matrix Game",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "tupc2022_n.cpp"
+      }
+    },
+    {
+      "id": "tupc2022_o",
+      "label": "O",
+      "title": "Equidistant Binary String",
+      "url": "https://atcoder.jp/contests/tupc2022/tasks/tupc2022_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "tupc2022_o.cpp"
+      }
+    }
+  ]
+}
