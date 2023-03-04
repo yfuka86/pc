@@ -150,157 +150,69 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static constexpr int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-//------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
-
-void enum_check(ll N, ll from, ll to, function<bool(vl&)> check, bool inc = false) { // size, [from, to)
-  to--; vl st(N, from); if (inc) { iota(all(st), from); if (st.back() >= to) return; }
-  while (1) {
-    assert(st.size() == N); if (!check(st)) break;
-    while (st.size() && st.back() == to) st.pop_back(); if (st.size() == 0) break;
-    st.back()++;
-    while (st.size() < N) if (inc) st.pb(st.back()); else st.pb(from);
-  }
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-mint solve(ll n, ll m, vs s) {
-  v4(bool, rng, m, n + 1, n + 1, 10);
-
-  rep(i, m) {
-    rep(j, n) rep(k, j + 1, n + 1) {
-      set<char> S;
-      rep(si, j, k) S.insert(s[si][i]);
-      S.erase('?');
-      if (S.size() > 1) continue;
-      if (S.size() == 1) {
-        rng[i][j][k][*S.begin() - '0'] = 1;
-      } else {
-        rep(d, 10) rng[i][j][k][d] = 1;
-      }
-    }
-  }
-  // rep(i, n) rep(j, i + 1, n + 1) {
-  //   debug(i, j, rng[0][i][j]);
-  // }
-
-  vv(ll, qu, n, m + 1);
-  rep(i, n) {
-    rep_r(j, m) {
-      qu[i][j] = qu[i][j + 1] + (s[i][j] == '?');
-    }
-  }
-  vv(mint, qun, n, m + 1);
-  rep(i, n) rep(j, m + 1) qun[i][j] = mint(10).pow(qu[i][j]);
-
-  v3(bool, hasmemo, n, n + 1, m);
-  v3(mint, memo, n, n + 1, m);
-  function<mint(ll, ll, ll)> calc = [&](ll l, ll r, ll d) {
-    if (r - l == 1) return qun[l][d];
-    if (d >= m) return mint(0);
-    if (hasmemo[l][r][d]) return memo[l][r][d];
-    vv(mint, dp, r - l + 1, 11);
-    dp[0][0] = 1;
-
-    rep(i, l, r) rep(j, i + 1, r + 1) {
-      mint g = calc(i, j, d + 1);
-      vmi cs = csum(dp[i - l]);
-      rep(to, 1, 11) {
-        if (rng[d][i][j][to - 1]) {
-          dp[j - l][to] += cs[to] * g;
-        }
-      }
-    }
-    // debug(l, r, d, dp);
-    hasmemo[l][r][d] = 1;
-    return memo[l][r][d] = sum_of(dp[r - l]);
-  };
-
-  return calc(0, n, 0);
-}
-
-mint naive(ll n, ll m, vs s) {
-  vlp co;
-  rep(i, n) rep(j, m) if (s[i][j] == '?') co.pb({i, j});
-
-  auto check = [&](vs st) {
-    vl f;
-    rep(i, n) {
-      ll cur = 1, sum = 0;
-      rep_r(j, m) {
-        sum += cur * (st[i][j] - '0');
-        cur *= 10;
-      }
-      f.pb(sum);
-    }
-    bool valid = true;
-    rep(i, n - 1) if (f[i] >= f[i + 1]) valid = false;
-    return valid;
-  };
-
-  if (co.size() == 0) return (check(s) ? 1 : 0);
-
-  ll ans = 0;
-  enum_check(co.size(), 0, 10, [&](vl v) {
-    vs st = s;
-    rep(i, co.size()) {
-      st[co[i].fi][co[i].se] = '0' + v[i];
-    }
-    if (check(st)) ans++;
-    return true;
-  });
-  return ans;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 2, m = 2;
-    vs s(n);
-    rep(i, n) s[i] = rg.str(m, "0123456789?");
-    auto so = solve(n, m, s); auto na = naive(n, m, s);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(s); debug(so); debug(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
-
-
 void solve() {
-  LL(n, m);
-  vs s(n); IN(s);
+  LL(n, m, k);
+  vv(ll, edges, n - 1, 2); IN(edges);
+  vv(ll, guesses, n - 1, 2); IN(guesses);
 
-  OUT(solve(n, m, s));
+  Graph<ll> G(n);
+  fore(e, edges) G.add_edge(e[0], e[1]);
+  map<ll, set<ll>> es;
+  fore(e, guesses) es[e[0]].insert(e[1]);
+
+  ll off = 0, cur = 0;
+  vl dp(n);
+  function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    dp[v] = cur;
+    fore(to, G[v]) {
+      if (to == p) continue;
+      if (es[v].find(to) != es[v].end() && es[to].find(v) != es[to].end()) {
+        off++;
+        dfs(to, v);
+      } else if (es[v].find(to) != es[v].end()) {
+        off++; cur--;
+        dfs(to, v);
+        cur++;
+      } else if (es[to].find(v) != es[to].end()) {
+        cur++;
+        dfs(to, v);
+        cur--;
+      } else dfs(to, v);
+    }
+  };
+  dfs(0, -1);
+
+
+  debug(off, dp);
+
+  ll ans = 0;
+  rep(i, n) {
+    if (dp[i] + off >= k) ans++;
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t = 1; //cin >> t;
   while (t--) if (1) solve(); else compare();
 }

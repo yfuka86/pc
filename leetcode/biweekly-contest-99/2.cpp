@@ -41,34 +41,14 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define v4(type, name, a, b, c, ...) vector<vector<vector<vector<type>>>> name(a, vector<vector<vector<type>>>(b, vector<vector<type>>(c, vector<type>(__VA_ARGS__))))
 template<class T, class U> bool chmin(T &a, const U &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T, class U> bool chmax(T &a, const U &b) { if (b > a) { a = b; return 1;} return 0; }
-template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
 
 class Solution {
 public:
-  int splitNum(int num) {
-    vl d = digits(num);
-
-    ll n = d.size();
-    ll ans = LINF;
-    rep(S, 1 << n) {
-      vl a, b;
-      rep(i, n) {
-        if (S & 1 << i) a.pb(d[i]); else b.pb(d[i]);
-      }
-      if (a.size() == 0 || b.size() == 0) continue;
-      ll cur = 1, sum = 0;
-      sort(rall(a));
-      sort(rall(b));
-      rep(i, a.size()) {
-        sum += a[i] * cur;
-        cur *= 10;
-      }
-      cur = 1;
-      rep(i, b.size()) {
-        sum += b[i] * cur;
-        cur *= 10;
-      }
-      chmin(ans, sum);
+  long long coloredCells(int n) {
+    n--;
+    ll ans = 1;
+    rep(i, n)  {
+      ans += (i + 1) * 4;
     }
     return ans;
   }

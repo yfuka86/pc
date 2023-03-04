@@ -39,37 +39,59 @@ const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld 
 #define vv(type, name, h, ...) vector<vector<type>> name(h, vector<type>(__VA_ARGS__))
 #define v3(type, name, h, w, ...) vector<vector<vector<type>>> name(h, vector<vector<type>>(w, vector<type>(__VA_ARGS__)))
 #define v4(type, name, a, b, c, ...) vector<vector<vector<vector<type>>>> name(a, vector<vector<vector<type>>>(b, vector<vector<type>>(c, vector<type>(__VA_ARGS__))))
+int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 template<class T, class U> bool chmin(T &a, const U &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T, class U> bool chmax(T &a, const U &b) { if (b > a) { a = b; return 1;} return 0; }
-template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret.pb(n % 10); n /= 10; } return ret; }
+template< typename T = ll > struct Edge {
+  int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
+  operator int() const { return to; } bool operator<(const struct Edge& other) const { return cost < other.cost; } };
+template< typename T = ll > struct Graph {
+  vector< vector< Edge< T > > > g; int es; Graph() = default; explicit Graph(int n) : g(n), es(0) {}
+  size_t size() const { return g.size(); }
+  void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
+  void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 
 class Solution {
 public:
-  int splitNum(int num) {
-    vl d = digits(num);
+  int rootCount(vector<vector<int>>& edges, vector<vector<int>>& guesses, int k) {
+    ll n = edges.size() + 1;
+    /////
+    Graph<ll> G(n);
+    fore(e, edges) G.add_edge(e[0], e[1]);
+    map<ll, set<ll>> es;
+    fore(e, guesses) es[e[0]].insert(e[1]);
 
-    ll n = d.size();
-    ll ans = LINF;
-    rep(S, 1 << n) {
-      vl a, b;
-      rep(i, n) {
-        if (S & 1 << i) a.pb(d[i]); else b.pb(d[i]);
+    ll off = 0, cur = 0;
+    vl dp(n);
+    function<void(ll, ll)> dfs = [&](ll v, ll p) {
+      dp[v] = cur;
+      fore(to, G[v]) {
+        if (to == p) continue;
+        if (es[v].find(to) != es[v].end() && es[to].find(v) != es[to].end()) {
+          off++;
+          dfs(to, v);
+        } else if (es[v].find(to) != es[v].end()) {
+          off++; cur--;
+          dfs(to, v);
+          cur++;
+        } else if (es[to].find(v) != es[to].end()) {
+          cur++;
+          dfs(to, v);
+          cur--;
+        } else dfs(to, v);
       }
-      if (a.size() == 0 || b.size() == 0) continue;
-      ll cur = 1, sum = 0;
-      sort(rall(a));
-      sort(rall(b));
-      rep(i, a.size()) {
-        sum += a[i] * cur;
-        cur *= 10;
-      }
-      cur = 1;
-      rep(i, b.size()) {
-        sum += b[i] * cur;
-        cur *= 10;
-      }
-      chmin(ans, sum);
+    };
+    dfs(0, -1);
+
+
+    debug(off, dp);
+
+    ll ans = 0;
+    rep(i, n) {
+      if (dp[i] + off >= k) ans++;
     }
+    /////
     return ans;
   }
 };

@@ -45,31 +45,19 @@ template<typename T> vl digits(T n) { assert(n >= 0); vl ret; while(n > 0) { ret
 
 class Solution {
 public:
-  int splitNum(int num) {
-    vl d = digits(num);
-
-    ll n = d.size();
-    ll ans = LINF;
-    rep(S, 1 << n) {
-      vl a, b;
-      rep(i, n) {
-        if (S & 1 << i) a.pb(d[i]); else b.pb(d[i]);
+    int minMaxDifference(int num) {
+      ll mi = num, ma = num;
+      vl ds = digits(num);
+      rep(i, 10) rep(j, 10) {
+        ll p10 = 1, sum = 0;
+        rep(k, ds.size()) {
+          if (ds[k] == i) sum += j * p10;
+          else sum += ds[k] * p10;
+          p10 *= 10;
+        }
+        chmin(mi, sum);
+        chmax(ma, sum);
       }
-      if (a.size() == 0 || b.size() == 0) continue;
-      ll cur = 1, sum = 0;
-      sort(rall(a));
-      sort(rall(b));
-      rep(i, a.size()) {
-        sum += a[i] * cur;
-        cur *= 10;
-      }
-      cur = 1;
-      rep(i, b.size()) {
-        sum += b[i] * cur;
-        cur *= 10;
-      }
-      chmin(ans, sum);
+      return ma - mi;
     }
-    return ans;
-  }
 };
