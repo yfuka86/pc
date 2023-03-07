@@ -169,51 +169,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// レンジの和集合管理
-struct Rngset {
-  map<ll, ll> ranges;
-  Rngset() : ranges() {}
-
-  void on(ll l, ll r) {
-    assert(l < r);
-    auto lt = ranges.lower_bound(l);
-    auto rt = ranges.upper_bound(r);
-    if (lt != ranges.begin() && l <= prev(lt)->se) { l = prev(lt)->fi; lt--; }
-    if (rt != ranges.begin() && r <= prev(rt)->se) { r = prev(rt)->se; }
-    while(lt != rt) { lt = ranges.erase(lt); }
-    ranges[l] = r;
-  }
-};
-
 void solve() {
   LL(h, w, n);
-  map<ll, vl> mp;
+  set<LP> s;
+  auto touch = [&](LP a) {
+    if (s.find(a) != s.end()) s.erase(a); else s.insert(a);
+  };
   rep(i, n) {
     LL(x, y); --x; --y;
-    mp[x].pb(y);
-  }
-
-  Rngset rs;
-  fore(x, ys, mp) if (ys.size()) rs.on(x, x + 1);
-  fore(x, ys, mp) sort(all(ys));
-
-  ll ans = 0;
-  fore(l, r, rs.ranges) {
-    set<ll> rev;
-    auto f = [&](ll x) {
-      if (rev.find(x) != rev.end()) rev.erase(x);
-      else rev.insert(x);
-    };
-
-    rep_r(i, l, r) {
-      fore(y, mp[i]) {
-        f(y); f(y + 1);
-      }
-      ans += rev.size() - (*rev.begin() == 0);
+    rep(i, 2) rep(j, 2) {
+      if (x - i >= 0 && y - j >= 0) touch({x - i, y - j});
     }
-    if (l != 0) ans += rev.size() - (*rev.begin() == 0);
   }
-  OUT(ans);
+  OUT(s.size());
 }
 
 signed main() {

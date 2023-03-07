@@ -168,58 +168,73 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+
+const ll mod = 998244353;
 //------------------------------------------------------------------------------
-template <class S, S (*op)(S, S), S (*e)()> struct segtree {
-  public:
-  segtree() : segtree(0) {}
-  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
-  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
-  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
-  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
-  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
-  S all_prod() const { return d[1]; }
-  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
-  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
-    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
-  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
-  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
-    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
-  private:
-  int _n, size, log; std::vector<S> d;
-  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+  bool operator<(const ModInt &other) const {
+    return x < other.x;
+  }
 };
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+const int max_n = (1 << 20) + 1;
+mint fact[max_n], factinv[max_n];
+void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
+mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
+mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
-struct S { ll sum, ma; };
-S op(S l, S r) {
-  return { l.sum + r.sum, maxe(l.sum + r.sum, l.sum + r.ma, l.ma) };
-}
-S e() { return {0, -LINF}; }
 
 void solve() {
-  LL(n, b, q);
-  VL(a, n);
+  init_f();
+  LL(n);
+  VL(a, n * 2);
+  vl ps = primes(1000000);
 
-  vector<S> v(n);
-  rep(i, n) v[i] = {a[i] - b, a[i] - b};
-  segtree<S, op, e> seg(v);
+  vl pf;
+  vl cnt(1000001); set<ll> has; rep(i, n * 2) { cnt[a[i]]++; has.insert(a[i]); }
 
-  rep(i, q) {
-    LL(c, x); --c;
-    seg.set(c, {x - b, x - b});
-    ll r = seg.max_right(0, [&](S x) {
-      return x.ma < 0;
-    });
-    if (r == n) OUT((ld)seg.all_prod().sum / n + b);
-    else {
-      ll ri = min(n, r + 1);
-      OUT((ld)seg.prod(0, ri).sum / (ld)ri + b);
+  ll al = has.size(); // 全種類
+  fore(p, ps) if (has.find(p) != has.end()) pf.pb(p);
+
+  mint norm = fact[n];
+  rep(i, 1000001) if (cnt[i]) norm /= fact[cnt[i]];
+
+  ll m = pf.size();
+  // vector<map<mint, mint>> dp(n + 1); // dp[i個目までみて][j倍] = k通り
+  vmi dp(n + 1);
+  dp[0] = 1;
+
+  // debug(pf);
+  rep(i, pf.size()) {
+    ll p = pf[i];
+    rep_r(i, n) {
+      dp[i + 1] += dp[i] * cnt[p];
     }
   }
+
+  OUT(norm * dp[n]);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t = 1; //cin >> t;
   while (t--) if (1) solve(); else compare();
 }
