@@ -176,17 +176,16 @@ void solve() {
   ld pi = M_PI;
   ld h = sin(pi/3);
   if (a / h <= b) OUTRET(a / h);
+  OUT(2 * sqrt(a*a - sqrt(3)*a*b + b*b));
 
-  ld hi = pi/6, lo = 0;
-
-  rep(_, 60) {
-    ld mid = (hi + lo) / 2;
-    ld x = b / cos(mid);
-    ld h = x * sin(pi/3 + mid);
-    if (h <= a) lo = mid; else hi = mid;
-  }
-
-  OUT(b / cos(lo));
+  // ld hi = pi/6, lo = 0;
+  // rep(_, 60) {
+  //   ld mid = (hi + lo) / 2;
+  //   ld x = b / cos(mid);
+  //   ld h = x * sin(pi/3 + mid);
+  //   if (h <= a) lo = mid; else hi = mid;
+  // }
+  // OUT(b / cos(lo));
 }
 
 signed main() {

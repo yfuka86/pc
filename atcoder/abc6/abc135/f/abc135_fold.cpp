@@ -16,7 +16,7 @@ using namespace std;
 typedef long long ll; typedef unsigned long long ull; typedef long double ld;
 typedef pair<int, int> P; typedef pair<ll, ll> LP; typedef map<ll, ll> LM; typedef tuple<ll, ll, ll> LT; typedef tuple<ll, ll, ll, ll> LT4;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
-typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<string> vs; typedef vector<vs> vvs;
+typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
 typedef vector<ld> vd; typedef vector<vd> vvd; typedef vector<bool> vb; typedef vector<vb> vvb;
 template<typename T> class infinity{ public: static constexpr T MAX=numeric_limits<T>::max(); static constexpr T MIN=numeric_limits<T>::min(); static constexpr T val=numeric_limits<T>::max()/2-1e6; static constexpr T mval=numeric_limits<T>::min()/2+1e6; };
 const int INF = infinity<int>::val; const ll LINF = infinity<ll>::val; const ld DINF = infinity<ld>::val;
@@ -61,7 +61,7 @@ template<typename A> void ianswer(A a, string str = "! ") { cout << str << a << 
 
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (unsigned long long)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (unsigned long long)(n)) x++; return x; }
-ll POW(ll x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 ll sqrt_ceil(ll x) { ll l = -1, r = x; while (r - l > 1) { ll m = (l + r) / 2; if (m * m >= x) r = m; else l = m; } return r; }
 template<typename T> ll digits(T n) { assert(n >= 0); ll ret = 0; while(n > 0) { ret++; n /= 10; } return ret; }
 template<typename T, typename S> T ceil(T x, S y) { assert(y); return (y < 0 ? ceil(-x, -y) : (x > 0 ? (x + y - 1) / y : x / y)); }
@@ -78,106 +78,24 @@ template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, 
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 const string drul = "DRUL"; vl dx = {1, 0, -1, 0}; vl dy = {0, 1, 0, -1};
 
-ll solve(ll N, vl a) {
-  ll ans = N - a[0]; return ans;
+ll solve(ll n, vl a) {
+  ll ans = n - a[0]; return ans;
 }
 
-ll naive(ll N, vl a) {
-  ll ans = N + a[0]; return ans;
+ll naive(ll n, vl a) {
+  ll ans = n + a[0]; return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll N = 10;
-    vl a = rg.vecl(N, 1, 1e2);
-    auto so = solve(N, a); auto na = naive(N, a);
+    ll n = 10;
+    vl a = rg.vecl(n, 1, 1e2);
+    auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      dump(N); dump(a);
-      cout << "solve: "; dump(so);
-      cout << "naive: "; dump(na);
+      debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
-
-/**
- * @brief Rolling-Hash(ローリングハッシュ)
- * @see https://qiita.com/keymoon/items/11fac5627672a6d6a9f6
- * @docs docs/rolling-hash.md
- */
-struct RollingHash {
-  static const uint64_t mod = (1ull << 61ull) - 1;
-  using uint128_t = __uint128_t;
-  vector< uint64_t > power;
-  const uint64_t base;
-
-  static inline uint64_t add(uint64_t a, uint64_t b) {
-    if((a += b) >= mod) a -= mod;
-    return a;
-  }
-
-  static inline uint64_t mul(uint64_t a, uint64_t b) {
-    uint128_t c = (uint128_t) a * b;
-    return add(c >> 61, c & mod);
-  }
-
-  static inline uint64_t generate_base() {
-    mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
-    uniform_int_distribution< uint64_t > rand(1, RollingHash::mod - 1);
-    return rand(mt);
-  }
-
-  inline void expand(size_t sz) {
-    if(power.size() < sz + 1) {
-      int pre_sz = (int) power.size();
-      power.resize(sz + 1);
-      for(int i = pre_sz - 1; i < sz; i++) {
-        power[i + 1] = mul(power[i], base);
-      }
-    }
-  }
-
-  explicit RollingHash(uint64_t base = generate_base()) : base(base), power{1} {}
-
-  vector< uint64_t > build(const string &s) const {
-    int sz = s.size();
-    vector< uint64_t > hashed(sz + 1);
-    for(int i = 0; i < sz; i++) {
-      hashed[i + 1] = add(mul(hashed[i], base), s[i]);
-    }
-    return hashed;
-  }
-
-  template< typename T >
-  vector< uint64_t > build(const vector< T > &s) const {
-    int sz = s.size();
-    vector< uint64_t > hashed(sz + 1);
-    for(int i = 0; i < sz; i++) {
-      hashed[i + 1] = add(mul(hashed[i], base), s[i]);
-    }
-    return hashed;
-  }
-
-  uint64_t query(const vector< uint64_t > &s, int l, int r) {
-    expand(r - l);
-    return add(s[r], mod - mul(s[l], power[r - l]));
-  }
-
-  uint64_t combine(uint64_t h1, uint64_t h2, size_t h2len) {
-    expand(h2len);
-    return add(mul(h1, power[h2len]), h2);
-  }
-
-  int lcp(const vector< uint64_t > &a, int l1, int r1, const vector< uint64_t > &b, int l2, int r2) {
-    int len = min(r1 - l1, r2 - l2);
-    int low = 0, high = len + 1;
-    while(high - low > 1) {
-      int mid = (low + high) / 2;
-      if(query(a, l1, l1 + mid) == query(b, l2, l2 + mid)) low = mid;
-      else high = mid;
-    }
-    return low;
-  }
-};
 
 template< typename T = ll > struct Edge {
   int from, to; T cost; int idx; Edge() = default; Edge(int from, int to, T cost = 1, int idx = -1) : from(from), to(to), cost(cost), idx(idx) {}
@@ -188,7 +106,6 @@ template< typename T = ll > struct Graph {
   void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-
 vl topo_sort(Graph<ll> G) {
   ll n = G.size(); vl deg(n), ret; priority_queue<ll, vl, greater<ll>> que;
   rep(i, n) for (Edge e: G[i]) deg[e.to]++; rep(i, n) if (deg[i] == 0) que.push(i);
@@ -196,37 +113,57 @@ vl topo_sort(Graph<ll> G) {
     for(ll next: G[v]) { deg[next]--; if (deg[next] == 0) que.push(next); } G[v].clear(); }
   if (accumulate(all(deg), 0LL) != 0) return {}; else return ret; }
 
+// Rolling hash　自分のやつ
+const ll P_B = 17, P_M = 1e9 + 7;
+vl bf(1e6 + 10, -1);
+ll b_fact(ll p) {
+  if (bf[p] == -1) { bf[0] = 1; rep(i, 1e6 + 9) bf[i + 1] = bf[i] * P_B % P_M; }
+  return bf[p];
+}
+
+template<typename T> vl get_hash(vector<T>& s) { vl h(s.size() + 1, 0); rep(i, s.size()) { h[i + 1] = (P_B * h[i] + s[i]) % P_M; } return h; }
+vl get_hash(string& s) { vl h(s.size() + 1, 0); rep(i, s.size()) { h[i + 1] = (P_B * h[i] + s[i]) % P_M; } return h; }
+
+ll sub_hash(vl& h, ll l, ll r) {
+  assert(0 <= l && r <= h.size());
+  ll ret = h[r] - (b_fact(r - l) * h[l] % P_M); if (ret < 0) ret += P_M;
+  return ret;
+}
 
 void solve() {
-  string ts, t; cin >> ts >> t;
-  string s = ts;
-  while (s.size() < t.size()) {
-    s += ts;
-  }
-  ll n = s.size();
-  s += s;
-  RollingHash rh;
-  vector<uint64_t> srh = rh.build(s), trh = rh.build(t);
-  Graph<ll> G(n);
+  string ss, t; cin >> ss >> t;
+  string s = "";
+  while (s.size() < t.size()) s += ss;
+  string ds = s + s;
 
-  rep(i, n) {
-    if (rh.query(srh, i, i + t.size()) == rh.query(trh, 0, t.size())) G.add_directed_edge(i, (i + t.size()) % n);
-  }
-  {
-    vl ts = topo_sort(G);
-    if (ts.size() == 0) cout << -1 << "\n";
-    else {
-      ll ans = 0;
-      vl dp(n, 0);
-      rep_r(i, n) {
-        for (auto &to: G[ts[i]]) {
-          chmax(dp[ts[i]], dp[to] + 1);
-        }
-        chmax(ans, dp[ts[i]]);
-      }
-      cout << ans << "\n";
+  auto sh = get_hash(ds);
+  auto th = get_hash(t);
+
+  Graph<ll> G(s.size());
+  rep(i, ds.size() - t.size() + 1) {
+    if (sub_hash(sh, i, i + t.size()) == sub_hash(th, 0, t.size())) {
+      ll u = i % s.size();
+      ll v = (i + t.size()) % s.size();
+      // debug(u, v);
+      G.add_directed_edge(u, v);
     }
   }
+
+  vl ts = topo_sort(G);
+  if (!ts.size()) cout << -1 << "\n";
+  else {
+    vl dp(s.size(), 0);
+    ll ans = 0;
+    rep_r(i, s.size()) {
+      ll ma = 0;
+      for (auto to: G[ts[i]]) {
+        chmax(ma, dp[to] + 1);
+      }
+      chmax(ans, dp[ts[i]] = ma);
+    }
+    cout << ans << "\n";
+  }
+
 
 
 }
