@@ -107,16 +107,17 @@ using mint = modint998244353;
 const ll mod = 998244353;
 typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi;
 //------------------------------------------------------------------------------
-const int max_n = 1 << 20;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+struct COM {
+  vector<mint> fact, factinv, inv; int cur = 2;
+  COM() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } }
+  void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+  mint P(int n, int k) { assert(n < 1e8); if (n < 0 || k < 0 || n < k) return 0; while (cur <= n) incr(); return fact[n] * factinv[n - k]; }
+  mint C(int n, int k) { mint p = P(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; COM com;
 //------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
-
 
 void solve() {
   ll n, m; cin >> n >> m;
@@ -126,14 +127,13 @@ void solve() {
 
   vmi eva = {1}, oda = {0};
 
-  init_f();
   for (auto [d, cnt]: f) {
     vmi ev(max(d * cnt, m) + 1), od(max(d * cnt, m) + 1);
 
     rep(i, cnt + 1) {
       if (d * i > m) break;
-      if (i & 1) od[d * i] = comb(cnt, i);
-      else ev[d * i] = comb(cnt, i);
+      if (i & 1) od[d * i] = C(cnt, i);
+      else ev[d * i] = com.C(cnt, i);
     }
 
     vmi ev1 = convolution(eva, ev);

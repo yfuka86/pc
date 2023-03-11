@@ -169,103 +169,36 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// https://nyaannyaan.github.io/library/tree/heavy-light-decomposition.hpp
-template <typename G>
-struct HeavyLightDecomposition {
- private:
-  void dfs_sz(int cur) {
-    size[cur] = 1;
-    for (auto& dst : g[cur]) {
-      if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
-      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
-    }
-  }
-  void dfs_hld(int cur) {
-    down[cur] = id++; drev[down[cur]] = cur;
-    for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
-    up[cur] = id;
-  }
-  // [u, v)
-  vector<pair<int, int>> ascend(int u, int v) const {
-    vector<pair<int, int>> res;
-    while (nxt[u] != nxt[v]) { res.emplace_back(down[u], down[nxt[u]]); u = par[nxt[u]]; }
-    if (u != v) res.emplace_back(down[u], down[v] + 1); return res;
-  }
-  // (u, v]
-  vector<pair<int, int>> descend(int u, int v) const {
-    if (u == v) return {};
-    if (nxt[u] == nxt[v]) return {{down[u] + 1, down[v]}};
-    auto res = descend(u, par[nxt[v]]);
-    res.emplace_back(down[nxt[v]], down[v]);
-    return res;
-  }
- public:
-  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
-  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
-  void build(int root) { dfs_sz(root); dfs_hld(root); }
-  pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
-  template <typename F>
-  void path_query(int u, int v, bool vertex, const F& f) {
-    int l = lca(u, v);
-    for (auto&& [a, b] : ascend(u, l)) { int s = a + 1, t = b; s > t ? f(t, s) : f(s, t); }
-    if (vertex) f(down[l], down[l] + 1);
-    for (auto&& [a, b] : descend(l, v)) { int s = a, t = b + 1; s > t ? f(t, s) : f(s, t); }
-  }
-  template <typename F>
-  void path_noncommutative_query(int u, int v, bool vertex, const F& f) {
-    int l = lca(u, v);
-    for (auto&& [a, b] : ascend(u, l)) f(a + 1, b);
-    if (vertex) f(down[l], down[l] + 1);
-    for (auto&& [a, b] : descend(l, v)) f(a, b + 1);
-  }
-  template <typename F>
-  void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
-  int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
-  int la(int a, int d) { assert(0 <= d && d <= depth[a]); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
-  int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
 };
-
+//------------------------------------------------------------------------------
 
 void solve() {
-  LL(n);
-  Graph<ll> G(n);
-  rep(i, n - 1) {
-    LL(a, b); --a; --b;
-    G.add_edge(a, b);
+  LL(n, m);
+  UnionFind uf(n * 2);
+  rep(i, n) uf.unite(i, i + n);
+
+  set<ll> cycle, roots;
+  rep(i, m) {
+    LL(a); CHR(b); LL(c); CHR(d);
+    --a; --c;
+    if (b == 'B') a += n;
+    if (d == 'B') c += n;
+    if (uf.same(a, c)) cycle.insert(uf.root(a)); else uf.unite(a, c);
   }
 
-  HeavyLightDecomposition<Graph<ll>> hld(G);
-  int sz = [&](ll l, ll r) {
-    return hld.size[l] - (r != -1 ? hld.size[r] : 0);
-  };
-
-  vl dec(n, -1);
-  vb vis(n);
-
-  function<ll(ll, ll, ll, ll)> find = [&](ll v, ll p, ll l, ll r = -1) {
-    ll maxsz = 0, maxv = -1;
-    fore(to, G[v]) { if (to == p) continue;
-      if (chmax(maxsz, sz(to, r))) maxv = to;
-    }
-    if (maxsz <= allsz / 2) return v; else return find(maxv, v, l, r);
-  };
-
-  function<void(ll, ll)> dec = [&](ll v, ll l, ll r) {
-    vis[v] = 1;
-    // rは元の根付き木の親（行き止まり）
-    ll nx = find(v, -1, l, r);
-    fore(to, G[nx]) {
-      if (hld.lca(to, nx) == to) {
-        hld.size[r]
-      }
-      dec(to, nx, );
-    }
-
-  };
-  dec(0, -1, n);
-
-
-  debug(sz);
+  rep(i, n) {
+    roots.insert(uf.root(i));
+  }
+  OUT(cycle.size(), roots.size() - cycle.size());
 }
 
 signed main() {

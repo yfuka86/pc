@@ -169,103 +169,166 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-// https://nyaannyaan.github.io/library/tree/heavy-light-decomposition.hpp
-template <typename G>
-struct HeavyLightDecomposition {
- private:
-  void dfs_sz(int cur) {
-    size[cur] = 1;
-    for (auto& dst : g[cur]) {
-      if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
-      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
+struct Barrett {
+  using u32 = unsigned int;
+  using i64 = long long;
+  using u64 = unsigned long long;
+  u32 m;
+  u64 im;
+  Barrett() : m(), im() {}
+  Barrett(int n) : m(n), im(u64(-1) / m + 1) {}
+  constexpr inline i64 quo(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? x - 1 : x;
+  }
+  constexpr inline i64 rem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    return m <= r ? r + m : r;
+  }
+  constexpr inline pair<i64, int> quorem(u64 n) {
+    u64 x = u64((__uint128_t(n) * im) >> 64);
+    u32 r = n - x * m;
+    if (m <= r) return {x - 1, r + m};
+    return {x, r};
+  }
+  constexpr inline i64 pow(u64 n, i64 p) {
+    u32 a = rem(n), r = m == 1 ? 0 : 1;
+    while (p) {
+      if (p & 1) r = rem(u64(r) * a);
+      a = rem(u64(a) * a);
+      p >>= 1;
     }
+    return r;
   }
-  void dfs_hld(int cur) {
-    down[cur] = id++; drev[down[cur]] = cur;
-    for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
-    up[cur] = id;
-  }
-  // [u, v)
-  vector<pair<int, int>> ascend(int u, int v) const {
-    vector<pair<int, int>> res;
-    while (nxt[u] != nxt[v]) { res.emplace_back(down[u], down[nxt[u]]); u = par[nxt[u]]; }
-    if (u != v) res.emplace_back(down[u], down[v] + 1); return res;
-  }
-  // (u, v]
-  vector<pair<int, int>> descend(int u, int v) const {
-    if (u == v) return {};
-    if (nxt[u] == nxt[v]) return {{down[u] + 1, down[v]}};
-    auto res = descend(u, par[nxt[v]]);
-    res.emplace_back(down[nxt[v]], down[v]);
-    return res;
-  }
- public:
-  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
-  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
-  void build(int root) { dfs_sz(root); dfs_hld(root); }
-  pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
-  template <typename F>
-  void path_query(int u, int v, bool vertex, const F& f) {
-    int l = lca(u, v);
-    for (auto&& [a, b] : ascend(u, l)) { int s = a + 1, t = b; s > t ? f(t, s) : f(s, t); }
-    if (vertex) f(down[l], down[l] + 1);
-    for (auto&& [a, b] : descend(l, v)) { int s = a, t = b + 1; s > t ? f(t, s) : f(s, t); }
-  }
-  template <typename F>
-  void path_noncommutative_query(int u, int v, bool vertex, const F& f) {
-    int l = lca(u, v);
-    for (auto&& [a, b] : ascend(u, l)) f(a + 1, b);
-    if (vertex) f(down[l], down[l] + 1);
-    for (auto&& [a, b] : descend(l, v)) f(a, b + 1);
-  }
-  template <typename F>
-  void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
-  int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
-  int la(int a, int d) { assert(0 <= d && d <= depth[a]); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
-  int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
 
+struct ArbitraryModInt {
+  int x;
 
-void solve() {
-  LL(n);
-  Graph<ll> G(n);
-  rep(i, n - 1) {
-    LL(a, b); --a; --b;
-    G.add_edge(a, b);
+  ArbitraryModInt() : x(0) {}
+
+  ArbitraryModInt(int64_t y) {
+    int z = y % get_mod();
+    if (z < 0) z += get_mod();
+    x = z;
   }
 
-  HeavyLightDecomposition<Graph<ll>> hld(G);
-  int sz = [&](ll l, ll r) {
-    return hld.size[l] - (r != -1 ? hld.size[r] : 0);
-  };
+  ArbitraryModInt &operator+=(const ArbitraryModInt &p) {
+    if ((x += p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
 
-  vl dec(n, -1);
-  vb vis(n);
+  ArbitraryModInt &operator-=(const ArbitraryModInt &p) {
+    if ((x += get_mod() - p.x) >= get_mod()) x -= get_mod();
+    return *this;
+  }
 
-  function<ll(ll, ll, ll, ll)> find = [&](ll v, ll p, ll l, ll r = -1) {
-    ll maxsz = 0, maxv = -1;
-    fore(to, G[v]) { if (to == p) continue;
-      if (chmax(maxsz, sz(to, r))) maxv = to;
+  ArbitraryModInt &operator*=(const ArbitraryModInt &p) {
+    x = rem((unsigned long long)x * p.x);
+    return *this;
+  }
+
+  ArbitraryModInt &operator/=(const ArbitraryModInt &p) {
+    *this *= p.inverse();
+    return *this;
+  }
+
+  ArbitraryModInt operator-() const { return ArbitraryModInt(-x); }
+
+  ArbitraryModInt operator+(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) += p;
+  }
+
+  ArbitraryModInt operator-(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) -= p;
+  }
+
+  ArbitraryModInt operator*(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) *= p;
+  }
+
+  ArbitraryModInt operator/(const ArbitraryModInt &p) const {
+    return ArbitraryModInt(*this) /= p;
+  }
+
+  bool operator==(const ArbitraryModInt &p) const { return x == p.x; }
+
+  bool operator!=(const ArbitraryModInt &p) const { return x != p.x; }
+
+  ArbitraryModInt inverse() const {
+    int a = x, b = get_mod(), u = 1, v = 0, t;
+    while (b > 0) {
+      t = a / b;
+      swap(a -= t * b, b);
+      swap(u -= t * v, v);
     }
-    if (maxsz <= allsz / 2) return v; else return find(maxv, v, l, r);
-  };
+    return ArbitraryModInt(u);
+  }
 
-  function<void(ll, ll)> dec = [&](ll v, ll l, ll r) {
-    vis[v] = 1;
-    // rは元の根付き木の親（行き止まり）
-    ll nx = find(v, -1, l, r);
-    fore(to, G[nx]) {
-      if (hld.lca(to, nx) == to) {
-        hld.size[r]
-      }
-      dec(to, nx, );
+  ArbitraryModInt pow(int64_t n) const {
+    ArbitraryModInt ret(1), mul(x);
+    while (n > 0) {
+      if (n & 1) ret *= mul;
+      mul *= mul;
+      n >>= 1;
     }
+    return ret;
+  }
 
-  };
-  dec(0, -1, n);
+  friend ostream &operator<<(ostream &os, const ArbitraryModInt &p) {
+    return os << p.x;
+  }
+
+  friend istream &operator>>(istream &is, ArbitraryModInt &a) {
+    int64_t t;
+    is >> t;
+    a = ArbitraryModInt(t);
+    return (is);
+  }
+
+  int get() const { return x; }
+
+  inline unsigned int rem(unsigned long long p) { return barrett().rem(p); }
+
+  static inline Barrett &barrett() {
+    static Barrett b;
+    return b;
+  }
+
+  static inline int &get_mod() {
+    static int mod = 0;
+    return mod;
+  }
+
+  static void set_mod(int md) {
+    assert(0 < md && md <= (1LL << 30) - 1);
+    get_mod() = md;
+    barrett() = Barrett(md);
+  }
+};
+
+using mint = ArbitraryModInt;
+typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
 
 
-  debug(sz);
+// 等比数列などの和 ABC129-F
+mint geo_sum(mint a, mint r, ll sz) {
+  if (sz == 0) return mint(0);
+  if (sz == 1) return a;
+
+  mint ret = 0;
+  if (sz & 1) { ret += a; a *= r; }
+  mint s = geo_sum(a, r, sz / 2);
+  ret += s + r.pow(sz / 2) * s;
+  return ret;
+}
+
+void solve() {
+  LL(a, x, m);
+  mint::set_mod(m);
+  OUT(geo_sum(1, a, x));
 }
 
 signed main() {
