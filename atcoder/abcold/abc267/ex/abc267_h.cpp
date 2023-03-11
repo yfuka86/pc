@@ -107,13 +107,13 @@ using mint = modint998244353;
 const ll mod = 998244353;
 typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi;
 //------------------------------------------------------------------------------
-struct COM {
+namespace COM {
   vector<mint> fact, factinv, inv; int cur = 2;
-  COM() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } }
+  struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
   void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
-  mint P(int n, int k) { assert(n < 1e8); if (n < 0 || k < 0 || n < k) return 0; while (cur <= n) incr(); return fact[n] * factinv[n - k]; }
-  mint C(int n, int k) { mint p = P(n, k); if (p == 0) return 0; else return p * factinv[k]; }
-}; COM com;
+  mint combp(int n, int k) { assert(n < 1e8); if (n < 0 || k < 0 || n < k) return 0; while (cur <= n) incr(); return fact[n] * factinv[n - k]; }
+  mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; using COM::combp, COM::comb;
 //------------------------------------------------------------------------------
 ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
@@ -132,8 +132,8 @@ void solve() {
 
     rep(i, cnt + 1) {
       if (d * i > m) break;
-      if (i & 1) od[d * i] = C(cnt, i);
-      else ev[d * i] = com.C(cnt, i);
+      if (i & 1) od[d * i] = comb(cnt, i);
+      else ev[d * i] = comb(cnt, i);
     }
 
     vmi ev1 = convolution(eva, ev);

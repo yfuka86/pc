@@ -116,11 +116,13 @@ template< int mod > struct ModInt {
 };
 using mint = ModInt< mod >; typedef vector<mint> vmi; typedef vector<vmi> vvmi; typedef vector<vvmi> v3mi; typedef vector<v3mi> v4mi;
 //------------------------------------------------------------------------------
-const int max_n = 5001000;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
+namespace COM {
+  vector<mint> fact, factinv, inv; int cur = 2;
+  struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
+  void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * ((double)mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+  mint combp(int n, int k) { assert(n < 1e8); if (n < 0 || k < 0 || n < k) return 0; while (cur <= n) incr(); return fact[n] * factinv[n - k]; }
+  mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; using COM::combp, COM::comb;
 //------------------------------------------------------------------------------
 ll mod_pow(ll x, ll n, const ll &p = mod) { ll ret = 1; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
@@ -129,7 +131,6 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 void solve() {
   ll n; cin >> n;
   vlin(a, 3, 0);
-  init_f();
 
   vvmi dp(3, vmi(n + 1));
   rep(i, 3) dp[i][0] = 1;
