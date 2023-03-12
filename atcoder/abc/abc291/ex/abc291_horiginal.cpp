@@ -168,75 +168,143 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
-class CentroidDecomposition
-{
-public:
-    int V;
-    vector<vector<int> > G;
-    vector<bool> used;
-    //sz:重心分解後の最大部分木に含まれる頂点の数(自分を含める)
-    //par:重心分解後の親の頂点
-    vector<int> sz, par;
-    //部分木のサイズを計算
-    void calcSize(int u,int p){
-        sz[u] = 1;
-        for(int v : G[u]){
-            if(!used[v] && v != p){
-                calcSize(v,u);
-                sz[u] += sz[v];
-            }
-        }
+
+// https://nyaannyaan.github.io/library/tree/heavy-light-decomposition.hpp
+template <typename G>
+struct HeavyLightDecomposition {
+ private:
+  void dfs_sz(int cur) {
+    size[cur] = 1;
+    for (auto& dst : g[cur]) {
+      if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
+      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
     }
-    void cdBuild(int u,int p){
-        calcSize(u,-1);
-        int tot = sz[u];
-        bool ok = false;
-        int pp = -1;
-        //いま見ている部分木での重心を見つける
-        while(!ok){
-            ok = true;
-            for(int v : G[u]){
-                if(!used[v] && v != pp && 2*sz[v] > tot){
-                    pp = u, u = v, ok = false;
-                    break;
-                }
-            }
-        }
-        par[u] = p;
-        //何らかの操作
-        used[u] = true;
-        //深さ優先でたどる
-        for(int v : G[u]){
-            if(!used[v]){
-                cdBuild(v,u);
-            }
-        }
-    }
-    CentroidDecomposition(int node_size) : V(node_size), G(V), used(V, false)
-                                                , sz(V, 0), par(V, -1){}
-    void add_edge(int u,int v){
-        G[u].push_back(v), G[v].push_back(u);
-    }
-    void build(){
-        cdBuild(0,-1);
-    }
+  }
+  void dfs_hld(int cur) {
+    down[cur] = id++; drev[down[cur]] = cur;
+    for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
+    up[cur] = id;
+  }
+  // [u, v)
+  vector<pair<int, int>> ascend(int u, int v) const {
+    vector<pair<int, int>> res;
+    while (nxt[u] != nxt[v]) { res.emplace_back(down[u], down[nxt[u]]); u = par[nxt[u]]; }
+    if (u != v) res.emplace_back(down[u], down[v] + 1); return res;
+  }
+  // (u, v]
+  vector<pair<int, int>> descend(int u, int v) const {
+    if (u == v) return {};
+    if (nxt[u] == nxt[v]) return {{down[u] + 1, down[v]}};
+    auto res = descend(u, par[nxt[v]]);
+    res.emplace_back(down[nxt[v]], down[v]);
+    return res;
+  }
+ public:
+  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
+  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
+  void build(int root) { dfs_sz(root); dfs_hld(root); }
+  pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
+  template <typename F>
+  void path_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) { int s = a + 1, t = b; s > t ? f(t, s) : f(s, t); }
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) { int s = a, t = b + 1; s > t ? f(t, s) : f(s, t); }
+  }
+  template <typename F>
+  void path_noncommutative_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) f(a + 1, b);
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) f(a, b + 1);
+  }
+  template <typename F>
+  void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
+  int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
+  int la(int a, int d) { assert(0 <= d && d <= depth[a]); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
+  int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
+
+
+vlp rand_tree(ll n) {
+  RandGen rg; vl p = rg.vecperm(n); vlp ret;
+  for (int i = 1; i < n; ++i) ret.pb({p[rg.l(0, i)], p[i]});
+  return ret;
+}
 
 void solve() {
   LL(n);
-  CentroidDecomposition G(n);
+  Graph<ll> G(n);
+
+  // fore(u, v, rand_tree(n)) {
+  //   debug(u, v);
+  //   G.add_edge(u, v);
+  // }
 
   rep(i, n - 1) {
     LL(a, b); --a; --b;
     G.add_edge(a, b);
   }
-  G.build();
 
-  vl ans;
-  rep(i, n) {
-    ans.pb(G.par[i] != -1 ? G.par[i] + 1 : -1);
+  vl par(n, -1);
+  vb vis(n); // 重心として確定したか否か
+  vl sz(n, -1);
+
+  function<ll(ll, ll)> dfssz = [&](ll v, ll p) {
+    sz[v] = 1;
+    fore(to, G[v]) { if (to == p || vis[to]) continue;
+      sz[v] += dfssz(to, v);
+    }
+    return sz[v];
+  };
+
+  function<ll(ll, ll, ll)> find = [&](ll v, ll p, ll allsz) {
+    if (p == -1) allsz = dfssz(v, -1);
+    ll maxsz = 0, maxv = -1;
+    fore(to, G[v]) { if (to == p || vis[to]) continue;
+      if (chmax(maxsz, sz[to])) maxv = to;
+    }
+    // debug(v, p, maxsz, maxv);
+    if (maxv == -1 || maxsz * 2 <= allsz) return v; else return find(maxv, v, allsz);
+  };
+
+  function<void(ll, ll)> dec = [&](ll v, ll p) {
+    ll nx = find(v, -1, -1);
+    par[nx] = p != -1 ? p + 1 : p;
+    vis[nx] = 1;
+    // debug(v, p, nx);
+
+    fore(to, G[nx]) {
+      if (vis[to]) continue;
+      dec(to, nx);
+    }
+  };
+  dec(0, -1);
+
+  if (0) {
+    Graph<ll> G(n);
+    ll r = -1;
+    rep(i, n) {
+      if (par[i] != -1) G.add_edge(par[i] - 1, i); else r = i;
+    }
+    vl sz(n);
+    bool valid = true;
+    function<void(ll, ll)> dfs = [&](ll v, ll p) {
+      fore(to, G[v]) {
+        if (to == p) continue;
+        dfs(to, v);
+        sz[v] += sz[to];
+      }
+      fore(to, G[v]) {
+        if (to == p) continue;
+        if (sz[v] < sz[to] * 2) valid = false;
+      }
+    };
+    dfs(0, -1);
+    debug(valid);
   }
-  OUTARRAY(ans);
+
+  OUTARRAY(par);
 }
 
 signed main() {
