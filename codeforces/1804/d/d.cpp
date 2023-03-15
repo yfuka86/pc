@@ -150,50 +150,73 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+LP solve(ll n, ll m, vs s) {
+  ll mians = 0, maans = 0;
+
+  rep(i, n) {
+    ll cnt = 0;
+    rep(j, m) if (s[i][j] == '1') cnt++;
+
+    ll need = m / 4, ma = cnt;
+    vl dp(m + 1, -LINF); dp[0] = 0; // いいroom2が取れる数
+    rep(j, m) {
+      chmax(dp[j + 1], dp[j]);
+      if (j == m - 1 || (s[i][j] == '1' && s[i][j + 1] == '1')) continue;
+      chmax(dp[j + 2], dp[j] + 1);
+    }
+
+    ma -= max(need - dp[m], 0);
+
+    ll mi = cnt, room2 = 0;
+    rep(j, m - 1) {
+      if (s[i][j] == '1' && s[i][j + 1] == '1' && room2 < m / 4) {
+        room2++;
+        mi--;
+        j++;
+      }
+    }
+
+    mians += mi;
+    maans += ma;
+  }
+  return mp(mians, maans);
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+LP naive(ll n, ll m, vs s) {
+  ll mi = LINF, ma = 0;
+  ll room = m / 4 + m / 2;
+  rep(i, 1 << room) {
+    if (__builtin_popcount(i) != m / 4) continue;
+    ll cur = 0, rn = 0;
+    rep(j, room) {
+      if (i & 1 << j) { // 2部屋
+        if (s[0][cur] == '1' || s[0][cur + 1] == '1') rn++;
+        cur += 2;
+      } else {
+        if (s[0][cur] == '1') rn++;
+        cur++;
+      }
+    }
+    chmin(mi, rn); chmax(ma, rn);
+  }
+  return mp(mi, ma);
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = 1, m = 12;
+    vs s(n); rep(i, n) s[i] = rg.str(m, "01");
+    auto so = solve(n, m, s); auto na = naive(n, m, s);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      debug(n, m, s); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  LL(n);
-  VL(t, n);
-  VL(v, n);
-
-  rep(i, n) { t[i] <<= 1; v[i] <<= 1; } v.pb(0);
-
-  ll m = sum_of(t);
-
-  vv(ll, dp, m + 1, 210, -LINF); // dp[距離][速度]
-  dp[0][0] = 0;
-
-  ll cur = 0;
-  rep(i, n) {
-    rep(j, cur, cur + t[i]) {
-      rep(k, 205) if (k <= (j == cur + t[i] - 1 ? min(v[i], v[i + 1]) : v[i])) {
-        if (dp[j][k + 1] != -LINF) chmax(dp[j + 1][k], dp[j][k + 1] + k * 2 + 1); // 減速
-        if (k > 0 && dp[j][k - 1] != -LINF) chmax(dp[j + 1][k], dp[j][k - 1] + k * 2 - 1); // 加速
-        if (dp[j][k] != -LINF) chmax(dp[j + 1][k], dp[j][k] + k * 2); // 等速
-      }
-    }
-    cur += t[i];
-  }
-  // debug(dp);
-  OUT((ld)dp[m][0] / 8);
+  LL(n, m);
+  vs s(n); IN(s);
+  OUT(solve(n, m, s));
 }
 
 signed main() {

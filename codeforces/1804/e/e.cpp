@@ -170,34 +170,15 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VL(t, n);
-  VL(v, n);
+  LL(n, m);
+  rep(i, m) {
+    LL(u, v); --u; --v;
 
-  rep(i, n) { t[i] <<= 1; v[i] <<= 1; } v.pb(0);
-
-  ll m = sum_of(t);
-
-  vv(ll, dp, m + 1, 210, -LINF); // dp[距離][速度]
-  dp[0][0] = 0;
-
-  ll cur = 0;
-  rep(i, n) {
-    rep(j, cur, cur + t[i]) {
-      rep(k, 205) if (k <= (j == cur + t[i] - 1 ? min(v[i], v[i + 1]) : v[i])) {
-        if (dp[j][k + 1] != -LINF) chmax(dp[j + 1][k], dp[j][k + 1] + k * 2 + 1); // 減速
-        if (k > 0 && dp[j][k - 1] != -LINF) chmax(dp[j + 1][k], dp[j][k - 1] + k * 2 - 1); // 加速
-        if (dp[j][k] != -LINF) chmax(dp[j + 1][k], dp[j][k] + k * 2); // 等速
-      }
-    }
-    cur += t[i];
   }
-  // debug(dp);
-  OUT((ld)dp[m][0] / 8);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

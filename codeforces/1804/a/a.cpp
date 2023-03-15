@@ -170,34 +170,30 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VL(t, n);
-  VL(v, n);
+  v3(ll, cost, 201, 201, 4, LINF);
+  rep(i, 4) cost[100][100][i] = 0;
 
-  rep(i, n) { t[i] <<= 1; v[i] <<= 1; } v.pb(0);
+  queue<LT> que;
+  rep(d, 4) { cost[100 + dx[d]][100 + dy[d]][d] = 1; que.push({100 + dx[d], 100 + dy[d], d}); }
 
-  ll m = sum_of(t);
-
-  vv(ll, dp, m + 1, 210, -LINF); // dp[距離][速度]
-  dp[0][0] = 0;
-
-  ll cur = 0;
-  rep(i, n) {
-    rep(j, cur, cur + t[i]) {
-      rep(k, 205) if (k <= (j == cur + t[i] - 1 ? min(v[i], v[i + 1]) : v[i])) {
-        if (dp[j][k + 1] != -LINF) chmax(dp[j + 1][k], dp[j][k + 1] + k * 2 + 1); // 減速
-        if (k > 0 && dp[j][k - 1] != -LINF) chmax(dp[j + 1][k], dp[j][k - 1] + k * 2 - 1); // 加速
-        if (dp[j][k] != -LINF) chmax(dp[j + 1][k], dp[j][k] + k * 2); // 等速
-      }
+  while(!que.empty()) {
+    auto [x, y, prev] = que.front(); que.pop();
+    ll c = cost[x][y][prev];
+    rep(d, 4) {
+      ll di = x + dx[d], dj = y + dy[d];
+      if (incl(di, 0, 201) && incl(dj, 0, 201) && chmin(cost[di][dj][d], d == prev ? c + 2 : c + 1)) que.push({di, dj, d});
     }
-    cur += t[i];
   }
-  // debug(dp);
-  OUT((ld)dp[m][0] / 8);
+
+  LL(t);
+  rep(i, t) {
+    LL(x, y);
+    OUT(*min_element(all(cost[x + 100][y + 100])));
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t = 1; //cin >> t;
   while (t--) if (1) solve(); else compare();
 }

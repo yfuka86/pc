@@ -150,54 +150,76 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+ll solve(ll n, ll x, ll p) {
+  ll t = (n - x) % n;
+  if (n >= p) {
+    ll cur = 0;
+    rep(i, 1, p + 1) {
+      cur += i;
+      cur %= n;
+      if (cur == t) return true;
+    }
+    return false;
+  } else {
+    vl s;
+    ll cur = 0;
+    rep(i, 1, n) {
+      cur += i;
+      cur %= n;
+      s.pb(cur);
+    }
+    ll cycle = cur;
+    if (cycle == 0) {
+      return find(all(s), t) != s.end();
+    } else {
+      ll ma = lcm(n, cycle) / cycle;
+      ll loop = min((p + 1) / n, ma);
+      set<ll> S; rep(i, s.size()) S.insert(s[i]);
+      rep(i, loop) {
+        if (S.find(t) != S.end()) return true;
+        t -= cycle;
+        if (t < 0) t += n;
+      }
+
+      ll cur2 = 0;
+      rep(i, (p + 1) % n) {
+        cur2 += i;
+        cur2 %= n;
+        if (cur2 == t) return true;
+      }
+      return false;
+    }
+  }
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+ll naive(ll n, ll x, ll p) {
+  ll cur = 0;
+  rep(i, 1, p + 1) {
+    cur += i;
+    if ((x + cur) % n == 0) return true;
+  }
+  return false;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = rg.l(3, 10);
+    ll x = rg.l(0, n);
+    ll p = rg.l(1, 30);
+    auto so = solve(n, x, p); auto na = naive(n, x, p);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      debug(n, x, p); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  LL(n);
-  VL(t, n);
-  VL(v, n);
-
-  rep(i, n) { t[i] <<= 1; v[i] <<= 1; } v.pb(0);
-
-  ll m = sum_of(t);
-
-  vv(ll, dp, m + 1, 210, -LINF); // dp[距離][速度]
-  dp[0][0] = 0;
-
-  ll cur = 0;
-  rep(i, n) {
-    rep(j, cur, cur + t[i]) {
-      rep(k, 205) if (k <= (j == cur + t[i] - 1 ? min(v[i], v[i + 1]) : v[i])) {
-        if (dp[j][k + 1] != -LINF) chmax(dp[j + 1][k], dp[j][k + 1] + k * 2 + 1); // 減速
-        if (k > 0 && dp[j][k - 1] != -LINF) chmax(dp[j + 1][k], dp[j][k - 1] + k * 2 - 1); // 加速
-        if (dp[j][k] != -LINF) chmax(dp[j + 1][k], dp[j][k] + k * 2); // 等速
-      }
-    }
-    cur += t[i];
-  }
-  // debug(dp);
-  OUT((ld)dp[m][0] / 8);
+  LL(n, x, p);
+  Yes(solve(n, x, p));
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }
