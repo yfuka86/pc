@@ -150,85 +150,92 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+pair<ll, vl> solve(ll n, vl a) {
+  vl b = a, c = a; sort(all(b)); sort(rall(c));
+
+  sort(all(a));
+  map<ll, ll> f;
+  ll same = -1;
+  rep(i, n) {
+    f[a[i]]++;
+    if (f[a[i]] >= 2) same = a[i];
+  }
+  if (n == 2 || f.size() == 1) return mp(-1ll, vl(0));
+
+  if (same != -1) {
+    if (n == 3) {
+      ll diff;
+      rep(i, n - 1) if (a[i] != a[i + 1]) { swap(a[i], a[i + 1]); diff = abs(a[i] - a[i + 1]); break; }
+      return mp(diff, a);
+    } else {
+      vl t; rep(_, 2) t.pb(same);
+      fore(i, j, f) {
+        rep(_, j - (i == same ? 2 : 0)) t.pb(i);
+      }
+      while (t == b || t == c) { t.insert(t.begin(), t.back()); t.pop_back(); }
+      return mp(0, t);
+    }
+  } else {
+    ll diff = LINF;
+    ll id = -1;
+    rep(i, n - 1) {
+      if (chmin(diff, a[i + 1] - a[i])) id = i;
+    }
+    // idとid+1の組が最小
+    vl t;
+    t.pb(a[id]); t.pb(a[id + 1]);
+    rep(i, n) {
+      if (i == id || i == id + 1) continue;
+      t.pb(a[i]);
+    }
+    if (t == b || t == c) swap(t[0], t[1]);
+    return mp(abs(t[0] - t[1]), t);
+  }
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+pair<ll, vl> naive(ll n, vl a) {
+  vl b = a, c = a; sort(all(b)); sort(rall(c));
+  sort(all(a));
+  ll mi = LINF;
+  vl ans;
+  do {
+    ll t = LINF;
+    if (a == b || a == c) continue;
+    rep(i, n - 1) {
+      chmin(t, abs(a[i] - a[i + 1]));
+    }
+    if (chmin(mi, t)) ans = a;
+  } while (next_permutation(all(a)));
+
+  if (mi == LINF) return mp(-1, vl(0));
+  else return mp(mi, ans);
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
+    ll n = rg.l(2, 8);
+    vl a = rg.vecl(n, 1, 20);
+    vl B = a, C = a; sort(all(B)); sort(rall(C));
     auto so = solve(n, a); auto na = naive(n, a);
-    if (!check || na != so) { cout << c << "times tried" << "\n";
+    ll check = LINF;
+    rep(i, so.se.size() - 1) chmin(check, abs(so.se[i + 1] - so.se[i]));
+    if (check == LINF) check = -1;
+    if (na.fi != so.fi || so.se == B || so.se == C || check != so.fi) { cout << c << "times tried" << "\n";
       debug(n, a); debug(so); debug(na);
-    if (check || (!check && c > loop)) break; }
+      break;
+    }
   }
 }
 
 void solve() {
-  LL(n, m); VL(a, n);
-  vb s(1000000);
-  rep(i, n) s[a[i]] = 1;
-  vl p2v(30); p2v[0] = 1; rep(i, 29) p2v[i + 1] = p2v[i] * 2;
-
-  vb ans(m * 2 + 1);
-  vvl divs(m * 2 + 1);
-  bool valid = true;
-  vl r(m * 2 + 1, LINF), l(m * 2 + 1, -LINF);
-  rep(i, m) { ll t = i * 2 + 1;
-    ll p2 = 0;
-    if (r[t] == -1) { valid = false; break; }
-    while (p2v[p2 + 1] * t <= 2 * m && p2 < r[t]) p2++;
-    while (!s[t * p2v[p2]]) {
-      if (p2 == 0) { valid = false; break; }
-      p2--;
-    }
-    if (valid) {
-      r[t] = p2;
-      for(int j = t * 2; j < m * 2; j += t) {
-        chmin(r[j], r[t] - 1);
-        divs[j].pb(t);
-      }
-    }
-  }
-
-  rep_r(i, m) { ll t = i * 2 + 1;
-    ll p2 = max(0, l[t]);
-    while (!s[t * p2v[p2]]) {
-      if (t * p2v[p2 + 1] > m * 2) { valid = false; break; }
-      p2++;
-    }
-    if (valid) {
-      l[t] = p2;
-      // debug(t, divisor(t));
-      fore(j, divs[t]) {
-        if (j == t) continue;
-        chmax(l[j], l[t] + 1);
-      }
-    }
-  }
-  // debug(l);
-  // debug(r);
-
-  if (valid) {
-    rep(i, m) { ll t = i * 2 + 1;
-      rep(j, l[t], r[t] + 1) {
-        ans[t * p2v[j]] = 1;
-      }
-    }
-  }
-
-  rep(i, n) {
-    Yes(ans[a[i]]);
-  }
+  LL(n); VL(a, n);
+  auto so = solve(n, a);
+  if (so.fi == -1) OUTRET(-1);
+  OUTARRAY(so.se);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

@@ -170,65 +170,20 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, m); VL(a, n);
-  vb s(1000000);
-  rep(i, n) s[a[i]] = 1;
-  vl p2v(30); p2v[0] = 1; rep(i, 29) p2v[i + 1] = p2v[i] * 2;
+  LL(n);
+  if (n == 2) OUTRET(-1);
 
-  vb ans(m * 2 + 1);
-  vvl divs(m * 2 + 1);
-  bool valid = true;
-  vl r(m * 2 + 1, LINF), l(m * 2 + 1, -LINF);
-  rep(i, m) { ll t = i * 2 + 1;
-    ll p2 = 0;
-    if (r[t] == -1) { valid = false; break; }
-    while (p2v[p2 + 1] * t <= 2 * m && p2 < r[t]) p2++;
-    while (!s[t * p2v[p2]]) {
-      if (p2 == 0) { valid = false; break; }
-      p2--;
-    }
-    if (valid) {
-      r[t] = p2;
-      for(int j = t * 2; j < m * 2; j += t) {
-        chmin(r[j], r[t] - 1);
-        divs[j].pb(t);
-      }
-    }
-  }
-
-  rep_r(i, m) { ll t = i * 2 + 1;
-    ll p2 = max(0, l[t]);
-    while (!s[t * p2v[p2]]) {
-      if (t * p2v[p2 + 1] > m * 2) { valid = false; break; }
-      p2++;
-    }
-    if (valid) {
-      l[t] = p2;
-      // debug(t, divisor(t));
-      fore(j, divs[t]) {
-        if (j == t) continue;
-        chmax(l[j], l[t] + 1);
-      }
-    }
-  }
-  // debug(l);
-  // debug(r);
-
-  if (valid) {
-    rep(i, m) { ll t = i * 2 + 1;
-      rep(j, l[t], r[t] + 1) {
-        ans[t * p2v[j]] = 1;
-      }
-    }
-  }
+  vs ans(n, string(n, '0'));
+  rep(i, n) rep(j, n) if (i >= j) ans[i][j] = '1';
+  ans[n - 1][1] = '0';
 
   rep(i, n) {
-    Yes(ans[a[i]]);
+    OUT(ans[i]);
   }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

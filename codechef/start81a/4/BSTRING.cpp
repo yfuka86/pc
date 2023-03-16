@@ -169,66 +169,59 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const ll mod = 1000000007;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+namespace COM {
+  vector<mint> fact, factinv, inv; int cur = 2;
+  struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
+  void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+  mint combp(int n, int k) { assert(n < 1e8); if (n < 0 || k < 0 || n < k) return 0; while (cur <= n) incr(); return fact[n] * factinv[n - k]; }
+  mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; using COM::combp, COM::comb;
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
 void solve() {
-  LL(n, m); VL(a, n);
-  vb s(1000000);
-  rep(i, n) s[a[i]] = 1;
-  vl p2v(30); p2v[0] = 1; rep(i, 29) p2v[i + 1] = p2v[i] * 2;
+  LL(n);
+  STR(s);
 
-  vb ans(m * 2 + 1);
-  vvl divs(m * 2 + 1);
-  bool valid = true;
-  vl r(m * 2 + 1, LINF), l(m * 2 + 1, -LINF);
-  rep(i, m) { ll t = i * 2 + 1;
-    ll p2 = 0;
-    if (r[t] == -1) { valid = false; break; }
-    while (p2v[p2 + 1] * t <= 2 * m && p2 < r[t]) p2++;
-    while (!s[t * p2v[p2]]) {
-      if (p2 == 0) { valid = false; break; }
-      p2--;
-    }
-    if (valid) {
-      r[t] = p2;
-      for(int j = t * 2; j < m * 2; j += t) {
-        chmin(r[j], r[t] - 1);
-        divs[j].pb(t);
-      }
-    }
-  }
-
-  rep_r(i, m) { ll t = i * 2 + 1;
-    ll p2 = max(0, l[t]);
-    while (!s[t * p2v[p2]]) {
-      if (t * p2v[p2 + 1] > m * 2) { valid = false; break; }
-      p2++;
-    }
-    if (valid) {
-      l[t] = p2;
-      // debug(t, divisor(t));
-      fore(j, divs[t]) {
-        if (j == t) continue;
-        chmax(l[j], l[t] + 1);
-      }
-    }
-  }
-  // debug(l);
-  // debug(r);
-
-  if (valid) {
-    rep(i, m) { ll t = i * 2 + 1;
-      rep(j, l[t], r[t] + 1) {
-        ans[t * p2v[j]] = 1;
-      }
-    }
-  }
+  // dp[i][直前0/1][切り替わり偶奇]
+  v3(mint, dp, n + 1, 2, 2);
 
   rep(i, n) {
-    Yes(ans[a[i]]);
+    ll c = s[i] - '0';
+    rep(j, 2) rep(k, 2) {
+      dp[i + 1][j][k] += dp[i][j][k];
+      dp[i + 1][c][k ^ (j != c)] += dp[i][j][k];
+    }
+    dp[i + 1][c][0] += 1;
   }
+  // debug(dp);
+
+  OUT(dp[n][0][0] + dp[n][1][0]);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }
