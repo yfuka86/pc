@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "toyota2023spring-final",
+    "title": "Toyota Programming Contest 2023 Spring Final",
+    "url": "https://atcoder.jp/contests/toyota2023spring-final"
+  },
+  "tasks": [
+    {
+      "id": "toyota2023spring_final_a",
+      "label": "A",
+      "title": "Area Sum",
+      "url": "https://atcoder.jp/contests/toyota2023spring-final/tasks/toyota2023spring_final_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "toyota2023spring_final_a.cpp"
+      }
+    },
+    {
+      "id": "toyota2023spring_final_b",
+      "label": "B",
+      "title": "Best Strategy",
+      "url": "https://atcoder.jp/contests/toyota2023spring-final/tasks/toyota2023spring_final_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "toyota2023spring_final_b.cpp"
+      }
+    },
+    {
+      "id": "toyota2023spring_final_c",
+      "label": "C",
+      "title": "Count Dividing XOR",
+      "url": "https://atcoder.jp/contests/toyota2023spring-final/tasks/toyota2023spring_final_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "toyota2023spring_final_c.cpp"
+      }
+    },
+    {
+      "id": "toyota2023spring_final_d",
+      "label": "D",
+      "title": "Dual Rotation",
+      "url": "https://atcoder.jp/contests/toyota2023spring-final/tasks/toyota2023spring_final_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "toyota2023spring_final_d.cpp"
+      }
+    },
+    {
+      "id": "toyota2023spring_final_e",
+      "label": "E",
+      "title": "East-Northeast",
+      "url": "https://atcoder.jp/contests/toyota2023spring-final/tasks/toyota2023spring_final_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "toyota2023spring_final_e.cpp"
+      }
+    },
+    {
+      "id": "toyota2023spring_final_f",
+      "label": "F",
+      "title": "Forbidden Pattern",
+      "url": "https://atcoder.jp/contests/toyota2023spring-final/tasks/toyota2023spring_final_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "toyota2023spring_final_f.cpp"
+      }
+    },
+    {
+      "id": "toyota2023spring_final_g",
+      "label": "G",
+      "title": "Git Gud",
+      "url": "https://atcoder.jp/contests/toyota2023spring-final/tasks/toyota2023spring_final_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "toyota2023spring_final_g.cpp"
+      }
+    }
+  ]
+}
