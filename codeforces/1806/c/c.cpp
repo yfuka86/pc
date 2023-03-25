@@ -169,69 +169,65 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static constexpr int get_mod() { return mod; }
-};
-using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-//------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
+void enum_check(ll N, ll from, ll to, function<bool(vl&)> check, bool inc = false) { // size, [from, to)
+  to--; vl st(N, from); if (inc) { iota(all(st), from); if (st.back() >= to) return; }
+  while (1) {
+    assert(st.size() == N); if (!check(st)) break;
+    while (st.size() && st.back() == to) st.pop_back(); if (st.size() == 0) break;
+    st.back()++;
+    while (st.size() < N) if (inc) st.pb(st.back()); else st.pb(from);
+  }
+}
 
 void solve() {
   LL(n);
-  Graph<ll> G(n);
-  rep(i, n - 1) {
-    LL(u, v); --u; --v;
-    G.add_edge(u, v);
-  }
+  VL(p, n * 2);
 
-  vv(mint, dp, n, 2, 1);
+  if (n == 1) {
+    OUT(abs(p[0] - p[1]));
+  } else {
+    ll ans = 0;
+    rep(i, n * 2) ans += abs(p[i]);
 
-  function<void(ll, ll)> dfs = [&](ll v, ll p) {
-    mint c0 = 1, c1 = 1;
-    fore(to, G[v]) {
-      if (to == p) continue;
-      dfs(to, v);
-      // 辺を切るケース
-      mint nx0 = c0 * dp[to][1];
-      mint nx1 = c1 * dp[to][1];
-      // 辺を切らないケース
-      nx0 += c0 * dp[to][0];
-      nx1 += c1 * dp[to][0] + c0 * dp[to][1];
-      c0 = nx0, c1 = nx1;
+    if (n == 2) {
+      ll t = 0;
+      rep(i, n * 2) t += abs(p[i] - 2);
+      chmin(ans, t);
     }
-    dp[v][0] = c0;
-    dp[v][1] = c1;
-  };
-  dfs(0, -1);
-  // debug(dp);
 
-  OUT(dp[0][1]);
+    if (!(n & 1)) {
+      ll t = 0;
+      rep(i, n * 2) t += abs(p[i] + 1);
+      rep(i, n * 2) {
+        chmin(ans, t - abs(p[i] + 1) + abs(p[i] - n));
+      }
+    }
+    OUT(ans);
+  }
+  return;
+  set<vl> deb;
+  ll ma = 8;
+  enum_check(ma, -5, 5, [&](vl &a) {
+    vl t = a; sort(all(t));
+    bool valid = true;
+    do {
+      ll p = 1, s = 0;
+      rep(i, ma / 2) {
+        p *= t[i];
+      }
+      rep(i, ma / 2, ma) {
+        s += t[i];
+      }
+      if (p!=s) { valid = false; break; }
+    } while (next_permutation(all(t)));
+    if (valid) deb.insert(t);
+    return true;
+  }, true);
+  debug(deb);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

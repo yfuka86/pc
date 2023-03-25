@@ -169,69 +169,190 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-const ll mod = 998244353;
-//------------------------------------------------------------------------------
-template< int mod > struct ModInt {
-  int x; ModInt() : x(0) {}
-  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
-  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
-  ModInt operator-() const { return ModInt(-x); }
-  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
-  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
-  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
-  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
-  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
-  static constexpr int get_mod() { return mod; }
+// https://nyaannyaan.github.io/library/tree/heavy-light-decomposition.hpp
+template <typename G>
+struct HeavyLightDecomposition {
+ private:
+  void dfs_sz(int cur) {
+    size[cur] = 1;
+    for (auto& dst : g[cur]) {
+      if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
+      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
+    }
+  }
+  void dfs_hld(int cur) {
+    down[cur] = id++; drev[down[cur]] = cur;
+    for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
+    up[cur] = id;
+  }
+  // [u, v)
+  vector<pair<int, int>> ascend(int u, int v) const {
+    vector<pair<int, int>> res;
+    while (nxt[u] != nxt[v]) { res.emplace_back(down[u], down[nxt[u]]); u = par[nxt[u]]; }
+    if (u != v) res.emplace_back(down[u], down[v] + 1); return res;
+  }
+  // (u, v]
+  vector<pair<int, int>> descend(int u, int v) const {
+    if (u == v) return {};
+    if (nxt[u] == nxt[v]) return {{down[u] + 1, down[v]}};
+    auto res = descend(u, par[nxt[v]]);
+    res.emplace_back(down[nxt[v]], down[v]);
+    return res;
+  }
+ public:
+  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
+  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
+  void build(int root) { dfs_sz(root); dfs_hld(root); }
+  pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
+  template <typename F>
+  void path_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) { int s = a + 1, t = b; s > t ? f(t, s) : f(s, t); }
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) { int s = a, t = b + 1; s > t ? f(t, s) : f(s, t); }
+  }
+  template <typename F>
+  void path_noncommutative_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) f(a + 1, b);
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) f(a, b + 1);
+  }
+  template <typename F>
+  void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
+  int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
+  int la(int a, int d) { assert(0 <= d && d <= depth[a]); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
+  int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
-using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-//------------------------------------------------------------------------------
-const int max_n = (1 << 20) + 1;
-mint fact[max_n], factinv[max_n];
-void init_f() { fact[0] = 1; for (int i = 0; i < max_n - 1; i++) { fact[i + 1] = fact[i] * (i + 1); } factinv[max_n - 1] = mint(1) / fact[max_n - 1]; for (int i = max_n - 2; i >= 0; i--) { factinv[i] = factinv[i + 1] * (i + 1); } }
-mint comb(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[b] * factinv[a - b]; }
-mint combP(int a, int b) { assert(a < max_n && fact[0] != 0); if (a < 0 || b < 0 || a < b) return 0; return fact[a] * factinv[a - b]; }
-//------------------------------------------------------------------------------
-ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
-ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------
 
-void solve() {
-  LL(n);
-  Graph<ll> G(n);
-  rep(i, n - 1) {
-    LL(u, v); --u; --v;
-    G.add_edge(u, v);
+// https://nyaannyaan.github.io/library/misc/mo.hpp
+struct Mo {
+  int width;
+  vector<int> left, right, order;
+
+  Mo(int N, int Q) : order(Q) {
+    width = max<int>(1, 1.0 * N / max<double>(1.0, sqrt(Q * 2.0 / 3.0)));
+    iota(begin(order), end(order), 0);
   }
 
-  vv(mint, dp, n, 2, 1);
+  void insert(int l, int r) { /* [l, r) */
+    left.emplace_back(l);
+    right.emplace_back(r);
+  }
 
+  template <typename AL, typename AR, typename DL, typename DR, typename REM>
+  void run(const AL &add_left, const AR &add_right, const DL &delete_left,
+           const DR &delete_right, const REM &rem) {
+    assert(left.size() == order.size());
+    sort(begin(order), end(order), [&](int a, int b) {
+      int ablock = left[a] / width, bblock = left[b] / width;
+      if (ablock != bblock) return ablock < bblock;
+      if (ablock & 1) return right[a] < right[b];
+      return right[a] > right[b];
+    });
+    int nl = 0, nr = 0;
+    for (auto idx : order) {
+      while (nl > left[idx]) add_left(--nl);
+      while (nr < right[idx]) add_right(nr++);
+      while (nl < left[idx]) delete_left(nl++);
+      while (nr > right[idx]) delete_right(--nr);
+      rem(idx);
+    }
+  }
+};
+
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, [0, i] >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
+void solve() {
+  LL(n, q);
+  VL(a, n);
+  VL(p, n - 1);
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    G.add_edge(i + 1, p[i] - 1);
+  }
+  HeavyLightDecomposition<Graph<ll>> hld(G);
+
+  vl dp(n); ll cur = 0;
   function<void(ll, ll)> dfs = [&](ll v, ll p) {
-    mint c0 = 1, c1 = 1;
+    cur += a[v] * a[v];
+    dp[v] = cur;
     fore(to, G[v]) {
       if (to == p) continue;
       dfs(to, v);
-      // 辺を切るケース
-      mint nx0 = c0 * dp[to][1];
-      mint nx1 = c1 * dp[to][1];
-      // 辺を切らないケース
-      nx0 += c0 * dp[to][0];
-      nx1 += c1 * dp[to][0] + c0 * dp[to][1];
-      c0 = nx0, c1 = nx1;
     }
-    dp[v][0] = c0;
-    dp[v][1] = c1;
+    cur -= a[v] * a[v];
   };
   dfs(0, -1);
-  // debug(dp);
 
-  OUT(dp[0][1]);
+  Mo mo(n, q);
+  vl ans(q), qdep(q), qlca(q);
+
+  rep(i, q) {
+    LL(x, y); --x; --y;
+    qlca[i] = hld.lca(x, y);
+    ans[i] = dp[qlca[i]];
+    qdep[i] = hld.depth[x];
+    ll l = hld.down[x], r = hld.down[y];
+    if (l > r) swap(l, r);
+    mo.insert(l + 1, r + 1);
+  }
+  // debug(hld.down);
+  // debug(hld.drev);
+  // debug(hld.up);
+
+  vector<deque<ll>> d(n);
+  BIT<ll> bt(n);
+  auto add = [&](int i, bool left) {
+    ll v = hld.drev[i];
+    ll dep = hld.depth[v];
+    if (left) d[dep].push_front(a[v]); else d[dep].push_back(a[v]);
+    if (d[dep].size() > 1) {
+      bt.add(dep, d[dep].front() * d[dep].back() - bt.sum(dep, dep + 1));
+    }
+  };
+  auto erase = [&](int i, bool left) {
+    ll v = hld.drev[i];
+    ll dep = hld.depth[v];
+    if (left) d[dep].pop_front(); else d[dep].pop_back();
+    if (d[dep].size() > 1) {
+      bt.add(dep, d[dep].front() * d[dep].back() - bt.sum(dep, dep + 1));
+    } else {
+      bt.add(dep, -bt.sum(dep, dep + 1));
+    }
+  };
+  auto add_left = [&](int i) { erase(i, true); };
+  auto add_right = [&](int i) { add(i, false); };
+  auto erase_left = [&](int i) { add(i, true); };
+  auto erase_right = [&](int i) { erase(i, false); };
+
+  auto rem = [&](int idx) {
+    ans[idx] += bt.sum(hld.depth[qlca[idx]] + 1, qdep[idx] + 1);
+  };
+  mo.run(add_left, add_right, erase_left, erase_right, rem);
+
+  OUTARRAY(ans, 0, "\n");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t = 1; //cin >> t;
   while (t--) if (1) solve(); else compare();
 }
