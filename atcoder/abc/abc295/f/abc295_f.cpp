@@ -171,45 +171,33 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 ll calc(string s, ll r) {
   vl ds = digits(r); reverse(all(ds));
-  v3(ll, dp, ds.size() + 1, 2, 2, 0);
-  v3(ll, dp2, ds.size() + 1, s.size() + 1, 2, 0);
+  ll n = ds.size(), slen = s.size();
+  v4(ll, dp, n + 1, slen + 1, 2, 2, 0);
+  dp[0][0][1][0] = 1;
+  // dp[桁目][どの位置まで一致しているか][max?][開始済か]
+  rep(i, n) rep(j, slen + 1) rep(k, 2) rep(m, 2) {
+    rep(d, 10) {
+      if (k && d > ds[i]) continue;
+      ll nk = k && d == ds[i];
+      if (j == 0) { // Sとの合致前の遷移
+        dp[i + 1][j][nk][d ? 1 : m] += dp[i][j][k][m];
+      }
 
-  dp[0][1][0] = 1;
+      if (j < slen && (s[j] - '0') == d && (d || m)) { // Sとの合致を見る遷移
+        dp[i + 1][j + 1][nk][d ? 1 : m] += dp[i][j][k][m];
+      }
 
-  rep(i, ds.size()) {
-    rep(k, 2) {
-      rep(d, 10) { if (k && d > ds[i]) continue;
-        rep(m, 2) {
-          dp[i + 1][k && d == ds[i]][d ? 1 : m] += dp[i][k][m];
-        }
-        rep(j, s.size()) {
-          if ((s[j] - '0') == d) {
-            ll off = 0;
-            if (j == 0) {
-              off += dp[i][k][1];
-              if (d) off += dp[i][k][0];
-            }
-            dp2[i + 1][j + 1][k && d == ds[i]] += dp2[i][j][k] + off;
-          }
-        }
+      if (j == slen) { // Sとの合致終了後の遷移
+        dp[i + 1][j][nk][m] += dp[i][j][k][m];
       }
     }
   }
-  // debug(dp);
 
-  ll ans = 0;
-  rep(i, ds.size() + 1) {
-    ll free = ds.size() - i;
-    ans += dp2[i][s.size()][0] * POW(10, free);
-    ans += dp2[i][s.size()][1] * (free ? (r % POW(10, free) + 1) : 1);
-  }
-  return ans;
+  return dp[n][slen][0][1] + dp[n][slen][1][1];
 }
 
 void solve() {
   STR(s); LL(l, r);
-  // debug(calc(s, r));
-  // debug(calc(s, l - 1));
   OUT(calc(s, r) - (l > 1 ? calc(s, l - 1) : 0));
 }
 
