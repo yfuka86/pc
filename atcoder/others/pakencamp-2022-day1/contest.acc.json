@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "pakencamp-2022-day1",
+    "title": "パ研合宿2022　第1日「Jikka」",
+    "url": "https://atcoder.jp/contests/pakencamp-2022-day1"
+  },
+  "tasks": [
+    {
+      "id": "pakencamp_2022_day1_a",
+      "label": "A",
+      "title": "Rook",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_a.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_b",
+      "label": "B",
+      "title": "Power Strip",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_b.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_c",
+      "label": "C",
+      "title": "Let's Make a Palindrome",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_c.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_d",
+      "label": "D",
+      "title": "Social Distance 3",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_d.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_e",
+      "label": "E",
+      "title": "Boombox",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_e.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_f",
+      "label": "F",
+      "title": "Events Scheduling",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_f.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_g",
+      "label": "G",
+      "title": "Ancestor Query",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_g.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_h",
+      "label": "H",
+      "title": "Attack Survival ",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_h.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_i",
+      "label": "I",
+      "title": "Forgotten Sequence",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_i.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_j",
+      "label": "J",
+      "title": "An Unusual King in Paken Kingdom",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_j.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_k",
+      "label": "K",
+      "title": "Beautifulness",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_k.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_l",
+      "label": "L",
+      "title": "Mex on Blackboard 2",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_l.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_m",
+      "label": "M",
+      "title": "01 Tree",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_m.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_n",
+      "label": "N",
+      "title": "Paken Machine",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_n.cpp"
+      }
+    },
+    {
+      "id": "pakencamp_2022_day1_o",
+      "label": "O",
+      "title": "Paken Land",
+      "url": "https://atcoder.jp/contests/pakencamp-2022-day1/tasks/pakencamp_2022_day1_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "pakencamp_2022_day1_o.cpp"
+      }
+    }
+  ]
+}
