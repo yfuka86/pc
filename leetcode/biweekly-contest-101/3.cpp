@@ -44,22 +44,22 @@ template<typename T, typename S> T floor(T x, S y) { assert(y); return (y < 0 ? 
 template<class T, class U> bool chmin(T &a, const U &b) { if (b < a) { a = b; return 1;} return 0; }
 template<class T, class U> bool chmax(T &a, const U &b) { if (b > a) { a = b; return 1;} return 0; }
 
-vl ps(vl &c){
-  vl a, b;
-  rep(i, c.size() / 2) a.pb(c[i]);
-  rep(i, c.size() / 2, c.size()) b.pb(c[i]);
-  vl x;
-  rep(i, c.size() / 2) {
-    x.pb(a.back()); x.pb(b.back());
-    a.pop_back(); b.pop_back();
+class Solution {
+public:
+  long long makeSubKSumEqual(vector<int>& arr, int k) {
+    ll m = gcd(arr.size(), k);
+    vvl a(m);
+    rep(i, arr.size()) {
+      a[i % m].pb(arr[i]);
+    }
+    ll ans = 0;
+    rep(i, m) {
+      sort(all(a[i]));
+      ll mid = a[i][a[i].size() / 2];
+      fore(e, a[i]) {
+        ans += abs(e - mid);
+      }
+    }
+    return ans;
   }
-  return x;
-}
-
-int main() {
-  vl cards(52); iota(all(cards), 0);
-  rep(_, 10) cards = ps(cards);
-  rep(i, 52) {
-    cout << cards[i] << '\n';
-  }
-}
+};
