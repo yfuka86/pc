@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "past202005-open",
+    "title": "第三回 アルゴリズム実技検定 過去問",
+    "url": "https://atcoder.jp/contests/past202005-open"
+  },
+  "tasks": [
+    {
+      "id": "past202005_a",
+      "label": "A",
+      "title": "Case Sensitive",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "past202005_a.cpp"
+      }
+    },
+    {
+      "id": "past202005_b",
+      "label": "B",
+      "title": "Dynamic Scoring",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "past202005_b.cpp"
+      }
+    },
+    {
+      "id": "past202005_c",
+      "label": "C",
+      "title": "Geometric Progression",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "past202005_c.cpp"
+      }
+    },
+    {
+      "id": "past202005_d",
+      "label": "D",
+      "title": "Digital Display",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "past202005_d.cpp"
+      }
+    },
+    {
+      "id": "past202005_e",
+      "label": "E",
+      "title": "Sprinklers",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "past202005_e.cpp"
+      }
+    },
+    {
+      "id": "past202005_f",
+      "label": "F",
+      "title": "Palindromic Matrix",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "past202005_f.cpp"
+      }
+    },
+    {
+      "id": "past202005_g",
+      "label": "G",
+      "title": "Gold General Goes on the Grid",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "past202005_g.cpp"
+      }
+    },
+    {
+      "id": "past202005_h",
+      "label": "H",
+      "title": "Hurdling",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "past202005_h.cpp"
+      }
+    },
+    {
+      "id": "past202005_i",
+      "label": "I",
+      "title": "Matrix Operations",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "past202005_i.cpp"
+      }
+    },
+    {
+      "id": "past202005_j",
+      "label": "J",
+      "title": "Sushi-go-round",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "past202005_j.cpp"
+      }
+    },
+    {
+      "id": "past202005_k",
+      "label": "K",
+      "title": "Moving Containers",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "past202005_k.cpp"
+      }
+    },
+    {
+      "id": "past202005_l",
+      "label": "L",
+      "title": "Supamarket",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "past202005_l.cpp"
+      }
+    },
+    {
+      "id": "past202005_m",
+      "label": "M",
+      "title": "Real Traveling Salesman",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "past202005_m.cpp"
+      }
+    },
+    {
+      "id": "past202005_n",
+      "label": "N",
+      "title": "Swap and Sort",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "past202005_n.cpp"
+      }
+    },
+    {
+      "id": "past202005_o",
+      "label": "O",
+      "title": "Quoits",
+      "url": "https://atcoder.jp/contests/past202005-open/tasks/past202005_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "past202005_o.cpp"
+      }
+    }
+  ]
+}
