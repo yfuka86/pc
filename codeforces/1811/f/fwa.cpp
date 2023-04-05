@@ -169,39 +169,91 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
-  LL(n, q);
+  LL(n, m);
+  vector<set<ll>> G(n);
+  rep(i, m) {
+    LL(u, v); --u; --v;
+    G[u].insert(v); G[v].insert(u);
+  }
+  rep(i, n) if (G[i].size() & 1 || G[i].size() == 0) OUTRET("NO");
 
-  vl a(n); iota(all(a), 0);
-  set<ll> inv;
+  queue<ll> que;
+  rep(i, n) if (G[i].size() == 2) que.push(i);
 
-  function<void(ll)> upd = [&](ll x) { assert(x < n - 1);
-    swap(a[x], a[x + 1]);
-    if (x > 0 && a[x - 1] > a[x]) inv.insert(x - 1); else inv.erase(x - 1);
-    if (a[x] > a[x + 1]) inv.insert(x); else inv.erase(x);
-    if (x < n - 2 && a[x + 1] > a[x + 2]) inv.insert(x + 1); else inv.erase(x + 1);
-  };
+  UnionFind uf(n);
+  vvl ends(n);
+  while(que.size()) {
+    ll v = que.front(); que.pop();
+    if (ends[uf.root(v)].size() == 0) fore(vv, G[v]) ends[uf.root(v)].pb(vv);
 
-  rep(i, q) {
-    LL(t, x, y); --x;
-    if (t == 1) {
-      upd(x);
-    } else {
-      auto it = inv.lower_bound(x);
-      while (it != inv.end() && *it < y - 1) {
-        upd(*it);
-        it = inv.lower_bound(x);
+    // debug(v, G[v]);
+
+    vl er;
+    fore(to, G[v]) {
+      if (G[to].size() <= 2) {
+        vl ori = ends[uf.root(v)];
+        if (uf.same(v, to)) continue;
+        if (ori[0] == ori[1]) {
+          vl t;
+          ll con = ori[0];
+          fore(to, G[con]) if (uf.root(to) == uf.root(v)) t.pb(to);
+          fore(vv, t) G[con].erase(vv);
+          if (G[con].size() == 2) que.push(con);
+        } else {
+          // debug(v + 1, to + 1);
+          multiset<ll> es;
+          es.insert(ends[uf.root(v)][0]); es.insert(ends[uf.root(v)][1]);
+          if (ends[uf.root(to)].size()) {
+            es.insert(ends[uf.root(to)][0]); es.insert(ends[uf.root(to)][1]);
+          } else {
+            fore(vv, G[to]) es.insert(vv);
+          }
+          es.erase(v); es.erase(to);
+
+          uf.unite(v, to);
+          er.pb(to); G[to].erase(v);
+          vl nx; fore(e, es) nx.pb(e);
+          ends[uf.root(v)] = nx;
+          que.push(to);
+        }
       }
     }
-    // debug(t,x,y);
-    // debug(a);
+    fore(e, er) G[v].erase(e);
   }
 
-  OUTARRAY(a, 1);
+  map<ll, ll> mp;
+  rep(i, n) {
+    mp[uf.root(i)] = uf.size(uf.root(i));
+  }
+  debug(G);
+  debug(mp, ends);
+  set<ll> ks; ll cnt = 0;
+  fore(r, sz, mp) {
+    if (sz == 1) continue;
+    if (ends[uf.root(r)][0] != ends[uf.root(r)][1]) OUTRET("NO");
+    cnt++;
+    ks.insert(sz);
+  }
+  // debug(ks, cnt);
+
+  YES(ks.size() == 1 && cnt == *ks.begin()+1 && cnt*(cnt+1) == m);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

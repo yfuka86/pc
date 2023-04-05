@@ -169,39 +169,64 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
-  LL(n, q);
-
-  vl a(n); iota(all(a), 0);
-  set<ll> inv;
-
-  function<void(ll)> upd = [&](ll x) { assert(x < n - 1);
-    swap(a[x], a[x + 1]);
-    if (x > 0 && a[x - 1] > a[x]) inv.insert(x - 1); else inv.erase(x - 1);
-    if (a[x] > a[x + 1]) inv.insert(x); else inv.erase(x);
-    if (x < n - 2 && a[x + 1] > a[x + 2]) inv.insert(x + 1); else inv.erase(x + 1);
-  };
-
-  rep(i, q) {
-    LL(t, x, y); --x;
-    if (t == 1) {
-      upd(x);
-    } else {
-      auto it = inv.lower_bound(x);
-      while (it != inv.end() && *it < y - 1) {
-        upd(*it);
-        it = inv.lower_bound(x);
-      }
-    }
-    // debug(t,x,y);
-    // debug(a);
+  LL(n, m);
+  vector<set<ll>> G(n);
+  rep(i, m) {
+    LL(u, v); --u; --v;
+    G[u].insert(v); G[v].insert(u);
   }
+  ll k = sqrtll(n).fi;
+  if (k * k != n || k * (k + 1) != m) OUTRET("NO");
+  UnionFind uf(n);
+  set<ll> d4;
+  rep(i, n) if (G[i].size() == 4) d4.insert(i);
+  if (k != d4.size()) OUTRET("NO");
 
-  OUTARRAY(a, 1);
+  fore(v, d4) {
+    vl t;
+    fore(to, G[v]) if (d4.find(to) != d4.end()) t.pb(to);
+    fore(vv, t) { uf.unite(v, vv); G[v].erase(vv); }
+    if (t.size() != 2) OUTRET("NO");
+  }
+  // 次数が全て2であって、サイズが同じなら必ずサイクルグラフ
+  if (uf.size(*d4.begin()) != k) OUTRET("NO");
+
+  UnionFind uf2(n);
+  rep(i, n) {
+    if (G[i].size() != 2) OUTRET("NO");
+    fore(to, G[i]) {
+      uf2.unite(to, i);
+    }
+  }
+  ll cnt = 0;
+  map<ll, ll> mp, mpd4;
+  // 各連結成分に真ん中のものと共通の頂点が高々1つを判定する
+  rep(i, n) {
+    mp[uf2.root(i)] = uf2.size(i);
+    if (d4.find(i) != d4.end()) mpd4[uf2.root(i)]++;
+  }
+  fore(r, cnt, mpd4) if (cnt > 2) OUTRET("NO");
+  fore(r, sz, mp) if (sz != k) OUTRET("NO");
+  if (mpd4.size() != k || mp.size() != k) OUTRET("NO");
+
+  OUT("YES");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

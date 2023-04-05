@@ -32,6 +32,19 @@ vector< pair< pair< T, T >, T > > quotient_range(T N) {
   return ret;
 }
 
+// k進数変換
+vl basek(ll n, ll k) {
+  assert(k > 1); vl ret;
+  while (n) { ret.pb(n % k); n /= k; }
+  return ret;
+}
+// 10進数に変換
+ll kto10(vl v, ll k) {
+  assert(k > 1); ll ret = 0, pk = 1;
+  rep(i, v.size()) { ret += pk * v[i]; pk *= k; }
+  return ret;
+}
+
 // ap + bq = gcd(a, b)
 LP extGCD(ll a, ll b) {
   ll p11 = 1, p12 = 0, p21 = 0, p22 = 1;

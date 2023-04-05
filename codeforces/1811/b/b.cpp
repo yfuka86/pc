@@ -170,38 +170,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, q);
-
-  vl a(n); iota(all(a), 0);
-  set<ll> inv;
-
-  function<void(ll)> upd = [&](ll x) { assert(x < n - 1);
-    swap(a[x], a[x + 1]);
-    if (x > 0 && a[x - 1] > a[x]) inv.insert(x - 1); else inv.erase(x - 1);
-    if (a[x] > a[x + 1]) inv.insert(x); else inv.erase(x);
-    if (x < n - 2 && a[x + 1] > a[x + 2]) inv.insert(x + 1); else inv.erase(x + 1);
-  };
-
-  rep(i, q) {
-    LL(t, x, y); --x;
-    if (t == 1) {
-      upd(x);
-    } else {
-      auto it = inv.lower_bound(x);
-      while (it != inv.end() && *it < y - 1) {
-        upd(*it);
-        it = inv.lower_bound(x);
-      }
-    }
-    // debug(t,x,y);
-    // debug(a);
-  }
-
-  OUTARRAY(a, 1);
+  LL(n, x1, y1, x2, y2);
+  ll c1 = min(min(x1, n + 1 - x1), min(y1, n + 1 - y1));
+  ll c2 = min(min(x2, n + 1 - x2), min(y2, n + 1 - y2));
+  OUT(abs(c1-c2));
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

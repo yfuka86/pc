@@ -169,39 +169,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+vl fib(ll n) {
+  assert(n >= 2 && n <= 103); vl f(n); f[0] = f[1] = 1;
+  for (int i = 2; i < n; i++) f[i] = f[i - 1] + f[i - 2];
+  return f;
+}
+
 void solve() {
-  LL(n, q);
+  LL(n, x, y);
+  vl f = fib(n + 5);
+  // debug(f);
 
-  vl a(n); iota(all(a), 0);
-  set<ll> inv;
-
-  function<void(ll)> upd = [&](ll x) { assert(x < n - 1);
-    swap(a[x], a[x + 1]);
-    if (x > 0 && a[x - 1] > a[x]) inv.insert(x - 1); else inv.erase(x - 1);
-    if (a[x] > a[x + 1]) inv.insert(x); else inv.erase(x);
-    if (x < n - 2 && a[x + 1] > a[x + 2]) inv.insert(x + 1); else inv.erase(x + 1);
-  };
-
-  rep(i, q) {
-    LL(t, x, y); --x;
-    if (t == 1) {
-      upd(x);
-    } else {
-      auto it = inv.lower_bound(x);
-      while (it != inv.end() && *it < y - 1) {
-        upd(*it);
-        it = inv.lower_bound(x);
-      }
+  rep_r(i, 2, n + 1) {
+    if ((n - i) & 1) { // 縦に切る
+      if (x > f[i]) x -= f[i];
+    } else { // 横に切る
+      if (y > f[i]) y -= f[i];
     }
-    // debug(t,x,y);
-    // debug(a);
   }
 
-  OUTARRAY(a, 1);
+  if (n & 1) { // 1.1が横
+    YES(x == 1 && incl(y, 1, 3));
+  } else { // 縦
+    YES(incl(x, 1, 3) && y == 1);
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

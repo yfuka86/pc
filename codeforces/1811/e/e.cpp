@@ -169,39 +169,26 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+vl basek(ll n, ll k) {
+  assert(k > 1); vl ret;
+  while (n) { ret.pb(n % k); n /= k; }
+  return ret;
+}
+
 void solve() {
-  LL(n, q);
+  LL(k);
+  vl a = basek(k, 9);
 
-  vl a(n); iota(all(a), 0);
-  set<ll> inv;
-
-  function<void(ll)> upd = [&](ll x) { assert(x < n - 1);
-    swap(a[x], a[x + 1]);
-    if (x > 0 && a[x - 1] > a[x]) inv.insert(x - 1); else inv.erase(x - 1);
-    if (a[x] > a[x + 1]) inv.insert(x); else inv.erase(x);
-    if (x < n - 2 && a[x + 1] > a[x + 2]) inv.insert(x + 1); else inv.erase(x + 1);
-  };
-
-  rep(i, q) {
-    LL(t, x, y); --x;
-    if (t == 1) {
-      upd(x);
-    } else {
-      auto it = inv.lower_bound(x);
-      while (it != inv.end() && *it < y - 1) {
-        upd(*it);
-        it = inv.lower_bound(x);
-      }
-    }
-    // debug(t,x,y);
-    // debug(a);
+  string ans = "";
+  rep(i, a.size()) {
+    if (a[i] >= 4) ans.pb('0' + a[i] + 1); else ans.pb('0' + a[i]);
   }
-
-  OUTARRAY(a, 1);
+  reverse(all(ans));
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }
