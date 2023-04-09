@@ -7,7 +7,7 @@
 bool is_prime(long long N) { if (N == 1) return false; for (long long i = 2; i * i <= N; ++i) if (N % i == 0) return false; return true; }
 // tortient関数
 vl tortient_enum(const ll n) {
-  vl ps = primes_below(n), ret(n + 1); iota(all(ret), 0);
+  vl ps = primes(n), ret(n + 1); iota(all(ret), 0);
   for (auto &p: ps) for (int i = 1; i * p <= n; ++i) ret[i * p] -= ret[i * p] / p;
   return ret;
 }
