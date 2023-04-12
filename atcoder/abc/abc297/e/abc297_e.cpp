@@ -174,15 +174,14 @@ void solve() {
   LL(n, k); VL(a, n);
   sort(all(a));
 
-  set<ll> s;
-  unordered_map<ll, ll> exist;
-  set<ll> que; rep(i, n) que.insert(a[i]);
+  set<ll> s, exist;
+  mpq<ll> que; rep(i, n) que.push(a[i]);
 
   while (s.size() < k) {
     ll t = que.top(); que.pop();
     s.insert(t);
-    rep(i, n) if (!exist[t + a[i]]) {
-      exist[t + a[i]]++;
+    rep(i, n) if (exist.find(t + a[i]) == exist.end()) {
+      exist.insert(t + a[i]);
       que.push(t + a[i]);
     }
   }

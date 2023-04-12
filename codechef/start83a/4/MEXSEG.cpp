@@ -150,21 +150,92 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+vl solve(ll n, ll q, vl p, vvl query) {
+  vl rev(n); rep(i, n) rev[p[i]] = i;
+
+  vlp mexneed(n + 1);
+  mexneed[1] = {rev[0], rev[0] + 1};
+  rep(i, 1, n) {
+    auto [l, r] = mexneed[i];
+    chmin(l, rev[i]);
+    chmax(r, rev[i] + 1);
+    mexneed[i + 1] = {l, r};
+  }
+  // debug(mexneed);
+
+  auto f = [&](ll m, ll l1, ll l2) {
+    if (m > n) return 0ll;
+    ll termnum = l2-l1+1;
+    ll sum = (n + 1) * termnum - (l1 + l2) * termnum / 2;
+    if (m == 0) return sum;
+
+    auto [l, r] = mexneed[m];
+    chmax(l1, r - l);
+    ll ret = max(l2 - l1 + 1, 0);
+
+    // 右端の条件
+    ret += max(min(n-l, l2+1) - l1, 0) * l;
+    ll from = max(l1, (n-l));
+    ll rnglen = max(l2 + 1 - from, 0);
+    ret += n * rnglen - (l2 + from) * rnglen / 2;
+    // 左端の条件
+    ll to = min(l2 + 1, r);
+    ll rng2len = max(to - l1, 0);
+    ret -= r * rng2len - (l1 + to - 1) * rng2len / 2;
+
+    // rep(len, l1, l2 + 1) {
+    //   ret += min(l, n - len) - max(0, r - len);
+    // }
+    return ret;
+  };
+
+  vl ans;
+  rep(i, q) {
+    ll l1 = query[i][0], l2 = query[i][1], m1 = query[i][2], m2 = query[i][3];
+    // m1以上であるようなもの - m2 + 1以上であるようなもの
+    // debug(m1, m2 + 1, l1, l2);
+    // debug(f(m1, l1, l2));
+    // debug(f(m2 + 1, l1, l2));
+    ans.pb(f(m1, l1, l2) - f(m2 + 1, l1, l2));
+  }
+  return ans;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+vl naive(ll n, ll q, vl p, vvl query) {
+  vv(ll, sum, n + 1, n + 1);
+  rep(l, n) rep(r, l + 1, n + 1) {
+    vl t;
+    rep(i, l, r) {
+      t.pb(p[i]);
+    }
+    sum[r - l][mex(t)]++;
+  }
+
+  vl ans;
+  rep(i, q) {
+    ll l1 = query[i][0], l2 = query[i][1], m1 = query[i][2], m2 = query[i][3];
+    ll t = 0;
+    rep(i, l1, l2 + 1) rep(j, m1, m2 + 1) {
+      t += sum[i][j];
+    }
+    ans.pb(t);
+  }
+  return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = 5, q = 5;
+    vl p = rg.vecperm(n);
+    vvl query;
+    rep(i, q) {
+      ll l1 = rg.l(1, n + 1), l2 = rg.l(l1, n + 1);
+      ll m1 = rg.l(0, n + 1), m2 = rg.l(m1, n + 1);
+      query.pb({l1,l2,m1,m2});
+    }
+    auto so = solve(n, q, p, query); auto na = naive(n, q, p, query);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      debug(p, query); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
@@ -172,9 +243,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 void solve() {
   LL(n, q);
   VL(p, n);
+
+  vvl query;
   rep(i, q) {
-    LL(l1, l2, m1, m2);
+    VL(t, 4); query.pb(t);
   }
+
+  vl ret = solve(n, q, p, query);
+  OUTARRAY(ret, 0, "\n");
 }
 
 signed main() {

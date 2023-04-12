@@ -100,7 +100,8 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
+template<typename A, typename R> void IANSWER(initializer_list<A> a, string str = "! ", R &r = R()) { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); cin >> r; }
+template<typename A, typename R> void IANSWER(vector<A> a, string str = "! ", R &r = R()) { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); cin >> r; }
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -170,44 +171,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  ll sz = 3;
-
-  vl ini(sz * sz); iota(all(ini), 1);
-  ll empty = sz * sz;
-
-  map<vl, ll> dp; dp[ini] = 0;
-  queue<vl> que; que.push(ini);
-  while (!que.empty()) {
-    vl t = que.front(); que.pop();
-    ll cost = dp[t];
-    bool done = false;
-    rep(i, sz) rep(j, sz) {
-      if (done) break;
-      if (t[i * sz + j] == empty){
-        rep(d, 4) {
-          ll di = i + dx[d], dj = j + dy[d];
-          if (incl(di, 0, sz) && incl(dj, 0, sz)) {
-            swap(t[i * sz + j], t[di * sz + dj]);
-            if (!dp.count(t) || dp[t] > cost + 1) {
-              dp[t] = cost + 1;
-              que.push(t);
-            }
-            swap(t[i * sz + j], t[di * sz + dj]);
-          }
-        }
-        done = true;
-        break;
-      }
-    }
+  ll ma = 100;
+  RandGen rg;
+  vl a;
+  rep(i, ma) a.pb(rg.l(0, 1e4));
+  if (0) {
+    comp(a);
+    OUT(a.back());
+  } else {
+    auto [mp, rmp] = compmap(a);
+    debug(mp);
+    debug(rmp);
+    OUT(mp.begin()->se);
   }
-
-  ll ma = -1; vl mat; map<ll, ll> cnt;
-  fore(v, c, dp) {
-    if (chmax(ma, c)) mat = v;
-    cnt[c]++;
-  }
-  debug(cnt);
-  debug(dp.size(), ma, mat);
 }
 
 signed main() {
