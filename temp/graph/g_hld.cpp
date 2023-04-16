@@ -51,5 +51,5 @@ struct HeavyLightDecomposition {
   void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
   int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
   int la(int a, int d) { assert(0 <= d && d <= depth[a]); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
-  int dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
+  ll dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
