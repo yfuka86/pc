@@ -169,16 +169,112 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+namespace COM {
+  vector<mint> fact, factinv, inv; int cur = 2;
+  struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
+  void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+  mint combp(int n, int k) { assert(n < 1e8); if (n < 0 || k < 0 || n < k) return 0; while (cur <= n) incr(); return fact[n] * factinv[n - k]; }
+  mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; using COM::combp, COM::comb;
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+template<typename T>
+struct csum2d {
+  int h, w, cur = 0; vector<vector<T>> a, asum;
+  explicit csum2d(int _h, int _w): h(_h), w(_w), a(h, vector(w, T(0))), asum(h + 1, vector<T>(w + 1, T(0))) {}
+  explicit csum2d(vector<vector<T>> &v): h(v.size()), w(v[0].size()) { a = v; asum.assign(h + 1, vector<T>(w + 1, T(0))); update_all(); }
+  // 関数以外の代入禁止
+  vector<T> &operator[](int k) { if (cur < k) for(int i = cur; i < k; ++i) update_column(i); return asum[k]; }
+  void set(int x, int y, T k) { if (a[x][y] != k) chmin(cur, x); a[x][y] = k; }
+  T query(int x1, int y1, int x2, int y2) { return asum[x2][y2] + asum[x1][y1] - asum[x1][y2] - asum[x2][y1]; }
+  void update_column(int i) { for(int j = 0; j < w; ++j) asum[i + 1][j + 1] += asum[i + 1][j] + asum[i][j + 1] + a[i][j] - asum[i][j]; chmax(cur, i + 1); }
+  void update_all() { for(int i = 0; i < h; ++i) update_column(i); }
+};
+
 void solve() {
   LL(h, w);
   vs s(h); IN(s);
 
+  vv(ll, g, h, w);
   rep(i, h) rep(j, w) {
     if (s[i][j] == 'Y') {
-
+      g[i][j] = 1;
     }
   }
+  csum2d<ll> csum(g);
+  ll allcnt = csum.query(0,0,h,w);
+  if (allcnt & 1) OUTRET(0);
+  allcnt >>= 1;
 
+  mint ans = 0;
+  fore(d, divisor(allcnt)) {
+    mint t = 1;
+    if (d > h || allcnt / d > w) continue;
+    ll hcnt = d - 1, wcnt = allcnt / d - 1;
+    ll hunit = allcnt / d * 2, wunit = d * 2;
+    vl hs(allcnt * 2 / hunit + 1, -1), ws(allcnt * 2 / wunit + 1, -1);
+    hs[0] = 0; hs.back() = h;
+    ws[0] = 0; ws.back() = w;
+    {
+      vl hcand(allcnt * 2 / hunit + 1);
+      ll cur = 0;
+      rep(i, 1, h + 1) {
+        ll sum = csum.query(0, 0, i, w);
+        if (sum > hunit * cur) cur++;
+        if (sum == hunit * cur) { hcand[cur]++; hs[cur] = i; }
+      }
+      rep(i, 1, allcnt * 2 / hunit) {
+        t *= hcand[i];
+      }
+      // debug(hcand);
+    }
+    {
+      vl wcand(allcnt * 2 / wunit + 1);
+      ll cur = 0;
+      rep(i, 1, w + 1) {
+        ll sum = csum.query(0, 0, h, i);
+        if (sum > wunit * cur) cur++;
+        if (sum == wunit * cur) { wcand[cur]++; ws[cur] = i; }
+      }
+      rep(i, 1, allcnt * 2 / wunit) {
+        t *= wcand[i];
+      }
+      // debug(wcand);
+    }
+    // debug(d, allcnt / d, t);
+
+    // 十分性のチェック
+    bool ok = true;
+    rep(i, hs.size() - 1) rep(j, ws.size() - 1) {
+      if (hs[i] == -1 || ws[j] == -1 || hs[i + 1] == -1 || ws[j + 1] == -1) { ok = false; break; }
+      if (csum.query(hs[i], ws[j], hs[i + 1], ws[j + 1]) != 2) ok = false;
+    }
+
+    if (ok) ans += t;
+  }
+  OUT(ans);
 }
 
 signed main() {
