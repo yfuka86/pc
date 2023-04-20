@@ -188,21 +188,41 @@ void solve() {
   VV(ll, s, h, w);
   csum2d<ll> csum(s);
 
+  ll ans = LINF;
+
   rep(x1, h) rep(y1, w) rep(x2, x1 + 1, h + 1) rep(y2, y1 + 1, w + 1) {
     ll mi = csum.query(x1, y1, x2, y2);
-
     // maxのmin
-    v4(vl, dp, h, w, h + 1, w + 1, vl(t, LINF));
+    v4(vl, dp, h, w, h + 1, w + 1, vl(t + 1, LINF));
+    v4(ll, vis, h, w, h + 1, w + 1, 0);
 
-    calc = [&]() {
+    function<vl(ll, ll, ll, ll)> calc = [&](ll x1, ll y1, ll x2, ll y2) {
+      if (vis[x1][y1][x2][y2]) return dp[x1][y1][x2][y2];
+      vis[x1][y1][x2][y2] = 1;
 
-    }
+      ll sum = csum.query(x1, y1, x2, y2);
+      if (sum >= mi) chmin(dp[x1][y1][x2][y2][0], sum);
 
+      rep(i, x1 + 1, x2) {
+        vl dp1 = calc(x1, y1, i, y2), dp2 = calc(i, y1, x2, y2);
+        rep(k, t) rep(k1, k + 1) {
+          chmin(dp[x1][y1][x2][y2][k + 1], max(dp1[k1], dp2[k - k1]));
+        }
+      }
+
+      rep(j, y1 + 1, y2) {
+        vl dp1 = calc(x1, y1, x2, j), dp2 = calc(x1, j, x2, y2);
+        rep(k, t) rep(k1, k + 1) {
+          chmin(dp[x1][y1][x2][y2][k + 1], max(dp1[k1], dp2[k - k1]));
+        }
+      }
+
+      return dp[x1][y1][x2][y2];
+    };
+
+    chmin(ans, calc(0, 0, h, w)[t] - mi);
   }
-
-
-
-
+  OUT(ans);
 }
 
 signed main() {

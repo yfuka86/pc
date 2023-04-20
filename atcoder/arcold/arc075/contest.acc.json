@@ -1,0 +1,53 @@
+{
+  "contest": {
+    "id": "arc075",
+    "title": "AtCoder Regular Contest 075",
+    "url": "https://atcoder.jp/contests/arc075"
+  },
+  "tasks": [
+    {
+      "id": "arc075_a",
+      "label": "C",
+      "title": "Bugged",
+      "url": "https://atcoder.jp/contests/arc075/tasks/arc075_a",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc075_a.cpp"
+      }
+    },
+    {
+      "id": "arc075_b",
+      "label": "D",
+      "title": "Widespread",
+      "url": "https://atcoder.jp/contests/arc075/tasks/arc075_b",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc075_b.cpp"
+      }
+    },
+    {
+      "id": "arc075_c",
+      "label": "E",
+      "title": "Meaningful Mean",
+      "url": "https://atcoder.jp/contests/arc075/tasks/arc075_c",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc075_c.cpp"
+      }
+    },
+    {
+      "id": "arc075_d",
+      "label": "F",
+      "title": "Mirrored",
+      "url": "https://atcoder.jp/contests/arc075/tasks/arc075_d",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc075_d.cpp"
+      }
+    }
+  ]
+}

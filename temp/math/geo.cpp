@@ -95,6 +95,29 @@ Polygon convex_hull(vector<Point> ps) {
   ch.resize(k - 1);
   return ch;
 }
+// 内部2, 線上1, 外部0
+int convex_polygon_contains(const Polygon &Q, const Point &p) {
+  int N = (int) Q.size();
+  Point g = (Q[0] + Q[N / 3] + Q[N * 2 / 3]) / 3.0;
+  if(equals(imag(g), imag(p)) && equals(real(g), real(p))) return 2;
+  Point gp = p - g;
+  int l = 0, r = N;
+  while(r - l > 1) {
+    int mid = (l + r) / 2;
+    Point gl = Q[l] - g;
+    Point gm = Q[mid] - g;
+    if(cross(gl, gm) > 0) {
+      if(cross(gl, gp) >= 0 && cross(gm, gp) <= 0) r = mid;
+      else l = mid;
+    } else {
+      if(cross(gl, gp) <= 0 && cross(gm, gp) >= 0) l = mid;
+      else r = mid;
+    }
+  }
+  r %= N;
+  Real v = cross(Q[l] - p, Q[r] - p);
+  return sign(v) == 0 ? 1 : sign(v) == -1 ? 0 : 2;
+}
 Polygon convex_polygon_cut(const Polygon &U, const Line &l) {
   Polygon ret;
   for(int i = 0; i < U.size(); i++) {

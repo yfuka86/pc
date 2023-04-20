@@ -100,7 +100,8 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
+template<typename A, typename R> void IANSWER(initializer_list<A> a, string str = "! ", R &r = R()) { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); cin >> r; }
+template<typename A, typename R> void IANSWER(vector<A> a, string str = "! ", R &r = R()) { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); cin >> r; }
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -176,11 +177,10 @@ void solve() {
   ll d = n / mi;
   string ans = "";
   rep(i, d) {
-    ll rem = d - i - 1;
-    rep_r(o, 9) {
-      if (n - c[o] >= mi * rem) {
-        n -= c[o];
-        ans.pb('1' + o);
+    rep_r(j, 9) {
+      if (n - c[j] >= mi * (d - i - 1)) {
+        ans.pb('1' + j);
+        n -= c[j];
         break;
       }
     }
