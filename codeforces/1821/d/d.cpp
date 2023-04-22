@@ -168,6 +168,8 @@ ll solve(ll n, ll k, vl l, vl r) {
     }
   }
 
+  if (ans == LINF) return -1; else return ans;
+
   // mpq<ll> que;
   // ll sum = 0;
   // rep(i, n) {
@@ -185,8 +187,6 @@ ll solve(ll n, ll k, vl l, vl r) {
   //     chmin(ans, l[i] + que.size() * 2 + len - room - 1);
   //   }
   // }
-
-  if (ans == LINF) return -1; else return ans;
 }
 
 ll naive(ll n, ll k, vl l, vl r) {
