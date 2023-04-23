@@ -100,9 +100,7 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(vector<A> a, string str = "! ") { cout << str; OUTARRAY(a); cout.flush(); } template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { vector<A> v(a); IANSWER(v, str); }
-template<typename A, typename R> void IANSWER(vector<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; } template<typename A, typename R> void IANSWER(initializer_list<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; }
-
+template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -171,12 +169,45 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+//------------------------------------------------------------------------------
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
+};
+//------------------------------------------------------------------------------
+
 void solve() {
-  LL(n);
+  LL(n, m);
+  vector<UnionFind> ufs(30, UnionFind(n)), ufes(30, UnionFind(n + 1));
+
+  rep(i, m) {
+    LL(u, v, w); --u; --v;
+    rep(b, 30) {
+      if (w >> b & 1) { ufs[b].unite(u, v); ufes[b].unite(u, v); }
+      if (!(w & 1)) { ufes[b].unite(u, n); ufes[b].unite(v, n); }
+    }
+  }
+
+  auto ans = [&](ll u, ll v) {
+    rep(i, 30) if (ufs[i].same(u, v)) return 0;
+    rep(i, 1, 30) if (ufes[i].same(u, n)) return 1;
+    return 2;
+  };
+
+  LL(q);
+  rep(i, q) {
+    LL(u, v); --u; --v;
+    OUT(ans(u, v));
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) if (1) solve(); else compare();
 }
