@@ -100,9 +100,8 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(vector<A> a, string str = "! ") { cout << str; OUTARRAY(a); cout.flush(); } template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { vector<A> v(a); IANSWER(v, str); }
-template<typename A, typename R> void IANSWER(vector<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; } template<typename A, typename R> void IANSWER(initializer_list<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; }
-
+template<typename A, typename R> void IANSWER(initializer_list<A> a, string str = "! ", R &r = R()) { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); cin >> r; }
+template<typename A, typename R> void IANSWER(vector<A> a, string str = "! ", R &r = R()) { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); cin >> r; }
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -202,38 +201,113 @@ ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
 
+// https://nyaannyaan.github.io/library/data-structure-2d/2d-segment-tree.hpp
+template <typename T, typename F>
+struct SegmentTree2D {
+ private:
+  int id(int h, int w) { return h * 2 * W + w; }
+
+ public:
+  int H, W;
+  vector<T> seg;
+  const F f;
+  const T I;
+
+  SegmentTree2D(int h, int w, F _f, const T& i) : f(_f), I(i) { init(h, w); }
+
+  void init(int h, int w) {
+    H = W = 1;
+    while (H < h) H <<= 1;
+    while (W < w) W <<= 1;
+    seg.assign(4 * H * W, I);
+  }
+
+  // build にのみ呼ぶ
+  void set(int h, int w, const T& x) { seg[id(h + H, w + W)] = x; }
+
+  void build() {
+    // w in [W, 2W)
+    for (int w = W; w < 2 * W; w++) {
+      for (int h = H - 1; h; h--) {
+        seg[id(h, w)] = f(seg[id(2 * h + 0, w)], seg[id(2 * h + 1, w)]);
+      }
+    }
+    // h in [0, 2H)
+    for (int h = 0; h < 2 * H; h++) {
+      for (int w = W - 1; w; w--) {
+        seg[id(h, w)] = f(seg[id(h, 2 * w + 0)], seg[id(h, 2 * w + 1)]);
+      }
+    }
+  }
+
+  T get(int h, int w) const { return seg[id(h + H, w + W)]; }
+  T operator()(int h, int w) const { return seg[id(h + H, w + W)]; }
+
+  void update(int h, int w, const T& x) {
+    h += H, w += W;
+    seg[id(h, w)] = x;
+    for (int i = h >> 1; i; i >>= 1) {
+      seg[id(i, w)] = f(seg[id(2 * i + 0, w)], seg[id(2 * i + 1, w)]);
+    }
+    for (; h; h >>= 1) {
+      for (int j = w >> 1; j; j >>= 1) {
+        seg[id(h, j)] = f(seg[id(h, 2 * j + 0)], seg[id(h, 2 * j + 1)]);
+      }
+    }
+  }
+
+  T _inner_query(int h, int w1, int w2) {
+    T res = I;
+    for (; w1 < w2; w1 >>= 1, w2 >>= 1) {
+      if (w1 & 1) res = f(res, seg[id(h, w1)]), w1++;
+      if (w2 & 1) --w2, res = f(res, seg[id(h, w2)]);
+    }
+    return res;
+  }
+
+  // [ (h1,w1), (h2,w2) ) 半開
+  T query(int h1, int w1, int h2, int w2) {
+    if (h1 >= h2 || w1 >= w2) return I;
+    T res = I;
+    h1 += H, h2 += H, w1 += W, w2 += W;
+    for (; h1 < h2; h1 >>= 1, h2 >>= 1) {
+      if (h1 & 1) res = f(res, _inner_query(h1, w1, w2)), h1++;
+      if (h2 & 1) --h2, res = f(res, _inner_query(h2, w1, w2));
+    }
+    return res;
+  }
+};
+
 void solve() {
   STR(s);
   ll n = s.size();
+  vvlp p(26);
+  vvl pi(n);
+  rep(i, n) rep(j, i + 1, n) {
+    if (s[i] == s[j]) {
+      p[s[i] - 'a'].pb({i, j});
+      pi[i].pb(j);
+    }
+  }
+  // debug(p, pi);
 
-  vv(ll, nx, n, 26, -1);
+  SegmentTree2D seg(n + 1, n + 1, [](mint a, mint b) { return a + b; }, mint(0));
+  seg.set(0, 0, 1);
+  seg.build();
 
-  vvl idx(26);
-  rep(i, n) idx[s[i] - 'a'].pb(i);
   rep(i, n) {
-    rep(c, 26) {
-      auto it = upper_bound(all(idx[c]), i);
-      if (it != idx[c].end()) nx[i][c] = *it;
-    }
-  }
-  // debug(nx);
-
-  mint ans = 0;
-  rep(i, 1, n) { // 右側の始点がi
-    ll c = s[i] - 'a';
-    ll j = idx[c].front();
-    vv(mint, dp, n, n);
-    if (j < i) dp[j][i] = 1;
-    rep(ii, n) rep(jj, n) rep(c, 26) {
-      if (nx[ii][c] == -1 || nx[jj][c] == -1) continue;
-      dp[nx[ii][c]][nx[jj][c]] += dp[ii][jj];
-    }
-    rep(ii, n) rep(jj, n) rep(c, 26) {
-      if (nx[ii][c] == i) ans += dp[ii][jj];
+    fore(j, pi[i]) {
+      mint t = seg.query(0, 0, i, j);
+      fore(ii, jj, p[s[i] - 'a']) {
+        if (ii < i && jj < j) {
+          t -= seg.query(ii + 1, jj + 1, ii + 2, jj + 2);
+        }
+      }
+      seg.update(i + 1, j + 1, t);
     }
   }
 
-  OUT(ans);
+  OUT(seg.query(0, 0, n + 1, n + 1) - 1);
 }
 
 signed main() {
