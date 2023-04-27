@@ -173,6 +173,19 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  if (n == 1) OUTRET(-1);
+
+  if (n <= 1000001) {
+    OUT(1, 1, n - 1);
+  } else {
+    ll ma = 1000000;
+    ll b = n / ma, c = n % ma;
+    if (c == 0) {
+      b--;
+      c += 1000000;
+    }
+    OUT(ma, b, c);
+  }
 }
 
 signed main() {

@@ -153,17 +153,48 @@ template< typename T = ll > struct Graph {
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
 ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+  ll sum = 0;
+  rep(i, n) sum ^= (a[i] & 1);
+  if (n & 1) {
+    if (sum) return 1; else return 0;
+  } else {
+    ll mi = LINF; rep(i, n) chmin(mi, a[i]);
+    if (mi & 1) {
+      return 1;
+    } else {
+      if (sum) return 1; else return 0;
+    }
+  }
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+ll naive(ll m, vl a) {
+  map<vl, ll> mp;
+  function<ll(vl&)> dfs = [&](vl &v) {
+    if (mp.find(v) != mp.end()) return mp[v];
+
+    vl t = v;
+    vl me;
+    rep(i, m) {
+      if (!t[i]) continue;
+      t[i]--;
+      me.pb(dfs(t));
+      t[i]++;
+    }
+
+    if (*min_element(all(t)) != 0) {
+      rep(i, m) t[i]--;
+      me.pb(dfs(t));
+    }
+    return mp[v] = mex(me);
+  };
+  ll ret = dfs(a);
+  if (ret) return 1; else return 0;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
+    ll n = rg.l(1, 5);
+    vl a = rg.vecl(n, 1, 10);
     auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
       debug(n, a); debug(so); debug(na);
@@ -171,8 +202,50 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+void enum_check(ll N, ll from, ll to, function<bool(vl&)> check, bool inc = false) { // size, [from, to)
+  to--; vl st(N, from); if (inc) { iota(all(st), from); if (st.back() >= to) return; }
+  while (1) {
+    assert(st.size() == N); if (!check(st)) break;
+    while (st.size() && st.back() == to) st.pop_back(); if (st.size() == 0) break;
+    st.back()++;
+    while (st.size() < N) if (inc) st.pb(st.back()); else st.pb(from);
+  }
+}
+
 void solve() {
-  LL(n);
+  LL(n); VL(a, n);
+  OUT(solve(n, a) ? "CHEF" : "CHEFINA");
+
+
+  if (0) {
+    map<vl, ll> mp;
+    ll m = 2;
+    enum_check(m, 1, 5, [&](vl &v) {
+      function<ll(vl&)> dfs = [&](vl &v) {
+        if (mp.find(v) != mp.end()) return mp[v];
+
+        vl t = v;
+        vl me;
+        rep(i, m) {
+          if (!t[i]) continue;
+          t[i]--;
+          me.pb(dfs(t));
+          t[i]++;
+        }
+
+        if (*min_element(all(t)) != 0) {
+          rep(i, m) t[i]--;
+          me.pb(dfs(t));
+        }
+        return mp[v] = mex(me);
+      };
+      dfs(v);
+
+      return true;
+    });
+    debug(mp);
+  }
+
 }
 
 signed main() {
