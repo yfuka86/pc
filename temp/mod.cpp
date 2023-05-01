@@ -22,9 +22,12 @@ namespace COM {
   vector<mint> fact, factinv, inv; int cur = 2;
   struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
   void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
-  mint combp(int n, int k) { assert(n < 1e8); if (n < 0 || k < 0 || n < k) return 0; while (cur <= n) incr(); return fact[n] * factinv[n - k]; }
+  void upd(int n) { assert(n < 1e8); while (cur <= n) incr(); }
+  mint fac(int n) { assert(0 <= n); upd(n); return fact[n]; }
+  mint ifac(int n) { assert(0 <= n); upd(n); return factinv[n]; }
+  mint combp(int n, int k) { upd(n); if (n < 0 || k < 0 || n < k) return 0; return fact[n] * factinv[n - k]; }
   mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
-}; using COM::combp, COM::comb;
+}; using COM::fac, COM::ifac, COM::combp, COM::comb;
 //------------------------------------------------------------------------------
 ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
