@@ -57,12 +57,23 @@ struct Line {
   friend istream &operator>>(istream &is, Line &l) { return is >> l.a >> l.b; }
 };
 using Lines = vector< Line >;
+
+bool is_parallel(const Line &a, const Line &b) {
+  return equals(cross(a.b - a.a, b.b - b.a), 0.0);
+}
+bool is_intersect_ll(const Line &l, const Line &m) {
+  Real A = cross(l.b - l.a, m.b - m.a);
+  Real B = cross(l.b - l.a, l.b - m.a);
+  if(equals(abs(A), 0) && equals(abs(B), 0)) return true;
+  return !is_parallel(l, m);
+}
 // 交点
 Point cross_point_ll(const Line &l, const Line &m) {
   Real A = cross(l.b - l.a, m.b - m.a), B = cross(l.b - l.a, l.b - m.a);
   if(equals(abs(A), 0) && equals(abs(B), 0)) return m.a;
   return m.a + (m.b - m.a) * B / A;
 }
+
 
 //　反時計回りである自己交差のない多角形のclass
 using Polygon = vector<Point>;
