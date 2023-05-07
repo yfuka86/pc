@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc121",
+    "title": "NOMURA Programming Contest 2021(AtCoder Regular Contest 121)",
+    "url": "https://atcoder.jp/contests/arc121"
+  },
+  "tasks": [
+    {
+      "id": "arc121_a",
+      "label": "A",
+      "title": "2nd Greatest Distance",
+      "url": "https://atcoder.jp/contests/arc121/tasks/arc121_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc121_a.cpp"
+      }
+    },
+    {
+      "id": "arc121_b",
+      "label": "B",
+      "title": "RGB Matching",
+      "url": "https://atcoder.jp/contests/arc121/tasks/arc121_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc121_b.cpp"
+      }
+    },
+    {
+      "id": "arc121_c",
+      "label": "C",
+      "title": "Odd Even Sort",
+      "url": "https://atcoder.jp/contests/arc121/tasks/arc121_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc121_c.cpp"
+      }
+    },
+    {
+      "id": "arc121_d",
+      "label": "D",
+      "title": "1 or 2",
+      "url": "https://atcoder.jp/contests/arc121/tasks/arc121_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc121_d.cpp"
+      }
+    },
+    {
+      "id": "arc121_e",
+      "label": "E",
+      "title": "Directed Tree",
+      "url": "https://atcoder.jp/contests/arc121/tasks/arc121_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc121_e.cpp"
+      }
+    },
+    {
+      "id": "arc121_f",
+      "label": "F",
+      "title": "Logical Operations on Tree",
+      "url": "https://atcoder.jp/contests/arc121/tasks/arc121_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc121_f.cpp"
+      }
+    }
+  ]
+}

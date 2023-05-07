@@ -171,11 +171,24 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  VL(a, 3);
+
+  ll ans = LINF;
+  rep(i, 3) {
+    ll j = (i + 1) % 3;
+    if ((a[i] - a[j]) % 3) continue;
+
+    ll cnt = 0;
+    cnt += abs(a[i] - a[j]) / 3;
+    cnt += min(a[i], a[j]) + abs(a[i] - a[j]) / 3 * 2;
+    chmin(ans, cnt);
+  }
+
+  if (ans == LINF) OUT(-1); else OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }
