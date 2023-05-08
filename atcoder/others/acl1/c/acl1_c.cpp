@@ -149,8 +149,6 @@ template< typename T = ll > struct Graph {
   size_t size() const { return g.size(); }
   void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  void read_tree(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll u, v; cin >> u >> v; u-=off; v-=off; add_edge(u, v); } }
-  void read_treep(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll p; cin >> p; p-=off; add_edge(i+1, p); } }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
@@ -173,12 +171,48 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+#include <atcoder/mincostflow>
+using namespace atcoder;
+
 void solve() {
-  LL(n);
+  LL(n, m);
+  vs s(n); IN(s);
+
+  vlp st;
+  vector<map<ll, ll>> mp;
+  rep(i, n) rep(j, m) {
+    if (s[i][j] == 'o') {
+      st.pb({i, j});
+    }
+  }
+
+  mcf_graph<int, ll> mcf(n * m + st.size() + 2);
+  ll S = n * m + st.size(), T = S + 1;
+  rep(i, st.size()) mcf.add_edge(S, n * m + i, 1, 0);
+  rep(i, n * m) mcf.add_edge(i, T, 1, 0);
+
+  ll OFF = 1000;
+  rep(i, st.size()) {
+    queue<LP> que; que.push(st[i]);
+    vv(ll, cost, n, m, LINF); cost[st[i].fi][st[i].se] = 0;
+    while (que.size()) {
+      auto [x, y] = que.front(); que.pop();
+      if (x + 1 < n && s[x+1][y] != '#' && chmin(cost[x+1][y], cost[x][y]+1)) que.push({x+1, y});
+      if (y + 1 < m && s[x][y+1] != '#' && chmin(cost[x][y+1], cost[x][y]+1)) que.push({x, y+1});
+    }
+    rep(x, n) rep(y, m) {
+      if (cost[x][y] == LINF) continue;
+      mcf.add_edge(n * m + i, x * m + y, 1, OFF - cost[x][y]);
+    }
+  }
+
+  auto [f, co] = mcf.flow(S, T);
+  // debug(f, co);
+  OUT(f * OFF - co);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; // cin >> t;
   while (t--) if (1) solve(); else compare();
 }

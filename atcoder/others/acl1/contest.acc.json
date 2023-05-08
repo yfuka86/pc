@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "acl1",
+    "title": "ACL Contest 1",
+    "url": "https://atcoder.jp/contests/acl1"
+  },
+  "tasks": [
+    {
+      "id": "acl1_a",
+      "label": "A",
+      "title": "Reachable Towns",
+      "url": "https://atcoder.jp/contests/acl1/tasks/acl1_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "acl1_a.cpp"
+      }
+    },
+    {
+      "id": "acl1_b",
+      "label": "B",
+      "title": "Sum is Multiple",
+      "url": "https://atcoder.jp/contests/acl1/tasks/acl1_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "acl1_b.cpp"
+      }
+    },
+    {
+      "id": "acl1_c",
+      "label": "C",
+      "title": "Moving Pieces",
+      "url": "https://atcoder.jp/contests/acl1/tasks/acl1_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "acl1_c.cpp"
+      }
+    },
+    {
+      "id": "acl1_d",
+      "label": "D",
+      "title": "Keep Distances",
+      "url": "https://atcoder.jp/contests/acl1/tasks/acl1_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "acl1_d.cpp"
+      }
+    },
+    {
+      "id": "acl1_e",
+      "label": "E",
+      "title": "Shuffle Window",
+      "url": "https://atcoder.jp/contests/acl1/tasks/acl1_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "acl1_e.cpp"
+      }
+    },
+    {
+      "id": "acl1_f",
+      "label": "F",
+      "title": "Center Rearranging",
+      "url": "https://atcoder.jp/contests/acl1/tasks/acl1_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "acl1_f.cpp"
+      }
+    }
+  ]
+}
