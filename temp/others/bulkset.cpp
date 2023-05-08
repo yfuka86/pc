@@ -5,7 +5,7 @@ template<class S, class F, class D, S(*op)(S, F), S(*inv)(S, F)> struct bulkset 
   int count(S x) { return data.count(inv(x, f)); }
   typename map<S, D>::iterator begin() { return data.begin(); }
   typename map<S, D>::iterator end() { return data.end(); }
-  typename map<S, D>::iterator find(S x) { return data.find(x); }
+  typename map<S, D>::iterator find(S x) { return data.find(inv(x, f)); }
   typename map<S, D>::iterator erase(S x) { return data.erase(inv(x, f)); }
   inline D &operator[](const S x) { return data[inv(x, f)]; }
 

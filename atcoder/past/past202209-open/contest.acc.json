@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "past202209-open",
+    "title": "第12回 アルゴリズム実技検定 過去問",
+    "url": "https://atcoder.jp/contests/past202209-open"
+  },
+  "tasks": [
+    {
+      "id": "past202209_a",
+      "label": "A",
+      "title": "Trafic Light",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "past202209_a.cpp"
+      }
+    },
+    {
+      "id": "past202209_b",
+      "label": "B",
+      "title": "Credits",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "past202209_b.cpp"
+      }
+    },
+    {
+      "id": "past202209_c",
+      "label": "C",
+      "title": "Biased Dice",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "past202209_c.cpp"
+      }
+    },
+    {
+      "id": "past202209_d",
+      "label": "D",
+      "title": "Marking",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "past202209_d.cpp"
+      }
+    },
+    {
+      "id": "past202209_e",
+      "label": "E",
+      "title": "Hitting Stick Game",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "past202209_e.cpp"
+      }
+    },
+    {
+      "id": "past202209_f",
+      "label": "F",
+      "title": "Pharmacist",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "past202209_f.cpp"
+      }
+    },
+    {
+      "id": "past202209_g",
+      "label": "G",
+      "title": "Wildcards",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "past202209_g.cpp"
+      }
+    },
+    {
+      "id": "past202209_h",
+      "label": "H",
+      "title": "Three Types of Coins",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "past202209_h.cpp"
+      }
+    },
+    {
+      "id": "past202209_i",
+      "label": "I",
+      "title": "Buying Apple Everyday",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "past202209_i.cpp"
+      }
+    },
+    {
+      "id": "past202209_j",
+      "label": "J",
+      "title": "Sprinkler",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "past202209_j.cpp"
+      }
+    },
+    {
+      "id": "past202209_k",
+      "label": "K",
+      "title": "Checking Connectivity",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "past202209_k.cpp"
+      }
+    },
+    {
+      "id": "past202209_l",
+      "label": "L",
+      "title": "Exhibition",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "past202209_l.cpp"
+      }
+    },
+    {
+      "id": "past202209_m",
+      "label": "M",
+      "title": "series",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "past202209_m.cpp"
+      }
+    },
+    {
+      "id": "past202209_n",
+      "label": "N",
+      "title": "From Above and From the Side",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "past202209_n.cpp"
+      }
+    },
+    {
+      "id": "past202209_o",
+      "label": "O",
+      "title": "Pick Two Numbers",
+      "url": "https://atcoder.jp/contests/past202209-open/tasks/past202209_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "past202209_o.cpp"
+      }
+    }
+  ]
+}
