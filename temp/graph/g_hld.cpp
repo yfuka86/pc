@@ -29,7 +29,7 @@ struct HeavyLightDecomposition {
     return res;
   }
  public:
-  G& g; int id; vector<int> size, depth, down, drev, up, nxt, par;
+  G& g; int id; vector<ll> size, depth; vector<int> down, drev, up, nxt, par;
   HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
   void build(int root) { dfs_sz(root); dfs_hld(root); }
   pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
