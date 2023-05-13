@@ -1,0 +1,174 @@
+{
+  "contest": {
+    "id": "past202010-open",
+    "title": "第四回 アルゴリズム実技検定 過去問",
+    "url": "https://atcoder.jp/contests/past202010-open"
+  },
+  "tasks": [
+    {
+      "id": "past202010_a",
+      "label": "A",
+      "title": "中央値",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "past202010_a.cpp"
+      }
+    },
+    {
+      "id": "past202010_b",
+      "label": "B",
+      "title": "電卓",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "past202010_b.cpp"
+      }
+    },
+    {
+      "id": "past202010_c",
+      "label": "C",
+      "title": "隣接カウント",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "past202010_c.cpp"
+      }
+    },
+    {
+      "id": "past202010_d",
+      "label": "D",
+      "title": "分身",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "past202010_d.cpp"
+      }
+    },
+    {
+      "id": "past202010_e",
+      "label": "E",
+      "title": "アナグラム",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "past202010_e.cpp"
+      }
+    },
+    {
+      "id": "past202010_f",
+      "label": "F",
+      "title": "構文解析",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "past202010_f.cpp"
+      }
+    },
+    {
+      "id": "past202010_g",
+      "label": "G",
+      "title": "村整備",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "past202010_g.cpp"
+      }
+    },
+    {
+      "id": "past202010_h",
+      "label": "H",
+      "title": "マス目のカット",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_h",
+      "directory": {
+        "path": "h",
+        "testdir": "test",
+        "submit": "past202010_h.cpp"
+      }
+    },
+    {
+      "id": "past202010_i",
+      "label": "I",
+      "title": "ピザ",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_i",
+      "directory": {
+        "path": "i",
+        "testdir": "test",
+        "submit": "past202010_i.cpp"
+      }
+    },
+    {
+      "id": "past202010_j",
+      "label": "J",
+      "title": "ワープ",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_j",
+      "directory": {
+        "path": "j",
+        "testdir": "test",
+        "submit": "past202010_j.cpp"
+      }
+    },
+    {
+      "id": "past202010_k",
+      "label": "K",
+      "title": "転倒数",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_k",
+      "directory": {
+        "path": "k",
+        "testdir": "test",
+        "submit": "past202010_k.cpp"
+      }
+    },
+    {
+      "id": "past202010_l",
+      "label": "L",
+      "title": "マンションの改築",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_l",
+      "directory": {
+        "path": "l",
+        "testdir": "test",
+        "submit": "past202010_l.cpp"
+      }
+    },
+    {
+      "id": "past202010_m",
+      "label": "M",
+      "title": "筆塗り",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_m",
+      "directory": {
+        "path": "m",
+        "testdir": "test",
+        "submit": "past202010_m.cpp"
+      }
+    },
+    {
+      "id": "past202010_n",
+      "label": "N",
+      "title": "マス目の穴埋め",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_n",
+      "directory": {
+        "path": "n",
+        "testdir": "test",
+        "submit": "past202010_n.cpp"
+      }
+    },
+    {
+      "id": "past202010_o",
+      "label": "O",
+      "title": "宝箱",
+      "url": "https://atcoder.jp/contests/past202010-open/tasks/past202010_o",
+      "directory": {
+        "path": "o",
+        "testdir": "test",
+        "submit": "past202010_o.cpp"
+      }
+    }
+  ]
+}
