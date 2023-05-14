@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc301",
+    "title": "パナソニックグループプログラミングコンテスト2023（AtCoder Beginner Contest 301）",
+    "url": "https://atcoder.jp/contests/abc301"
+  },
+  "tasks": [
+    {
+      "id": "abc301_a",
+      "label": "A",
+      "title": "Overall Winner",
+      "url": "https://atcoder.jp/contests/abc301/tasks/abc301_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc301_a.cpp"
+      }
+    },
+    {
+      "id": "abc301_b",
+      "label": "B",
+      "title": " Fill the Gaps",
+      "url": "https://atcoder.jp/contests/abc301/tasks/abc301_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc301_b.cpp"
+      }
+    },
+    {
+      "id": "abc301_c",
+      "label": "C",
+      "title": "AtCoder Cards",
+      "url": "https://atcoder.jp/contests/abc301/tasks/abc301_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc301_c.cpp"
+      }
+    },
+    {
+      "id": "abc301_d",
+      "label": "D",
+      "title": "Bitmask",
+      "url": "https://atcoder.jp/contests/abc301/tasks/abc301_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc301_d.cpp"
+      }
+    },
+    {
+      "id": "abc301_e",
+      "label": "E",
+      "title": "Pac-Takahashi ",
+      "url": "https://atcoder.jp/contests/abc301/tasks/abc301_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc301_e.cpp"
+      }
+    },
+    {
+      "id": "abc301_f",
+      "label": "F",
+      "title": "Anti-DDoS",
+      "url": "https://atcoder.jp/contests/abc301/tasks/abc301_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc301_f.cpp"
+      }
+    },
+    {
+      "id": "abc301_g",
+      "label": "G",
+      "title": "Worst Picture",
+      "url": "https://atcoder.jp/contests/abc301/tasks/abc301_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc301_g.cpp"
+      }
+    },
+    {
+      "id": "abc301_h",
+      "label": "Ex",
+      "title": "Difference of Distance",
+      "url": "https://atcoder.jp/contests/abc301/tasks/abc301_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc301_h.cpp"
+      }
+    }
+  ]
+}
