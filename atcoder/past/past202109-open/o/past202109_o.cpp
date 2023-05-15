@@ -50,17 +50,6 @@ struct RandGen {
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
-// 入出力マクロの上に
-#include <atcoder/convolution>
-#include <atcoder/modint>
-using namespace atcoder;
-using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-const ll mod = 998244353;
-istream& operator>>(istream& in, mint &a) { long long e; in >> e; a = e; return in; }
-ostream& operator<<(ostream& out, mint &a) { return out << a.val(); }
-template<class T> istream &operator>>(istream &is, vector<T> &v) { for (auto &e : v) is >> const_cast<T&>(e); return is; }
-template<class T> ostream &operator<<(ostream &os, const vector<T> &v) { for (auto &e : v) os << const_cast<T&>(e) << ' '; return os; }
-//------------------------------------------------------------------------------
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -111,7 +100,9 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
+template<typename A> void IANSWER(vector<A> a, string str = "! ") { cout << str; OUTARRAY(a); cout.flush(); } template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { vector<A> v(a); IANSWER(v, str); }
+template<typename A, typename R> void IANSWER(vector<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; } template<typename A, typename R> void IANSWER(initializer_list<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; }
+
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -158,373 +149,85 @@ template< typename T = ll > struct Graph {
   size_t size() const { return g.size(); }
   void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  void read_tree(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll u, v; cin >> u >> v; u-=off; v-=off; add_edge(u, v); } }
+  void read_treep(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll p; cin >> p; p-=off; add_edge(i+1, p); } }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
-}
-
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
-}
-
-void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
-  while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
-    if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
-    if (check || (!check && c > loop)) break; }
+// https://nyaannyaan.github.io/library/tree/heavy-light-decomposition.hpp
+template <typename G>
+struct HeavyLightDecomposition {
+ private:
+  void dfs_sz(int cur) {
+    size[cur] = 1;
+    for (auto& dst : g[cur]) {
+      if (dst == par[cur]) { if (g[cur].size() >= 2 && int(dst) == int(g[cur][0])) swap(g[cur][0], g[cur][1]); else continue; }
+      depth[dst] = depth[cur] + 1; par[dst] = cur; dfs_sz(dst); size[cur] += size[dst]; if (size[dst] > size[g[cur][0]]) swap(dst, g[cur][0]);
+    }
   }
-}
-
-//------------------------------------------------------------------------------
-//https://judge.yosupo.jp/submission/33048
-template<class T>
-struct FormalPowerSeries : vector<T> {
-  using vector<T>::vector;
-  using vector<T>::operator=;
-  using F = FormalPowerSeries;
-
-  F operator-() const {
-    F res(*this);
-    for (auto &e : res) e = -e;
+  void dfs_hld(int cur) {
+    down[cur] = id++; drev[down[cur]] = cur;
+    for (auto dst : g[cur]) { if (dst == par[cur]) continue; nxt[dst] = (int(dst) == int(g[cur][0]) ? nxt[cur] : int(dst)); dfs_hld(dst); }
+    up[cur] = id;
+  }
+  // [u, v)
+  vector<pair<int, int>> ascend(int u, int v) const {
+    vector<pair<int, int>> res;
+    while (nxt[u] != nxt[v]) { res.emplace_back(down[u], down[nxt[u]]); u = par[nxt[u]]; }
+    if (u != v) res.emplace_back(down[u], down[v] + 1); return res;
+  }
+  // (u, v]
+  vector<pair<int, int>> descend(int u, int v) const {
+    if (u == v) return {};
+    if (nxt[u] == nxt[v]) return {{down[u] + 1, down[v]}};
+    auto res = descend(u, par[nxt[v]]);
+    res.emplace_back(down[nxt[v]], down[v]);
     return res;
   }
-  F &operator*=(const T &g) {
-    for (auto &e : *this) e *= g;
-    return *this;
+ public:
+  G& g; int id; vector<ll> size, depth; vector<int> down, drev, up, nxt, par;
+  HeavyLightDecomposition(G& _g, int root = 0): g(_g), id(0), size(g.size(), 0), depth(g.size(), 0), down(g.size(), -1), drev(g.size(), -1), up(g.size(), -1), nxt(g.size(), root), par(g.size(), root) { dfs_sz(root); dfs_hld(root); }
+  void build(int root) { dfs_sz(root); dfs_hld(root); }
+  pair<int, int> idx(int i) const { return make_pair(down[i], up[i]); }
+  template <typename F>
+  void path_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) { int s = a + 1, t = b; s > t ? f(t, s) : f(s, t); }
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) { int s = a, t = b + 1; s > t ? f(t, s) : f(s, t); }
   }
-  F &operator/=(const T &g) {
-    assert(g != T(0));
-    *this *= g.inv();
-    return *this;
+  template <typename F>
+  void path_noncommutative_query(int u, int v, bool vertex, const F& f) {
+    int l = lca(u, v);
+    for (auto&& [a, b] : ascend(u, l)) f(a + 1, b);
+    if (vertex) f(down[l], down[l] + 1);
+    for (auto&& [a, b] : descend(l, v)) f(a, b + 1);
   }
-  F &operator+=(const F &g) {
-    int n = this->size(), m = g.size();
-    rep(i, min(n, m)) (*this)[i] += g[i];
-    return *this;
-  }
-  F &operator-=(const F &g) {
-    int n = this->size(), m = g.size();
-    rep(i, min(n, m)) (*this)[i] -= g[i];
-    return *this;
-  }
-  F &operator<<=(const int d) {
-    int n = this->size();
-    if (d >= n) *this = F(n);
-    this->insert(this->begin(), d, 0);
-    this->resize(n);
-    return *this;
-  }
-  F &operator>>=(const int d) {
-    int n = this->size();
-    this->erase(this->begin(), this->begin() + min(n, d));
-    this->resize(n);
-    return *this;
-  }
-
-  // O(n log n)
-  F inv(int d = -1) const {
-    int n = this->size();
-    assert(n != 0 && (*this)[0] != 0);
-    if (d == -1) d = n;
-    assert(d >= 0);
-    F res{(*this)[0].inv()};
-    for (int m = 1; m < d; m *= 2) {
-      F f(this->begin(), this->begin() + min(n, 2*m));
-      F g(res);
-      f.resize(2*m), internal::butterfly(f);
-      g.resize(2*m), internal::butterfly(g);
-      rep(i, 2*m) f[i] *= g[i];
-      internal::butterfly_inv(f);
-      f.erase(f.begin(), f.begin() + m);
-      f.resize(2*m), internal::butterfly(f);
-      rep(i, 2*m) f[i] *= g[i];
-      internal::butterfly_inv(f);
-      T iz = T(2*m).inv(); iz *= -iz;
-      rep(i, m) f[i] *= iz;
-      res.insert(res.end(), f.begin(), f.begin() + m);
-    }
-    res.resize(d);
-    return res;
-  }
-
-  // fast: FMT-friendly modulus only
-  // O(n log n)
-  F &multiply_inplace(const F &g, int d = -1) {
-    int n = this->size();
-    if (d == -1) d = n;
-    assert(d >= 0);
-    *this = convolution(move(*this), g);
-    this->resize(d);
-    return *this;
-  }
-  F multiply(const F &g, const int d = -1) const { return F(*this).multiply_inplace(g, d); }
-  // O(n log n)
-  F &divide_inplace(const F &g, int d = -1) {
-    int n = this->size();
-    if (d == -1) d = n;
-    assert(d >= 0);
-    *this = convolution(move(*this), g.inv(d));
-    this->resize(d);
-    return *this;
-  }
-  F divide(const F &g, const int d = -1) const { return F(*this).divide_inplace(g, d); }
-
-  // // naive
-  // // O(n^2)
-  // F &multiply_inplace(const F &g) {
-  //   int n = this->size(), m = g.size();
-  //   rep_r(i, n) {
-  //     (*this)[i] *= g[0];
-  //     rep(j, 1, min(i+1, m)) (*this)[i] += (*this)[i-j] * g[j];
-  //   }
-  //   return *this;
-  // }
-  // F multiply(const F &g) const { return F(*this).multiply_inplace(g); }
-  // // O(n^2)
-  // F &divide_inplace(const F &g) {
-  //   assert(g[0] != T(0));
-  //   T ig0 = g[0].inv();
-  //   int n = this->size(), m = g.size();
-  //   rep(i, n) {
-  //     rep(j, 1, min(i+1, m)) (*this)[i] -= (*this)[i-j] * g[j];
-  //     (*this)[i] *= ig0;
-  //   }
-  //   return *this;
-  // }
-  // F divide(const F &g) const { return F(*this).divide_inplace(g); }
-
-  // sparse
-  // O(nk)
-  F &multiply_inplace(vector<pair<int, T>> g) {
-    int n = this->size();
-    auto [d, c] = g.front();
-    if (d == 0) g.erase(g.begin());
-    else c = 0;
-    rep_r(i, n) {
-      (*this)[i] *= c;
-      for (auto &[j, b] : g) {
-        if (j > i) break;
-        (*this)[i] += (*this)[i-j] * b;
-      }
-    }
-    return *this;
-  }
-  F multiply(const vector<pair<int, T>> &g) const { return F(*this).multiply_inplace(g); }
-  // O(nk)
-  F &divide_inplace(vector<pair<int, T>> g) {
-    int n = this->size();
-    auto [d, c] = g.front();
-    assert(d == 0 && c != T(0));
-    T ic = c.inv();
-    g.erase(g.begin());
-    rep(i, n) {
-      for (auto &[j, b] : g) {
-        if (j > i) break;
-        (*this)[i] -= (*this)[i-j] * b;
-      }
-      (*this)[i] *= ic;
-    }
-    return *this;
-  }
-  F divide(const vector<pair<int, T>> &g) const { return F(*this).divide_inplace(g); }
-
-  // multiply and divide (1 + cz^d)
-  // O(n)
-  void multiply_inplace(const int d, const T c) {
-    int n = this->size();
-    if (c == T(1)) rep_r(i, n-d) (*this)[i+d] += (*this)[i];
-    else if (c == T(-1)) rep_r(i, n-d) (*this)[i+d] -= (*this)[i];
-    else rep_r(i, n-d) (*this)[i+d] += (*this)[i] * c;
-  }
-  // O(n)
-  void divide_inplace(const int d, const T c) {
-    int n = this->size();
-    if (c == T(1)) rep(i, n-d) (*this)[i+d] -= (*this)[i];
-    else if (c == T(-1)) rep(i, n-d) (*this)[i+d] += (*this)[i];
-    else rep(i, n-d) (*this)[i+d] -= (*this)[i] * c;
-  }
-
-  // O(n)
-  T eval(const T &a) const {
-    T x(1), res(0);
-    for (auto e : *this) res += e * x, x *= a;
-    return res;
-  }
-
-  // O(n)
-  F &integ_inplace() {
-    int n = this->size();
-    assert(n > 0);
-    if (n == 1) return *this = F{0};
-    this->insert(this->begin(), 0);
-    this->pop_back();
-    vector<T> inv(n);
-    inv[1] = 1;
-    int p = T::mod();
-    rep(i, 2, n) inv[i] = - inv[p%i] * (p/i);
-    rep(i, 2, n) (*this)[i] *= inv[i];
-    return *this;
-  }
-  F integ() const { return F(*this).integ_inplace(); }
-
-  // O(n)
-  F &deriv_inplace() {
-    int n = this->size();
-    assert(n > 0);
-    rep(i, 2, n) (*this)[i] *= i;
-    this->erase(this->begin());
-    this->push_back(0);
-    return *this;
-  }
-  F deriv() const { return F(*this).deriv_inplace(); }
-
-  // O(n log n)
-  F &log_inplace(int d = -1) {
-    int n = this->size();
-    assert(n > 0 && (*this)[0] == 1);
-    if (d == -1) d = n;
-    assert(d >= 0);
-    if (d < n) this->resize(d);
-    F f_inv = this->inv();
-    this->deriv_inplace();
-    this->multiply_inplace(f_inv);
-    this->integ_inplace();
-    return *this;
-  }
-  F log(const int d = -1) const { return F(*this).log_inplace(d); }
-
-  // O(n log n)
-  // https://arxiv.org/abs/1301.5804 (Figure 1, right)
-  F &exp_inplace(int d = -1) {
-    int n = this->size();
-    assert(n > 0 && (*this)[0] == 0);
-    if (d == -1) d = n;
-    assert(d >= 0);
-    F g{1}, g_fft{1, 1};
-    (*this)[0] = 1;
-    this->resize(d);
-    F h_drv(this->deriv());
-    for (int m = 2; m < d; m *= 2) {
-      // prepare
-      F f_fft(this->begin(), this->begin() + m);
-      f_fft.resize(2*m), internal::butterfly(f_fft);
-
-      // Step 2.a'
-      {
-        F f(m);
-        rep(i, m) f[i] = f_fft[i] * g_fft[i];
-        internal::butterfly_inv(f);
-        f.erase(f.begin(), f.begin() + m/2);
-        f.resize(m), internal::butterfly(f);
-        rep(i, m) f[i] *= g_fft[i];
-        internal::butterfly_inv(f);
-        f.resize(m/2);
-        f /= T(-m) * m;
-        g.insert(g.end(), f.begin(), f.begin() + m/2);
-      }
-
-      // Step 2.b'--d'
-      F t(this->begin(), this->begin() + m);
-      t.deriv_inplace();
-      {
-        // Step 2.b'
-        F r{h_drv.begin(), h_drv.begin() + m-1};
-        // Step 2.c'
-        r.resize(m); internal::butterfly(r);
-        rep(i, m) r[i] *= f_fft[i];
-        internal::butterfly_inv(r);
-        r /= -m;
-        // Step 2.d'
-        t += r;
-        t.insert(t.begin(), t.back()); t.pop_back();
-      }
-
-      // Step 2.e'
-      if (2*m < d) {
-        t.resize(2*m); internal::butterfly(t);
-        g_fft = g; g_fft.resize(2*m); internal::butterfly(g_fft);
-        rep(i, 2*m) t[i] *= g_fft[i];
-        internal::butterfly_inv(t);
-        t.resize(m);
-        t /= 2*m;
-      }
-      else { // この場合分けをしても数パーセントしか速くならない
-        F g1(g.begin() + m/2, g.end());
-        F s1(t.begin() + m/2, t.end());
-        t.resize(m/2);
-        g1.resize(m), internal::butterfly(g1);
-        t.resize(m),  internal::butterfly(t);
-        s1.resize(m), internal::butterfly(s1);
-        rep(i, m) s1[i] = g_fft[i] * s1[i] + g1[i] * t[i];
-        rep(i, m) t[i] *= g_fft[i];
-        internal::butterfly_inv(t);
-        internal::butterfly_inv(s1);
-        rep(i, m/2) t[i+m/2] += s1[i];
-        t /= m;
-      }
-
-      // Step 2.f'
-      F v(this->begin() + m, this->begin() + min<int>(d, 2*m)); v.resize(m);
-      t.insert(t.begin(), m-1, 0); t.push_back(0);
-      t.integ_inplace();
-      rep(i, m) v[i] -= t[m+i];
-
-      // Step 2.g'
-      v.resize(2*m); internal::butterfly(v);
-      rep(i, 2*m) v[i] *= f_fft[i];
-      internal::butterfly_inv(v);
-      v.resize(m);
-      v /= 2*m;
-
-      // Step 2.h'
-      rep(i, min(d-m, m)) (*this)[m+i] = v[i];
-    }
-    return *this;
-  }
-  F exp(const int d = -1) const { return F(*this).exp_inplace(d); }
-
-  // O(n log n)
-  F &pow_inplace(ll k, int d = -1) {
-    int n = this->size();
-    if (d == -1) d = n;
-    assert(d >= 0 && k >= 0);
-    if (k == 0) {
-      *this = F(d);
-      if (d > 0) (*this)[0] = 1;
-      return *this;
-    }
-    int l = 0;
-    while (l < n && (*this)[l] == 0) ++l;
-    if (l > (d-1)/k) return *this = F(d);
-    T c = (*this)[l];
-    this->erase(this->begin(), this->begin() + l);
-    *this /= c;
-    this->log_inplace(d - l*k);
-    *this *= k;
-    this->exp_inplace();
-    *this *= c.pow(k);
-    this->insert(this->begin(), l*k, 0);
-    this->resize(d);
-    return *this;
-  }
-  F pow(const ll k, const int d = -1) const { return F(*this).pow_inplace(k, d); }
-
-  F operator*(const T &g) const { return F(*this) *= g; }
-  F operator/(const T &g) const { return F(*this) /= g; }
-  F operator+(const F &g) const { return F(*this) += g; }
-  F operator-(const F &g) const { return F(*this) -= g; }
-  F operator<<(const int d) const { return F(*this) <<= d; }
-  F operator>>(const int d) const { return F(*this) >>= d; }
+  template <typename F>
+  void subtree_query(int u, bool vertex, const F& f) { f(down[u] + int(!vertex), up[u]); }
+  int lca(int a, int b) { while (nxt[a] != nxt[b]) { if (down[a] < down[b]) swap(a, b); a = par[nxt[a]]; } return depth[a] < depth[b] ? a : b; }
+  int la(int a, int d) { assert(0 <= d && d <= depth[a]); while (depth[nxt[a]] > d) a = par[nxt[a]]; return drev[down[a] - (depth[a] - d)]; }
+  ll dist(int a, int b) { return depth[a] + depth[b] - depth[lca(a, b)] * 2; }
 };
 
-using fps = FormalPowerSeries<mint>;
-
-
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
 //------------------------------------------------------------------------------
 namespace COM {
   vector<mint> fact, factinv, inv; int cur = 2;
@@ -539,71 +242,128 @@ namespace COM {
 //------------------------------------------------------------------------------
 ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
-//------------------------------------------------------------------------------//------------------------------------------------------------------------------
-template <class S, S (*op)(S, S), S (*e)()> struct segtree {
-  public:
-  segtree() : segtree(0) {}
-  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
-  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
-  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
-  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
-  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
-  S all_prod() const { return d[1]; }
-  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
-  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
-    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
-  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
-  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
-    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
-  private:
-  int _n, size, log; std::vector<S> d;
-  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
-};
 //------------------------------------------------------------------------------
 
-using S = mint;
-S op(S l, S r) { return l * r; }
-S e() { return 1; }
 
-// sの各要素について[0, s_i]から各々選べる時に和がm以下になる場合の数を全て求める
-template<class T> fps subset_cumsum(vector<T> s, ll m) {
-  ll n = s.size();
-  vl cnt(m + 1); rep(i, n) if (s[i] < m) cnt[s[i] + 1]++;
-  fps log(m + 1); // 分子の計算 ∏(1+x^(s_i))をテイラー展開
-  vmi invs(m + 1); rep(i, 1, m + 1) invs[i] = mint(i).inv();
-  rep(k, 1, m + 1) {
-    if (cnt[k] == 0) continue;
-    for(int i = 1; i * k <= m; ++i) log[i * k] -= mint(cnt[k]) * invs[i];
+mint solve(ll n, ll m, vl p, vlp e) {
+  vl pinv(1 << n);
+  rep(i, 1 << n) pinv[p[i]] = i;
+
+  Graph<ll> G(1 << (n + 1));
+  rep(i, (1 << n) - 1) {
+    ll left = i * 2 + 1;
+    ll right = i * 2 + 2;
+    G.add_edge(i, left);
+    G.add_edge(i, right);
+  }
+  HeavyLightDecomposition<Graph<ll>> hld(G, 0);
+
+  vl dp((1 << (n + 1)) - 1, -1);
+  rep(i, 1 << n) {
+    dp[(1 << n) - 1 + i] = p[i];
   }
 
-  // 分母の計算 (1-x)^(-n)　の負の二項定理
-  fps denom(m + 1);
-  rep(i, m + 1) denom[i] += comb(i + (n-1), (n-1));
+  bool valid = true;
 
-  fps ret = log.exp().multiply(denom);
-  ret.resize(m + 1);
-  return ret;
+  rep(i, m) {
+    auto [w, l] = e[i]; w--; l--;
+    w = pinv[w] + (1 << n) - 1;  l = pinv[l] + (1 << n) - 1;
+    ll lc = hld.lca(w, l); ll dep = hld.depth[lc];
+    ll wdep = hld.depth[w], ldep = hld.depth[l];
+    ll curw = w, curl = l;
+    while (wdep > dep + 1) {
+      if (dp[hld.par[curw]] == -1) dp[hld.par[curw]] = dp[curw];
+      else if (dp[hld.par[curw]] != dp[curw]) valid = false;
+      curw = hld.par[curw];
+      wdep--;
+    }
+    while (ldep > dep + 1) {
+      if (dp[hld.par[curl]] == -1) dp[hld.par[curl]] = dp[curl];
+      else if (dp[hld.par[curl]] != dp[curl]) valid = false;
+      curl = hld.par[curl];
+      ldep--;
+    }
+    if (dp[lc] == -1) dp[lc] = dp[curw]; else if (dp[lc] != dp[curw]) valid = false;
+  }
+  if (!valid) return 0;
+  // debug(dp);
+  mint ans = mint(2).pow(1 << n);
+  rep(i, (1 << n) - 1) {
+    if (dp[i] != -1) ans /= 2;
+  }
+  return ans;
+}
+
+mint naive(ll n, ll m, vl p, vlp e) { // 結局使ってない
+  Graph<ll> G(1 << (n + 1));
+  rep(i, (1 << n) - 1) {
+    ll left = i * 2 + 1;
+    ll right = i * 2 + 2;
+    G.add_edge(i, left);
+    G.add_edge(i, right);
+  }
+
+  ll ans = 0;
+  rep(S, 1 << (1 << n)) {
+    vl dp((1 << (n + 1)) - 1, -1);
+    rep(i, 1 << n) dp[(1 << n) - 1 + i] = p[i];
+    set<LP> wl;
+
+    rep_r(v, (1 << n) - 1) {
+      ll left = v * 2 + 1;
+      ll right = v * 2 + 1;
+      bool diff = (S >> dp[left] & 1) ^ (S >> dp[right] & 1);
+      if (dp[left] < dp[right]) {
+        if (diff) {
+          dp[v] = dp[right];
+          wl.insert({dp[right], dp[left]});
+        } else {
+          dp[v] = dp[left];
+          wl.insert({dp[left], dp[right]});
+        }
+      } else {
+        if (diff) {
+          dp[v] = dp[left];
+          wl.insert({dp[left], dp[right]});
+        } else {
+          dp[v] = dp[right];
+          wl.insert({dp[right], dp[left]});
+        }
+      }
+    }
+
+    bool valid = true;
+    rep(i, m) {
+      if (wl.find(e[i]) == wl.end()) valid = false;
+    }
+    if (valid) ans++;
+  }
+
+  return ans;
+}
+
+void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
+  while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
+    ll n = 4; ll m = 3;
+    vl p = rg.vecperm(1 << n);
+    vlp es; rep(i, m) {
+      ll u = rg.l(1, 1 << n), v = rg.l(u + 1, (1 << n) + 1);
+      if (rg.l(0, 2) != 0) swap(u, v);
+      es.pb({u, v});
+    }
+    auto so = solve(n, m, p, es); auto na = naive(n, m, p, es);
+    if (!check || na != so) { cout << c << "times tried" << "\n";
+      debug(n, m, p, es); debug(so); debug(na);
+    if (check || (!check && c > loop)) break; }
+  }
 }
 
 void solve() {
-  LL(n, m, k);
-  if (m % k) OUTRET(0);
-  vl v(n - k + 1, k - 1);
-  vmi a = subset_cumsum(v, (n - k + 1) * (k - 1));
+  LL(n, m);
+  VL(p, 1 << n, 1);
+  vlp es; rep(i, m) { LL(w, l); es.pb({w, l}); }
 
-  // 操作回数上限
-  ll r = min(m / k, a.size() - 1);
-  // [m/k-r + 1, m/k-r + n-1]の区間積を1ずつずらす
-
-  vmi data(r + n + 5); iota(all(data), m/k-r+1);
-  segtree<S, op, e> seg(data);
-
-  mint ans = 0;
-  rep_r(i, r + 1) {
-    ll off = r - i;
-    ans += a[i] * seg.prod(off, off + n - 1) / fac(n - 1);
-  }
-  OUT(ans.val());
+  OUT(solve(n, m, p, es));
 }
 
 signed main() {
