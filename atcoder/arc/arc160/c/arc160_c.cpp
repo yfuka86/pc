@@ -192,10 +192,10 @@ ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b;
 
 mint solve(ll n, vl a) {
   unordered_map<ll, ll> f; rep(i, n) f[a[i]]++;
-  vector<vector<pair<ll, mint>>> dp(200010);
+  vector<vector<pair<ll, mint>>> dp(200051);
   dp[0] = {{0, 1}};
 
-  rep(i, 200005) {
+  rep(i, 200050) {
     vmi sum; fore(a, b, dp[i]) sum.pb(b);
     vmi cs = csum(sum);
 
@@ -209,7 +209,7 @@ mint solve(ll n, vl a) {
     }
   }
 
-  return dp[200002][0].se;
+  return dp[200050][0].se;
 }
 
 mint naive(ll n, vl a) {
@@ -235,7 +235,7 @@ mint naive(ll n, vl a) {
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 5;
+    ll n = 10;
     vl a = rg.vecl(n, 1, 7);
     auto so = solve(n, a); auto na = naive(n, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
