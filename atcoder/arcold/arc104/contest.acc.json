@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc104",
+    "title": "AtCoder Regular Contest 104",
+    "url": "https://atcoder.jp/contests/arc104"
+  },
+  "tasks": [
+    {
+      "id": "arc104_a",
+      "label": "A",
+      "title": "Plus Minus",
+      "url": "https://atcoder.jp/contests/arc104/tasks/arc104_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc104_a.cpp"
+      }
+    },
+    {
+      "id": "arc104_b",
+      "label": "B",
+      "title": "DNA Sequence",
+      "url": "https://atcoder.jp/contests/arc104/tasks/arc104_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc104_b.cpp"
+      }
+    },
+    {
+      "id": "arc104_c",
+      "label": "C",
+      "title": "Fair Elevator",
+      "url": "https://atcoder.jp/contests/arc104/tasks/arc104_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc104_c.cpp"
+      }
+    },
+    {
+      "id": "arc104_d",
+      "label": "D",
+      "title": "Multiset Mean",
+      "url": "https://atcoder.jp/contests/arc104/tasks/arc104_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc104_d.cpp"
+      }
+    },
+    {
+      "id": "arc104_e",
+      "label": "E",
+      "title": "Random LIS",
+      "url": "https://atcoder.jp/contests/arc104/tasks/arc104_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc104_e.cpp"
+      }
+    },
+    {
+      "id": "arc104_f",
+      "label": "F",
+      "title": "Visibility Sequence",
+      "url": "https://atcoder.jp/contests/arc104/tasks/arc104_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc104_f.cpp"
+      }
+    }
+  ]
+}

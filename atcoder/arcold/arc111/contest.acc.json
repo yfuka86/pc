@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc111",
+    "title": "AtCoder Regular Contest 111",
+    "url": "https://atcoder.jp/contests/arc111"
+  },
+  "tasks": [
+    {
+      "id": "arc111_a",
+      "label": "A",
+      "title": "Simple Math 2",
+      "url": "https://atcoder.jp/contests/arc111/tasks/arc111_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc111_a.cpp"
+      }
+    },
+    {
+      "id": "arc111_b",
+      "label": "B",
+      "title": "Reversible Cards",
+      "url": "https://atcoder.jp/contests/arc111/tasks/arc111_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc111_b.cpp"
+      }
+    },
+    {
+      "id": "arc111_c",
+      "label": "C",
+      "title": "Too Heavy",
+      "url": "https://atcoder.jp/contests/arc111/tasks/arc111_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc111_c.cpp"
+      }
+    },
+    {
+      "id": "arc111_d",
+      "label": "D",
+      "title": "Orientation",
+      "url": "https://atcoder.jp/contests/arc111/tasks/arc111_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc111_d.cpp"
+      }
+    },
+    {
+      "id": "arc111_e",
+      "label": "E",
+      "title": "Simple Math 3",
+      "url": "https://atcoder.jp/contests/arc111/tasks/arc111_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc111_e.cpp"
+      }
+    },
+    {
+      "id": "arc111_f",
+      "label": "F",
+      "title": "Do you like query problems?",
+      "url": "https://atcoder.jp/contests/arc111/tasks/arc111_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc111_f.cpp"
+      }
+    }
+  ]
+}

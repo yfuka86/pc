@@ -100,7 +100,9 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
+template<typename A> void IANSWER(vector<A> a, string str = "! ") { cout << str; OUTARRAY(a); cout.flush(); } template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { vector<A> v(a); IANSWER(v, str); }
+template<typename A, typename R> void IANSWER(vector<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; } template<typename A, typename R> void IANSWER(initializer_list<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; }
+
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -147,6 +149,8 @@ template< typename T = ll > struct Graph {
   size_t size() const { return g.size(); }
   void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
+  void read_tree(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll u, v; cin >> u >> v; u-=off; v-=off; add_edge(u, v); } }
+  void read_treep(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll p; cin >> p; p-=off; add_edge(i+1, p); } }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
@@ -172,28 +176,23 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 void solve() {
   LL(q);
 
-  multiset<ll> sorted; queue<ll> que;
+  multiset<ll> a1; queue<ll> a2;
   rep(i, q) {
     LL(t);
     if (t == 1) {
-      LL(x);
-      que.push(x);
+      LL(x); a2.push(x);
     } else if (t == 2) {
-      if (sorted.size()) {
-        OUT(*sorted.begin());
-        sorted.erase(sorted.begin());
+      if (a1.size()) {
+        OUT(*a1.begin()); a1.erase(a1.begin());
       } else {
-        OUT(que.front());
-        que.pop();
+        OUT(a2.front()); a2.pop();
       }
     } else {
-      while(que.size()) {
-        sorted.insert(que.front());
-        que.pop();
+      while (a2.size()) {
+        a1.insert(a2.front()); a2.pop();
       }
     }
   }
-
 }
 
 signed main() {
