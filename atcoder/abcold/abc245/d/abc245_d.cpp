@@ -530,6 +530,27 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
     if (check || (!check && c > loop)) break; }
   }
 }
+// 多項式除算 f / g
+pair<fps, fps> divmod(const fps &f, const fps &g) {
+  int n = f.size(), m = g.size();
+  int k = n - m + 1;
+  if (k <= 0) return { fps(), f }; // 次数がgの方が大きい場合
+
+  // 商を求める
+  fps f2 = fps(f), g2 = fps(g);
+  reverse(f2.begin(), f2.end());
+  reverse(g2.begin(), g2.end());
+  f2.resize(k, 0); g2.resize(k, 0);
+  fps q = f2.divide(g2);
+  reverse(q.begin(), q.end());
+  while (!q.empty() && q.back() == 0) q.pop_back();
+  // 余りを求める
+  fps r = fps(f);
+  fps p = fps(g); p.resize(n, 0); p = p.multiply(q); // 次数nまで求めて引き算（m以上の次数を無視すると少し高速になる）
+  r -= p;
+  while (!r.empty() && r.back() == 0) r.pop_back();
+  return { q, r };
+}
 
 
 void solve() {
@@ -537,13 +558,10 @@ void solve() {
   fps a(n + 1), c(n + m + 1);
   IN(a); IN(c);
 
-  fps b = c.divide(a);
-  rep(i, m + 1) {
-    if (b.size() <= i) cout << 0 << " ";
-    if (b[i].val() > 1000000) cout << b[i].val() - mod << " ";
-    else cout << b[i] << " ";
-  }
-  cout << "\n";
+  auto [q, r] = divmod(c, a);
+  vl ans;
+  rep(i, m + 1) if (q[i].val() > 100) ans.pb(q[i].val() - mod); else ans.pb(q[i].val());
+  OUTARRAY(ans);
 }
 
 signed main() {
