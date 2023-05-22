@@ -152,7 +152,6 @@ template< typename T = ll > struct Graph {
   void read_tree(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll u, v; cin >> u >> v; u-=off; v-=off; add_edge(u, v); } }
   void read_treep(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll p; cin >> p; p-=off; add_edge(i+1, p); } }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
-const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
 ll solve(ll n, vl a) {
   ll ans = n - a[0]; return ans;
@@ -174,9 +173,43 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC2(ll, a, b, n);
+  LL(h, w); vs s(h); IN(s);
 
+  string t = "snuke";
+  vl dx = {1, 0, 1, -1};
+  vl dy = {0, 1, 1, 1};
+
+  rep(i, h) rep(j, w) {
+    rep(d, 4) {
+      if (dx[d] == 1 && i >= h - 4) continue;
+      if (dx[d] == -1 && i < 4) continue;
+      if (dy[d] == 1 && j >= w - 4) continue;
+      {
+        bool valid = true;
+        rep(k, 5) {
+          if (t[k] != s[i + dx[d]*k][j + dy[d]*k]) valid = false;
+        }
+        if (valid) {
+          rep(k, 5) {
+            OUT(i + dx[d]*k + 1, j + dy[d]*k + 1);
+          }
+          return;
+        }
+      }
+      {
+        bool valid = true;
+        rep_r(k, 5) {
+          if (t[4 - k] != s[i + dx[d]*k][j + dy[d]*k]) valid = false;
+        }
+        if (valid) {
+          rep_r(k, 5) {
+            OUT(i + dx[d]*k + 1, j + dy[d]*k + 1);
+          }
+          return;
+        }
+      }
+    }
+  }
 }
 
 signed main() {

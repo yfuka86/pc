@@ -174,9 +174,16 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC2(ll, a, b, n);
+  LL(n, m, d); VL(a, n); VL(b, m);
+  sort(all(a)); sort(all(b));
 
+  ll ans = -1;
+  rep(i, n) {
+    auto it = upper_bound(all(b), a[i] + d);
+    if (it == b.begin()) continue;
+    if (*(it - 1) >= a[i] - d) chmax(ans, *(it - 1) + a[i]);
+  }
+  OUT(ans);
 }
 
 signed main() {

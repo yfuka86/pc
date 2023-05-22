@@ -175,8 +175,46 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
-  VEC2(ll, a, b, n);
+  VL(a, n, 1);
+  vl sa = a; sort(all(sa));
 
+  ll ans = 0;
+
+  rep(_, 3) {
+    vl cnt(4); rep(i, n) cnt[a[i]]++;
+    vvl ori(4);
+    rep(i, n) {
+      if (a[i] == 0) { ori[sa[i]].pb(i); }
+    }
+    vl rem;
+    rep(i, cnt[0]) {
+      if (a[i] != 0) {
+        if (ori[a[i]].size()) {
+          ll to = ori[a[i]].back();
+          ori[a[i]].pop_back();
+          swap(a[i], a[to]);
+          ans++;
+        } else {
+          rem.pb(i);
+        }
+      }
+    }
+    vl rem2;
+    rep(i, 1, 4) fore(j, ori[i]) rem2.pb(j);
+    ans += rem.size();
+    rep(i, rem.size()) swap(a[rem[i]], a[rem2[i]]);
+
+    { // 再帰のための処理
+      vl nxa;
+      rep(i, cnt[0], n) nxa.pb(a[i] - 1);
+      n -= cnt[0];
+      a = nxa;
+      sa.erase(sa.begin(), sa.begin() + cnt[0]);
+      rep(i, n) sa[i]--;
+    }
+  }
+
+  OUT(ans);
 }
 
 signed main() {

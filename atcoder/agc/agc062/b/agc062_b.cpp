@@ -174,9 +174,52 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC2(ll, a, b, n);
+  LL(n, k);
+  VL(c, k);
+  VL(p, n);
 
+  vl _p(n);
+  rep(i, n) {
+    _p[p[i]-1] = i+1;
+  }
+  p = _p;
+  debug(p);
+  // pをソートする問題にする
+
+  vl rng; rng.pb(0);
+  rep(i, n - 1) {
+    if (p[i] > p[i + 1]) rng.pb(i + 1);
+  }
+  if (rng.size() > k + 1) OUTRET(-1);
+  rng.pb(n);
+
+  vl l(n + 1); ll cur = 0;
+  rep(i, 1, rng.size()) {
+    while (cur <= rng[i]) {
+      l[cur] = rng[i - 1];
+      cur++;
+    }
+  }
+  debug(rng);
+  debug(l);
+
+  vv(ll, dp, k + 1, n + 1, LINF);
+  dp[0][n] = 0;
+
+  rep(i, k) {
+    rep(j, n + 1) {
+      rep(nj, l[j], j + 1) {
+        chmin(dp[i + 1][nj], dp[i][j] + c[i] * (j - nj));
+      }
+    }
+  }
+  debug(dp);
+
+  ll ans = LINF;
+  rep(i, n) {
+    if (l[i] == 0) chmin(ans, dp[k][i]);
+  }
+  OUT(ans);
 }
 
 signed main() {

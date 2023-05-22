@@ -174,8 +174,30 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC2(ll, a, b, n);
+  LL(n, q);
+
+  vector<set<ll>> g(n);
+
+  ll ans = n;
+  rep(i, q) {
+    LL(t);
+    if (t == 1) {
+      LL(u, v); --u; --v;
+      if (g[u].size() == 0) ans--;
+      if (g[v].size() == 0) ans--;
+      g[u].insert(v);
+      g[v].insert(u);
+    } else {
+      LL(v); --v;
+      fore(to, g[v]) {
+        g[to].erase(v);
+        if (g[to].size() == 0) ans++;
+      }
+      if (g[v].size()) ans++;
+      g[v].clear();
+    }
+    OUT(ans);
+  }
 
 }
 

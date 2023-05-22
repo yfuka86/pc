@@ -173,10 +173,52 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  LL(n);
-  VEC2(ll, a, b, n);
+// レンジの和集合管理
+struct Rngset {
+  map<ll, ll> ranges;
+  Rngset() : ranges() {}
 
+  void on(ll l, ll r) {
+    assert(l < r);
+    auto lt = ranges.lower_bound(l);
+    auto rt = ranges.upper_bound(r);
+    if (lt != ranges.begin() && l <= prev(lt)->se) { l = prev(lt)->fi; lt--; }
+    if (rt != ranges.begin() && r <= prev(rt)->se) { r = prev(rt)->se; }
+    while(lt != rt) { lt = ranges.erase(lt); }
+    ranges[l] = r;
+  }
+};
+
+
+void solve() {
+  LL(n, k); VL(a, n);
+  a.pb(LINF);
+  Rngset rs;
+  rs.on(0, 1);
+  rs.on(LINF, LINF + 1);
+  sort(all(a));
+
+  rep(i, n + 1) {
+    vl ans;
+    ll cur = 0, kk = k;
+    fore(l, r, rs.ranges) {
+      while (cur < l && cur < a[i] && kk) {
+        ans.pb(cur);
+        cur++;
+        kk--;
+      }
+      cur = r;
+    }
+    if (ans.size() == k) {
+      OUTARRAY(ans); return;
+    }
+
+    vlp nx;
+    fore(l, r, rs.ranges) { if (l == LINF) continue;
+      nx.pb({l + a[i], r + a[i]});
+    }
+    fore(l, r, nx) rs.on(l, r);
+  }
 }
 
 signed main() {

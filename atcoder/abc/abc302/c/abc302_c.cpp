@@ -174,9 +174,22 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC2(ll, a, b, n);
+  LL(n, m);
+  vs s(n); IN(s);
 
+  vl p(n); iota(all(p), 0);
+  do {
+    bool valid = true;
+    rep(i, n - 1) {
+      ll c = 0;
+      rep(j, m) {
+        if (s[p[i]][j] != s[p[i + 1]][j]) c++;
+      }
+      if (c != 1) valid = false;
+    }
+    if (valid) OUTRET("Yes");
+  } while (next_permutation(all(p)));
+  OUT("No");
 }
 
 signed main() {

@@ -173,10 +173,107 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+// Union-Find which we can undo
+struct UnionFind {
+    vector<int> par;
+    stack<pair<int,int>> history;
+
+    UnionFind() {}
+    UnionFind(int n) : par(n, -1) { }
+    void init(int n) { par.assign(n, -1); }
+
+    int root(int x) {
+        if (par[x] < 0) return x;
+        else return root(par[x]);
+    }
+
+    bool issame(int x, int y) {
+        return root(x) == root(y);
+    }
+
+    bool unite(int x, int y) {
+        x = root(x); y = root(y);
+        history.emplace(x, par[x]);
+        history.emplace(y, par[y]);
+        if (x == y) return false;
+        if (par[x] > par[y]) swap(x, y); // merge technique
+        par[x] += par[y];
+        par[y] = x;
+        return true;
+    }
+
+    int size(int x) {
+        return -par[root(x)];
+    }
+
+    // 1-step undo
+    void undo() {
+        for (int iter = 0; iter < 2; ++iter) {
+            par[history.top().first] = history.top().second;
+            history.pop();
+        }
+    }
+
+    // erase history
+    void snapshot() {
+        while (!history.empty()) history.pop();
+    }
+
+    // all rollback
+    void rollback() {
+        while (!history.empty()) undo();
+    }
+};
+
 void solve() {
   LL(n);
-  VEC2(ll, a, b, n);
+  VEC2(ll, a, b, n); rep(i, n) { a[i]--; b[i]--; }
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    LL(u, v); --u; --v;
+    G.add_edge(u, v);
+  }
 
+  vl ans(n);
+  UnionFind uf(n);
+
+  vl es(n); // 成分ごとの辺の数
+
+  function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    if (v == 0) {
+      uf.unite(a[v], b[v]);
+      es[uf.root(a[v])]++;
+      ans[0] = 1;
+      fore(to, G[v]) { if (to == p) continue; dfs(to, v); }
+      return;
+    }
+
+    ans[v] = ans[p];
+    if (uf.issame(a[v], b[v])) {
+      if (es[uf.root(a[v])] < uf.size(a[v])) ans[v]++;
+      es[uf.root(a[v])]++;
+      fore(to, G[v]) { if (to == p) continue; dfs(to, v); }
+      es[uf.root(a[v])]--;
+    } else {
+      ll ra = uf.root(a[v]), rb = uf.root(b[v]);
+      ll e1 = es[ra], e2 = es[rb];
+      ll ori = min(uf.size(ra), e1) + min(uf.size(rb), e2);
+
+      uf.unite(a[v], b[v]);
+      ll nr = uf.root(a[v]);
+      es[nr] = e1 + e2 + 1;
+      ans[v] += min(uf.size(nr), es[nr]) - ori;
+
+      fore(to, G[v]) { if (to == p) continue; dfs(to, v); }
+
+      uf.undo();
+      es[ra] = e1; es[rb] = e2;
+    }
+  };
+  dfs(0, -1);
+
+  ans.erase(ans.begin());
+  OUTARRAY(ans);
 }
 
 signed main() {

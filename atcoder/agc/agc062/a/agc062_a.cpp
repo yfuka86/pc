@@ -174,13 +174,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC2(ll, a, b, n);
+  LL(n); STR(s);
 
+  if (s.back() == 'A') OUTRET("A");
+  bool ba = false;
+  rep(i, n - 1) {
+    if (s[i] == 'B' && s[i + 1] == 'A') ba = true;
+  }
+  if (ba) OUT("A"); else OUT("B");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; // cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

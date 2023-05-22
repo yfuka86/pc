@@ -174,9 +174,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
-  VEC2(ll, a, b, n);
-
+  LL(a, b);
+  OUT(ceil(a, b));
 }
 
 signed main() {

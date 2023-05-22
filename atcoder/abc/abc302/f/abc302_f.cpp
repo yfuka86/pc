@@ -173,10 +173,34 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  LL(n);
-  VEC2(ll, a, b, n);
+vector<ll> dijkstra(Graph<ll> &G, ll start) {
+  mpq<LP> que; vl cost(G.size(), LINF);
+  cost[start] = 0; que.push({0, start});
+  while(!que.empty()) {
+    auto [c, v] = que.top(); que.pop(); if (cost[v] < c) continue;
+    for(auto &to: G[v]) { ll nc = cost[v] + to.cost; if (chmin(cost[to], nc)) que.push({nc, to}); }
+  }
+  return cost;
+}
 
+void solve() {
+  LL(n, m);
+
+  Graph<ll> G(n + m);
+
+  rep(i, n) {
+    LL(a);
+    VL(s, a, 1);
+    rep(j, a) {
+      G.add_edge(m + i, s[j]);
+    }
+  }
+
+  vl c = dijkstra(G, 0);
+  if (c[m - 1] == LINF) OUT(-1);
+  else {
+    OUT(c[m - 1] / 2 - 1);
+  }
 }
 
 signed main() {
