@@ -50,30 +50,6 @@ struct RandGen {
   string strnum(ll n, ll zero = 0, ll ten = 10) { vl zt = vecl(n, zero, ten); string s; rep(i, n) s.pb('0' + zt[i]); return s; }
   template<typename T> void shuffle(vector<T> &a) { std::shuffle(all(a), mt); }
 };
-// 入出力マクロの上に
-#include <atcoder/convolution>
-#include <atcoder/modint>
-using namespace atcoder;
-using mint = modint998244353; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
-const ll mod = 998244353;
-istream& operator>>(istream& in, mint &a) { long long e; in >> e; a = e; return in; }
-ostream& operator<<(ostream& out, mint &a) { return out << a.val(); }
-template<class T> istream &operator>>(istream &is, vector<T> &v) { for (auto &e : v) is >> const_cast<T&>(e); return is; }
-template<class T> ostream &operator<<(ostream &os, const vector<T> &v) { for (auto &e : v) os << const_cast<T&>(e) << ' '; return os; }
-//------------------------------------------------------------------------------
-// Nlog^2Nで複数配列を効率よくたたみ込むもの
-vmi all_convolution(vvmi &a) {
-  multimap<ll, vmi> que;
-  for (auto &v: a) que.emplace(v.size(), v);
-  while (que.size() > 1) {
-    vmi a = que.begin()->se; que.erase(que.begin());
-    vmi b = que.begin()->se; que.erase(que.begin());
-    vmi c = convolution(a, b);
-    que.emplace(c.size(), c);
-  }
-  return que.begin()->se;
-}
-
 // デバッグ系
 #define dout cout
 template<typename T, typename=void> struct is_specialize:false_type{};
@@ -197,18 +173,53 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+namespace COM {
+  vector<mint> fact, factinv, inv; int cur = 2;
+  struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
+  void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+  void upd(int n) { assert(n < 1e8); while (cur <= n) incr(); }
+  mint fac(int n) { assert(0 <= n); upd(n); return fact[n]; }
+  mint ifac(int n) { assert(0 <= n); upd(n); return factinv[n]; }
+  mint combp(int n, int k) { upd(n); if (n < 0 || k < 0 || n < k) return 0; return fact[n] * factinv[n - k]; }
+  mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; using COM::fac, COM::ifac, COM::combp, COM::comb;
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
 void solve() {
-  LL(n, s);
-  VL(a, n);
+  LL(n, a, b, k);
 
-  vmi p = {1};
-  rep(i, n) {
-    vmi t(a[i] + 1); t[0] = 2; t[a[i]] = 1;
-    p = convolution(p, t);
-    p.resize(s + 1);
+  vmi binom(n + 1); rep(i, n + 1) binom[i] = comb(n, i);
+  mint ans = 0;
+  rep(i, n + 1) {
+    ll rem = k - a * i;
+    if (rem < 0 || rem % b) continue;
+    if (rem / b <= n) {
+      ans += binom[i] * binom[rem / b];
+    }
   }
-
-  OUT(p[s]);
+  OUT(ans);
 }
 
 signed main() {

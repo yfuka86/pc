@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "agc025",
+    "title": "AtCoder Grand Contest 025",
+    "url": "https://atcoder.jp/contests/agc025"
+  },
+  "tasks": [
+    {
+      "id": "agc025_a",
+      "label": "A",
+      "title": "Digits Sum",
+      "url": "https://atcoder.jp/contests/agc025/tasks/agc025_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "agc025_a.cpp"
+      }
+    },
+    {
+      "id": "agc025_b",
+      "label": "B",
+      "title": "RGB Coloring",
+      "url": "https://atcoder.jp/contests/agc025/tasks/agc025_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "agc025_b.cpp"
+      }
+    },
+    {
+      "id": "agc025_c",
+      "label": "C",
+      "title": "Interval Game",
+      "url": "https://atcoder.jp/contests/agc025/tasks/agc025_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "agc025_c.cpp"
+      }
+    },
+    {
+      "id": "agc025_d",
+      "label": "D",
+      "title": "Choosing Points",
+      "url": "https://atcoder.jp/contests/agc025/tasks/agc025_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "agc025_d.cpp"
+      }
+    },
+    {
+      "id": "agc025_e",
+      "label": "E",
+      "title": "Walking on a Tree",
+      "url": "https://atcoder.jp/contests/agc025/tasks/agc025_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "agc025_e.cpp"
+      }
+    },
+    {
+      "id": "agc025_f",
+      "label": "F",
+      "title": "Addition and Andition",
+      "url": "https://atcoder.jp/contests/agc025/tasks/agc025_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "agc025_f.cpp"
+      }
+    }
+  ]
+}
