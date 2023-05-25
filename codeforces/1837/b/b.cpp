@@ -175,6 +175,13 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  STR(s);
+  ll ma = 0;
+  fore(_, len, RLE(s)) {
+    chmax(ma, len);
+  }
+
+  OUT(ma + 1);
 }
 
 signed main() {

@@ -294,14 +294,16 @@ void solve() {
   roots[0] = uf.get_root();
 
   rep(i, q) {
-    LL(t, k, u, v); --u; --v;
-    auto r = roots[k + 1];
+    LL(t, k, u, v);
     if (t) {
+      auto r = roots[k + 1];
       OUT(uf.same(u, v, r));
     } else {
+      auto r = roots[k + 1];
       uf.unite(u, v, r);
+      roots[i + 1] = uf.get_root();
     }
-    roots[i + 1] = uf.get_root();
+
   }
 }
 

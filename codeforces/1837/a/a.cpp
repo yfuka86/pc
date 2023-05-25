@@ -92,7 +92,7 @@ void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...t
 #define YES(ok) { if (ok) { OUT("YES"); } else OUT("NO"); }
 #define Yes(ok) { if (ok) { OUT("Yes"); } else OUT("No"); }
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
-void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(Head &&head, Tail &&...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
+void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(Head head, Tail ...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
 template<class T, class S = ll> void OUTMAT(vector<vector<T>>& v, S offset = S(0)) { rep(i, v.size()) { OUTARRAY(v[i], offset); } }
 template<typename T> void OUTBIN(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
@@ -174,7 +174,14 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k);
+  if (n % k) {
+    OUT(1);
+    OUT(n);
+  } else {
+    OUT(2);
+    OUT(n + k - 1, - k + 1);
+  }
 }
 
 signed main() {

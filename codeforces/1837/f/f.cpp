@@ -154,19 +154,101 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+// ----------------------------------------------------------------------
+template<typename T>
+struct BIT {
+  int n; vector<T> bit;
+  BIT(int _n = 0) : n(_n), bit(n + 1) {}
+  // sum of [0, i), 0 <= i <= n
+  T sum(int i) { T s = 0; while (i > 0) { s += bit[i]; i -= i & -i; } return s;}
+  // 0 <= i < n
+  void add(int i, T x) { ++i; while (i <= n) { bit[i] += x; i += i & -i; } }
+  //[l, r) 0 <= l < r < n
+  T sum(int l, int r) { return sum(r) - sum(l); }
+  // smallest i, [0, i] >= w, none -> n
+  int lower_bound(T w) {
+    if (w <= 0) return 0; int x = 0, l = 1; while (l * 2 <= n) l <<= 1;
+    for (int k = l; k > 0; k /= 2) if (x + k <= n && bit[x + k] < w) { w -= bit[x + k]; x += k; }
+    return x; }
+};
+// ----------------------------------------------------------------------
+
+
+ll solve(ll n, ll k, vl a) {
+  vi ord = argsort(a);
+  vl idx(n); rep(i, n) idx[ord[i]] = i;
+  // debug(idx);
+
+  BIT<ll> bt(n), btsum(n), btr(n), btsumr(n);
+  rep(i, n) {
+    btr.add(idx[i], 1);
+    btsumr.add(idx[i], a[i]);
+  }
+
+  auto kthsum = [&](ll x) {
+    ll i = bt.lower_bound(x);
+    return btsum.sum(0, min(n, i + 1));
+  };
+  auto kthsumr = [&](ll x) {
+    ll i = btr.lower_bound(x);
+    return btsumr.sum(0, min(n, i + 1));
+  };
+
+  ll ans = LINF;
+  rep(i, n + 1) {
+    ll lmin = max(0, k - (n - i)), lmax = min(k, i); // inclusive
+    if (lmin > lmax) continue;
+
+    if (kthsum(lmin) > kthsumr(k - lmin)) { // lminでも大きい
+      chmin(ans, kthsum(lmin));
+      // debug(i, 0, ans);
+    } else if (kthsum(lmax) <= kthsumr(k - lmax)) { // lmaxでも小さい
+      chmin(ans, kthsumr(k - lmax));
+      // debug(i, 1, ans);
+    } else {
+      while (abs(lmin - lmax) > 1) {
+        ll mid = (lmin + lmax) / 2;
+        if (kthsum(mid) <= kthsumr(k - mid)) lmin = mid;
+        else lmax = mid;
+      }
+      chmin(ans, kthsumr(k - lmin));
+      chmin(ans, kthsum(lmax));
+      // debug(i, 2, ans);
+    }
+
+    if (i == n) break;
+    bt.add(idx[i], 1);
+    btsum.add(idx[i], a[i]);
+    btr.add(idx[i], -1);
+    btsumr.add(idx[i], -a[i]);
+  }
+  return ans;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+ll naive(ll n, ll k, vl a) {
+  multiset<ll> l, r;
+  rep(i, n) r.insert(a[i]);
+  ll ans = LINF;
+
+  rep(i, n + 1) {
+    vl ls, rs; fore(i, l) ls.pb(i); fore(i, r) rs.pb(i);
+    vl lss = csum(ls), rss = csum(rs);
+    rep(j, k + 1) {
+      if (lss.size() > j && rss.size() > k - j) chmin(ans, max(lss[j], rss[k - j]));
+    }
+
+    if (i == n) break;
+    l.insert(a[i]);
+    r.erase(r.find(a[i]));
+  }
+  return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = 6, k = 3;
+    vl a = rg.vecl(n, 1, 10);
+    auto so = solve(n, k, a); auto na = naive(n, k, a);
     if (!check || na != so) { cout << c << "times tried" << "\n";
       debug(n, a); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
@@ -174,7 +256,8 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n);
+  LL(n, k); VL(a, n);
+  OUT(solve(n,k,a));
 }
 
 signed main() {

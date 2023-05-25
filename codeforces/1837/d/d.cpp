@@ -175,6 +175,40 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n);
+  STR(s);
+  vl cnt(2); rep(i, n) if (s[i] == '(') cnt[0]++; else cnt[1]++;
+  if (cnt[0] != cnt[1]) OUTRET(-1);
+  string rs = s; reverse(all(rs));
+
+  function<bool(string)> check = [&](string s) {
+    ll cur = 0;
+    rep(i, n) {
+      if (s[i] == '(') cur++; else cur--;
+      if (cur < 0) return false;
+    }
+    return true;
+  };
+  if (check(s) || check(rs)) {
+    vl a(n, 1);
+    OUT(1);
+    OUTARRAY(a);
+    return;
+  }
+
+  vl ans(n, 2);
+  ll cur = 0;
+  stack<ll> opens;
+  rep(i, n) {
+    if (s[i] == '(') { cur++; ans[i] = 1; opens.push(i); }
+    else if (cur > 0) { cur--; ans[i] = 1; }
+  }
+  while (cur > 0) {
+    ans[opens.top()] = 2;
+    opens.pop();
+    cur--;
+  }
+  OUT(2);
+  OUTARRAY(ans);
 }
 
 signed main() {
