@@ -116,7 +116,8 @@
     "slist": "cpp",
     "*.ipp": "cpp",
     "format": "cpp",
-    "strstream": "cpp"
+    "strstream": "cpp",
+    "__verbose_abort": "cpp"
   },
   "code-runner.saveAllFilesBeforeRun": true,
   "lldb.launch.expressions": "native",
