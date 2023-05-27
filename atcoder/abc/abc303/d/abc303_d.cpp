@@ -173,25 +173,42 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+template<typename T> vector<vector<T>> m_e(ll sz) { assert(sz > 0); vector<vector<T>> ret(sz, vector<T>(sz, T())); rep(i, sz) ret[i][i] = 1; return ret; }
+template<typename T> vector<T> m_map(vector<vector<T>> l, vector<T> r) {
+  assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size()); vector<T> ans(l.size(), LINF);
+  for(int i = 0; i < l.size(); i++) for (int j = 0; j < r.size(); j++) chmin(ans[i], l[i][j] + r[j]);
+  return ans; }
+template<typename T> vector<vector<T>> m_product(vector<vector<T>> l, vector<vector<T>> r) {
+  assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size());
+  vector<vector<T>> ans(l.size(), vector<T>(r[0].size(), LINF));
+  for(int i = 0; i < (int)l.size(); i++) { assert(l[i].size() == l[0].size());
+    for(int j = 0; j < (int)r[0].size(); j++) for(int k = 0; k < (int)l[0].size(); k++) { assert(r[k].size() == r[0].size()); chmin(ans[i][j], l[i][k] + r[k][j]); }
+  }
+  return ans; }
+
+// min(a_ik + b_kj,,,)の形の行列累乗
+
 void solve() {
   LL(x, y, z);
+  z += min(x, y);
   STR(s); ll n = s.size();
+  // debug(x, y, z);
 
-  vv(ll, dp, n + 1, 2, LINF);
-  dp[0][0] = 0;
+  vv(ll, m1, 2, 2);
+  m1[0][0] = x; m1[0][1] = z;
+  m1[1][0] = z; m1[1][1] = y;
 
+  vv(ll, m2, 2, 2);
+  m2[0][0] = y; m2[0][1] = z;
+  m2[1][0] = z; m2[1][1] = x;
+
+  vv(ll, ans, 2, 2, LINF); rep(i, 2) ans[i][i] = 0;
   rep(i, n) {
-    chmin(dp[i][1], dp[i][0] + z);
-    chmin(dp[i][0], dp[i][1] + z);
-    if (s[i] == 'A') {
-      chmin(dp[i + 1][0], dp[i][0] + y);
-      chmin(dp[i + 1][1], dp[i][1] + x);
-    } else {
-      chmin(dp[i + 1][1], dp[i][1] + y);
-      chmin(dp[i + 1][0], dp[i][0] + x);
-    }
+    if (s[i] == 'A') ans = m_product(m2, ans);
+    if (s[i] == 'a') ans = m_product(m1, ans);
   }
-  OUT(min(dp[n][0], dp[n][1]));
+  auto a = m_map(ans, {0, LINF});
+  OUT(*min_element(all(a)));
 }
 
 signed main() {

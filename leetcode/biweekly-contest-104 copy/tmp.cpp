@@ -89,10 +89,8 @@ template <class T, class S> void scan(pair<T, S> &p) { scan(p.first), scan(p.sec
 template <class T> void scan(vector<T> &a) { for(auto &i : a) scan(i); }
 void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...tail) { scan(head); IN(tail...); }
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
-#define YES(ok) { if (ok) { OUT("YES"); } else OUT("NO"); }
-#define Yes(ok) { if (ok) { OUT("Yes"); } else OUT("No"); }
 template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
-void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(Head &&head, Tail &&...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
+void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(const Head &head, const Tail &...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
 template<class T, class S = ll> void OUTMAT(vector<vector<T>>& v, S offset = S(0)) { rep(i, v.size()) { OUTARRAY(v[i], offset); } }
 template<typename T> void OUTBIN(T &a, int d) { for (int i = d - 1; i >= 0; i--) cout << ((a >> i) & (T)1); cout << "\n"; }
@@ -100,9 +98,7 @@ template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string
 // template<typename Q, typename A> void IQUERY(initializer_list<Q> q, A &a, string str = "? ") { vector<Q> query(q); RandGen rg;
 //   a = query[0] ? A() : A();
 // }
-template<typename A> void IANSWER(vector<A> a, string str = "! ") { cout << str; OUTARRAY(a); cout.flush(); } template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { vector<A> v(a); IANSWER(v, str); }
-template<typename A, typename R> void IANSWER(vector<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; } template<typename A, typename R> void IANSWER(initializer_list<A> a, R &r, string str = "! ") { IANSWER(a, str); cin >> r; }
-
+template<typename A> void IANSWER(initializer_list<A> a, string str = "! ") { cout << str; vector<A> v(a); OUTARRAY(v); cout.flush(); }
 // 数値系
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
@@ -133,8 +129,6 @@ template<class T> int lbs(vector<T> &a, const T &b) { return lower_bound(all(a),
 template<class T> int ubs(vector<T> &a, const T &b) { return upper_bound(all(a), b) - a.begin(); };
 ll binary_search(function<bool(ll)> check, ll ok, ll ng, bool safe=true) { if (safe) { assert(check(ok)); assert(!check(ng)); } while (abs(ok - ng) > 1) { auto x = (ng + ok) / 2; if (check(x)) ok = x; else ng = x; } return ok; }
 template<class T> vector<T> csum(vector<T> &a) { vector<T> ret(a.size() + 1, 0); rep(i, a.size()) ret[i + 1] = ret[i] + a[i]; return ret; }
-template<class T> vector<int> argsort(const vector<T> &a) { vector<int> ids(a.size()); iota(all(ids), 0); sort(all(ids), [&](int i, int j) { return a[i] == a[j] ? i < j : a[i] < a[j]; }); return ids; }
-template<class T> vector<T> rearrange(const vector<T> &orig, const vector<int> &rep) { assert(orig.size() == rep.size()); ll n = rep.size(); vector<T> ret(n); rep(i, n) ret[i] = orig[rep[i]]; return ret; }
 template<class S> vector<pair<S, int>> RLE(const vector<S> &v) { vector<pair<S, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 vector<pair<char, int>> RLE(const string &v) { vector<pair<char, int>> res; for(auto &e : v) if(res.empty() or res.back().first != e) res.emplace_back(e, 1); else res.back().second++; return res; }
 template <class T, class S, class U> bool incl(const T &x, const S &l, const U &r) { return l <= x and x < r; }
@@ -149,8 +143,6 @@ template< typename T = ll > struct Graph {
   size_t size() const { return g.size(); }
   void add_directed_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es++); }
   void add_edge(int from, int to, T cost = 1) { g[from].emplace_back(from, to, cost, es); g[to].emplace_back(to, from, cost, es++); }
-  void read_tree(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll u, v; cin >> u >> v; u-=off; v-=off; add_edge(u, v); } }
-  void read_treep(int off = 1) { for(int i = 0; i < size() - 1; i++) { ll p; cin >> p; p-=off; add_edge(i+1, p); } }
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
@@ -173,70 +165,13 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-//------------------------------------------------------------------------------
-template <class S, S (*op)(S, S), S (*e)()> struct segtree {
-  public:
-  segtree() : segtree(0) {}
-  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
-  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
-  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
-  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
-  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
-  S all_prod() const { return d[1]; }
-  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
-  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
-    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
-  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
-  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
-    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
-  private:
-  int _n, size, log; std::vector<S> d;
-  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
-};
-//------------------------------------------------------------------------------
-
-using S = ll;
-S op(S l, S r) { return min(l, r); }
-S e() { return LINF; }
-
-
-// スライド最小値解法（https://atcoder.jp/contests/abc303/submissions/41781639）
-// 更新のループを回しながら使うの、天才だな、、、
 void solve() {
-  LL(n, a, b, c, d);
-  VL(x, n);
-  vl cx = csum(x);
 
-  vv(ll, dp, n + 1, n + 1);
-  rep(i, n + 1) dp[i][i] = 0;
-
-  using seg = segtree<S, op, e>;
-  vector<seg> mins(n + 1, seg(n));
-
-  rep(len, 1, n + 1) rep(l, n - len + 1) { ll r = l + len;
-    ll ma = -LINF;
-    chmax(ma, -dp[l + 1][r] + x[l]);
-    chmax(ma, -dp[l][r - 1] + x[r - 1]);
-    {
-      ll rem = len - min(b, len);
-      ll t = rem == 0 ? 0 : -(mins[rem].prod(l, l + len - rem + 1));
-      chmax(ma, t + cx[r] - cx[l] - a);
-    }
-    {
-      ll rem = len - min(d, len);
-      ll t = rem == 0 ? 0 : -(mins[rem].prod(l, l + len - rem + 1));
-      chmax(ma, t + cx[r] - cx[l] - c);
-    }
-    dp[l][r] = ma;
-    mins[len].set(l, cx[r] - cx[l] + dp[l][r]);
-  }
-  // debug(dp);
-
-  OUT(dp[0][n]);
 }
 
 signed main() {
-  cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; //cin >> t;
-  while (t--) if (1) solve(); else compare();
+  cin.tie(0)->sync_with_stdio(0); cout.tie(0); cout << fixed << setprecision(20);
+  int t = 1; // cin >> t;
+  while (t--) solve();
+  // while (t--) compare();
 }

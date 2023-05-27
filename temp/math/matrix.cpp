@@ -6,8 +6,6 @@ template<class T> void flip(vector<vector<T>> &a) {
   }
 }
 
-template<class T> void rotate(vector<vector<T>> &a) { ll n = a.size(), m = a[0].size(); vector<vector<T>> ret(m, vector<T>(n, 0)); rep(i, n) rep(j, m) ret[j][n - 1 - i] = a[i][j]; a = ret; }
-
 template<typename T> vector<vector<T>> m_e(ll sz) { assert(sz > 0); vector<vector<T>> ret(sz, vector<T>(sz, T())); rep(i, sz) ret[i][i] = 1; return ret; }
 template<typename T> vector<T> m_map(vector<vector<T>> l, vector<T> r) {
   assert(l.size() > 0 || r.size() > 0); assert(l[0].size() == r.size()); vector<T> ans(l.size(), 0);

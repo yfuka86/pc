@@ -91,7 +91,8 @@ void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...t
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
 #define YES(ok) { if (ok) { OUT("YES"); } else OUT("NO"); }
 #define Yes(ok) { if (ok) { OUT("Yes"); } else OUT("No"); }
-template <class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
+ostream &operator<<(ostream &os, const i128 n) { os << (ll)n; return os; } // long longの範囲までしか出力しない
+template<class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(Head &&head, Tail &&...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
 template<class T, class S = ll> void OUTMAT(vector<vector<T>>& v, S offset = S(0)) { rep(i, v.size()) { OUTARRAY(v[i], offset); } }
@@ -154,6 +155,7 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
+
 ll solve(ll n, ll h, vl t, vl d) {
   map<ll, ll> mp; rep(i, n) chmax(mp[d[i]], t[i]);
 
@@ -161,18 +163,36 @@ ll solve(ll n, ll h, vl t, vl d) {
   fore(k, v, mp) { _d.pb(k); _t.pb(v); }
   t = _t; d = _d; n = _t.size();
 
-  vi ord = argsort(d);
-  reverse(all(ord));
-  // debug(ord);
+  i128 sum = 0;
+  i128 curt = 0, curv = 0;
+  rep_r(i, n) {
+    ll tt = t[i], dd = d[i];
+    if (curt >= tt) continue;
+    // [curt, tt)について
+    i128 thres = ceil(curv, dd);
+    thres = max(curt, min(tt, thres));
+    // [curt, thres) [thres, tt)
+    i128 dv1 = (thres - curt) * curv;
+    i128 dv2 = (thres + (tt - 1)) * dd * (tt - thres) / 2;
+    if (sum + dv1 >= h) {
+      return curt + ceil(h - sum, curv) - 1;
+    } else if (sum + dv1 + dv2 >= h) {
+      i128 hh = h - sum - dv1;
+      i128 ans = binary_search([&](ll mid) {
+        return (thres + (mid - 1)) * dd * (mid - thres) / 2 >= hh;
+      }, tt, thres);
+      return ans - 1;
+    }
 
-  ll sum = 0;
-  ll curt = 0, curv = 0;
-  rep(i, n) {
-    ll tt = t[ord[i]], dd = d[ord[i]];
 
+    // update
+    sum += dv1 + dv2;
+    chmax(curt, tt);
+    chmax(curv, tt * dd);
+    // debug(sum, dv1, dv2, curt, curv);
   }
 
-  return curt + ceil(h - sum, curv);
+  return curt + ceil(h - sum, curv) - 1;
 }
 
 ll naive(ll n, ll h, vl t, vl d) {
@@ -187,16 +207,17 @@ ll naive(ll n, ll h, vl t, vl d) {
       // debug(i, sum, ma);
     }
     return sum >= h;
-  }, 100, 0);
+  }, h, 0);
   return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 3, h = 100;
-    vl t = rg.vecl(n, 1, 10);
-    vl d = rg.vecl(n, 1, 10);
+    ll n = 10, h = rg.l(100, 10000);
+    vl t = rg.vecl(n, 1, 100);
+    vl d = rg.vecl(n, 1, 100);
     auto so = solve(n, h, t, d); auto na = naive(n, h, t, d);
+    // cout << "////////////////////////////" << "\n";
     if (!check || na != so) { cout << c << "times tried" << "\n";
       debug(n, h, t, d); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
@@ -212,5 +233,5 @@ void solve() {
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
   int t = 1; //cin >> t;
-  while (t--) if (0) solve(); else compare();
+  while (t--) if (1) solve(); else compare();
 }
