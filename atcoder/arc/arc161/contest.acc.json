@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc161",
+    "title": "AtCoder Regular Contest 161",
+    "url": "https://atcoder.jp/contests/arc161"
+  },
+  "tasks": [
+    {
+      "id": "arc161_a",
+      "label": "A",
+      "title": "Make M",
+      "url": "https://atcoder.jp/contests/arc161/tasks/arc161_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc161_a.cpp"
+      }
+    },
+    {
+      "id": "arc161_b",
+      "label": "B",
+      "title": "Exactly Three Bits",
+      "url": "https://atcoder.jp/contests/arc161/tasks/arc161_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc161_b.cpp"
+      }
+    },
+    {
+      "id": "arc161_c",
+      "label": "C",
+      "title": "Dyed by Majority (Odd Tree)",
+      "url": "https://atcoder.jp/contests/arc161/tasks/arc161_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc161_c.cpp"
+      }
+    },
+    {
+      "id": "arc161_d",
+      "label": "D",
+      "title": "Everywhere is Sparser than Whole (Construction)",
+      "url": "https://atcoder.jp/contests/arc161/tasks/arc161_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc161_d.cpp"
+      }
+    },
+    {
+      "id": "arc161_e",
+      "label": "E",
+      "title": "Not Dyed by Majority (Cubic Graph)",
+      "url": "https://atcoder.jp/contests/arc161/tasks/arc161_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc161_e.cpp"
+      }
+    },
+    {
+      "id": "arc161_f",
+      "label": "F",
+      "title": "Everywhere is Sparser than Whole (Judge)",
+      "url": "https://atcoder.jp/contests/arc161/tasks/arc161_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc161_f.cpp"
+      }
+    }
+  ]
+}
