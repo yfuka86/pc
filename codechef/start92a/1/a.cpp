@@ -174,49 +174,44 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-vector<map<ll, ll>> pcnt(200001);
-vvl fr(200001);
-vl cand(200001);
+const ll mod = 1000000007;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+namespace COM {
+  vector<mint> fact, factinv, inv; int cur = 2;
+  struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
+  void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+  void upd(int n) { assert(n < 1e8); while (cur <= n) incr(); }
+  mint fac(int n) { assert(0 <= n); upd(n); return fact[n]; }
+  mint ifac(int n) { assert(0 <= n); upd(n); return factinv[n]; }
+  mint combp(int n, int k) { upd(n); if (n < 0 || k < 0 || n < k) return 0; return fact[n] * factinv[n - k]; }
+  mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; using COM::fac, COM::ifac, COM::combp, COM::comb;
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
 
 void solve() {
-  LL(n);
-  VL(a, n); VL(b, n);
-
-  /////////////////
-  rep(i, n) pcnt[a[i]][b[i]]++;
-  rep(i, n) fr[a[i]].pb(b[i]);
-  /////////////////
-
-  ll lim = min(sqrtll(n).se * 2, n + 1);
-
-  ll ans = 0;
-  rep(ai, lim) {
-    vl t;
-    rep(j, n) {
-      // ai * a[j] - b[j] == b_iとなるb_iに対して
-      ll b_i_cand = ai * a[j] - b[j];
-      if (incl(b_i_cand,0ll,n+1)) { cand[b_i_cand]++; t.pb(b_i_cand); }
-    }
-    fore(bi, fr[ai]) ans += cand[bi];
-    // 逆操作
-    fore(i, t) cand[i] = 0;
-  }
-
-  rep(i, n) if (a[i] >= lim) {
-    for(int aj = 1; a[i] * aj <= n + b[i]; aj++) {
-      ll bj = a[i] * aj - b[i];
-      if (pcnt[aj].count(bj)) ans += pcnt[aj][bj];
-    }
-  }
-
-  rep(i, n) if (a[i] * a[i] == b[i] + b[i]) ans--; // 自分を除く
-  OUT(ans / 2);
-
-
-  /////////////////
-  rep(i, n) pcnt[a[i]].clear();
-  rep(i, n) fr[a[i]].clear();
-  /////////////////
+  LL(n, k);
+  if (n >= k) OUT(fac(k)); else OUT(comb(k, n) * fac(n));
 }
 
 signed main() {

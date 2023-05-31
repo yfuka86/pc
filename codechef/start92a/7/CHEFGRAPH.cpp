@@ -174,53 +174,65 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-vector<map<ll, ll>> pcnt(200001);
-vvl fr(200001);
-vl cand(200001);
-
 void solve() {
-  LL(n);
-  VL(a, n); VL(b, n);
+  LL(n, q);
 
-  /////////////////
-  rep(i, n) pcnt[a[i]][b[i]]++;
-  rep(i, n) fr[a[i]].pb(b[i]);
-  /////////////////
+  if (n <= 20) {
+    rep(i, q) {
+      LL(u, v); --u; --v;
+      LP toma = {0ll, -LINF};
+      vl path;
+      rep(S, 1 << n) {
+        if (!(S >> u & 1) || !(S >> v & 1)) continue;
+        ll sum = 0;
+        vl t;
+        t.pb(u + 1);
+        rep(i, n) {
+          if (S >> i & 1) {
+            sum ^= (i + 1);
+            if (i != u && i != v) t.pb(i + 1);
+          }
+        }
+        t.pb(v + 1);
 
-  ll lim = min(sqrtll(n).se * 2, n + 1);
-
-  ll ans = 0;
-  rep(ai, lim) {
-    vl t;
-    rep(j, n) {
-      // ai * a[j] - b[j] == b_iとなるb_iに対して
-      ll b_i_cand = ai * a[j] - b[j];
-      if (incl(b_i_cand,0ll,n+1)) { cand[b_i_cand]++; t.pb(b_i_cand); }
+        if (chmax(toma, mp(sum, (ll)-t.size()))) {
+          path = t;
+        }
+      }
+      OUT(toma.fi, path.size());
+      OUTARRAY(path);
     }
-    fore(bi, fr[ai]) ans += cand[bi];
-    // 逆操作
-    fore(i, t) cand[i] = 0;
-  }
-
-  rep(i, n) if (a[i] >= lim) {
-    for(int aj = 1; a[i] * aj <= n + b[i]; aj++) {
-      ll bj = a[i] * aj - b[i];
-      if (pcnt[aj].count(bj)) ans += pcnt[aj][bj];
+  } else {
+    ll ma = n;
+    rep(i, q) {
+      LL(u, v);
+      if ((u ^ v) == ma) {
+        OUT(ma, 2);
+        OUT(u, v);
+      } else {
+        ll rem = ma ^ u ^ v;
+        if (u != rem && v != rem) {
+          OUT(ma, 3);
+          OUT(u, rem, v);
+        } else {
+          RandGen rg;
+          while (1) {
+            ll a = rg.l(1, ma + 1);
+            ll b = rem ^ a;
+            if (a != u && a != v && b != u && b != v) {
+              OUT(ma, 4);
+              OUT(u, a, b, v);
+              break;
+            }
+          }
+        }
+      }
     }
   }
-
-  rep(i, n) if (a[i] * a[i] == b[i] + b[i]) ans--; // 自分を除く
-  OUT(ans / 2);
-
-
-  /////////////////
-  rep(i, n) pcnt[a[i]].clear();
-  rep(i, n) fr[a[i]].clear();
-  /////////////////
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) if (1) solve(); else compare();
 }

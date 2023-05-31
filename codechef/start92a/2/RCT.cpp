@@ -174,49 +174,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-vector<map<ll, ll>> pcnt(200001);
-vvl fr(200001);
-vl cand(200001);
-
 void solve() {
-  LL(n);
-  VL(a, n); VL(b, n);
-
-  /////////////////
-  rep(i, n) pcnt[a[i]][b[i]]++;
-  rep(i, n) fr[a[i]].pb(b[i]);
-  /////////////////
-
-  ll lim = min(sqrtll(n).se * 2, n + 1);
-
-  ll ans = 0;
-  rep(ai, lim) {
-    vl t;
-    rep(j, n) {
-      // ai * a[j] - b[j] == b_iとなるb_iに対して
-      ll b_i_cand = ai * a[j] - b[j];
-      if (incl(b_i_cand,0ll,n+1)) { cand[b_i_cand]++; t.pb(b_i_cand); }
-    }
-    fore(bi, fr[ai]) ans += cand[bi];
-    // 逆操作
-    fore(i, t) cand[i] = 0;
-  }
-
-  rep(i, n) if (a[i] >= lim) {
-    for(int aj = 1; a[i] * aj <= n + b[i]; aj++) {
-      ll bj = a[i] * aj - b[i];
-      if (pcnt[aj].count(bj)) ans += pcnt[aj][bj];
-    }
-  }
-
-  rep(i, n) if (a[i] * a[i] == b[i] + b[i]) ans--; // 自分を除く
-  OUT(ans / 2);
-
-
-  /////////////////
-  rep(i, n) pcnt[a[i]].clear();
-  rep(i, n) fr[a[i]].clear();
-  /////////////////
+  LL(w, l);
+  if (w & 1 && l & 1) OUT("NO"); else OUT("YES");
 }
 
 signed main() {
