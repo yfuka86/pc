@@ -175,75 +175,59 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 //------------------------------------------------------------------------------
-template <class S, S (*op)(S, S), S (*e)()> struct segtree {
-  public:
-  segtree() : segtree(0) {}
-  explicit segtree(int n) : segtree(std::vector<S>(n, e())) {}
-  explicit segtree(const std::vector<S>& v) : _n(int(v.size())) { log = ceil_pow2(_n); size = 1 << log; d = std::vector<S>(2 * size, e()); for (int i = 0; i < _n; i++) d[size + i] = v[i]; for (int i = size - 1; i >= 1; i--) update(i); }
-  void set(int p, S x) { assert(0 <= p && p < _n); p += size; d[p] = x; for (int i = 1; i <= log; i++) update(p >> i); }
-  S get(int p) const { assert(0 <= p && p < _n); return d[p + size]; }
-  S prod(int l, int r) const { assert(0 <= l && l <= r && r <= _n); S sml = e(), smr = e(); l += size; r += size; while (l < r) { if (l & 1) sml = op(sml, d[l++]); if (r & 1) smr = op(d[--r], smr); l >>= 1; r >>= 1; } return op(sml, smr); }
-  S all_prod() const { return d[1]; }
-  template <bool (*f)(S)> int max_right(int l) const { return max_right(l, [](S x) { return f(x); }); }
-  template <class F> int max_right(int l, F f) const { assert(0 <= l && l <= _n); assert(f(e())); if (l == _n) return _n; l += size; S sm = e();
-    do { while (l % 2 == 0) l >>= 1; if (!f(op(sm, d[l]))) { while (l < size) { l = (2 * l); if (f(op(sm, d[l]))) { sm = op(sm, d[l]); l++; } } return l - size; } sm = op(sm, d[l]); l++; } while ((l & -l) != l); return _n; }
-  template <bool (*f)(S)> int min_left(int r) const { return min_left(r, [](S x) { return f(x); }); }
-  template <class F> int min_left(int r, F f) const { assert(0 <= r && r <= _n); assert(f(e())); if (r == 0) return 0; r += size; S sm = e();
-    do { r--; while (r > 1 && (r % 2)) r >>= 1; if (!f(op(d[r], sm))) { while (r < size) { r = (2 * r + 1); if (f(op(d[r], sm))) { sm = op(d[r], sm); r--; } } return r + 1 - size; } sm = op(d[r], sm); } while ((r & -r) != r); return 0; }
-  private:
-  int _n, size, log; std::vector<S> d;
-  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+struct UnionFind {
+  vector<ll> par, s, e;
+  UnionFind(ll N) : par(N), s(N), e(N) { rep(i,N) { par[i] = i; s[i] = 1; e[i] = 0; } }
+  ll root(ll x) { return par[x]==x ? x : par[x] = root(par[x]); }
+  ll size(ll x) { return par[x]==x ? s[x] : s[x] = size(root(x)); }
+  ll edge(ll x) { return par[x]==x ? e[x] : e[x] = edge(root(x)); }
+  void unite(ll x, ll y) { ll rx=root(x), ry=root(y); if (size(rx)<size(ry)) swap(rx,ry); if (rx!=ry) { s[rx] += s[ry]; par[ry] = rx; e[rx] += e[ry]+1; } else e[rx]++; }
+  bool same(ll x, ll y) {  ll rx=root(x), ry=root(y); return rx==ry; }
 };
 //------------------------------------------------------------------------------
 
-using S = ll;
-S op(S l, S r) { return max(l, r); }
-S e() { return -LINF; }
-
 void solve() {
   LL(n, m);
-  Graph<ll> G(n);
-  rep(i,m) {
-    LL(u, v, w); --u; --v;
-    G.add_edge(u, v, w);
-  }
-  LL(k); VL(a, k, 1);
-  LL(d); VL(x, d); rep(_, 10) x.pb(0);
-  segtree<S, op, e> seg(x);
+  UnionFind uf(n);
 
-  vlp cost(n, {LINF, LINF});
-  mpq<pair<LP, ll>> que;
-  rep(i, k) {
-    cost[a[i]] = {0, 0};
-    que.push({cost[a[i]], a[i]});
+  vlp es(m);
+  vl rem(m);
+  rep(i, m) {
+    LL(u, v, y); --u; --v;
+    es[i] = {u, v}; rem[i] = y;
+    uf.unite(u, v);
   }
+  if (!uf.same(0, n - 1)) OUTRET("inf");
 
-  while (!que.empty()) {
-    auto [c, v] = que.top(); que.pop();
-    if (cost[v] < c) continue;
-    fore(to, G[v]) {
-      ll need = to.cost;
-      // debug(to, v);
-      if (-c.se >= need) {
-        // debug(to, v, c.fi, c.se, need);
-        if (chmin(cost[to], mp(c.fi, c.se + need))) que.push({cost[to], to});
-      } else {
-        // debug(to, v, c.fi, c.se, need);
-        ll r = seg.max_right(c.fi, [&](ll ma) {
-          return ma < need;
-        });
-        if (r < d) {
-          if (chmin(cost[to], mp(r + 1, -(x[r] - need)))) que.push({cost[to], to});
-        }
+  string s(n, '1'); s[n - 1] = '0';
+  vs ans; vl anst;
+  while (s[0] == '1') {
+    ll mi = LINF;
+    rep(i, m) {
+      auto [u, v] = es[i];
+      if (s[u] != s[v]) {
+        chmin(mi, rem[i]);
       }
     }
+
+    if (mi > 0) {
+      ans.pb(s); anst.pb(mi);
+    }
+    string t = s;
+    rep(i, m) {
+      auto[u, v] = es[i];
+      if (s[u] != s[v]) {
+        rem[i] -= mi;
+        if (rem[i] == 0) { t[u] = '0'; t[v] = '0'; }
+      }
+    }
+    s = t;
   }
 
-  vl ans(n, -1);
-  rep(i, n) {
-    if (cost[i].fi != LINF) ans[i] = cost[i].fi;
+  OUT(sum_of(anst), ans.size());
+  rep(i, ans.size()) {
+    OUT(ans[i], anst[i]);
   }
-  OUTARRAY(ans, 0, "\n");
 }
 
 signed main() {
