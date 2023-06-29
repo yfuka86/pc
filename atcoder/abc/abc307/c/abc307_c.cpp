@@ -187,10 +187,8 @@ void solve() {
   rep(i, hx) rep(j, wx) {
     if (x[i][j] == '#') c[i + 10][j + 10] = 1;
   }
-
+  vv(ll, d, 30, 30);
   rep(offax, 20) rep(offay, 20) rep(offbx, 20) rep(offby, 20) {
-    vv(ll, d, 30, 30);
-
     rep(i, ha) rep(j, wa) {
       if (a[i][j] == '#') d[i+offax][j+offay] = 1;
     }
@@ -198,6 +196,8 @@ void solve() {
       if (b[i][j] == '#') d[i+offbx][j+offby] = 1;
     }
     if (c == d) OUTRET("Yes");
+    rep(i, ha) rep(j, wa) d[i+offax][j+offay] = 0;
+    rep(i, hb) rep(j, wb) d[i+offbx][j+offby] = 0;
   }
   OUT("No");
 }
