@@ -175,24 +175,17 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(a, n); STR(s);
+  LL(n, m);
+  VL(a, n);
 
-  vl ms(3), xs(3);
-  rep(i, n) if (s[i] == 'X') xs[a[i]]++;
+  ll l = a[0], r = a[1];
+  rep(_, 2) a.erase(a.begin());
+  sort(all(a));
 
-  ll ans = 0;
-  rep(i, n) {
-    if (s[i] == 'E') {
-      rep(j, 3) rep(k, 3) {
-        vl t;
-        t.pb(a[i]);
-        t.pb(j);
-        t.pb(k);
-        ans += mex(t) * ms[j] * xs[k];
-      }
-    }
-    if (s[i] == 'M') ms[a[i]]++;
-    if (s[i] == 'X') xs[a[i]]--;
+  ll ans = LINF;
+  rep(off, n - m - 1) {
+    ll lc = a[off], rc = a[off + m - 1];
+    chmin(ans, max(l - lc, 0) + max(rc - r, 0));
   }
   OUT(ans);
 }

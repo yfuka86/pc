@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc163",
+    "title": "AtCoder Regular Contest 163",
+    "url": "https://atcoder.jp/contests/arc163"
+  },
+  "tasks": [
+    {
+      "id": "arc163_a",
+      "label": "A",
+      "title": "Divide String",
+      "url": "https://atcoder.jp/contests/arc163/tasks/arc163_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc163_a.cpp"
+      }
+    },
+    {
+      "id": "arc163_b",
+      "label": "B",
+      "title": "Favorite Game",
+      "url": "https://atcoder.jp/contests/arc163/tasks/arc163_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc163_b.cpp"
+      }
+    },
+    {
+      "id": "arc163_c",
+      "label": "C",
+      "title": "Harmonic Mean",
+      "url": "https://atcoder.jp/contests/arc163/tasks/arc163_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc163_c.cpp"
+      }
+    },
+    {
+      "id": "arc163_d",
+      "label": "D",
+      "title": "Sum of SCC",
+      "url": "https://atcoder.jp/contests/arc163/tasks/arc163_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc163_d.cpp"
+      }
+    },
+    {
+      "id": "arc163_e",
+      "label": "E",
+      "title": "Chmin XOR Game",
+      "url": "https://atcoder.jp/contests/arc163/tasks/arc163_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc163_e.cpp"
+      }
+    },
+    {
+      "id": "arc163_f",
+      "label": "F",
+      "title": "Many Increasing Problems",
+      "url": "https://atcoder.jp/contests/arc163/tasks/arc163_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc163_f.cpp"
+      }
+    }
+  ]
+}

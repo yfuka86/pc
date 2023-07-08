@@ -174,31 +174,21 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+
 void solve() {
-  LL(n); VL(a, n); STR(s);
+  LL(n);
+  STR(s);
 
-  vl ms(3), xs(3);
-  rep(i, n) if (s[i] == 'X') xs[a[i]]++;
-
-  ll ans = 0;
-  rep(i, n) {
-    if (s[i] == 'E') {
-      rep(j, 3) rep(k, 3) {
-        vl t;
-        t.pb(a[i]);
-        t.pb(j);
-        t.pb(k);
-        ans += mex(t) * ms[j] * xs[k];
-      }
-    }
-    if (s[i] == 'M') ms[a[i]]++;
-    if (s[i] == 'X') xs[a[i]]--;
+  rep(i, 1, n) {
+    string s1 = s.substr(0, i);
+    string s2 = s.substr(i);
+    if (s1 < s2) OUTRET("Yes");
   }
-  OUT(ans);
+  OUT("No");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

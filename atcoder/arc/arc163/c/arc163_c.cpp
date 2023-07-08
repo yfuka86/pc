@@ -174,31 +174,100 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  LL(n); VL(a, n); STR(s);
-
-  vl ms(3), xs(3);
-  rep(i, n) if (s[i] == 'X') xs[a[i]]++;
-
-  ll ans = 0;
-  rep(i, n) {
-    if (s[i] == 'E') {
-      rep(j, 3) rep(k, 3) {
-        vl t;
-        t.pb(a[i]);
-        t.pb(j);
-        t.pb(k);
-        ans += mex(t) * ms[j] * xs[k];
+//-------------------------------------------------------
+// https://atcoder.jp/contests/abc238/submissions/29086825
+// https://cp-algorithms.com/algebra/prime-sieve-linear.html
+struct PrimeSieve {
+  int n; vector<bool> is_prime; vector<int> pr, mu, pf;
+  // pr := primes, mu := moebius, pf[i] := smallest prime p s.t. p | i
+  PrimeSieve(int _n){
+    n = ++_n; is_prime.assign(n, true); mu.assign(n, 0); pf.assign(n, 0);
+    is_prime[0] = is_prime[1] = false; mu[1] = 1;
+    for (int i = 2; i < n; i++) {
+      if (is_prime[i]) { pr.emplace_back(i); pf[i] = i; mu[i] = -1; }
+      for (int p : pr) {
+        if (ll(i) * p >= n) break;
+        is_prime[i * p] = false; mu[i * p] = -mu[i]; pf[i * p] = p;
+        if (i % p == 0) { mu[i * p] = 0; break; }
       }
     }
-    if (s[i] == 'M') ms[a[i]]++;
-    if (s[i] == 'X') xs[a[i]]--;
   }
-  OUT(ans);
+  vector<pair<int, int>> factorize(int x) { assert(x < n); vector<pair<int, int>> res;
+    while (pf[x] > 1) { int d = pf[x], c = 0; while (x % d == 0) { x /= d; c++; } res.emplace_back(d, c); }
+    if (x != 1) res.emplace_back(x, 1); return res;
+  }
+  // not sorted [1..x]
+  vector<int> divisors(int x) { assert(x < n); auto f = factorize(x); vector<int> res = { 1 };
+    for (auto [p, c] : f) {
+      vector<int> powp; powp.emplace_back(p); rep(i, c - 1) powp.emplace_back(powp.back() * p);
+      for (int i = res.size() - 1; i >= 0; --i) for (int j = 0; j < c; ++j) res.emplace_back(res[i] * powp[j]);
+    }
+    // res.erase(res.begin()); [2..x]
+    return res;
+  }
+};
+
+PrimeSieve ps(10000000);
+
+void solve() {
+  LL(n);
+  if (n == 1) { OUT("Yes"); OUTRET(1); }
+  if (n == 2) { OUTRET("No"); }
+
+  set<ll> s;
+  s.insert(2);
+  s.insert(3);
+  s.insert(6);
+
+  while (s.size() < n) {
+    ll er, nx1, nx2;
+    fore(i, s) {
+      auto pf = ps.factorize(i);
+      ll a = pf[0].fi, b = i / a;
+
+      if (a != b && s.find(a * (a + b)) == s.end() && s.find(b * (a + b)) == s.end()) {
+        er = i;
+        nx1 = a * (a + b); nx2 = b * (a + b);
+        break;
+      }
+    }
+    s.erase(er); s.insert(nx1); s.insert(nx2);
+  }
+
+  OUT("Yes");
+  fore(i, s) {
+    cout << i << " ";
+  } cout << "\n";
+
+  return;
+  ll b = 120;
+  ll need = 100;
+  vl ds = divisor(b);
+
+  v3(ll, dp, need + 1, b + 1);
+  dp[0][0] = {};
+
+  fore(d, ds) {
+    rep_r(i, need) {
+      rep(j, b) {
+        if (i + j > 0 && dp[i][j].size() == 0) continue;
+        if (j + d <= b) {
+          if (dp[i + 1][j + d].size()) continue;
+          dp[i + 1][j + d] = dp[i][j];
+          dp[i + 1][j + d].pb(d);
+        }
+      }
+    }
+  }
+
+  rep(i, need) {
+    OUT(i);
+    OUTARRAY(dp[i][b]);
+  }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }
