@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc309",
+    "title": "Denso Create Programming Contest 2023 (AtCoder Beginner Contest 309)",
+    "url": "https://atcoder.jp/contests/abc309"
+  },
+  "tasks": [
+    {
+      "id": "abc309_a",
+      "label": "A",
+      "title": "Nine",
+      "url": "https://atcoder.jp/contests/abc309/tasks/abc309_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc309_a.cpp"
+      }
+    },
+    {
+      "id": "abc309_b",
+      "label": "B",
+      "title": "Rotate",
+      "url": "https://atcoder.jp/contests/abc309/tasks/abc309_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc309_b.cpp"
+      }
+    },
+    {
+      "id": "abc309_c",
+      "label": "C",
+      "title": "Medicine",
+      "url": "https://atcoder.jp/contests/abc309/tasks/abc309_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc309_c.cpp"
+      }
+    },
+    {
+      "id": "abc309_d",
+      "label": "D",
+      "title": "Add One Edge",
+      "url": "https://atcoder.jp/contests/abc309/tasks/abc309_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc309_d.cpp"
+      }
+    },
+    {
+      "id": "abc309_e",
+      "label": "E",
+      "title": "Family and Insurance",
+      "url": "https://atcoder.jp/contests/abc309/tasks/abc309_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc309_e.cpp"
+      }
+    },
+    {
+      "id": "abc309_f",
+      "label": "F",
+      "title": "Box in Box",
+      "url": "https://atcoder.jp/contests/abc309/tasks/abc309_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc309_f.cpp"
+      }
+    },
+    {
+      "id": "abc309_g",
+      "label": "G",
+      "title": "Ban Permutation",
+      "url": "https://atcoder.jp/contests/abc309/tasks/abc309_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc309_g.cpp"
+      }
+    },
+    {
+      "id": "abc309_h",
+      "label": "Ex",
+      "title": "Simple Path Counting Problem",
+      "url": "https://atcoder.jp/contests/abc309/tasks/abc309_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc309_h.cpp"
+      }
+    }
+  ]
+}
