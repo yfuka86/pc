@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc164",
+    "title": "AtCoder Regular Contest 164",
+    "url": "https://atcoder.jp/contests/arc164"
+  },
+  "tasks": [
+    {
+      "id": "arc164_a",
+      "label": "A",
+      "title": "Ternary Decomposition",
+      "url": "https://atcoder.jp/contests/arc164/tasks/arc164_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc164_a.cpp"
+      }
+    },
+    {
+      "id": "arc164_b",
+      "label": "B",
+      "title": "Switching Travel",
+      "url": "https://atcoder.jp/contests/arc164/tasks/arc164_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc164_b.cpp"
+      }
+    },
+    {
+      "id": "arc164_c",
+      "label": "C",
+      "title": "Reversible Card Game",
+      "url": "https://atcoder.jp/contests/arc164/tasks/arc164_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc164_c.cpp"
+      }
+    },
+    {
+      "id": "arc164_d",
+      "label": "D",
+      "title": "1D Coulomb",
+      "url": "https://atcoder.jp/contests/arc164/tasks/arc164_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc164_d.cpp"
+      }
+    },
+    {
+      "id": "arc164_e",
+      "label": "E",
+      "title": "Segment-Tree Optimization",
+      "url": "https://atcoder.jp/contests/arc164/tasks/arc164_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc164_e.cpp"
+      }
+    },
+    {
+      "id": "arc164_f",
+      "label": "F",
+      "title": "Subtree Reversi",
+      "url": "https://atcoder.jp/contests/arc164/tasks/arc164_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc164_f.cpp"
+      }
+    }
+  ]
+}
