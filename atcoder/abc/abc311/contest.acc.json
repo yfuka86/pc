@@ -1,0 +1,97 @@
+{
+  "contest": {
+    "id": "abc311",
+    "title": "Toyota Programming Contest 2023#4（AtCoder Beginner Contest 311）",
+    "url": "https://atcoder.jp/contests/abc311"
+  },
+  "tasks": [
+    {
+      "id": "abc311_a",
+      "label": "A",
+      "title": "First ABC",
+      "url": "https://atcoder.jp/contests/abc311/tasks/abc311_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc311_a.cpp"
+      }
+    },
+    {
+      "id": "abc311_b",
+      "label": "B",
+      "title": "Vacation Together",
+      "url": "https://atcoder.jp/contests/abc311/tasks/abc311_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc311_b.cpp"
+      }
+    },
+    {
+      "id": "abc311_c",
+      "label": "C",
+      "title": "Find it!",
+      "url": "https://atcoder.jp/contests/abc311/tasks/abc311_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc311_c.cpp"
+      }
+    },
+    {
+      "id": "abc311_d",
+      "label": "D",
+      "title": "Grid Ice Floor",
+      "url": "https://atcoder.jp/contests/abc311/tasks/abc311_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc311_d.cpp"
+      }
+    },
+    {
+      "id": "abc311_e",
+      "label": "E",
+      "title": "Defect-free Squares",
+      "url": "https://atcoder.jp/contests/abc311/tasks/abc311_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc311_e.cpp"
+      }
+    },
+    {
+      "id": "abc311_f",
+      "label": "F",
+      "title": "Yet Another Grid Task",
+      "url": "https://atcoder.jp/contests/abc311/tasks/abc311_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc311_f.cpp"
+      }
+    },
+    {
+      "id": "abc311_g",
+      "label": "G",
+      "title": "One More Grid Task",
+      "url": "https://atcoder.jp/contests/abc311/tasks/abc311_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc311_g.cpp"
+      }
+    },
+    {
+      "id": "abc311_h",
+      "label": "Ex",
+      "title": "Many Illumination Plans",
+      "url": "https://atcoder.jp/contests/abc311/tasks/abc311_h",
+      "directory": {
+        "path": "ex",
+        "testdir": "test",
+        "submit": "abc311_h.cpp"
+      }
+    }
+  ]
+}
