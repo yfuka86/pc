@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "agc063",
+    "title": "AtCoder Grand Contest 063",
+    "url": "https://atcoder.jp/contests/agc063"
+  },
+  "tasks": [
+    {
+      "id": "agc063_a",
+      "label": "A",
+      "title": "Mex Game",
+      "url": "https://atcoder.jp/contests/agc063/tasks/agc063_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "agc063_a.cpp"
+      }
+    },
+    {
+      "id": "agc063_b",
+      "label": "B",
+      "title": "Insert 1, 2, 3, ...",
+      "url": "https://atcoder.jp/contests/agc063/tasks/agc063_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "agc063_b.cpp"
+      }
+    },
+    {
+      "id": "agc063_c",
+      "label": "C",
+      "title": "Add Mod Operations",
+      "url": "https://atcoder.jp/contests/agc063/tasks/agc063_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "agc063_c.cpp"
+      }
+    },
+    {
+      "id": "agc063_d",
+      "label": "D",
+      "title": "Many CRT",
+      "url": "https://atcoder.jp/contests/agc063/tasks/agc063_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "agc063_d.cpp"
+      }
+    },
+    {
+      "id": "agc063_e",
+      "label": "E",
+      "title": "Child to Parent",
+      "url": "https://atcoder.jp/contests/agc063/tasks/agc063_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "agc063_e.cpp"
+      }
+    },
+    {
+      "id": "agc063_f",
+      "label": "F",
+      "title": "Simultaneous Floor",
+      "url": "https://atcoder.jp/contests/agc063/tasks/agc063_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "agc063_f.cpp"
+      }
+    }
+  ]
+}
