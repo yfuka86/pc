@@ -174,75 +174,55 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+namespace COM {
+  vector<mint> fact, factinv, inv; int cur = 2;
+  struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
+  void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+  void upd(int n) { assert(n < 1e8); while (cur <= n) incr(); }
+  mint fac(int n) { assert(0 <= n); upd(n); return fact[n]; }
+  mint ifac(int n) { assert(0 <= n); upd(n); return factinv[n]; }
+  mint combp(int n, int k) { upd(n); if (n < 0 || k < 0 || n < k) return 0; return fact[n] * factinv[n - k]; }
+  mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; using COM::fac, COM::ifac, COM::combp, COM::comb;
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+
 void solve() {
-  LL(n); VL(a, n); VL(b, n);
+  LL(n); STR(s);
 
-
-  auto diffs = [&]() {
-    vlp ret;
-    rep(i, n - 1) {
-      ret.pb({t[i + 1] - t[i], b[i + 1] - b[i]});
-    }
-    return ret;
-  };
-
-  map<ll, vl> pr;
-  rep(i, n) {
-    pr[a[i]].pb(b[i]);
-  }
-  vl keys;
-  fore(k, v, pr) {
-    if (v.size() > 1) OUTRET("No");
-    keys.pb(k);
-  }
-  vlp ans;
-
-  debug(keys);
-
-
-  auto op = [&](ll x, ll y) {
-    rep(i, n) {
-      keys[i] += x;
-      keys[i] %= y;
-    }
-  };
-
-  rep(i, n - 1) {
-    ll t1 = pr[keys[i]][0], t2 = pr[keys[i + 1]][0];
-    ll d1 = keys[i + 1] - keys[i], d2 = t2 - t1;
-    if (d1 == 0 && d2 != 0) {
-      OUTRET("No");
-    } else if (d2 == 0) {
-      op(0, d1);
-    } else if ((d1 < 0)^(d2 < 0)) { // 逆のケース
-      ll m = abs(d1 - d2);
-      if (d1 > 0) {
-        ll off = m + t2 - keys[i + 1];
-        op(off, m);
-      } else {
-        ll off = m + t1 - keys[i];
-        op(off, m);
-      }
-    } else { // 正方向のケース
-      if (d1 == d2) continue;
-
-      if (d1 > 0) {
-        ll m = keys[i + 1] + 1e10;
-        op(1e10, m);
-
-      }
+  mint ans = 0;
+  rep_r(i, 1, n) {
+    ll b = s[i] - '0';
+    ll a = s[i - 1] - '0';
+    if (b > 1 && a > 1) {
+      OUTRET(-1);
+    } else {
+      ans += (ans + 1) * (b - 1) + 1;
     }
   }
-
-  vlp ans;
-
-
-
-  // op(8, 10);
-  // debug(t);
-  // op(1, 12);
-  // debug(t);
-  // // op(2, 7);
+  OUT(ans);
 }
 
 signed main() {

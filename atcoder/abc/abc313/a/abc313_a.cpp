@@ -175,74 +175,9 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(a, n); VL(b, n);
+  LL(n); VL(p, n);
 
-
-  auto diffs = [&]() {
-    vlp ret;
-    rep(i, n - 1) {
-      ret.pb({t[i + 1] - t[i], b[i + 1] - b[i]});
-    }
-    return ret;
-  };
-
-  map<ll, vl> pr;
-  rep(i, n) {
-    pr[a[i]].pb(b[i]);
-  }
-  vl keys;
-  fore(k, v, pr) {
-    if (v.size() > 1) OUTRET("No");
-    keys.pb(k);
-  }
-  vlp ans;
-
-  debug(keys);
-
-
-  auto op = [&](ll x, ll y) {
-    rep(i, n) {
-      keys[i] += x;
-      keys[i] %= y;
-    }
-  };
-
-  rep(i, n - 1) {
-    ll t1 = pr[keys[i]][0], t2 = pr[keys[i + 1]][0];
-    ll d1 = keys[i + 1] - keys[i], d2 = t2 - t1;
-    if (d1 == 0 && d2 != 0) {
-      OUTRET("No");
-    } else if (d2 == 0) {
-      op(0, d1);
-    } else if ((d1 < 0)^(d2 < 0)) { // 逆のケース
-      ll m = abs(d1 - d2);
-      if (d1 > 0) {
-        ll off = m + t2 - keys[i + 1];
-        op(off, m);
-      } else {
-        ll off = m + t1 - keys[i];
-        op(off, m);
-      }
-    } else { // 正方向のケース
-      if (d1 == d2) continue;
-
-      if (d1 > 0) {
-        ll m = keys[i + 1] + 1e10;
-        op(1e10, m);
-
-      }
-    }
-  }
-
-  vlp ans;
-
-
-
-  // op(8, 10);
-  // debug(t);
-  // op(1, 12);
-  // debug(t);
-  // // op(2, 7);
+  OUT(max((*max_element(rng_of(p, 1, n)) + 1) - p[0], 0));
 }
 
 signed main() {
