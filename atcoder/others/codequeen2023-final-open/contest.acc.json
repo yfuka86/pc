@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "codequeen2023-final-open",
+    "title": "CodeQUEEN 2023 決勝（オープンコンテスト）",
+    "url": "https://atcoder.jp/contests/codequeen2023-final-open"
+  },
+  "tasks": [
+    {
+      "id": "codequeen2023_final_a",
+      "label": "A",
+      "title": "QUEN",
+      "url": "https://atcoder.jp/contests/codequeen2023-final-open/tasks/codequeen2023_final_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "codequeen2023_final_a.cpp"
+      }
+    },
+    {
+      "id": "codequeen2023_final_b",
+      "label": "B",
+      "title": "N-Queens Problem",
+      "url": "https://atcoder.jp/contests/codequeen2023-final-open/tasks/codequeen2023_final_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "codequeen2023_final_b.cpp"
+      }
+    },
+    {
+      "id": "codequeen2023_final_c",
+      "label": "C",
+      "title": "Path Intersection",
+      "url": "https://atcoder.jp/contests/codequeen2023-final-open/tasks/codequeen2023_final_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "codequeen2023_final_c.cpp"
+      }
+    },
+    {
+      "id": "codequeen2023_final_d",
+      "label": "D",
+      "title": "Moving Queen",
+      "url": "https://atcoder.jp/contests/codequeen2023-final-open/tasks/codequeen2023_final_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "codequeen2023_final_d.cpp"
+      }
+    },
+    {
+      "id": "codequeen2023_final_e",
+      "label": "E",
+      "title": "Good Partition",
+      "url": "https://atcoder.jp/contests/codequeen2023-final-open/tasks/codequeen2023_final_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "codequeen2023_final_e.cpp"
+      }
+    },
+    {
+      "id": "codequeen2023_final_f",
+      "label": "F",
+      "title": "Queen's Crown\t",
+      "url": "https://atcoder.jp/contests/codequeen2023-final-open/tasks/codequeen2023_final_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "codequeen2023_final_f.cpp"
+      }
+    }
+  ]
+}
