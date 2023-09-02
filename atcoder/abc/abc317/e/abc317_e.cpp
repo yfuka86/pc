@@ -175,12 +175,50 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(h, w); vs c(h); IN(c);
+  LL(h, w);
+  vs a(h); IN(a);
 
-  vv(ll, xf, h, 26);
-  vv(ll, yf, w, 26);
+  vv(ll, obs, h, w);
 
+  ll sx, sy, gx, gy;
 
+  string obss = "v>^<#";
+  rep(i, h) rep(j, w) {
+    if (a[i][j] == 'S') { sx = i, sy = j; }
+    if (a[i][j] == 'G') { gx = i, gy = j; }
+    if (a[i][j] == '#') obs[i][j] = 1;
+    rep(k, 4) if (a[i][j] == obss[k]) {
+      rep(d, max(h, w)) {
+        ll di = i + dx[k] * d, dj = j + dy[k] * d;
+        if (incl(di, 0, h) && incl(dj, 0, w)) {
+          bool valid = true;
+          rep(kk, 5) if (d > 0 && obss[kk] == a[di][dj]) valid = false;
+          if (!valid) break;
+          obs[di][dj] = 1;
+        } else break;
+      }
+    }
+  }
+
+  // debug(obs);
+
+  queue<LP> que;
+  vv(ll, cost, h, w, LINF);
+  cost[sx][sy] = 0;
+  que.push({sx, sy});
+  while(!que.empty()) {
+    auto [x, y] = que.front(); que.pop();
+    rep(d, 4) {
+      ll di = x + dx[d], dj = y + dy[d];
+      if (incl(di, 0, h) && incl(dj, 0, w) && !obs[di][dj]) {
+        if (chmin(cost[di][dj], cost[x][y] + 1)) que.push({di, dj});
+      }
+    }
+  }
+
+  if (cost[gx][gy] == LINF) {
+    OUT(-1);
+  } else OUT(cost[gx][gy]);
 }
 
 signed main() {

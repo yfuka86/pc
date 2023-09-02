@@ -175,12 +175,15 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(h, w); vs c(h); IN(c);
+  LL(n);
+  VL(a, n);
+  sort(all(a));
 
-  vv(ll, xf, h, 26);
-  vv(ll, yf, w, 26);
-
-
+  rep(i, n - 1) {
+    if (a[i] < a[i + 1] - 1) {
+      OUTRET(a[i] + 1);
+    }
+  }
 }
 
 signed main() {

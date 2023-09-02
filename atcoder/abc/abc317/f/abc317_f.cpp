@@ -174,13 +174,90 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+namespace COM {
+  vector<mint> fact, factinv, inv; int cur = 2;
+  struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
+  void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+  void upd(int n) { assert(n < 1e8); while (cur <= n) incr(); }
+  mint fac(int n) { assert(0 <= n); upd(n); return fact[n]; }
+  mint ifac(int n) { assert(0 <= n); upd(n); return factinv[n]; }
+  mint combp(int n, int k) { upd(n); if (n < 0 || k < 0 || n < k) return 0; return fact[n] * factinv[n - k]; }
+  mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; using COM::fac, COM::ifac, COM::combp, COM::comb;
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
 void solve() {
-  LL(h, w); vs c(h); IN(c);
-
-  vv(ll, xf, h, 26);
-  vv(ll, yf, w, 26);
+  LL(n); VL(a, 3);
 
 
+  // ll ans = 0;
+  // rep(i, 1, n+1) rep(j, 1, n+1) rep(k, 1, n+1) {
+  //   if ((i ^ j ^ k) == 0) {
+  //     debug(i, j, k);
+  //     ans++;
+  //   }
+  // }
+  // debug(ans);
+
+  vector<map<vl, mint>> dp(63);
+  ll flag = (n & 1) ? 0 : 1;
+  dp[0][{a[0],a[1],a[2],0,0,0}] = 1;
+  dp[0][{1%a[0],1%a[1],a[2],flag,flag,0}] = 1;
+  dp[0][{1%a[0],a[1],1%a[2],flag,0,flag}] = 1;
+  dp[0][{a[0],1%a[1],1%a[2],0,flag,flag}] = 1;
+
+  rep(i, 62) {
+    fore(v, c, dp[i]) {
+      ll d = 1ll<<i+1;
+      ll di = (n>>i+1) & 1;
+
+      vl nx1, nx0;
+      if (di == 0) {
+        nx1 = {1,1,1};
+        nx0 = {v[3],v[4],v[5]};
+      } else {
+        nx1 = {v[3],v[4],v[5]};
+        nx0 = {0,0,0};
+      }
+
+      // {1,1,0}のパターン
+      dp[i+1][{(v[0]+d)%a[0], (v[1]+d)%a[1], v[2], nx1[0], nx1[1], nx0[2]}] += c;
+      // {0,0,0}のパターン
+      dp[i+1][{v[0], v[1], v[2], nx0[0], nx0[1], nx0[2]}] += c;
+      // {1,0,1}のパターン
+      dp[i+1][{(v[0]+d)%a[0], v[1], (v[2]+d)%a[2], nx1[0], nx0[1], nx1[2]}] += c;
+      // {0,1,1}のパターン
+      dp[i+1][{v[0], (v[1]+d)%a[1], (v[2]+d)%a[2], nx0[0], nx1[1], nx1[2]}] += c;
+    }
+  }
+
+  // debug(dp[0]);
+  // debug(dp[1]);
+  // debug(dp[2]);
+
+  OUT(dp[62][{0,0,0,0,0,0}]);
 }
 
 signed main() {

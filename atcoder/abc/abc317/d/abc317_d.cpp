@@ -175,12 +175,28 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(h, w); vs c(h); IN(c);
+  LL(n);
+  VEC3(ll, x, y, z, n);
+  ll need = (sum_of(z) + 1) / 2;
 
-  vv(ll, xf, h, 26);
-  vv(ll, yf, w, 26);
+  ll already = 0;
+  vlp dist;
+  rep(i, n) {
+    if (x[i] > y[i]) already += z[i];
+    else {
+      dist.pb({(x[i] + y[i] + 1) / 2 - x[i], z[i]});
+    }
+  }
+  if (already >= need) OUTRET(0);
 
+  vl dp(need + 1, LINF); dp[already] = 0;
 
+  fore(cost, val, dist) {
+    rep_r(i, need + 1) {
+      chmin(dp[min(i + val, need)], dp[i] + cost);
+    }
+  }
+  OUT(dp[need]);
 }
 
 signed main() {

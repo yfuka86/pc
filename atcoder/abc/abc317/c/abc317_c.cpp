@@ -175,12 +175,28 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(h, w); vs c(h); IN(c);
+  LL(n, m);
+  Graph<ll> G(n);
+  rep(i, m) {
+    LL(a, b, c); --a; --b;
+    G.add_edge(a, b, c);
+  }
 
-  vv(ll, xf, h, 26);
-  vv(ll, yf, w, 26);
+  vv(ll, dp, 1 << n, n, -LINF);
+  rep(i, n) dp[1 << i][i] = 0;
 
+  rep(S, 1, 1 << n) {
+    rep(i, n) {
+      fore(to, G[i]) {
+        if (1 << to & S) continue;
+        chmax(dp[S | 1 << to][to], dp[S][i] + to.cost);
+      }
+    }
+  }
 
+  ll ans = 0;
+  rep(i, 1 << n)  rep(j, n) chmax(ans, dp[i][j]);
+  OUT(ans);
 }
 
 signed main() {
