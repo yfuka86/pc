@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc319",
+    "title": "AtCoder Beginner Contest 319",
+    "url": "https://atcoder.jp/contests/abc319"
+  },
+  "tasks": [
+    {
+      "id": "abc319_a",
+      "label": "A",
+      "title": "Legendary Players",
+      "url": "https://atcoder.jp/contests/abc319/tasks/abc319_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc319_a.cpp"
+      }
+    },
+    {
+      "id": "abc319_b",
+      "label": "B",
+      "title": "Measure",
+      "url": "https://atcoder.jp/contests/abc319/tasks/abc319_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc319_b.cpp"
+      }
+    },
+    {
+      "id": "abc319_c",
+      "label": "C",
+      "title": "False Hope",
+      "url": "https://atcoder.jp/contests/abc319/tasks/abc319_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc319_c.cpp"
+      }
+    },
+    {
+      "id": "abc319_d",
+      "label": "D",
+      "title": "Minimum Width",
+      "url": "https://atcoder.jp/contests/abc319/tasks/abc319_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc319_d.cpp"
+      }
+    },
+    {
+      "id": "abc319_e",
+      "label": "E",
+      "title": "Bus Stops",
+      "url": "https://atcoder.jp/contests/abc319/tasks/abc319_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc319_e.cpp"
+      }
+    },
+    {
+      "id": "abc319_f",
+      "label": "F",
+      "title": "Fighter Takahashi",
+      "url": "https://atcoder.jp/contests/abc319/tasks/abc319_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc319_f.cpp"
+      }
+    },
+    {
+      "id": "abc319_g",
+      "label": "G",
+      "title": "Counting Shortest Paths",
+      "url": "https://atcoder.jp/contests/abc319/tasks/abc319_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc319_g.cpp"
+      }
+    }
+  ]
+}
