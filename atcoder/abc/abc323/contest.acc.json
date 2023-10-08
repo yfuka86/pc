@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc323",
+    "title": "UNIQUE VISION Programming Contest 2023 Autumn(AtCoder Beginner Contest 323)",
+    "url": "https://atcoder.jp/contests/abc323"
+  },
+  "tasks": [
+    {
+      "id": "abc323_a",
+      "label": "A",
+      "title": "Weak Beats",
+      "url": "https://atcoder.jp/contests/abc323/tasks/abc323_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc323_a.cpp"
+      }
+    },
+    {
+      "id": "abc323_b",
+      "label": "B",
+      "title": "Round-Robin Tournament",
+      "url": "https://atcoder.jp/contests/abc323/tasks/abc323_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc323_b.cpp"
+      }
+    },
+    {
+      "id": "abc323_c",
+      "label": "C",
+      "title": "World Tour Finals",
+      "url": "https://atcoder.jp/contests/abc323/tasks/abc323_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc323_c.cpp"
+      }
+    },
+    {
+      "id": "abc323_d",
+      "label": "D",
+      "title": "Merge Slimes",
+      "url": "https://atcoder.jp/contests/abc323/tasks/abc323_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc323_d.cpp"
+      }
+    },
+    {
+      "id": "abc323_e",
+      "label": "E",
+      "title": "Playlist",
+      "url": "https://atcoder.jp/contests/abc323/tasks/abc323_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc323_e.cpp"
+      }
+    },
+    {
+      "id": "abc323_f",
+      "label": "F",
+      "title": "Push and Carry",
+      "url": "https://atcoder.jp/contests/abc323/tasks/abc323_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc323_f.cpp"
+      }
+    },
+    {
+      "id": "abc323_g",
+      "label": "G",
+      "title": "Inversion of Tree",
+      "url": "https://atcoder.jp/contests/abc323/tasks/abc323_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc323_g.cpp"
+      }
+    }
+  ]
+}
