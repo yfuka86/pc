@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc324",
+    "title": "Japan Registry Services (JPRS) Programming Contest 2023 (AtCoder Beginner Contest 324)",
+    "url": "https://atcoder.jp/contests/abc324"
+  },
+  "tasks": [
+    {
+      "id": "abc324_a",
+      "label": "A",
+      "title": "Same",
+      "url": "https://atcoder.jp/contests/abc324/tasks/abc324_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc324_a.cpp"
+      }
+    },
+    {
+      "id": "abc324_b",
+      "label": "B",
+      "title": "3-smooth Numbers",
+      "url": "https://atcoder.jp/contests/abc324/tasks/abc324_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc324_b.cpp"
+      }
+    },
+    {
+      "id": "abc324_c",
+      "label": "C",
+      "title": "Error Correction",
+      "url": "https://atcoder.jp/contests/abc324/tasks/abc324_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc324_c.cpp"
+      }
+    },
+    {
+      "id": "abc324_d",
+      "label": "D",
+      "title": "Square Permutation",
+      "url": "https://atcoder.jp/contests/abc324/tasks/abc324_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc324_d.cpp"
+      }
+    },
+    {
+      "id": "abc324_e",
+      "label": "E",
+      "title": "Joint Two Strings",
+      "url": "https://atcoder.jp/contests/abc324/tasks/abc324_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc324_e.cpp"
+      }
+    },
+    {
+      "id": "abc324_f",
+      "label": "F",
+      "title": "Beautiful Path",
+      "url": "https://atcoder.jp/contests/abc324/tasks/abc324_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc324_f.cpp"
+      }
+    },
+    {
+      "id": "abc324_g",
+      "label": "G",
+      "title": "Generate Arrays",
+      "url": "https://atcoder.jp/contests/abc324/tasks/abc324_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc324_g.cpp"
+      }
+    }
+  ]
+}
