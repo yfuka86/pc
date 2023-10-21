@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc167",
+    "title": "AtCoder Regular Contest 167",
+    "url": "https://atcoder.jp/contests/arc167"
+  },
+  "tasks": [
+    {
+      "id": "arc167_a",
+      "label": "A",
+      "title": "Toasts for Breakfast Party",
+      "url": "https://atcoder.jp/contests/arc167/tasks/arc167_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc167_a.cpp"
+      }
+    },
+    {
+      "id": "arc167_b",
+      "label": "B",
+      "title": "Product of Divisors",
+      "url": "https://atcoder.jp/contests/arc167/tasks/arc167_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc167_b.cpp"
+      }
+    },
+    {
+      "id": "arc167_c",
+      "label": "C",
+      "title": "MST on Line++",
+      "url": "https://atcoder.jp/contests/arc167/tasks/arc167_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc167_c.cpp"
+      }
+    },
+    {
+      "id": "arc167_d",
+      "label": "D",
+      "title": "Good Permutation",
+      "url": "https://atcoder.jp/contests/arc167/tasks/arc167_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc167_d.cpp"
+      }
+    },
+    {
+      "id": "arc167_e",
+      "label": "E",
+      "title": "One Square in a Triangle",
+      "url": "https://atcoder.jp/contests/arc167/tasks/arc167_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc167_e.cpp"
+      }
+    },
+    {
+      "id": "arc167_f",
+      "label": "F",
+      "title": "Tree Tree Tree",
+      "url": "https://atcoder.jp/contests/arc167/tasks/arc167_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc167_f.cpp"
+      }
+    }
+  ]
+}
