@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "agc029",
+    "title": "AtCoder Grand Contest 029",
+    "url": "https://atcoder.jp/contests/agc029"
+  },
+  "tasks": [
+    {
+      "id": "agc029_a",
+      "label": "A",
+      "title": "Irreversible operation",
+      "url": "https://atcoder.jp/contests/agc029/tasks/agc029_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "agc029_a.cpp"
+      }
+    },
+    {
+      "id": "agc029_b",
+      "label": "B",
+      "title": "Powers of two",
+      "url": "https://atcoder.jp/contests/agc029/tasks/agc029_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "agc029_b.cpp"
+      }
+    },
+    {
+      "id": "agc029_c",
+      "label": "C",
+      "title": "Lexicographic constraints",
+      "url": "https://atcoder.jp/contests/agc029/tasks/agc029_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "agc029_c.cpp"
+      }
+    },
+    {
+      "id": "agc029_d",
+      "label": "D",
+      "title": "Grid game",
+      "url": "https://atcoder.jp/contests/agc029/tasks/agc029_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "agc029_d.cpp"
+      }
+    },
+    {
+      "id": "agc029_e",
+      "label": "E",
+      "title": "Wandering TKHS",
+      "url": "https://atcoder.jp/contests/agc029/tasks/agc029_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "agc029_e.cpp"
+      }
+    },
+    {
+      "id": "agc029_f",
+      "label": "F",
+      "title": "Construction of a tree",
+      "url": "https://atcoder.jp/contests/agc029/tasks/agc029_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "agc029_f.cpp"
+      }
+    }
+  ]
+}
