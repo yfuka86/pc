@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc328",
+    "title": "Toyota Programming Contest 2023#7（AtCoder Beginner Contest 328）",
+    "url": "https://atcoder.jp/contests/abc328"
+  },
+  "tasks": [
+    {
+      "id": "abc328_a",
+      "label": "A",
+      "title": "Not Too Hard",
+      "url": "https://atcoder.jp/contests/abc328/tasks/abc328_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc328_a.cpp"
+      }
+    },
+    {
+      "id": "abc328_b",
+      "label": "B",
+      "title": "11/11",
+      "url": "https://atcoder.jp/contests/abc328/tasks/abc328_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc328_b.cpp"
+      }
+    },
+    {
+      "id": "abc328_c",
+      "label": "C",
+      "title": "Consecutive",
+      "url": "https://atcoder.jp/contests/abc328/tasks/abc328_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc328_c.cpp"
+      }
+    },
+    {
+      "id": "abc328_d",
+      "label": "D",
+      "title": "Take ABC",
+      "url": "https://atcoder.jp/contests/abc328/tasks/abc328_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc328_d.cpp"
+      }
+    },
+    {
+      "id": "abc328_e",
+      "label": "E",
+      "title": "Modulo MST",
+      "url": "https://atcoder.jp/contests/abc328/tasks/abc328_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc328_e.cpp"
+      }
+    },
+    {
+      "id": "abc328_f",
+      "label": "F",
+      "title": "Good Set Query",
+      "url": "https://atcoder.jp/contests/abc328/tasks/abc328_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc328_f.cpp"
+      }
+    },
+    {
+      "id": "abc328_g",
+      "label": "G",
+      "title": "Cut and Reorder",
+      "url": "https://atcoder.jp/contests/abc328/tasks/abc328_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc328_g.cpp"
+      }
+    }
+  ]
+}
