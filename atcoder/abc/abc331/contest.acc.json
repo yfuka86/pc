@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc331",
+    "title": "Daiwa Securities Co. Ltd. Programming Contest 2023（AtCoder Beginner Contest 331）",
+    "url": "https://atcoder.jp/contests/abc331"
+  },
+  "tasks": [
+    {
+      "id": "abc331_a",
+      "label": "A",
+      "title": "Tomorrow",
+      "url": "https://atcoder.jp/contests/abc331/tasks/abc331_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc331_a.cpp"
+      }
+    },
+    {
+      "id": "abc331_b",
+      "label": "B",
+      "title": "Buy One Carton of Milk",
+      "url": "https://atcoder.jp/contests/abc331/tasks/abc331_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc331_b.cpp"
+      }
+    },
+    {
+      "id": "abc331_c",
+      "label": "C",
+      "title": "Sum of Numbers Greater Than Me",
+      "url": "https://atcoder.jp/contests/abc331/tasks/abc331_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc331_c.cpp"
+      }
+    },
+    {
+      "id": "abc331_d",
+      "label": "D",
+      "title": "Tile Pattern",
+      "url": "https://atcoder.jp/contests/abc331/tasks/abc331_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc331_d.cpp"
+      }
+    },
+    {
+      "id": "abc331_e",
+      "label": "E",
+      "title": "Set Meal",
+      "url": "https://atcoder.jp/contests/abc331/tasks/abc331_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc331_e.cpp"
+      }
+    },
+    {
+      "id": "abc331_f",
+      "label": "F",
+      "title": "Palindrome Query",
+      "url": "https://atcoder.jp/contests/abc331/tasks/abc331_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc331_f.cpp"
+      }
+    },
+    {
+      "id": "abc331_g",
+      "label": "G",
+      "title": "Collect Them All",
+      "url": "https://atcoder.jp/contests/abc331/tasks/abc331_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc331_g.cpp"
+      }
+    }
+  ]
+}
