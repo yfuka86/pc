@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc332",
+    "title": "AtCoder Beginner Contest 332",
+    "url": "https://atcoder.jp/contests/abc332"
+  },
+  "tasks": [
+    {
+      "id": "abc332_a",
+      "label": "A",
+      "title": "Online Shopping",
+      "url": "https://atcoder.jp/contests/abc332/tasks/abc332_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc332_a.cpp"
+      }
+    },
+    {
+      "id": "abc332_b",
+      "label": "B",
+      "title": "Glass and Mug",
+      "url": "https://atcoder.jp/contests/abc332/tasks/abc332_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc332_b.cpp"
+      }
+    },
+    {
+      "id": "abc332_c",
+      "label": "C",
+      "title": "T-shirts",
+      "url": "https://atcoder.jp/contests/abc332/tasks/abc332_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc332_c.cpp"
+      }
+    },
+    {
+      "id": "abc332_d",
+      "label": "D",
+      "title": "Swapping Puzzle",
+      "url": "https://atcoder.jp/contests/abc332/tasks/abc332_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc332_d.cpp"
+      }
+    },
+    {
+      "id": "abc332_e",
+      "label": "E",
+      "title": "Lucky bag",
+      "url": "https://atcoder.jp/contests/abc332/tasks/abc332_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc332_e.cpp"
+      }
+    },
+    {
+      "id": "abc332_f",
+      "label": "F",
+      "title": "Random Update Query",
+      "url": "https://atcoder.jp/contests/abc332/tasks/abc332_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc332_f.cpp"
+      }
+    },
+    {
+      "id": "abc332_g",
+      "label": "G",
+      "title": "Not Too Many Balls",
+      "url": "https://atcoder.jp/contests/abc332/tasks/abc332_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc332_g.cpp"
+      }
+    }
+  ]
+}
