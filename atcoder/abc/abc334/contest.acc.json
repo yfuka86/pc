@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc334",
+    "title": "UNIQUE VISION Programming Contest 2023 Christmas (AtCoder Beginner Contest 334)",
+    "url": "https://atcoder.jp/contests/abc334"
+  },
+  "tasks": [
+    {
+      "id": "abc334_a",
+      "label": "A",
+      "title": "Christmas Present",
+      "url": "https://atcoder.jp/contests/abc334/tasks/abc334_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc334_a.cpp"
+      }
+    },
+    {
+      "id": "abc334_b",
+      "label": "B",
+      "title": "Christmas Trees",
+      "url": "https://atcoder.jp/contests/abc334/tasks/abc334_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc334_b.cpp"
+      }
+    },
+    {
+      "id": "abc334_c",
+      "label": "C",
+      "title": "Socks 2",
+      "url": "https://atcoder.jp/contests/abc334/tasks/abc334_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc334_c.cpp"
+      }
+    },
+    {
+      "id": "abc334_d",
+      "label": "D",
+      "title": "Reindeer and Sleigh",
+      "url": "https://atcoder.jp/contests/abc334/tasks/abc334_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc334_d.cpp"
+      }
+    },
+    {
+      "id": "abc334_e",
+      "label": "E",
+      "title": "Christmas Color Grid 1",
+      "url": "https://atcoder.jp/contests/abc334/tasks/abc334_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc334_e.cpp"
+      }
+    },
+    {
+      "id": "abc334_f",
+      "label": "F",
+      "title": "Christmas Present 2",
+      "url": "https://atcoder.jp/contests/abc334/tasks/abc334_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc334_f.cpp"
+      }
+    },
+    {
+      "id": "abc334_g",
+      "label": "G",
+      "title": "Christmas Color Grid 2",
+      "url": "https://atcoder.jp/contests/abc334/tasks/abc334_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc334_g.cpp"
+      }
+    }
+  ]
+}
