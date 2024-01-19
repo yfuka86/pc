@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc336",
+    "title": "AtCoder Beginner Contest 336",
+    "url": "https://atcoder.jp/contests/abc336"
+  },
+  "tasks": [
+    {
+      "id": "abc336_a",
+      "label": "A",
+      "title": "Long Loong",
+      "url": "https://atcoder.jp/contests/abc336/tasks/abc336_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc336_a.cpp"
+      }
+    },
+    {
+      "id": "abc336_b",
+      "label": "B",
+      "title": "CTZ",
+      "url": "https://atcoder.jp/contests/abc336/tasks/abc336_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc336_b.cpp"
+      }
+    },
+    {
+      "id": "abc336_c",
+      "label": "C",
+      "title": "Even Digits",
+      "url": "https://atcoder.jp/contests/abc336/tasks/abc336_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc336_c.cpp"
+      }
+    },
+    {
+      "id": "abc336_d",
+      "label": "D",
+      "title": "Pyramid",
+      "url": "https://atcoder.jp/contests/abc336/tasks/abc336_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc336_d.cpp"
+      }
+    },
+    {
+      "id": "abc336_e",
+      "label": "E",
+      "title": "Digit Sum Divisible",
+      "url": "https://atcoder.jp/contests/abc336/tasks/abc336_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc336_e.cpp"
+      }
+    },
+    {
+      "id": "abc336_f",
+      "label": "F",
+      "title": "Rotation Puzzle",
+      "url": "https://atcoder.jp/contests/abc336/tasks/abc336_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc336_f.cpp"
+      }
+    },
+    {
+      "id": "abc336_g",
+      "label": "G",
+      "title": "16 Integers",
+      "url": "https://atcoder.jp/contests/abc336/tasks/abc336_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc336_g.cpp"
+      }
+    }
+  ]
+}
