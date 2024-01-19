@@ -186,39 +186,38 @@ long long extGCD(long long a, long long b, long long &x, long long &y) {
   return d;
 }
 
+// ax + by = rhs
+// 範囲におさまる整数解の個数を返却
+// stepはlcm
+ll indet_equation(ll a, ll b, ll rhs, ll xmin, ll xmax, ll ymin, ll ymax) {
+  if (rhs % gcd(a, b) != 0) return 0;
+
+  ll normx, normy;
+  extGCD(a, b, normx, normy);
+  ll coef = rhs / gcd(a, b);
+  i128 x = (i128)normx * coef, y = (i128)normy * coef;
+  ll lc = lcm(a, b), stepx = lc / a, stepy = lc / b;
+  // lcmだけx,yの組み合わせをずらせる範囲をx,yそれぞれについて求めて交差をとる
+  LP rngx, rngy;
+  // 4つの条件について、満たしている ? いくら動かせるか : 必要量
+  rngx.fi = xmin <= x ? -((x - xmin) / stepx) : ceil(xmin - x, stepx);
+  rngx.se = xmax >= x ? (xmax - x) / stepx : -ceil(x - xmax, stepx);
+  rngy.fi = ymax >= y ? -(ymax - y) / stepy : ceil(y - ymax, stepy);
+  rngy.se = ymin <= y ? ((y - ymin) / stepy) : -ceil(ymin - y, stepy);
+  return max(0, min(rngx.se, rngy.se) - max(rngx.fi, rngy.fi) + 1);
+}
+
 void solve() {
   LL(n, a, b, c, x);
 
-  ll xx, yy;
-  ll gc = extGCD(b, c, xx, yy);
-  if (xx < yy) {
-    swap(b, c);
-    gc = extGCD(b, c, xx, yy);
-  }
-
-  i128 xunit = c / gc, yunit = b / gc;
-  // debug(xx, yy, xunit, yunit);
-
   ll ans = 0;
-  rep(i, 1, n + 1) {
-    ll rem = x - a * i;
-    if (rem < 0) continue;
-    if (rem % gc) continue;
+  rep(k, 1, n + 1) {
+    ll tot = x - c * k;
+    if (tot < 0) break;
 
-    i128 normx = xx * (rem / gc), normy = yy * (rem / gc);
-    if (normx == 0 && normy == 0) continue;
-
-    // debug(normx, normy);
-
-    // normx, normyをかけると負になると仮定
-    i128 opmax = (normx - 1) / xunit;
-    i128 opmin = ceil<i128, i128>((normy < 0 ? -normy : normy) + 1, yunit);
-
-    if (normx > n) chmax(opmin, ceil<i128, i128>(normx - n, xunit));
-    chmin(opmax, ((normy < 0 ? -normy : normy) + n) / yunit);
-
-    if (opmax >= opmin) ans += opmax - opmin + 1;
-    // debug(rem, opmax, opmin, ans);
+    // debug(k, tot, ans);
+    // ax + by = tot
+    ans += indet_equation(a, b, tot, 1, n, 1, n);
   }
   OUT(ans);
 }
