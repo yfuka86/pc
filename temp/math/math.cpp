@@ -45,20 +45,39 @@ ll kto10(vl v, ll k) {
   return ret;
 }
 
-// ap + bq = gcd(a, b)
-LP extGCD(ll a, ll b) {
-  ll p11 = 1, p12 = 0, p21 = 0, p22 = 1;
-  while (b) {
-    ll s = a / b;
-    // matrix{{0, 1}, {1, -s}}
-    a -= s * b; swap(a, b);
-
-    p11 -= s * p21; p12 -= s * p22;
-    swap(p11, p21); swap(p12, p22);
+// 返り値: a と b の最大公約数
+// ax + by = gcd(a, b) を満たす (x, y) が格納される
+long long extGCD(long long a, long long b, long long &x, long long &y) {
+  if (b == 0) {
+      x = 1;
+      y = 0;
+      return a;
   }
-  return {p11, p12};
+  long long d = extGCD(b, a%b, y, x);
+  y -= a/b * x;
+  return d;
 }
 
+// ax + by = rhs
+// 範囲におさまる整数解の個数を返却
+// stepはlcm
+ll indet_equation(ll a, ll b, ll rhs, ll xmin, ll xmax, ll ymin, ll ymax) {
+  if (rhs % gcd(a, b) != 0) return 0;
+
+  ll normx, normy;
+  extGCD(a, b, normx, normy);
+  ll coef = rhs / gcd(a, b);
+  i128 x = (i128)normx * coef, y = (i128)normy * coef;
+  ll lc = lcm(a, b), stepx = lc / a, stepy = lc / b;
+  // lcmだけx,yの組み合わせをずらせる範囲をx,yそれぞれについて求めて交差をとる
+  LP rngx, rngy;
+  // 4つの条件について、満たしている ? いくら動かせるか : 必要量
+  rngx.fi = xmin <= x ? -((x - xmin) / stepx) : ceil(xmin - x, stepx);
+  rngx.se = xmax >= x ? (xmax - x) / stepx : -ceil(x - xmax, stepx);
+  rngy.fi = ymax >= y ? -(ymax - y) / stepy : ceil(y - ymax, stepy);
+  rngy.se = ymin <= y ? ((y - ymin) / stepy) : -ceil(ymin - y, stepy);
+  return max(0, min(rngx.se, rngy.se) - max(rngx.fi, rngy.fi) + 1);
+}
 
 // mod.cppに依存している
 // a^x ≡ b (mod. m) となる最小の正の整数 x を求める
