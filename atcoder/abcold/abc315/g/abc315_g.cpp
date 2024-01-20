@@ -198,7 +198,7 @@ ll indet_equation(ll a, ll b, ll rhs, ll xmin, ll xmax, ll ymin, ll ymax) {
   i128 x = (i128)normx * coef, y = (i128)normy * coef;
   ll lc = lcm(a, b), stepx = lc / a, stepy = lc / b;
   // lcmだけx,yの組み合わせをずらせる範囲をx,yそれぞれについて求めて交差をとる
-  LP rngx, rngy;
+  LP rngx, rngy; // 閉区間
   // 4つの条件について、満たしている ? いくら動かせるか : 必要量
   rngx.fi = xmin <= x ? -((x - xmin) / stepx) : ceil(xmin - x, stepx);
   rngx.se = xmax >= x ? (xmax - x) / stepx : -ceil(x - xmax, stepx);

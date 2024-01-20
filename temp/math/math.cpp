@@ -60,7 +60,6 @@ long long extGCD(long long a, long long b, long long &x, long long &y) {
 
 // ax + by = rhs
 // 範囲におさまる整数解の個数を返却
-// stepはlcm
 ll indet_equation(ll a, ll b, ll rhs, ll xmin, ll xmax, ll ymin, ll ymax) {
   if (rhs % gcd(a, b) != 0) return 0;
 
@@ -69,8 +68,8 @@ ll indet_equation(ll a, ll b, ll rhs, ll xmin, ll xmax, ll ymin, ll ymax) {
   ll coef = rhs / gcd(a, b);
   i128 x = (i128)normx * coef, y = (i128)normy * coef;
   ll lc = lcm(a, b), stepx = lc / a, stepy = lc / b;
-  // lcmだけx,yの組み合わせをずらせる範囲をx,yそれぞれについて求めて交差をとる
-  LP rngx, rngy;
+  // lcm/x,lcm/yの組み合わせをずらせる範囲をx,yそれぞれについて求めて交差をとる
+  LP rngx, rngy; // 閉区間
   // 4つの条件について、満たしている ? いくら動かせるか : 必要量
   rngx.fi = xmin <= x ? -((x - xmin) / stepx) : ceil(xmin - x, stepx);
   rngx.se = xmax >= x ? (xmax - x) / stepx : -ceil(x - xmax, stepx);
