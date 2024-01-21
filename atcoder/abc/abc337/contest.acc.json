@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc337",
+    "title": "Toyota Programming Contest 2024#1（AtCoder Beginner Contest 337）",
+    "url": "https://atcoder.jp/contests/abc337"
+  },
+  "tasks": [
+    {
+      "id": "abc337_a",
+      "label": "A",
+      "title": "Scoreboard",
+      "url": "https://atcoder.jp/contests/abc337/tasks/abc337_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc337_a.cpp"
+      }
+    },
+    {
+      "id": "abc337_b",
+      "label": "B",
+      "title": "Extended ABC",
+      "url": "https://atcoder.jp/contests/abc337/tasks/abc337_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc337_b.cpp"
+      }
+    },
+    {
+      "id": "abc337_c",
+      "label": "C",
+      "title": "Lining Up 2",
+      "url": "https://atcoder.jp/contests/abc337/tasks/abc337_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc337_c.cpp"
+      }
+    },
+    {
+      "id": "abc337_d",
+      "label": "D",
+      "title": "Cheating Gomoku Narabe",
+      "url": "https://atcoder.jp/contests/abc337/tasks/abc337_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc337_d.cpp"
+      }
+    },
+    {
+      "id": "abc337_e",
+      "label": "E",
+      "title": "Bad Juice",
+      "url": "https://atcoder.jp/contests/abc337/tasks/abc337_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc337_e.cpp"
+      }
+    },
+    {
+      "id": "abc337_f",
+      "label": "F",
+      "title": "Usual Color Ball Problems",
+      "url": "https://atcoder.jp/contests/abc337/tasks/abc337_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc337_f.cpp"
+      }
+    },
+    {
+      "id": "abc337_g",
+      "label": "G",
+      "title": "Tree Inversion",
+      "url": "https://atcoder.jp/contests/abc337/tasks/abc337_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc337_g.cpp"
+      }
+    }
+  ]
+}
