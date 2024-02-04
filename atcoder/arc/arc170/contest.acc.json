@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc170",
+    "title": "AtCoder Regular Contest 170",
+    "url": "https://atcoder.jp/contests/arc170"
+  },
+  "tasks": [
+    {
+      "id": "arc170_a",
+      "label": "A",
+      "title": "Yet Another AB Problem",
+      "url": "https://atcoder.jp/contests/arc170/tasks/arc170_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc170_a.cpp"
+      }
+    },
+    {
+      "id": "arc170_b",
+      "label": "B",
+      "title": "Arithmetic Progression Subsequence",
+      "url": "https://atcoder.jp/contests/arc170/tasks/arc170_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc170_b.cpp"
+      }
+    },
+    {
+      "id": "arc170_c",
+      "label": "C",
+      "title": "Prefix Mex Sequence",
+      "url": "https://atcoder.jp/contests/arc170/tasks/arc170_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc170_c.cpp"
+      }
+    },
+    {
+      "id": "arc170_d",
+      "label": "D",
+      "title": "Triangle Card Game",
+      "url": "https://atcoder.jp/contests/arc170/tasks/arc170_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc170_d.cpp"
+      }
+    },
+    {
+      "id": "arc170_e",
+      "label": "E",
+      "title": "BDFS",
+      "url": "https://atcoder.jp/contests/arc170/tasks/arc170_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc170_e.cpp"
+      }
+    },
+    {
+      "id": "arc170_f",
+      "label": "F",
+      "title": "Edge Deletion 2",
+      "url": "https://atcoder.jp/contests/arc170/tasks/arc170_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc170_f.cpp"
+      }
+    }
+  ]
+}
