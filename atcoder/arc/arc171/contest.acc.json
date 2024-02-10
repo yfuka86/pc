@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc171",
+    "title": "AtCoder Regular Contest 171",
+    "url": "https://atcoder.jp/contests/arc171"
+  },
+  "tasks": [
+    {
+      "id": "arc171_a",
+      "label": "A",
+      "title": "No Attacking",
+      "url": "https://atcoder.jp/contests/arc171/tasks/arc171_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc171_a.cpp"
+      }
+    },
+    {
+      "id": "arc171_b",
+      "label": "B",
+      "title": "Chmax",
+      "url": "https://atcoder.jp/contests/arc171/tasks/arc171_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc171_b.cpp"
+      }
+    },
+    {
+      "id": "arc171_c",
+      "label": "C",
+      "title": "Swap on Tree",
+      "url": "https://atcoder.jp/contests/arc171/tasks/arc171_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc171_c.cpp"
+      }
+    },
+    {
+      "id": "arc171_d",
+      "label": "D",
+      "title": "Rolling Hash",
+      "url": "https://atcoder.jp/contests/arc171/tasks/arc171_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc171_d.cpp"
+      }
+    },
+    {
+      "id": "arc171_e",
+      "label": "E",
+      "title": "Rookhopper's Tour",
+      "url": "https://atcoder.jp/contests/arc171/tasks/arc171_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc171_e.cpp"
+      }
+    },
+    {
+      "id": "arc171_f",
+      "label": "F",
+      "title": "Both Reversible",
+      "url": "https://atcoder.jp/contests/arc171/tasks/arc171_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc171_f.cpp"
+      }
+    }
+  ]
+}
