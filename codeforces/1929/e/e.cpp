@@ -174,16 +174,58 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  LL(n); VL(a, n);
-  rep(i, n-1) {
-    LL(u, v); --u; --v;
 
+vl dp(1 << 20, 0), ok(1 << 20, 0);
+void solve() {
+  LL(n);
+  map<LP, ll> mp;
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    LL(u, v); --u; --v;
+    G.add_edge(u, v);
+    mp[{u, v}] = i;
+    mp[{v, u}] = i;
   }
+
+  vl es(n - 1);
+
+  LL(k);
+  rep(i, k) {
+    LL(a, b); --a; --b;
+    vl path;
+    function<void(ll, ll)> dfs = [&](ll v, ll p) {
+      path.pb(v);
+      if (path.back() == b) return;
+      fore(to, G[v]) {
+        if (to == p) continue;
+        dfs(to, v);
+      }
+      if (path.back() != b) path.pop_back();
+    };
+    dfs(a, -1);
+    rep(j, path.size() - 1) {
+      es[mp[{path[j], path[j + 1]}]] |= 1 << i;
+    }
+  }
+
+  // debug(es);
+  set<ll> ok;
+  fore(i, es) {
+    if (i > 0) ok.insert(i);
+  }
+
+  rep(i, 1 << k) dp[i] = LINF;
+  dp[0] = 0;
+  rep(S, 1 << k) {
+    fore(i, ok) {
+      chmin(dp[S | i], dp[S] + 1);
+    }
+  }
+  OUT(dp[(1 << k) - 1]);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

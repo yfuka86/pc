@@ -176,14 +176,11 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n); VL(a, n);
-  rep(i, n-1) {
-    LL(u, v); --u; --v;
-
-  }
+  OUT(*max_element(all(a)) - *min_element(all(a)));
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

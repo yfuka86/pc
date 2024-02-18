@@ -175,15 +175,28 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(a, n);
-  rep(i, n-1) {
-    LL(u, v); --u; --v;
+  LL(k, x, a);
 
+  vl b(x + 1); b[0] = 1;
+
+  ll sum = 1;
+  rep(i, 1, x + 1) {
+    ll nx = ceil(sum + 1, k - 1);
+    b[i] = nx;
+    sum += nx;
+    if (sum > a) OUTRET("NO");
+  }
+  // debug(b);
+
+  if (sum <= a) {
+    OUT("YES");
+  } else {
+    OUT("NO");
   }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

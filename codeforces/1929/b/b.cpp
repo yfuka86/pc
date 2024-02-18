@@ -175,15 +175,18 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n); VL(a, n);
-  rep(i, n-1) {
-    LL(u, v); --u; --v;
-
+  LL(n, k);
+  if (k <= n * 4 - 4) {
+    OUTRET((k + 1) / 2);
+  } else if (k == n * 4 - 3) {
+    OUTRET(n * 2 - 1);
+  } else {
+    OUTRET(n * 2);
   }
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

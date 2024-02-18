@@ -174,16 +174,68 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  LL(n); VL(a, n);
-  rep(i, n-1) {
-    LL(u, v); --u; --v;
 
+vl dp(1 << 4, 0), dp2(1 << 4, 0);
+void solve() {
+  LL(n);
+  map<LP, ll> mp;
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    LL(u, v); --u; --v;
+    G.add_edge(u, v);
+    mp[{u, v}] = i;
+    mp[{v, u}] = i;
   }
+
+  vl es(n - 1);
+
+  LL(k);
+  rep(i, k) {
+    LL(a, b); --a; --b;
+    vl path;
+    function<void(ll, ll)> dfs = [&](ll v, ll p) {
+      path.pb(v);
+      if (path.back() == b) return;
+      fore(to, G[v]) {
+        if (to == p) continue;
+        dfs(to, v);
+      }
+      if (path.back() != b) path.pop_back();
+    };
+    dfs(a, -1);
+    rep(j, path.size() - 1) {
+      es[mp[{path[j], path[j + 1]}]] |= 1 << i;
+    }
+  }
+  rep(S, 1 << k) dp[S] = dp2[S] = 0;
+  rep(i, n - 1) dp[es[i]] = 1;
+  rep(b, k) rep(S, 1 << k) if (S >> b & 1) {
+    dp[S] += dp[S ^ 1 << b];
+  }
+
+  ll ans = 0;
+  dp2[0] = 1;
+  debug(dp);
+  while (!dp2[(1 << k) - 1]) {
+    ans++;
+    rep(kk, k) rep(i, 1 << k) if (i >> kk & 1) {
+      dp2[i] += dp2[i ^ 1 << kk];
+    }
+    debug(dp2);
+    rep(i, 1 << k) dp2[i] *= dp[i];
+    debug(dp2);
+    rep(kk, k) rep(i, 1 << k) if (i >> kk & 1) {
+      dp2[i] -= dp2[i ^ 1 << kk];
+    }
+    rep(i, 1 << k) dp2[i] = dp2[i] != 0;
+    debug(dp2);
+    OUT(" ");
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }

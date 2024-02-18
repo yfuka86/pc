@@ -32,3 +32,10 @@ namespace COM {
 ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
 ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
 //------------------------------------------------------------------------------
+
+// メモリ軽量comb
+auto comb = [&](int n, int k) -> mint {
+  mint p = 1, q = 1;
+  rep(i, k) p *= n - i, q *= k - i;
+  return p / q;
+};

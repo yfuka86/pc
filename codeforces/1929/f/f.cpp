@@ -174,16 +174,89 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-void solve() {
-  LL(n); VL(a, n);
-  rep(i, n-1) {
-    LL(u, v); --u; --v;
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+// namespace COM {
+//   vector<mint> fact, factinv, inv; int cur = 2;
+//   struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
+//   void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+//   void upd(int n) { assert(n < 1e8); while (cur <= n) incr(); }
+//   mint fac(int n) { assert(0 <= n); upd(n); return fact[n]; }
+//   mint ifac(int n) { assert(0 <= n); upd(n); return factinv[n]; }
+//   mint combp(int n, int k) { upd(n); if (n < 0 || k < 0 || n < k) return 0; return fact[n] * factinv[n - k]; }
+//   mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+// }; using COM::fac, COM::ifac, COM::combp, COM::comb;
+// //------------------------------------------------------------------------------
+// ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+// ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+// //------------------------------------------------------------------------------
 
+void solve() {
+  LL(n, c);
+  vl val(n, -1);
+
+  vlp tree(n);
+  rep(i, n) {
+    LL(l, r, v);
+    if (l != -1) --l;
+    if (r != -1) --r;
+    tree[i] = {l,r};
+    val[i] = v;
   }
+
+  vl tp;
+
+  function<void(ll)> dfs = [&](ll v) {
+    if (tree[v].fi != -1) dfs(tree[v].fi);
+    tp.pb(v);
+    if (tree[v].se != -1) dfs(tree[v].se);
+  };
+  dfs(0);
+
+  auto comb = [&](int n, int k) -> mint {
+    mint p = 1, q = 1;
+    rep(i, k) p *= n - i, q *= k - i;
+    return p / q;
+  };
+
+  ll cur = 1, free = 0;
+  mint ans = 1;
+  fore(v, tp) {
+    if (val[v] != -1) {
+      // debug(free, val[v], cur);
+      ans *= comb(free + val[v] - cur, free);
+      free = 0;
+      cur = val[v];
+    } else {
+      free++;
+    }
+  }
+  if (free > 0) {
+    ans *= comb(free + c - cur, free);
+  }
+
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t = 1; //cin >> t;
+  int t; cin >> t;
   while (t--) if (1) solve(); else compare();
 }
