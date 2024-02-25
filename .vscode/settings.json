@@ -126,8 +126,8 @@
   "clang.cxxflags": [ "-std=c++17"],
   "code-runner.executorMap": {
     "javascript": "node",
-    "cpp": "cd $dir && g++ -std=c++20 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
+    // "cpp": "cd $dir && g++ -std=c++20 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
     // "cpp": "cd $dir && /opt/homebrew/bin/g++-13 -std=c++20 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S",
-    // "cpp": "cd $dir && /opt/homebrew/bin/g++-13 -std=c++20 -Wall -Wextra -ld_classic -ftrapv -fno-omit-frame-pointer -g2 -D_GLIBCXX_DEBUG -O0 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S --print-memory",
+    "cpp": "cd $dir && /opt/homebrew/bin/g++-13 -std=c++20 -Wall -Wextra -ld_classic -ftrapv -fno-omit-frame-pointer -g2 -D_GLIBCXX_DEBUG -O0 $fileName -I ~/work/pc/ac-library && [ -d test ] && oj test -D -S --print-memory",
   }
 }
