@@ -1,0 +1,8 @@
+time = -1;
+noStroke();
+fill("white");
+rect(0, 0, 100, 100);
+noFill();
+stroke("green");
+line(0, 0, 100, 100);
+noStroke();

@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc343",
+    "title": "AtCoder Beginner Contest 343",
+    "url": "https://atcoder.jp/contests/abc343"
+  },
+  "tasks": [
+    {
+      "id": "abc343_a",
+      "label": "A",
+      "title": "Wrong Answer",
+      "url": "https://atcoder.jp/contests/abc343/tasks/abc343_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc343_a.cpp"
+      }
+    },
+    {
+      "id": "abc343_b",
+      "label": "B",
+      "title": "Adjacency Matrix",
+      "url": "https://atcoder.jp/contests/abc343/tasks/abc343_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc343_b.cpp"
+      }
+    },
+    {
+      "id": "abc343_c",
+      "label": "C",
+      "title": "343",
+      "url": "https://atcoder.jp/contests/abc343/tasks/abc343_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc343_c.cpp"
+      }
+    },
+    {
+      "id": "abc343_d",
+      "label": "D",
+      "title": "Diversity of Scores",
+      "url": "https://atcoder.jp/contests/abc343/tasks/abc343_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc343_d.cpp"
+      }
+    },
+    {
+      "id": "abc343_e",
+      "label": "E",
+      "title": "7x7x7",
+      "url": "https://atcoder.jp/contests/abc343/tasks/abc343_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc343_e.cpp"
+      }
+    },
+    {
+      "id": "abc343_f",
+      "label": "F",
+      "title": "Second Largest Query",
+      "url": "https://atcoder.jp/contests/abc343/tasks/abc343_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc343_f.cpp"
+      }
+    },
+    {
+      "id": "abc343_g",
+      "label": "G",
+      "title": "Compress Strings",
+      "url": "https://atcoder.jp/contests/abc343/tasks/abc343_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc343_g.cpp"
+      }
+    }
+  ]
+}
