@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc173",
+    "title": "AtCoder Regular Contest 173",
+    "url": "https://atcoder.jp/contests/arc173"
+  },
+  "tasks": [
+    {
+      "id": "arc173_a",
+      "label": "A",
+      "title": "Neq Number",
+      "url": "https://atcoder.jp/contests/arc173/tasks/arc173_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc173_a.cpp"
+      }
+    },
+    {
+      "id": "arc173_b",
+      "label": "B",
+      "title": "Make Many Triangles",
+      "url": "https://atcoder.jp/contests/arc173/tasks/arc173_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc173_b.cpp"
+      }
+    },
+    {
+      "id": "arc173_c",
+      "label": "C",
+      "title": "Not Median",
+      "url": "https://atcoder.jp/contests/arc173/tasks/arc173_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc173_c.cpp"
+      }
+    },
+    {
+      "id": "arc173_d",
+      "label": "D",
+      "title": "Bracket Walk",
+      "url": "https://atcoder.jp/contests/arc173/tasks/arc173_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc173_d.cpp"
+      }
+    },
+    {
+      "id": "arc173_e",
+      "label": "E",
+      "title": "Rearrange and Adjacent XOR",
+      "url": "https://atcoder.jp/contests/arc173/tasks/arc173_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc173_e.cpp"
+      }
+    },
+    {
+      "id": "arc173_f",
+      "label": "F",
+      "title": "Select and Split",
+      "url": "https://atcoder.jp/contests/arc173/tasks/arc173_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc173_f.cpp"
+      }
+    }
+  ]
+}
