@@ -1,7 +1,7 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; using i128 = __int128_t;
+using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; // using i128 = __int128_t;
 using P = pair<int, int>; using LP = pair<ll, ll>; using LT = tuple<ll, ll, ll>; using LT4 =  tuple<ll, ll, ll, ll>;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
@@ -91,7 +91,7 @@ void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...t
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
 #define YES(ok) { if (ok) { OUT("YES"); } else OUT("NO"); }
 #define Yes(ok) { if (ok) { OUT("Yes"); } else OUT("No"); }
-ostream &operator<<(ostream &os, const i128 n) { os << (ll)n; return os; } // long longの範囲までしか出力しない
+// ostream &operator<<(ostream &os, const i128 n) { os << (ll)n; return os; } // long longの範囲までしか出力しない
 template<class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(Head &&head, Tail &&...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
@@ -108,7 +108,7 @@ template<typename A, typename R> void IANSWER(vector<A> a, R &r, string str = "!
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
 pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
-ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+// ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
 vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
 vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
@@ -174,22 +174,54 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+const ll mod = 998244353;
+//------------------------------------------------------------------------------
+template< int mod > struct ModInt {
+  int x; ModInt() : x(0) {}
+  ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+  ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }  ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+  ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }  ModInt &operator/=(const ModInt &p) { *this *= p.inv(); return *this; }
+  ModInt operator-() const { return ModInt(-x); }
+  ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }  ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+  ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }  ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+  bool operator==(const ModInt &p) const { return x == p.x; }  bool operator!=(const ModInt &p) const { return x != p.x; }
+  ModInt inv() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+  ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+  friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+  friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+  static constexpr int get_mod() { return mod; }
+};
+using mint = ModInt< mod >; using vmi = vector<mint>; using vvmi = vector<vmi>; using v3mi = vector<vvmi>; using v4mi = vector<v3mi>;
+//------------------------------------------------------------------------------
+namespace COM {
+  vector<mint> fact, factinv, inv; int cur = 2;
+  struct init { init() { for(int i = 0; i < 2; ++i) { fact.push_back(1); factinv.push_back(1); inv.push_back(1); } } } init;
+  void incr() { fact.push_back(fact.back() * cur); inv.push_back(-inv[mod % cur] * (mod / cur)); factinv.push_back(factinv.back() * inv[cur]); cur++; }
+  void upd(int n) { assert(n < 1e8); while (cur <= n) incr(); }
+  mint fac(int n) { assert(0 <= n); upd(n); return fact[n]; }
+  mint ifac(int n) { assert(0 <= n); upd(n); return factinv[n]; }
+  mint combp(int n, int k) { upd(n); if (n < 0 || k < 0 || n < k) return 0; return fact[n] * factinv[n - k]; }
+  mint comb(int n, int k) { mint p = combp(n, k); if (p == 0) return 0; else return p * factinv[k]; }
+}; using COM::fac, COM::ifac, COM::combp, COM::comb;
+//------------------------------------------------------------------------------
+ll mod_pow(ll x, ll n, ll p = mod) { ll ret = 1; x %= p; while(n > 0) { if(n & 1) (ret *= x) %= p; (x *= x) %= p; n >>= 1; } return ret; }
+ll mod_inv(ll x, ll m) { ll a = x, b = m, u = 1, v = 0, t; while(b) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } if (u < 0) u += m; return u % m; }
+//------------------------------------------------------------------------------
+
+// メモリ軽量comb
+auto comb = [&](int n, int k) -> mint {
+  mint p = 1, q = 1;
+  rep(i, k) p *= n - i, q *= k - i;
+  return p / q;
+};
+
+
 void solve() {
-  LL(n);
-  VL(p, n);
+  LL(n, q);
+  VL(a, n); VL(b, n);
+  rep(i, q) {
+    LL(l, r); --l;
 
-  vl ans(n);
-
-  ll len = 3;
-  while (1) {
-    rep(i, n - len + 1) {
-      vl t;
-      rep(j, len) {
-        t.pb(p[i + j]);
-      }
-      sort(all(t));
-      ll med = t[len / 2];
-    }
   }
 }
 
