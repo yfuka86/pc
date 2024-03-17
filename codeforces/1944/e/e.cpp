@@ -1,7 +1,7 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; // using i128 = __int128_t;
+using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; //using i128 = __int128_t;
 using P = pair<int, int>; using LP = pair<ll, ll>; using LT = tuple<ll, ll, ll>; using LT4 =  tuple<ll, ll, ll, ll>;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
@@ -174,73 +174,40 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
+pair<ll, LP> diameter(Graph<ll> &G) {
+  LP deepest = mp(0, 0); function<void(ll, ll, ll)> dfs = [&](ll v, ll p, ll d) { chmax(deepest, mp(d, v)); for (auto to: G[v]) if (to != p) dfs(to, v, d + to.cost); };
+  dfs(0, -1, 0); ll s = deepest.second; deepest = mp(0, 0); dfs(s, -1, 0);
+  return mp(deepest.first, mp(s, deepest.second)); }
+
+
 void solve() {
-  LL(n, k);
+  LL(n);
+  Graph<ll> G(n);
+  rep(i, n - 1) {
+    LL(u, v); --u; --v;
+    G.add_edge(u, v);
+  }
+  auto [d, ds] = diameter(G);
 
-  function<vl(ll, ll)> zigu = [&](ll from, ll to) {
-    deque<ll> que1, que2;
-    rep(i, to - from) que1.push_back(i);
-    rep(i, to - from) {
-      if (i & 1) {
-        que2.push_back(que1.front())
-      }
+  vl path;
+  function<void(ll, ll)> dfs = [&](ll v, ll p) {
+    path.pb(v);
+    if (path.back() == ds.se) return;
+    fore(to, G[v]) {
+      if (to == p) continue;
+      dfs(to, v);
     }
-    vl ans;
-    rep(i, n) {
-      ans.pb(que.front() + from);
-      que.pop_front();
-    }
-    return ans;
+    if (path.back() == ds.se) return;
+    path.pop_back();
   };
+  dfs(ds.fi, -1);
 
-  rep(num, 2, n + 1) {
-    ll ma = ceil(n, num), mi = n / num;
-    ll mac = n - mi * num, mic = num - mac;
-    // debug(num, ma, mi, mac, mic);
+  ll center = path[path.size() / 2];
+  ll cnt = path.size() / 2;
 
-    vl cand(n); iota(all(cand), 0); reverse(all(cand));
-    vl b;
-
-    while (1) {
-      if (mic) {
-        mic--;
-        vl t;
-        rep(_, mi) { t.pb(cand.back()); cand.pop_back(); }
-        reverse(all(t));
-        b.insert(b.end(), t.begin(), t.end());
-      }
-      if (mac) {
-        mac--;
-        vl t;
-        rep(_, ma) { t.pb(cand.back()); cand.pop_back(); }
-        reverse(all(t));
-        b.insert(b.end(), t.begin(), t.end());
-      }
-      if (mic == 0 && mac == 0) break;
-    }
-
-    // debug(b);
-
-    ll diff = LINF;
-    vl sums;
-    rep(i, n) sums.pb(b[i] + i);
-    vl usums = sums;
-    uniq(usums);
-    rep(i, usums.size() - 1) chmin(diff, usums[i + 1] - usums[i]);
-
-    if (diff > k && k >= (ma - 1) * 2) {
-      OUTARRAY(b, 1);
-      OUT(num);
-      map<ll, ll> idx; ll cur = 0;
-      rep(i, usums.size()) idx[usums[i]] = cur++;
-      vl c;
-      rep(i, sums.size()) c.pb(idx[sums[i]]);
-      OUTARRAY(c, 1);
-      return;
-    }
-
-
-
+  OUT(cnt + 1);
+  rep(i, cnt + 1) {
+    OUT(center + 1, i);
   }
 }
 

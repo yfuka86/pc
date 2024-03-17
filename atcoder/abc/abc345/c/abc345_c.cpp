@@ -1,7 +1,7 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; // using i128 = __int128_t;
+using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; using i128 = __int128_t;
 using P = pair<int, int>; using LP = pair<ll, ll>; using LT = tuple<ll, ll, ll>; using LT4 =  tuple<ll, ll, ll, ll>;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
@@ -91,7 +91,7 @@ void IN() {} template <class Head, class... Tail> void IN(Head &head, Tail &...t
 #define OUTRET(...) { { OUT(__VA_ARGS__); return; } }
 #define YES(ok) { if (ok) { OUT("YES"); } else OUT("NO"); }
 #define Yes(ok) { if (ok) { OUT("Yes"); } else OUT("No"); }
-// ostream &operator<<(ostream &os, const i128 n) { os << (ll)n; return os; } // long longの範囲までしか出力しない
+ostream &operator<<(ostream &os, const i128 n) { os << (ll)n; return os; } // long longの範囲までしか出力しない
 template<class T, class S> ostream &operator<<(ostream &os, const pair<T, S> &p) { return os << p.first << " " << p.second; }
 void OUT() { cout << '\n'; } template <typename Head, typename... Tail> void OUT(Head &&head, Tail &&...tail) { cout << head; if(sizeof...(tail)) cout << ' '; OUT(tail...); }
 template<class T, class S = ll> void OUTARRAY(vector<T>& v, S offset = S(0), string sep = " ") { rep(i, v.size()) { if (i > 0) cout << sep; if (offset != T(0)) { T t; t = v[i] + offset; cout << t; } else cout << v[i]; } cout << "\n"; }
@@ -108,7 +108,7 @@ template<typename A, typename R> void IANSWER(vector<A> a, R &r, string str = "!
 int ceil_pow2(ll n) { int x = 0; while ((1ULL << x) < (ull)(n)) x++; return x; }
 int floor_pow2(ll n) { int x = 0; while ((1ULL << (x + 1)) <= (ull)(n)) x++; return x; }
 pair<ll, ll> sqrtll(ll n) { ll x = round(sqrt(n)); if (x * x > n) --x; return {x, x + (x * x != n)}; }
-// ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
+ll POW(__uint128_t x, int n) { assert(n >= 0); ll res = 1; for(; n; n >>= 1, x *= x) if(n & 1) res *= x; return res; }
 vl primes(const ll n) { vb isp(n + 1, true); for(ll i = 2; i * i <= n; i++) { if ((i > 2 && i % 2 == 0) || !isp[i]) continue; for(ll j = i * i; j <= n; j += i) isp[j] = 0; } vl ret; for(ll i = 2; i <= n; i++) if (isp[i]) ret.emplace_back(i); return ret; }
 vector<pair<ll, ll>> factorize(ll n) { vector<pair<ll, ll>> res; for (ll a = 2; a * a <= n; ++a) { if (n % a != 0) continue; ll ex = 0; while (n % a == 0) { ++ex; n /= a; } res.emplace_back(a, ex); } if (n != 1) res.emplace_back(n, 1); return res; }
 vl divisor(ll n) { vl ret; for (ll i = 1; i * i <= n; i++) { if (n % i == 0) { ret.pb(i); if (i * i != n) ret.pb(n / i); } } sort(all(ret)); return ret; }
@@ -175,77 +175,28 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 }
 
 void solve() {
-  LL(n, k);
+  STR(s);
+  ll n = s.size();
 
-  function<vl(ll, ll)> zigu = [&](ll from, ll to) {
-    deque<ll> que1, que2;
-    rep(i, to - from) que1.push_back(i);
-    rep(i, to - from) {
-      if (i & 1) {
-        que2.push_back(que1.front())
-      }
-    }
-    vl ans;
-    rep(i, n) {
-      ans.pb(que.front() + from);
-      que.pop_front();
-    }
-    return ans;
-  };
-
-  rep(num, 2, n + 1) {
-    ll ma = ceil(n, num), mi = n / num;
-    ll mac = n - mi * num, mic = num - mac;
-    // debug(num, ma, mi, mac, mic);
-
-    vl cand(n); iota(all(cand), 0); reverse(all(cand));
-    vl b;
-
-    while (1) {
-      if (mic) {
-        mic--;
-        vl t;
-        rep(_, mi) { t.pb(cand.back()); cand.pop_back(); }
-        reverse(all(t));
-        b.insert(b.end(), t.begin(), t.end());
-      }
-      if (mac) {
-        mac--;
-        vl t;
-        rep(_, ma) { t.pb(cand.back()); cand.pop_back(); }
-        reverse(all(t));
-        b.insert(b.end(), t.begin(), t.end());
-      }
-      if (mic == 0 && mac == 0) break;
-    }
-
-    // debug(b);
-
-    ll diff = LINF;
-    vl sums;
-    rep(i, n) sums.pb(b[i] + i);
-    vl usums = sums;
-    uniq(usums);
-    rep(i, usums.size() - 1) chmin(diff, usums[i + 1] - usums[i]);
-
-    if (diff > k && k >= (ma - 1) * 2) {
-      OUTARRAY(b, 1);
-      OUT(num);
-      map<ll, ll> idx; ll cur = 0;
-      rep(i, usums.size()) idx[usums[i]] = cur++;
-      vl c;
-      rep(i, sums.size()) c.pb(idx[sums[i]]);
-      OUTARRAY(c, 1);
-      return;
-    }
-
-
-
+  map<ll, ll> mp;
+  rep(i, n) {
+    mp[s[i] - 'a']++;
   }
+
+  ll ans = n * (n - 1) / 2;
+  bool dup = false;
+  fore(_, cnt, mp) {
+    if (cnt >= 2 && !dup) {
+      dup = true;
+      ans++;
+    }
+    ans -= cnt * (cnt - 1) / 2;
+  }
+  OUT(ans);
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
-  int t; cin >> t;
+  int t = 1; //cin >> t;
   while (t--) if (1) solve(); else compare();
 }

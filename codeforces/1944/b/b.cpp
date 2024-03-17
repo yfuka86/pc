@@ -1,7 +1,7 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; // using i128 = __int128_t;
+using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; //using i128 = __int128_t;
 using P = pair<int, int>; using LP = pair<ll, ll>; using LT = tuple<ll, ll, ll>; using LT4 =  tuple<ll, ll, ll, ll>;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
@@ -176,72 +176,58 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
 
 void solve() {
   LL(n, k);
+  VL(a, n * 2);
 
-  function<vl(ll, ll)> zigu = [&](ll from, ll to) {
-    deque<ll> que1, que2;
-    rep(i, to - from) que1.push_back(i);
-    rep(i, to - from) {
-      if (i & 1) {
-        que2.push_back(que1.front())
-      }
-    }
-    vl ans;
-    rep(i, n) {
-      ans.pb(que.front() + from);
-      que.pop_front();
-    }
-    return ans;
-  };
-
-  rep(num, 2, n + 1) {
-    ll ma = ceil(n, num), mi = n / num;
-    ll mac = n - mi * num, mic = num - mac;
-    // debug(num, ma, mi, mac, mic);
-
-    vl cand(n); iota(all(cand), 0); reverse(all(cand));
-    vl b;
-
-    while (1) {
-      if (mic) {
-        mic--;
-        vl t;
-        rep(_, mi) { t.pb(cand.back()); cand.pop_back(); }
-        reverse(all(t));
-        b.insert(b.end(), t.begin(), t.end());
-      }
-      if (mac) {
-        mac--;
-        vl t;
-        rep(_, ma) { t.pb(cand.back()); cand.pop_back(); }
-        reverse(all(t));
-        b.insert(b.end(), t.begin(), t.end());
-      }
-      if (mic == 0 && mac == 0) break;
-    }
-
-    // debug(b);
-
-    ll diff = LINF;
-    vl sums;
-    rep(i, n) sums.pb(b[i] + i);
-    vl usums = sums;
-    uniq(usums);
-    rep(i, usums.size() - 1) chmin(diff, usums[i + 1] - usums[i]);
-
-    if (diff > k && k >= (ma - 1) * 2) {
-      OUTARRAY(b, 1);
-      OUT(num);
-      map<ll, ll> idx; ll cur = 0;
-      rep(i, usums.size()) idx[usums[i]] = cur++;
-      vl c;
-      rep(i, sums.size()) c.pb(idx[sums[i]]);
-      OUTARRAY(c, 1);
-      return;
-    }
-
-
-
+  map<ll, vl> mpl, mpr;
+  rep(i, n) {
+    mpl[a[i]].pb(i);
+    mpr[a[i + n]].pb(i + n);
   }
+  // debug(mpl, mpr);
+
+  vl ansl, ansr;
+
+  ll kk = k * 2;
+  fore(val, v, mpl) {
+    if (v.size() == 2 && kk >= 2) {
+      kk -= 2;
+      ansl.pb(v[0]); ansl.pb(v[1]);
+    }
+  }
+
+  vl need;
+  fore(val, v, mpl) {
+    if (v.size() == 1 && kk > 0) {
+      kk--;
+      ansl.pb(v[0]); need.pb(val);
+    }
+  }
+
+  ll kkk = k * 2;
+  fore(i, need) {
+    ansr.pb(mpr[i][0]);
+    kkk--;
+  }
+  fore(val, v, mpr) {
+    if (v.size() == 2 && kkk >= 2) {
+      kkk -= 2;
+      ansr.pb(v[0]); ansr.pb(v[1]);
+    }
+  }
+
+  sort(all(ansl));
+  sort(all(ansr));
+  vl ansll, ansrr;
+  fore(i, ansl) {
+    ansll.pb(a[i]);
+  }
+  fore(i, ansr) {
+    ansrr.pb(a[i]);
+  }
+  // vl ps;
+  // debug(ansl, ansr);
+  OUTARRAY(ansll);
+  OUTARRAY(ansrr);
 }
 
 signed main() {

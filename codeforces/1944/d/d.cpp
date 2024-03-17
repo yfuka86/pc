@@ -1,7 +1,7 @@
 #pragma GCC optimize("Ofast")
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; // using i128 = __int128_t;
+using ll = long long; using uint = unsigned int; using ull = unsigned long long; using ld = long double; //using i128 = __int128_t;
 using P = pair<int, int>; using LP = pair<ll, ll>; using LT = tuple<ll, ll, ll>; using LT4 =  tuple<ll, ll, ll, ll>;
 typedef vector<int> vi; typedef vector<vi> vvi; typedef vector<ll> vl; typedef vector<vl> vvl; typedef vector<vvl> v3l; typedef vector<v3l> v4l; typedef vector<v4l> v5l;
 typedef vector<LP> vlp; typedef vector<vlp> vvlp; typedef vector<LT> vlt; typedef vector<vlt> vvlt; typedef vector<LT4> vlt4; typedef vector<string> vs; typedef vector<vs> vvs;
@@ -155,97 +155,166 @@ template< typename T = ll > struct Graph {
   inline vector< Edge< T > > &operator[](const int &k) { return g[k]; } inline const vector< Edge< T > > &operator[](const int &k) const { return g[k]; } };
 const string drul = "DRUL"; const vl dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
 
-ll solve(ll n, vl a) {
-  ll ans = n - a[0]; return ans;
+
+vl manacher(const string &_s, bool even = false) {
+  string s = "";
+  if (even) { for(int i = 0; i < (int)_s.size(); ++i) { s.pb('$'); s.pb(_s[i]); } s.pb('$'); } else s = _s;
+  ll n = s.size();
+  vl radius(n); int i = 0, j = 0;
+  while(i < n) {
+    while(i - j >= 0 && i + j < n && s[i - j] == s[i + j]) ++j;
+    radius[i] = j;
+    int k = 1;
+    while(i - k >= 0 && i + k < n && k + radius[i - k] < j) {
+      radius[i + k] = radius[i - k]; ++k;
+    }
+    i += k; j -= k;
+  }
+  if (even) { radius.erase(radius.begin()); radius.pop_back(); for(int i = 0; i < (int)radius.size(); ++i) --radius[i]; }
+  return radius;
 }
 
-ll naive(ll n, vl a) {
-  ll ans = n + a[0]; return ans;
+vl anslist(200005), anslistev(200005);
+
+vl solve(ll n, ll q, string s, vlp query) {
+  vl rad = manacher(s, true);
+  // debug(rad);
+
+  vv(ll, fr, n + 1, 26);
+  rep(i, n) {
+    fr[i + 1] = fr[i];
+    fr[i + 1][s[i] - 'a']++;
+  }
+
+  vl repeat(n);
+  {
+    string cur = "";
+    ll l = 0;
+    for(int i = 0; 1; i += 2) {
+      string ss = s.substr(i, 2);
+      if (ss != cur) {
+        cur = ss;
+        while (l != i) {
+          repeat[l] = i;
+          l += 2;
+        }
+      }
+      if (i >= n - 1) {
+        while (l != i) {
+          repeat[l] = i;
+          l += 2;
+        }
+        break;
+      }
+    }
+  }
+
+  {
+    string cur = "";
+    ll l = 1;
+    for(int i = 1; 1; i += 2) {
+      string ss = s.substr(i, 2);
+      if (ss != cur) {
+        cur = ss;
+        while (l != i) {
+          repeat[l] = i;
+          l += 2;
+        }
+      }
+      if (i >= n - 1) {
+        while (l != i) {
+          repeat[l] = i;
+          l += 2;
+        }
+        break;
+      }
+    }
+  }
+  // debug(repeat);
+
+  vl ret;
+  rep(qi, q) {
+    auto [l, r] = query[qi];
+    ll len = r - l;
+    ll center = r + l - 1;
+
+    ll multi = 0;
+    vl t = fr[r];
+    rep(i, 26) t[i] -= fr[l][i];
+    rep(i, 26) if (t[i]) multi++;
+
+    if (multi <= 1) {
+      ret.pb(0);
+    } else if (repeat[l] - l >= len || (repeat[l] - l + 1 == len && s[l] == s[r - 1])) {
+      // 繰り返し文字列
+      ret.pb(anslistev[len]);
+    } else {
+      if (rad[center] >= len) {
+        ret.pb(anslist[len - 1]);
+      } else {
+        ret.pb(anslist[len]);
+      }
+    }
+  }
+  return ret;
+}
+
+vl naive(ll n, ll q, string s, vlp query) {
+  vl ans;
+
+  rep(qi, q) {
+    auto [l, r] = query[qi];
+
+    ll cur = 0;
+    rep(len, 2, r - l + 1) {
+      bool notp = false;
+      rep(off, r - l - len + 1) {
+        if (!is_palindrome(s.substr(l + off, len))) notp = true;
+      }
+      if (notp) cur += len;
+    }
+    ans.pb(cur);
+  }
+  return ans;
 }
 
 void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   while (++c) { if (c % loop == 0) cout << "reached " << c / loop << "loop" <<  "\n", cout.flush();
-    ll n = 10;
-    vl a = rg.vecl(n, 1, 1e2);
-    auto so = solve(n, a); auto na = naive(n, a);
+    ll n = 10, q = 10;
+    string s = rg.straz(n, 0, 5);
+    vlp query(q);
+    rep(i, q) {
+      ll left = rg.l(0, n);
+      ll right = rg.l(left + 1, n + 1);
+      query[i] = {left, right};
+    }
+    auto so = solve(n, q, s, query); auto na = naive(n, q, s, query);
     if (!check || na != so) { cout << c << "times tried" << "\n";
-      debug(n, a); debug(so); debug(na);
+      debug(n, q, s, query); debug(so); debug(na);
     if (check || (!check && c > loop)) break; }
   }
 }
 
 void solve() {
-  LL(n, k);
-
-  function<vl(ll, ll)> zigu = [&](ll from, ll to) {
-    deque<ll> que1, que2;
-    rep(i, to - from) que1.push_back(i);
-    rep(i, to - from) {
-      if (i & 1) {
-        que2.push_back(que1.front())
-      }
-    }
-    vl ans;
-    rep(i, n) {
-      ans.pb(que.front() + from);
-      que.pop_front();
-    }
-    return ans;
-  };
-
-  rep(num, 2, n + 1) {
-    ll ma = ceil(n, num), mi = n / num;
-    ll mac = n - mi * num, mic = num - mac;
-    // debug(num, ma, mi, mac, mic);
-
-    vl cand(n); iota(all(cand), 0); reverse(all(cand));
-    vl b;
-
-    while (1) {
-      if (mic) {
-        mic--;
-        vl t;
-        rep(_, mi) { t.pb(cand.back()); cand.pop_back(); }
-        reverse(all(t));
-        b.insert(b.end(), t.begin(), t.end());
-      }
-      if (mac) {
-        mac--;
-        vl t;
-        rep(_, ma) { t.pb(cand.back()); cand.pop_back(); }
-        reverse(all(t));
-        b.insert(b.end(), t.begin(), t.end());
-      }
-      if (mic == 0 && mac == 0) break;
-    }
-
-    // debug(b);
-
-    ll diff = LINF;
-    vl sums;
-    rep(i, n) sums.pb(b[i] + i);
-    vl usums = sums;
-    uniq(usums);
-    rep(i, usums.size() - 1) chmin(diff, usums[i + 1] - usums[i]);
-
-    if (diff > k && k >= (ma - 1) * 2) {
-      OUTARRAY(b, 1);
-      OUT(num);
-      map<ll, ll> idx; ll cur = 0;
-      rep(i, usums.size()) idx[usums[i]] = cur++;
-      vl c;
-      rep(i, sums.size()) c.pb(idx[sums[i]]);
-      OUTARRAY(c, 1);
-      return;
-    }
-
-
-
+  LL(n, q);
+  STR(s);
+  vlp query;
+  rep(i, q) {
+    LL(l, r); --l;
+    query.pb({l, r});
   }
+  vl ans = solve(n, q, s, query);
+  OUTARRAY(ans, 0, "\n");
 }
 
 signed main() {
   cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
   int t; cin >> t;
+  rep(i, 2, 200005) {
+    anslist[i] = anslist[i - 1];
+    anslistev[i] = anslistev[i - 1];
+    anslist[i] += i;
+    if (!(i & 1)) anslistev[i] += i;
+  }
   while (t--) if (1) solve(); else compare();
 }
