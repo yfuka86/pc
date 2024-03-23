@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc174",
+    "title": "AtCoder Regular Contest 174",
+    "url": "https://atcoder.jp/contests/arc174"
+  },
+  "tasks": [
+    {
+      "id": "arc174_a",
+      "label": "A",
+      "title": "A Multiply",
+      "url": "https://atcoder.jp/contests/arc174/tasks/arc174_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc174_a.cpp"
+      }
+    },
+    {
+      "id": "arc174_b",
+      "label": "B",
+      "title": "Bought Review",
+      "url": "https://atcoder.jp/contests/arc174/tasks/arc174_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc174_b.cpp"
+      }
+    },
+    {
+      "id": "arc174_c",
+      "label": "C",
+      "title": "Catastrophic Roulette",
+      "url": "https://atcoder.jp/contests/arc174/tasks/arc174_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc174_c.cpp"
+      }
+    },
+    {
+      "id": "arc174_d",
+      "label": "D",
+      "title": "Digit vs Square Root",
+      "url": "https://atcoder.jp/contests/arc174/tasks/arc174_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc174_d.cpp"
+      }
+    },
+    {
+      "id": "arc174_e",
+      "label": "E",
+      "title": "Existence Counting",
+      "url": "https://atcoder.jp/contests/arc174/tasks/arc174_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc174_e.cpp"
+      }
+    },
+    {
+      "id": "arc174_f",
+      "label": "F",
+      "title": "Final Stage",
+      "url": "https://atcoder.jp/contests/arc174/tasks/arc174_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc174_f.cpp"
+      }
+    }
+  ]
+}
