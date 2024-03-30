@@ -1,0 +1,75 @@
+{
+  "contest": {
+    "id": "arc175",
+    "title": "AtCoder Regular Contest 175",
+    "url": "https://atcoder.jp/contests/arc175"
+  },
+  "tasks": [
+    {
+      "id": "arc175_a",
+      "label": "A",
+      "title": "Spoon Taking Problem",
+      "url": "https://atcoder.jp/contests/arc175/tasks/arc175_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "arc175_a.cpp"
+      }
+    },
+    {
+      "id": "arc175_b",
+      "label": "B",
+      "title": "Parenthesis Arrangement",
+      "url": "https://atcoder.jp/contests/arc175/tasks/arc175_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "arc175_b.cpp"
+      }
+    },
+    {
+      "id": "arc175_c",
+      "label": "C",
+      "title": "Jumping Through Intervals",
+      "url": "https://atcoder.jp/contests/arc175/tasks/arc175_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "arc175_c.cpp"
+      }
+    },
+    {
+      "id": "arc175_d",
+      "label": "D",
+      "title": "LIS on Tree 2",
+      "url": "https://atcoder.jp/contests/arc175/tasks/arc175_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "arc175_d.cpp"
+      }
+    },
+    {
+      "id": "arc175_e",
+      "label": "E",
+      "title": "Three View Drawing",
+      "url": "https://atcoder.jp/contests/arc175/tasks/arc175_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "arc175_e.cpp"
+      }
+    },
+    {
+      "id": "arc175_f",
+      "label": "F",
+      "title": "Append Same Characters",
+      "url": "https://atcoder.jp/contests/arc175/tasks/arc175_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "arc175_f.cpp"
+      }
+    }
+  ]
+}
