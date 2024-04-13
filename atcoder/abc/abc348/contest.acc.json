@@ -1,0 +1,86 @@
+{
+  "contest": {
+    "id": "abc348",
+    "title": "Toyota Programming Contest 2024#4（AtCoder Beginner Contest 348）",
+    "url": "https://atcoder.jp/contests/abc348"
+  },
+  "tasks": [
+    {
+      "id": "abc348_a",
+      "label": "A",
+      "title": "Penalty Kick",
+      "url": "https://atcoder.jp/contests/abc348/tasks/abc348_a",
+      "directory": {
+        "path": "a",
+        "testdir": "test",
+        "submit": "abc348_a.cpp"
+      }
+    },
+    {
+      "id": "abc348_b",
+      "label": "B",
+      "title": "Farthest Point",
+      "url": "https://atcoder.jp/contests/abc348/tasks/abc348_b",
+      "directory": {
+        "path": "b",
+        "testdir": "test",
+        "submit": "abc348_b.cpp"
+      }
+    },
+    {
+      "id": "abc348_c",
+      "label": "C",
+      "title": "Colorful Beans",
+      "url": "https://atcoder.jp/contests/abc348/tasks/abc348_c",
+      "directory": {
+        "path": "c",
+        "testdir": "test",
+        "submit": "abc348_c.cpp"
+      }
+    },
+    {
+      "id": "abc348_d",
+      "label": "D",
+      "title": "Medicines on Grid",
+      "url": "https://atcoder.jp/contests/abc348/tasks/abc348_d",
+      "directory": {
+        "path": "d",
+        "testdir": "test",
+        "submit": "abc348_d.cpp"
+      }
+    },
+    {
+      "id": "abc348_e",
+      "label": "E",
+      "title": "Minimize Sum of Distances",
+      "url": "https://atcoder.jp/contests/abc348/tasks/abc348_e",
+      "directory": {
+        "path": "e",
+        "testdir": "test",
+        "submit": "abc348_e.cpp"
+      }
+    },
+    {
+      "id": "abc348_f",
+      "label": "F",
+      "title": "Oddly Similar",
+      "url": "https://atcoder.jp/contests/abc348/tasks/abc348_f",
+      "directory": {
+        "path": "f",
+        "testdir": "test",
+        "submit": "abc348_f.cpp"
+      }
+    },
+    {
+      "id": "abc348_g",
+      "label": "G",
+      "title": "Max (Sum - Max)",
+      "url": "https://atcoder.jp/contests/abc348/tasks/abc348_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "abc348_g.cpp"
+      }
+    }
+  ]
+}
