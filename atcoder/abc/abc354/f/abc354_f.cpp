@@ -174,188 +174,49 @@ void compare(bool check = true) { RandGen rg; ll c = 0, loop = 10;
   }
 }
 
-template <class T> std::vector<T> operator+(const std::vector<T> &v1, const std::vector<T> &v2) {
-  std::vector<T> ans = v1;
-  ans.insert(ans.end(), v2.begin(), v2.end());
-  return ans;
+// 典型LIS
+// <= ならupper_bound、< ならlower_boundにする必要がある
+vl get_lis(vl &a) {
+	ll N = a.size(); vl dp(N, LINF), len(N, 0);
+	for (ll i = 0; i < N; ++i) {
+    len[i] = lower_bound(all(dp), a[i]) - dp.begin();
+    *lower_bound(all(dp), a[i]) = a[i];
+  }
+  return len;
 }
 
-struct Oripa {
-  ll unit_price, unit_count, lose_unit, lose_count, bulk_count;
-  ld reward_rate;
-  vd top, second, third;
-};
+void solve() {
+  LL(n);
+  VL(a, n);
+  vl lens = get_lis(a);
+  ll lislen = *max_element(all(lens));
 
-void simulate() {
-  ll n = 10000;
-  ll fixed_budget = -1;
-  // どれだけの割合を引けそうか
-  // ld draw_ratio = 0.7;
-  // Oripa o = {
-  //   .unit_price = 500,
-  //   .unit_count = 50000,
-  //   .lose_unit = 280,
-  //   .lose_count = 45000,
-  //   .bulk_count = 100,
-  //   .reward_rate = 0.99
-  // };
-  // o.top = vd({120,110,70,50,46});
-  // o.second = vd({30,22,22,20,15,13,11,10,10,8,8,8,8,8,8,6,6,6,6,6,6,5,5,5,20,10,10,10,10}) + vd(31,2) + vd(35,2);
+  // debug(lens);
+  vl ok(n, 0);
+  rep(i, n) if (lens[i] == lislen) ok[i] = 1;
+  // debug(ok);
 
-  ld draw_ratio = 0.7;
-  Oripa o = {
-    .unit_price = 500,
-    .unit_count = 15000,
-    .lose_unit = 120,
-    .lose_count = 10000,
-    .bulk_count = 10,
-    .reward_rate = 0.95
-  };
-  o.top = vd({25,23,20,18,15,15});
-  o.second = vd({23,20,20,15,14,14,12,12}) + vd(48, 1.8);
+  vl lenmemo(lislen + 10, 0);
 
-  //////////////////////////////オリパ作成パート//////////////////////////////////
-
-  rep(i, o.top.size()) o.top[i] *= 10000;
-  rep(i, o.second.size()) o.second[i] *= 10000;
-
-  ll prize_sum = sum_of(o.top) + sum_of(o.second) + sum_of(o.third);
-  ll prize_cnt = o.top.size() + o.second.size() + o.third.size();
-
-  vd oripa = o.top + o.second;
-  rep(_, o.lose_count) oripa.pb(o.lose_unit);
-  ld rem = (o.unit_price * o.unit_count) * o.reward_rate - prize_sum - (o.lose_count * o.lose_unit);
-  ll rem_count = o.unit_count - prize_cnt - o.lose_count;
-  ld rem_price = rem / rem_count;
-  rep(_, rem_count) oripa.pb(rem_price);
-  ll top_min = *min_element(all(o.top));
-
-  ////////////////////////////////////////////////////////////////
-
-  vl budget, ad;
-  if (fixed_budget != -1) {
-    budget.pb(fixed_budget);
-  } else {
-    budget.pb(50000);
-    rep(i, 1, 10) budget.pb(i * 100000);
-    rep(i, 2, 10) budget.pb(i * 500000);
-  }
-  rep(i, 5, 10) ad.pb(i * 1000);
-  rep(i, 1, 20) ad.pb(i * 10000);
-
-  set<LP> budget_ad;
-  fore(b, budget) fore(a, ad) budget_ad.insert({b, a});
-
-  map<LP, ld> win_count, win_tot, lose_count, profit_loss;
-  map<LP, vl> mins;
-
-  vl reached_to_top, yet_reached_to_top, top_times;
-
-  random_device seed_gen;
-  mt19937 engine(seed_gen());
-  rep(_, n) {
-    shuffle(all(oripa), engine);
-    set<LP> bad = budget_ad;
-    ll cur = 0;
-    ll mi = 0;
-    ll to_draw = o.unit_count * draw_ratio;
-    bool reached_top = false;
-
-    rep(i, to_draw / o.bulk_count + 1) {
-      { // もう次が引けない場合
-        auto it = bad.begin();
-        while (it != bad.end()) {
-          if (cur + it->first < o.unit_price * o.bulk_count) {
-            lose_count[*it]++;
-            profit_loss[*it] += cur;
-            it = bad.erase(it);
-          } else {
-            it = next(it);
-          }
-        }
-      }
-
-      // 引いて差し引きを把握
-      cur -= o.unit_price * (min(o.bulk_count * (i + 1), to_draw) - o.bulk_count * i);
-      cur += sum_of(oripa, o.bulk_count * i, min(o.bulk_count * (i + 1), to_draw));
-      chmin(mi, cur);
-
-      // XXが出るまで引く
-      ll ma = *max_element(oripa.begin() + o.bulk_count * i, oripa.begin() + min(o.bulk_count * (i + 1), to_draw));
-      if (!reached_top && ma >= top_min) {
-        reached_top = true;
-        top_times.pb(i + 1);
-        reached_to_top.pb(cur);
-      }
-
-      { // 規定アドに達した場合
-        auto it = bad.begin();
-        while (it != bad.end()) {
-          if (cur >= it->second) {
-            win_count[*it]++;
-            win_tot[*it] += cur;
-            profit_loss[*it] += cur;
-            mins[*it].pb(mi);
-            it = bad.erase(it);
-          } else {
-            it = next(it);
-          }
-        }
-      }
-    }
-    if (!reached_top) yet_reached_to_top.pb(cur);
-    fore(b, a, bad) {
-      profit_loss[{b, a}] += cur;
-    }
-  }
-
-  fore(_, vec, mins) sort(all(vec));
-
-  OUT("一口", o.unit_price, "円", o.unit_count, "口", o.unit_price * o.unit_count, "円");
-  OUT("還元", sum_of(oripa), "円", "残りカード平均", rem_price);
-  OUT(to_string((ll)(draw_ratio * 100)) + "%", o.unit_count * draw_ratio, "口まで", o.bulk_count, "口ずつ回す");
-
-  auto print = [&](LP key) {
-    ll exp = (ll)profit_loss[key] / n;
-    if (win_count[key] == 0) OUT("ロスカ 利確(", key, ") 期待値", exp, "回す意味なし");
-    else OUT("ロスカ 利確(", key,
-              ") 勝率", win_count[key] / n,
-              "勝ave", (ll)win_tot[key] / (ll)win_count[key],
-              "dworst/5%/10%/中央", mins[key].front(), "/", mins[key][mins[key].size() / 20], "/", mins[key][mins[key].size() / 10], "/", mins[key][mins[key].size() / 2],
-              "ロスカ率", lose_count[key] / n,
-              "期待値", (ll)profit_loss[key] / n
-            );
-  };
-  // fore(key, val, profit_loss) {
-  //   print(key);
-  // }
-
-  map<ll, LP> best_keys;
-  fore(key, val, profit_loss) {
-    if (best_keys.find(-val) == best_keys.end()) {
-      best_keys[-val] = key;
+  rep_r(i, n) {
+    if (ok[i]) {
+      chmax(lenmemo[lens[i]], a[i]);
     } else {
-      chmin(best_keys[-val], key);
+      if (lenmemo[lens[i] + 1] > a[i]) {
+        ok[i] = 1;
+        chmax(lenmemo[lens[i]], a[i]);
+      }
     }
   }
 
-  auto it = best_keys.begin();
-  set<ll> used_budget;
-  rep(_, 30) {
-    print(it->se);
-    used_budget.insert(it->se.fi);
-    while (it != best_keys.end() && used_budget.find(it->se.fi) != used_budget.end()) {
-      it = next(it);
-    }
-    if (it == best_keys.end()) break;
-  }
-
-  OUT("TOPをひける確率", (ld)reached_to_top.size() / n, "勝平均", (ld)sum_of(reached_to_top) / reached_to_top.size(), (ld)sum_of(top_times) / reached_to_top.size(), "回", "期待値", ((ld)sum_of(reached_to_top) + (ld)sum_of(yet_reached_to_top)) / n);
+  vl ans;
+  rep(i, n) if (ok[i]) ans.pb(i);
+  OUT(ans.size());
+  OUTARRAY(ans, 1);
 }
 
 signed main() {
-  cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(3);
-  debug(1);
-  int t = 1; //cin >> t;
-  while (t--) if (1) simulate();
+  cin.tie(0)->sync_with_stdio(0); cout << fixed << setprecision(20);
+  int t; cin >> t;
+  while (t--) if (1) solve(); else compare();
 }
