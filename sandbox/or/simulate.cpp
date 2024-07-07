@@ -186,34 +186,64 @@ struct Oripa {
   vd top, second, third;
 };
 
-void simulate() {
-  ll n = 10000;
-  ll fixed_budget = -1;
-  // どれだけの割合を引けそうか
-  // ld draw_ratio = 0.7;
-  // Oripa o = {
-  //   .unit_price = 500,
-  //   .unit_count = 50000,
-  //   .lose_unit = 280,
-  //   .lose_count = 45000,
-  //   .bulk_count = 100,
-  //   .reward_rate = 0.99
-  // };
-  // o.top = vd({120,110,70,50,46});
-  // o.second = vd({30,22,22,20,15,13,11,10,10,8,8,8,8,8,8,6,6,6,6,6,6,5,5,5,20,10,10,10,10}) + vd(31,2) + vd(35,2);
+// return min/5%/10%/mean/10%/5%/max
+vl stats(vl &v) {
+  sort(all(v));
+  return { v[0], v[v.size() / 20], v[v.size() / 10], v[v.size() / 2], v[v.size() - 1 - (v.size() / 10)], v[v.size() - 1 - (v.size() / 20)], v[v.size() - 1] };
+}
 
-  // ワンピ、ゴールデンプチュンラッシュ
-  ld draw_ratio = 0.8;
+void simulate() {
+  ll n = 1000;
+  ll fixed_budget = -1;
+
+  // ld draw_ratio = 0.3;
+  // Oripa o = {
+  //   .unit_price = 1000,
+  //   .unit_count = 80000,
+  //   .lose_unit = 560,
+  //   .lose_count = 60000,
+  //   .bulk_count = 100,
+  //   .reward_rate = 1.0,
+  // };
+  // o.top = vd({220,120,110,110,105,105,70,70,70,60,60,60,50,50,50,50,50,50,45,40,40});
+  // o.second = vd({32,30,28,25,20,18,16,14,13,10,9}) + vd(103,3);
+
+  // ld draw_ratio = 0.8;
+  // Oripa o = {
+  //   .unit_price = 3333,
+  //   .unit_count = 15000,
+  //   .lose_unit = 100,
+  //   .lose_count = 7500,
+  //   .bulk_count = 100,
+  //   .reward_rate = 0.97
+  // };
+  // o.top = vd({160,80});
+  // o.second = vd({50,45,40,22,15,15,13,13,10,10,10,10,8,8,8,7,7,6,6,6,5}) + vd(47, 1.5) + vd(515, 1);
+
+
+  // ld draw_ratio = 0.9;
+  // Oripa o = {
+  //   .unit_price = 3700,
+  //   .unit_count = 10000,
+  //   .lose_unit = 120,
+  //   .lose_count = 5000,
+  //   .bulk_count = 10,
+  //   .reward_rate = 0.97
+  // };
+  // o.top = vd({75,70,60,50,45,40});
+  // o.second = vd({22,16,13,10,8,7,6,6,6,6,6,6}) + vd(41,2);
+
+  ld draw_ratio = 0.1;
   Oripa o = {
-    .unit_price = 1000,
+    .unit_price = 2000,
     .unit_count = 15000,
-    .lose_unit = 120,
-    .lose_count = 13500,
+    .lose_unit = 240,
+    .lose_count = 7500,
     .bulk_count = 100,
-    .reward_rate = 0.97
+    .reward_rate = 1.015
   };
-  o.top = vd({51,44});
-  o.second = vd({30,20,16,15,12,12,10,8,5,4}) + vd(22, 2);
+  o.top = vd({90,70,55,50,45,45,40,40,40,35});
+  o.second = vd({24,20,18,18,12,12,10,10,10,10,10,9,9,9,9,9,9,9,9,9,7,7,7,7,7,7,7,6,5,5,4,4,4,4,4,4,4,4,4,4,4,4,3,3,3}) + vd(65,1.2);
 
   //////////////////////////////オリパ作成パート//////////////////////////////////
 
@@ -233,23 +263,15 @@ void simulate() {
 
   ////////////////////////////////////////////////////////////////
 
-  vl budget, ad;
-  if (fixed_budget != -1) {
-    budget.pb(fixed_budget);
-  } else {
-    budget.pb(50000);
-    rep(i, 1, 10) budget.pb(i * 100000);
-    rep(i, 2, 10) budget.pb(i * 500000);
-  }
-  ad.pb(5000); ad.pb(7500);
-  rep(i, 1, 10) ad.pb(i * 10000);
-  rep(i, 5) ad.pb(100000 + i * 50000);
+  vd budget = {5,10,20,30,40,50,60,70,80,90,100,125,150,175,200,250,300,400,500,1000};
+  vd ad = {0.5,0.75,1,2,3,4,5,6,7,8,9,10};
+  if (fixed_budget != -1) budget.pb(fixed_budget);
 
   set<LP> budget_ad;
-  fore(b, budget) fore(a, ad) budget_ad.insert({b, a});
+  fore(b, budget) fore(a, ad) budget_ad.insert({b*10000, a*10000});
 
   map<LP, ld> win_count, win_tot, lose_count, profit_loss;
-  map<LP, vl> mins;
+  map<LP, vl> mins, losses;
 
   vl reached_to_top, yet_reached_to_top, top_mins, top_times;
 
@@ -310,6 +332,7 @@ void simulate() {
     if (!reached_top) yet_reached_to_top.pb(cur);
     fore(b, a, bad) {
       profit_loss[{b, a}] += cur;
+      losses[{b, a}].pb(cur);
     }
   }
 
@@ -322,7 +345,7 @@ void simulate() {
   auto print = [&](LP key) {
     ll exp = (ll)profit_loss[key] / n;
     if (win_count[key] == 0) OUT("ロスカ 利確(", key, ") 期待値", exp, "回す意味なし");
-    else OUT("ロスカ 利確(", key,
+    else OUT("予算:利確ライン(", key,
               ") 勝率", win_count[key] / n,
               "勝ave", (ll)win_tot[key] / (ll)win_count[key],
               "dworst/5%/10%/中央", mins[key].front(), "/", mins[key][mins[key].size() / 20], "/", mins[key][mins[key].size() / 10], "/", mins[key][mins[key].size() / 2],
@@ -354,9 +377,13 @@ void simulate() {
     if (it == best_keys.end()) break;
   }
 
-  sort(all(top_mins));
+  vl rt = stats(reached_to_top);
+  vl tm = stats(top_mins);
+  vl tt = stats(top_times);
   OUT("TOPを引ける確率", (ld)reached_to_top.size() / n, "勝平均", (ld)sum_of(reached_to_top) / reached_to_top.size(), (ld)sum_of(top_times) / reached_to_top.size(), "回", "期待値", ((ld)sum_of(reached_to_top) + (ld)sum_of(yet_reached_to_top)) / n);
-  OUT("TOPを引く時のmin/5%/10%/中央", top_mins[0], top_mins[top_mins.size() / 20], top_mins[top_mins.size() / 10], top_mins[top_mins.size() / 2]);
+  OUT("TOPを引く時の収支min/5%/10%/中央", rt[0], rt[1], rt[2], rt[3]);
+  OUT("TOPを引く時の回数min/5%/10%/中央", tt[6], tt[5], tt[4], tt[3]);
+  OUT("TOPを引く時のmin/5%/10%/中央", tm[0], tm[1], tm[2], tm[3]);
   OUT("引けなかった時のマイナス平均", (ld)sum_of(yet_reached_to_top) / yet_reached_to_top.size());
 }
 
